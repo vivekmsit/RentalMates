@@ -97,6 +97,7 @@
     <orderEntry type="library" exported="" name="guava-jdk5-13.0" level="project" />
     <orderEntry type="library" exported="" name="rentalmatesbackend-android-endpoints" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-21.0.3" level="project" />
+    <orderEntry type="module" module-name="rentalmatesbackend" />
   </component>
 </module>
 

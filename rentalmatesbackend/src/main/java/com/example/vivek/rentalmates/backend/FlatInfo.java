@@ -46,6 +46,8 @@ public class FlatInfo {
 
     List<BlobKey> flatPicturesBlobKeys;
 
+    List<ExpenseData> expenses;
+
     // you can add more fields...
 
     public FlatInfo() {

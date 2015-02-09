@@ -156,4 +156,26 @@ public class FlatInfoEndpoint {
             throw new NotFoundException("Could not find FlatInfo with ID: " + id);
         }
     }
+
+
+    /**
+     * Adds new ExpenseData inside specified {@code FlatInfo}.
+     *
+     * @param id the ID of the entity to delete
+     * @throws NotFoundException if the {@code id} does not correspond to an existing
+     *                           {@code FlatInfo}
+     */
+    @ApiMethod(
+            name = "addExpenseData",
+            path = "flatInfo/{id}",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public FlatInfo addExpenseData(@Named("id") Long id, ExpenseData expenseData) throws NotFoundException {
+        checkExists(id);
+        FlatInfo flatInfo = ofy().load().type(FlatInfo.class).id(id).now();
+        flatInfo.expenses.add(expenseData);
+        ofy().save().entity(flatInfo).now();
+        logger.info("Added a new ExpenseData for FlatInfo with ID: " + id);
+        return ofy().load().entity(flatInfo).now();
+    }
+
 }
