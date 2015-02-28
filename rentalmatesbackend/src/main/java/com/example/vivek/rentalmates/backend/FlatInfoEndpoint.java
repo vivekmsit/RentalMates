@@ -11,11 +11,14 @@ import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.cmd.Query;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 import javax.inject.Named;
+
+import sun.util.calendar.BaseCalendar;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
@@ -167,12 +170,13 @@ public class FlatInfoEndpoint {
      */
     @ApiMethod(
             name = "addExpenseData",
-            path = "flatInfo/{id}",
+            path = "flatInfo1/{id}",
             httpMethod = ApiMethod.HttpMethod.POST)
     public FlatInfo addExpenseData(@Named("id") Long id, ExpenseData expenseData) throws NotFoundException {
         checkExists(id);
         FlatInfo flatInfo = ofy().load().type(FlatInfo.class).id(id).now();
-        flatInfo.expenses.add(expenseData);
+        expenseData.setFlatId(flatInfo.id);
+        flatInfo.addExpense(expenseData);
         ofy().save().entity(flatInfo).now();
         logger.info("Added a new ExpenseData for FlatInfo with ID: " + id);
         return ofy().load().entity(flatInfo).now();

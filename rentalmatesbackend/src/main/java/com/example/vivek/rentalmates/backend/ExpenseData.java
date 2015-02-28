@@ -2,6 +2,7 @@ package com.example.vivek.rentalmates.backend;
 
 import com.google.appengine.api.datastore.Key;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -13,9 +14,16 @@ public class ExpenseData {
     private int amount;
     private Date date;
     private String info;
-    private FlatInfo flatInfo;
+    private Long flatId;
     private int currencyType;
-    private List<Key> userKeys;
+    private List<Key> userKeys = new ArrayList<Key>();
+
+    ExpenseData(){
+        date = new Date();
+        amount = 0;
+        info = "NA";
+        currencyType = 0;
+    }
 
     public int getAmount() {
         return amount;
@@ -41,12 +49,22 @@ public class ExpenseData {
         this.info = info;
     }
 
+    public void setFlatId(Long id){
+        this.flatId = id;
+    }
+
+    public Long getFlatId(){
+        return this.flatId;
+    }
+
     public FlatInfo getFlatInfo() {
+        FlatInfo flatInfo = new FlatInfo();
         return flatInfo;
+        //To be implemented
     }
 
     public void setFlatInfo(FlatInfo flatInfo) {
-        this.flatInfo = flatInfo;
+        //To be implemented
     }
 
     public int getCurrencyType() {

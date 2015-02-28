@@ -6,7 +6,10 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The Objectify object model for device registrations we are persisting
@@ -24,6 +27,8 @@ public class FlatInfo {
 
     @Id
     Long id;
+
+    private String adminName;
 
     @Index
     private String flatName; //Should be unique
@@ -44,9 +49,11 @@ public class FlatInfo {
     @Index
     private String ownerEmailId;
 
-    List<BlobKey> flatPicturesBlobKeys;
+    private List<BlobKey> flatPicturesBlobKeys;
 
-    List<ExpenseData> expenses;
+    private List<ExpenseData> expenses = new ArrayList<ExpenseData>();
+
+    //private Map<String, ExpenseData> occupants = new HashMap<>();
 
     // you can add more fields...
 
@@ -75,5 +82,9 @@ public class FlatInfo {
 
     public void setOwnerEmailId(String emailId) {
         this.ownerEmailId = emailId;
+    }
+
+    public void addExpense(ExpenseData data){
+        expenses.add(data);
     }
 }
