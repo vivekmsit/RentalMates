@@ -85,7 +85,6 @@ public class FlatInfoEndpoint {
         // If your client provides the ID then you should probably use PUT instead.
         ofy().save().entity(flatInfo).now();
         logger.info("Created FlatInfo.");
-
         return ofy().load().entity(flatInfo).now();
     }
 

@@ -38,7 +38,8 @@ class UploadUserProfileAsyncTask extends AsyncTask<Context, Void, String> {
             ufService = builder1.build();
         }
         try {
-            ufService.insert(uf).execute();
+            UserProfile uploadedUserProfile = ufService.insert(uf).execute();
+            BackendApiService.storeUserProfileId(this.context, uploadedUserProfile.getId());
             msg = "User Profile uploaded successfully";
             Log.d(TAG, "inside insert");
         } catch (IOException e) {

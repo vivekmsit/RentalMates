@@ -29,6 +29,10 @@ public class UserProfile {
     public UserProfile() {
     }
 
+    public Long getId(){
+        return this.id;
+    }
+
     public String getUserName() {
         return userName;
     }
