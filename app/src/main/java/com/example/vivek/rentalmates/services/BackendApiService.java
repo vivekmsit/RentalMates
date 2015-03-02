@@ -1,4 +1,4 @@
-package com.example.vivek.rentalmates;
+package com.example.vivek.rentalmates.services;
 
 import android.app.Service;
 import android.content.Context;
@@ -12,6 +12,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.backend.flatInfoApi.FlatInfoApi;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
 import com.example.vivek.rentalmates.backend.registration.Registration;
@@ -24,8 +25,6 @@ import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
 import java.io.IOException;
 import java.util.List;
-
-import static com.example.vivek.rentalmates.backend.flatInfoApi.FlatInfoApi.*;
 
 public class BackendApiService extends Service {
     private static final String TAG = "RentalMatesDebug";
@@ -58,7 +57,7 @@ public class BackendApiService extends Service {
      * runs in the same process as its clients, we don't need to deal with IPC.
      */
     public class LocalBinder extends Binder {
-        BackendApiService getService() {
+        public BackendApiService getService() {
             // Return this instance of LocalService so clients can call public methods
             return BackendApiService.this;
         }

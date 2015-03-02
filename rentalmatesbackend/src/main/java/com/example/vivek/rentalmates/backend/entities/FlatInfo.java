@@ -1,15 +1,12 @@
-package com.example.vivek.rentalmates.backend;
+package com.example.vivek.rentalmates.backend.entities;
 
 import com.google.appengine.api.blobstore.BlobKey;
-import com.google.appengine.repackaged.com.google.protobuf.DescriptorProtos;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The Objectify object model for device registrations we are persisting
@@ -58,6 +55,10 @@ public class FlatInfo {
     // you can add more fields...
 
     public FlatInfo() {
+    }
+
+    public Long getFlatId(){
+        return this.id;
     }
 
     public String getFlatName() {

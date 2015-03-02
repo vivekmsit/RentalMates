@@ -1,4 +1,4 @@
-package com.example.vivek.rentalmates;
+package com.example.vivek.rentalmates.tasks;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -7,12 +7,12 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.backend.registration.Registration;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
-import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
-import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 /**
  * Created by vivek on 1/8/2015.
  */
-class GcmRegistrationAsyncTask extends AsyncTask<Context, Void, String> {
+public class GcmRegistrationAsyncTask extends AsyncTask<Context, Void, String> {
     private static Registration regService = null;
     private GoogleCloudMessaging gcm;
     private Context context;

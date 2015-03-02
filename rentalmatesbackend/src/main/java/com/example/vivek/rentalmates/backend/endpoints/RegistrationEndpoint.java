@@ -4,8 +4,9 @@
    https://github.com/GoogleCloudPlatform/gradle-appengine-templates/tree/master/GcmEndpoints
 */
 
-package com.example.vivek.rentalmates.backend;
+package com.example.vivek.rentalmates.backend.endpoints;
 
+import com.example.vivek.rentalmates.backend.entities.RegistrationRecord;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
@@ -15,8 +16,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.inject.Named;
-
-import sun.rmi.runtime.Log;
 
 import static com.example.vivek.rentalmates.backend.OfyService.ofy;
 

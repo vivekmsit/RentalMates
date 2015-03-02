@@ -1,9 +1,8 @@
-package com.example.vivek.rentalmates;
+package com.example.vivek.rentalmates.activities;
 
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.ServiceConnection;
@@ -25,6 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 //import com.example.vivek.rentalmates.backend.ExpenseData;
+import com.example.vivek.rentalmates.services.BackendApiService;
+import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;

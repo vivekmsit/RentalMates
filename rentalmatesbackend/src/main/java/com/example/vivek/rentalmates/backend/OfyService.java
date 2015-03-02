@@ -1,5 +1,9 @@
 package com.example.vivek.rentalmates.backend;
 
+import com.example.vivek.rentalmates.backend.entities.ExpenseData;
+import com.example.vivek.rentalmates.backend.entities.FlatInfo;
+import com.example.vivek.rentalmates.backend.entities.RegistrationRecord;
+import com.example.vivek.rentalmates.backend.entities.UserProfile;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;

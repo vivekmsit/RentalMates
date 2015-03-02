@@ -1,4 +1,4 @@
-package com.example.vivek.rentalmates.backend;
+package com.example.vivek.rentalmates.backend.entities;
 
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;

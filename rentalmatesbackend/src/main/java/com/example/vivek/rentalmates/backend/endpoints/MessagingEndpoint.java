@@ -4,8 +4,9 @@
    https://github.com/GoogleCloudPlatform/gradle-appengine-templates/tree/master/GcmEndpoints
 */
 
-package com.example.vivek.rentalmates.backend;
+package com.example.vivek.rentalmates.backend.endpoints;
 
+import com.example.vivek.rentalmates.backend.entities.RegistrationRecord;
 import com.google.android.gcm.server.Constants;
 import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.Result;

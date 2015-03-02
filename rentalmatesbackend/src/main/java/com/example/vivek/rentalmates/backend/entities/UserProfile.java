@@ -1,4 +1,4 @@
-package com.example.vivek.rentalmates.backend;
+package com.example.vivek.rentalmates.backend.entities;
 
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServicePb;

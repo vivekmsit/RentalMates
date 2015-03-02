@@ -1,5 +1,6 @@
-package com.example.vivek.rentalmates.backend;
+package com.example.vivek.rentalmates.backend.endpoints;
 
+import com.example.vivek.rentalmates.backend.entities.UserProfile;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
@@ -11,14 +12,11 @@ import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.cmd.Query;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 import javax.inject.Named;
-
-import sun.util.calendar.BaseCalendar;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
@@ -30,100 +28,101 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  * DO NOT deploy this code unchanged as part of a real application to real users.
  */
 @Api(
-        name = "flatInfoApi",
+        name = "userProfileApi",
         version = "v1",
-        resource = "flatInfo",
+        resource = "userProfile",
         namespace = @ApiNamespace(
                 ownerDomain = "backend.rentalmates.vivek.example.com",
                 ownerName = "backend.rentalmates.vivek.example.com",
                 packagePath = ""
         )
 )
-public class FlatInfoEndpoint {
+public class UserProfileEndpoint {
 
-    private static final Logger logger = Logger.getLogger(FlatInfoEndpoint.class.getName());
+    private static final Logger logger = Logger.getLogger(UserProfileEndpoint.class.getName());
 
     private static final int DEFAULT_LIST_LIMIT = 20;
 
     static {
         // Typically you would register this inside an OfyServive wrapper. See: https://code.google.com/p/objectify-appengine/wiki/BestPractices
-        ObjectifyService.register(FlatInfo.class);
+        ObjectifyService.register(UserProfile.class);
     }
 
     /**
-     * Returns the {@link FlatInfo} with the corresponding ID.
+     * Returns the {@link UserProfile} with the corresponding ID.
      *
      * @param id the ID of the entity to be retrieved
      * @return the entity with the corresponding ID
-     * @throws NotFoundException if there is no {@code FlatInfo} with the provided ID.
+     * @throws NotFoundException if there is no {@code UserProfile} with the provided ID.
      */
     @ApiMethod(
             name = "get",
-            path = "flatInfo/{id}",
+            path = "userProfile/{id}",
             httpMethod = ApiMethod.HttpMethod.GET)
-    public FlatInfo get(@Named("id") Long id) throws NotFoundException {
-        logger.info("Getting FlatInfo with ID: " + id);
-        FlatInfo flatInfo = ofy().load().type(FlatInfo.class).id(id).now();
-        if (flatInfo == null) {
-            throw new NotFoundException("Could not find FlatInfo with ID: " + id);
+    public UserProfile get(@Named("id") Long id) throws NotFoundException {
+        logger.info("Getting UserProfile with ID: " + id);
+        UserProfile userProfile = ofy().load().type(UserProfile.class).id(id).now();
+        if (userProfile == null) {
+            throw new NotFoundException("Could not find UserProfile with ID: " + id);
         }
-        return flatInfo;
+        return userProfile;
     }
 
     /**
-     * Inserts a new {@code FlatInfo}.
+     * Inserts a new {@code UserProfile}.
      */
     @ApiMethod(
             name = "insert",
-            path = "flatInfo",
+            path = "userProfile",
             httpMethod = ApiMethod.HttpMethod.POST)
-    public FlatInfo insert(FlatInfo flatInfo) {
+    public UserProfile insert(UserProfile userProfile) {
         // Typically in a RESTful API a POST does not have a known ID (assuming the ID is used in the resource path).
-        // You should validate that flatInfo.id has not been set. If the ID type is not supported by the
+        // You should validate that userProfile.id has not been set. If the ID type is not supported by the
         // Objectify ID generator, e.g. long or String, then you should generate the unique ID yourself prior to saving.
         //
         // If your client provides the ID then you should probably use PUT instead.
-        ofy().save().entity(flatInfo).now();
-        logger.info("Created FlatInfo.");
-        return ofy().load().entity(flatInfo).now();
+        ofy().save().entity(userProfile).now();
+        logger.info("Created UserProfile.");
+
+        return ofy().load().entity(userProfile).now();
     }
 
     /**
-     * Updates an existing {@code FlatInfo}.
+     * Updates an existing {@code UserProfile}.
      *
-     * @param id       the ID of the entity to be updated
-     * @param flatInfo the desired state of the entity
+     * @param id          the ID of the entity to be updated
+     * @param userProfile the desired state of the entity
      * @return the updated version of the entity
      * @throws NotFoundException if the {@code id} does not correspond to an existing
-     *                           {@code FlatInfo}
+     *                           {@code UserProfile}
      */
     @ApiMethod(
             name = "update",
-            path = "flatInfo/{id}",
+            path = "userProfile/{id}",
             httpMethod = ApiMethod.HttpMethod.PUT)
-    public FlatInfo update(@Named("id") Long id, FlatInfo flatInfo) throws NotFoundException {
+    public UserProfile update(@Named("id") Long id, UserProfile userProfile) throws NotFoundException {
         // TODO: You should validate your ID parameter against your resource's ID here.
         checkExists(id);
-        ofy().save().entity(flatInfo).now();
-        logger.info("Updated FlatInfo: " + flatInfo);
-        return ofy().load().entity(flatInfo).now();
+        ofy().save().entity(userProfile).now();
+        logger.info("Updated UserProfile: " + userProfile);
+        return ofy().load().entity(userProfile).now();
     }
 
     /**
-     * Deletes the specified {@code FlatInfo}.
+     * Deletes the specified {@code UserProfile}.
      *
      * @param id the ID of the entity to delete
      * @throws NotFoundException if the {@code id} does not correspond to an existing
-     *                           {@code FlatInfo}
+     *                           {@code UserProfile}
      */
     @ApiMethod(
             name = "remove",
-            path = "flatInfo/{id}",
+            path = "userProfile/{id}",
             httpMethod = ApiMethod.HttpMethod.DELETE)
     public void remove(@Named("id") Long id) throws NotFoundException {
         checkExists(id);
-        ofy().delete().type(FlatInfo.class).id(id).now();
-        logger.info("Deleted FlatInfo with ID: " + id);
+        ofy().delete().type(UserProfile.class).id(id).now();
+        logger.info("Deleted UserProfile with ID: " + id);
     }
 
     /**
@@ -135,50 +134,42 @@ public class FlatInfoEndpoint {
      */
     @ApiMethod(
             name = "list",
-            path = "flatInfo",
+            path = "userProfile",
             httpMethod = ApiMethod.HttpMethod.GET)
-    public CollectionResponse<FlatInfo> list(@Nullable @Named("cursor") String cursor, @Nullable @Named("limit") Integer limit) {
+    public CollectionResponse<UserProfile> list(@Nullable @Named("cursor") String cursor, @Nullable @Named("limit") Integer limit) {
         limit = limit == null ? DEFAULT_LIST_LIMIT : limit;
-        Query<FlatInfo> query = ofy().load().type(FlatInfo.class).limit(limit);
+        Query<UserProfile> query = ofy().load().type(UserProfile.class).limit(limit);
         if (cursor != null) {
             query = query.startAt(Cursor.fromWebSafeString(cursor));
         }
-        QueryResultIterator<FlatInfo> queryIterator = query.iterator();
-        List<FlatInfo> flatInfoList = new ArrayList<FlatInfo>(limit);
+        QueryResultIterator<UserProfile> queryIterator = query.iterator();
+        List<UserProfile> userProfileList = new ArrayList<UserProfile>(limit);
         while (queryIterator.hasNext()) {
-            flatInfoList.add(queryIterator.next());
+            userProfileList.add(queryIterator.next());
         }
-        return CollectionResponse.<FlatInfo>builder().setItems(flatInfoList).setNextPageToken(queryIterator.getCursor().toWebSafeString()).build();
+        return CollectionResponse.<UserProfile>builder().setItems(userProfileList).setNextPageToken(queryIterator.getCursor().toWebSafeString()).build();
     }
 
     private void checkExists(Long id) throws NotFoundException {
         try {
-            ofy().load().type(FlatInfo.class).id(id).safe();
+            ofy().load().type(UserProfile.class).id(id).safe();
         } catch (com.googlecode.objectify.NotFoundException e) {
-            throw new NotFoundException("Could not find FlatInfo with ID: " + id);
+            throw new NotFoundException("Could not find UserProfile with ID: " + id);
         }
     }
 
 
     /**
-     * Adds new ExpenseData inside specified {@code FlatInfo}.
-     *
-     * @param id the ID of the entity to delete
-     * @throws NotFoundException if the {@code id} does not correspond to an existing
-     *                           {@code FlatInfo}
+     * List all User Profiles for a given location
      */
     @ApiMethod(
-            name = "addExpenseData",
-            path = "flatInfo1/{id}",
+            name = "queryUserProfiles",
+            path = "queryUserProfiles",
             httpMethod = ApiMethod.HttpMethod.POST)
-    public FlatInfo addExpenseData(@Named("id") Long id, ExpenseData expenseData) throws NotFoundException {
-        checkExists(id);
-        FlatInfo flatInfo = ofy().load().type(FlatInfo.class).id(id).now();
-        expenseData.setFlatId(flatInfo.id);
-        flatInfo.addExpense(expenseData);
-        ofy().save().entity(flatInfo).now();
-        logger.info("Added a new ExpenseData for FlatInfo with ID: " + id);
-        return ofy().load().entity(flatInfo).now();
+    public List<UserProfile> queryUserProfiles(@Named("type") String type,@Named("value") String value ) {
+        Query query = ofy().load().type(UserProfile.class);
+        query = query.filter(type + " = ", value);
+        List<UserProfile> profiles =  query.list();
+        return profiles;
     }
-
 }

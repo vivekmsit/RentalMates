@@ -1,4 +1,4 @@
-package com.example.vivek.rentalmates;
+package com.example.vivek.rentalmates.activities;
 
 import android.content.Intent;
 import android.content.IntentSender;

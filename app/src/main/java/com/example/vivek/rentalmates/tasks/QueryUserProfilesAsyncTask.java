@@ -1,4 +1,4 @@
-package com.example.vivek.rentalmates;
+package com.example.vivek.rentalmates.tasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 /**
  * Created by vivek on 1/8/2015.
  */
-class QueryUserProfilesAsyncTask extends AsyncTask<Context, Void, String> {
+public class QueryUserProfilesAsyncTask extends AsyncTask<Context, Void, String> {
     private static UserProfileApi ufService = null;
     private Context context;
     private String type = null;

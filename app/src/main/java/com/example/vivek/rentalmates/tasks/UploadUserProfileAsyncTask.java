@@ -1,4 +1,4 @@
-package com.example.vivek.rentalmates;
+package com.example.vivek.rentalmates.tasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.backend.userProfileApi.UserProfileApi;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
+import com.example.vivek.rentalmates.services.BackendApiService;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
@@ -17,7 +18,7 @@ import java.util.logging.Logger;
 /**
  * Created by vivek on 1/8/2015.
  */
-class UploadUserProfileAsyncTask extends AsyncTask<Context, Void, String> {
+public class UploadUserProfileAsyncTask extends AsyncTask<Context, Void, String> {
     private static UserProfileApi ufService = null;
     private UserProfile uf = null;
     private String message = null;

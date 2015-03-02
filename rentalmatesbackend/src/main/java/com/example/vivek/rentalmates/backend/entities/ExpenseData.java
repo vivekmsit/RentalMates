@@ -1,5 +1,6 @@
-package com.example.vivek.rentalmates.backend;
+package com.example.vivek.rentalmates.backend.entities;
 
+import com.example.vivek.rentalmates.backend.entities.FlatInfo;
 import com.google.appengine.api.datastore.Key;
 
 import java.util.ArrayList;

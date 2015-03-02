@@ -1,4 +1,4 @@
-package com.example.vivek.rentalmates;
+package com.example.vivek.rentalmates.activities;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,9 +12,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.example.vivek.rentalmates.services.BackendApiService;
+import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
-
-import java.sql.Blob;
 
 
 public class UserProfileActivity extends ActionBarActivity {

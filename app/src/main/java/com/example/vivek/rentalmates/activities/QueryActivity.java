@@ -1,4 +1,4 @@
-package com.example.vivek.rentalmates;
+package com.example.vivek.rentalmates.activities;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -12,6 +12,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.vivek.rentalmates.tasks.QueryUserProfilesAsyncTask;
+import com.example.vivek.rentalmates.R;
 
 import org.w3c.dom.Text;
 
