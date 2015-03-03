@@ -80,10 +80,6 @@
             android:name=".activities.MainTabActivity"
             android:label="@string/title_activity_main_tab" >
         </activity>
-        <activity
-            android:name=".activities.MainActivity2Activity"
-            android:label="@string/title_activity_main_activity2" >
-        </activity>
     </application>
 
 </manifest>
