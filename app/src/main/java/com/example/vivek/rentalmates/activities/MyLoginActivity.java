@@ -193,6 +193,8 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         editor.putBoolean(SIGN_IN_COMPLETED, true);
         editor.commit();
         Log.d(TAG, "User sign in completed");
+        Intent intent = new Intent(this, MainTabActivity.class);
+        startActivity(intent);
     }
 
     @Override
