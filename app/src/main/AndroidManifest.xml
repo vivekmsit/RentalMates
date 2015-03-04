@@ -63,11 +63,6 @@
         <activity
             android:name=".activities.MyLoginActivity"
             android:label="@string/title_activity_my_login" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <service
@@ -79,6 +74,15 @@
         <activity
             android:name=".activities.MainTabActivity"
             android:label="@string/title_activity_main_tab" >
+        </activity>
+        <activity
+            android:name=".activities.FirstActivity"
+            android:label="@string/title_activity_first" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

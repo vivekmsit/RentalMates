@@ -188,13 +188,14 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         getProfileInformation();
 
         // Update the UI after signin
-        updateUI(true);
+        //updateUI(true);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(SIGN_IN_COMPLETED, true);
         editor.commit();
         Log.d(TAG, "User sign in completed");
         Intent intent = new Intent(this, MainTabActivity.class);
         startActivity(intent);
+        finish();
     }
 
     @Override

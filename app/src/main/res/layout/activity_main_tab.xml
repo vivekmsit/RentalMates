@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/title"
-        android:background="#33B5E5"
+        android:background="#EADEBD"
         android:layout_gravity="top"
         android:paddingTop="4dp"
         android:paddingBottom="4dp">

@@ -2,14 +2,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#7BF6B6"
-    tools:context="com.example.vivek.rentalmates.fragments.ExpensesFragment">
+    android:background="#9FD1FF"
+    tools:context="com.example.vivek.rentalmates.fragments.NewsFeedFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:layout_margin="16dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="16dp"
-        android:text="This is Expenses Fragment" />
+        android:text="This is NewsFeed Fragment" />
 
 </FrameLayout>
