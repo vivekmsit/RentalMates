@@ -42,7 +42,7 @@ import java.io.InputStream;
 public class MyLoginActivity extends ActionBarActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     // Logcat tag
-    private static final String TAG = "RentalMatesDebug";
+    private static final String TAG = "MyLoginActivity_Debug";
     private static final int RC_SIGN_IN = 0;
     // Profile pic image size in pixels
     private static final int PROFILE_PIC_SIZE = 400;
@@ -101,7 +101,6 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         progressDialog.setMessage("Signing In :) ");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.setIndeterminate(true);
-        progressDialog.show();
 
         btnSignIn.setOnClickListener(this);
         btnSignOut.setOnClickListener(this);
@@ -118,6 +117,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
     @Override
     protected void onStart() {
         Log.d(TAG, "inside onStart");
+        progressDialog.show();
         super.onStart();
         mClient.connect();
         Intent intent = new Intent(this, BackendApiService.class);
@@ -183,19 +183,22 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
     public void onConnected(Bundle bundle) {
         progressDialog.cancel();
         Log.d(TAG, "inside onConnected");
-        mSignInClicked = false;
         // Get user's information
         getProfileInformation();
-
         // Update the UI after signin
-        //updateUI(true);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(SIGN_IN_COMPLETED, true);
         editor.commit();
+        if (mSignInClicked == true){
+            Intent intent = new Intent(this, MainTabActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        else {
+            mSignInClicked = false;
+            updateUI(true);
+        }
         Log.d(TAG, "User sign in completed");
-        Intent intent = new Intent(this, MainTabActivity.class);
-        startActivity(intent);
-        finish();
     }
 
     @Override
@@ -215,7 +218,6 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
                     0).show();
             return;
         }
-
         if (!mIntentInProgress) {
             // Store the ConnectionResult for later usage
             mConnectionResult = connectionResult;
@@ -315,6 +317,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
                         @Override
                         public void onResult(Status arg0) {
                             Log.e(TAG, "User access revoked!");
+                            mClient.disconnect();
                             mClient.connect();
                             updateUI(false);
                         }

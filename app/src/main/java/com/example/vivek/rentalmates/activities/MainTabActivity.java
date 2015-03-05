@@ -1,6 +1,7 @@
 package com.example.vivek.rentalmates.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
@@ -94,7 +96,6 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(SIGN_IN_COMPLETED, true);
         editor.commit();
-        Toast.makeText(this, "Sign In Completed", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -113,6 +114,12 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
                     0).show();
             return;
         }
+    }
+
+    public void onAccountClick(View view){
+        Intent intent = new Intent(this, MyLoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     class MyAdapter extends FragmentStatePagerAdapter {

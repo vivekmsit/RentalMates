@@ -12,4 +12,12 @@
         android:layout_height="match_parent"
         android:text="This is NewsFeed Fragment" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onAccountClick"
+        android:text="My Account"
+        android:id="@+id/button"
+        android:layout_gravity="center" />
+
 </FrameLayout>
