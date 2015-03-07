@@ -209,8 +209,13 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
             }
         }
         else {
-            Log.d(TAG, "first time login");
-            new UploadUserProfileAsyncTask(this, userProfile).execute();
+            if (mSignInClicked == true) {
+                Log.d(TAG, "first time login");
+                new UploadUserProfileAsyncTask(this, userProfile).execute();
+            }
+            else {
+                mSignInClicked = false;
+            }
         }
         Log.d(TAG, "User sign in completed");
     }
@@ -294,11 +299,12 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
     private void signInWithGplus() {
         Log.d(TAG, "inside signInWithGplus");
         if (mClient.isConnected()){
-            updateUI(true);
-        }
-        if (!mClient.isConnecting()) {
+            mClient.disconnect();
+            mClient.connect();
             mSignInClicked = true;
-            resolveSignInError();
+        } else {
+            mClient.connect();
+            mSignInClicked = true;
         }
     }
 

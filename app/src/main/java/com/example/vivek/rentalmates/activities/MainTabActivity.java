@@ -19,6 +19,7 @@ import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.fragments.ExpensesFragment;
 import com.example.vivek.rentalmates.fragments.NewsFeedFragment;
 import com.example.vivek.rentalmates.fragments.SearchRoomiesFragment;
+import com.example.vivek.rentalmates.fragments.SettingsFragment;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -26,7 +27,7 @@ import com.google.android.gms.plus.Plus;
 
 public class MainTabActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
-    private static final String TAG = "RentalMatesDebug";
+    private static final String TAG = "MainTabActivity_Debug";
     private static final String SIGN_IN_COMPLETED = "sign_in_completed";
 
     ViewPager viewPager;
@@ -116,11 +117,6 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
         }
     }
 
-    public void onAccountClick(View view){
-        Intent intent = new Intent(this, MyLoginActivity.class);
-        startActivity(intent);
-    }
-
     class MyAdapter extends FragmentStatePagerAdapter {
         public MyAdapter(FragmentManager fm) {
             super(fm);
@@ -135,13 +131,15 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
                 fragment = new SearchRoomiesFragment();
             } else if (position == 2) {
                 fragment = new NewsFeedFragment();
+            } else if (position == 3){
+                fragment = new SettingsFragment();
             }
             return fragment;
         }
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
 
         @Override
@@ -152,7 +150,10 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
                 return "Search Roomies";
             } else if (position == 2) {
                 return "News Feed";
-            } else {
+            } else if (position == 3) {
+                return "Settings";
+            }
+            else {
                 return null;
             }
         }

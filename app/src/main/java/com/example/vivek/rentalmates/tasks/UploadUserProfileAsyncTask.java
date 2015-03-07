@@ -82,6 +82,5 @@ public class UploadUserProfileAsyncTask extends AsyncTask<Context, Void, String>
             Log.d(TAG, "Unable to upload UserProfile data");
             Toast.makeText(context, "Unable to upload UserProfile data", Toast.LENGTH_LONG).show();
         }
-
     }
 }
