@@ -46,8 +46,9 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
     private static final int RC_SIGN_IN = 0;
     // Profile pic image size in pixels
     private static final int PROFILE_PIC_SIZE = 400;
-    private static final String USER_PROFILE_UPDATED = "user_profile_updated";
-    private static final String SIGN_IN_COMPLETED = "sign_in_completed";
+    public static final String USER_PROFILE_UPDATED = "user_profile_updated";
+    public static final String SIGN_IN_COMPLETED = "sign_in_completed";
+    public static final String FIRST_TIME_LOGIN = "first_time_login";
     /**
      * A flag indicating that a PendingIntent is in progress and prevents us
      * from starting further intents.
@@ -185,18 +186,27 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         Log.d(TAG, "inside onConnected");
         // Get user's information
         getProfileInformation();
-        // Update the UI after signin
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(SIGN_IN_COMPLETED, true);
         editor.commit();
-        if (mSignInClicked == true){
-            Intent intent = new Intent(this, MainTabActivity.class);
-            startActivity(intent);
-            finish();
+
+        if(prefs.contains(FIRST_TIME_LOGIN) && prefs.getBoolean(FIRST_TIME_LOGIN, true)) {
+            Log.d(TAG, "FIRST_TIME_LOGIN already set to true");
+            if (mSignInClicked == true){
+                Intent intent = new Intent(this, MainTabActivity.class);
+                startActivity(intent);
+                finish();
+            }
+            else {
+                mSignInClicked = false;
+                updateUI(true);
+            }
         }
         else {
-            mSignInClicked = false;
-            updateUI(true);
+            Log.d(TAG, "first time login");
+            Intent intent = new Intent(this, RegisterFlatActivity.class);
+            startActivity(intent);
+            finish();
         }
         Log.d(TAG, "User sign in completed");
     }

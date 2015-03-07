@@ -6,6 +6,7 @@ import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,6 +42,8 @@ public class FlatInfo {
     @Index
     private String city;
 
+    private Date date;
+
     private double[][] vertices;
 
     @Index
@@ -55,6 +58,7 @@ public class FlatInfo {
     // you can add more fields...
 
     public FlatInfo() {
+        date = new Date();
     }
 
     public Long getFlatId(){

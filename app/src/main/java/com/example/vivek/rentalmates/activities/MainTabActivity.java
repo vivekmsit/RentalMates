@@ -119,7 +119,6 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
     public void onAccountClick(View view){
         Intent intent = new Intent(this, MyLoginActivity.class);
         startActivity(intent);
-        finish();
     }
 
     class MyAdapter extends FragmentStatePagerAdapter {

@@ -25,13 +25,15 @@ import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class BackendApiService extends Service {
     private static final String TAG = "RentalMatesDebug";
     private static final String PROPERTY_APP_VERSION = "appVersion";
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String SENDER_ID = "56111997016";
-    private static final String USER_PROFILE_ID = "userProfileId";
+    private static final String USER_PROFILE_ID = "user_profile_id";
+    private static final String FLAT_INFO_ID = "flat_info_id";
 
     private GoogleCloudMessaging gcm;
     private static UserProfileApi ufService = null;
@@ -67,6 +69,15 @@ public class BackendApiService extends Service {
         return mBinder;
     }
 
+    public static void printSharedPreferenceValues(SharedPreferences prefs){
+        Map<String,?> keys = prefs.getAll();
+        for(Map.Entry<String,?> entry : keys.entrySet()){
+            Log.d("map values",entry.getKey() + ": " +
+                    entry.getValue().toString());
+        }
+    }
+
+
     public static void storeUserProfileId(Context context, Long id){
         String msg = "";
         SharedPreferences prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
@@ -78,6 +89,21 @@ public class BackendApiService extends Service {
             Log.i(TAG, "Saving userProfileId in shared preferences" + id);
             SharedPreferences.Editor editor = prefs.edit();
             editor.putLong(USER_PROFILE_ID, id);
+            editor.commit();
+        }
+    }
+
+    public static void storeFlatInfoId(Context context, Long id){
+        String msg = "";
+        SharedPreferences prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
+                Context.MODE_PRIVATE);
+        if (prefs.contains(FLAT_INFO_ID)){
+            msg = "flatInfoId is already stored in shared preferences";
+            Log.d(TAG, msg);
+        } else {
+            Log.i(TAG, "Saving flatInfoId in shared preferences" + id);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putLong(FLAT_INFO_ID, id);
             editor.commit();
         }
     }
