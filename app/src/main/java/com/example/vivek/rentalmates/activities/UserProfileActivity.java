@@ -58,7 +58,7 @@ public class UserProfileActivity extends ActionBarActivity {
         userProfile = new UserProfile();
 
         userProfile.setUserName(nameText.getText().toString());
-        userProfile.setCity(cityText.getText().toString());
+        userProfile.setCurrentPlace(cityText.getText().toString());
         userProfile.setEmailId(emailIdText.getText().toString());
 
         backendService.uploadUserProfile(this, userProfile);

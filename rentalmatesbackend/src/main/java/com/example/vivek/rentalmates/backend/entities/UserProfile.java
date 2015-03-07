@@ -18,8 +18,12 @@ public class UserProfile {
     @Index
     private String userName;
 
+    private String profileURL;
+
+    private String profilePhotoURL;
+
     @Index
-    private String city;
+    private String currentPlace;
 
     @Index
     private String emailId;
@@ -41,12 +45,28 @@ public class UserProfile {
         this.userName = name;
     }
 
-    public String getCity() {
-        return city;
+    public String getProfileURL() {
+        return profileURL;
     }
 
-    public void setCity(String cityName) {
-        this.city = cityName;
+    public void setProfileURL(String urlName) {
+        this.profileURL = urlName;
+    }
+
+    public String getProfilePhotoURL() {
+        return profilePhotoURL;
+    }
+
+    public void setProfilePhotoURL(String urlName) {
+        this.profilePhotoURL = urlName;
+    }
+
+    public String getCurrentPlace() {
+        return currentPlace;
+    }
+
+    public void setCurrentPlace(String placeName) {
+        this.currentPlace = placeName;
     }
 
     public String getEmailId() {

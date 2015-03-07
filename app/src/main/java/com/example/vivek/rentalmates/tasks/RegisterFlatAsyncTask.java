@@ -30,7 +30,6 @@ public class RegisterFlatAsyncTask extends AsyncTask<Context, Void, String> {
 
     private static FlatInfoApi flatService = null;
     private FlatInfo fi = null;
-    private String message = null;
     private Context context;
     SharedPreferences prefs;
     IOException ioException;
@@ -38,6 +37,8 @@ public class RegisterFlatAsyncTask extends AsyncTask<Context, Void, String> {
     public RegisterFlatAsyncTask(Context context, final FlatInfo flatInfo) {
         this.context = context;
         this.fi = flatInfo;
+        prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
+                Context.MODE_PRIVATE);
     }
 
     @Override
@@ -65,12 +66,12 @@ public class RegisterFlatAsyncTask extends AsyncTask<Context, Void, String> {
     protected void onPostExecute(String msg) {
         Log.d(TAG, "inside onPostExecute() for RegisterFlatAsyncTask");
         if (msg.equals("SUCCESS")){
-            prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
-                    Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = prefs.edit();
             editor.putBoolean(MyLoginActivity.FIRST_TIME_LOGIN, true);
             editor.commit();
-            Toast.makeText(context, "FlatInfo uploaded successfully", Toast.LENGTH_LONG).show();
+
+            Toast.makeText(context, "FlatInfo uploaded", Toast.LENGTH_LONG).show();
+
             Intent intent = new Intent(context, MainTabActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);

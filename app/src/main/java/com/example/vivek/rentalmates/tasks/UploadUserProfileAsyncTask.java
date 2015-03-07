@@ -1,10 +1,15 @@
 package com.example.vivek.rentalmates.tasks;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.vivek.rentalmates.activities.MainActivity;
+import com.example.vivek.rentalmates.activities.MainTabActivity;
+import com.example.vivek.rentalmates.activities.RegisterFlatActivity;
 import com.example.vivek.rentalmates.backend.userProfileApi.UserProfileApi;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
 import com.example.vivek.rentalmates.services.BackendApiService;
@@ -19,15 +24,20 @@ import java.util.logging.Logger;
  * Created by vivek on 1/8/2015.
  */
 public class UploadUserProfileAsyncTask extends AsyncTask<Context, Void, String> {
+    private static final String TAG = "UploadUser_Debug";
+    public static final String USER_PROFILE_UPDATED = "user_profile_updated";
+
     private static UserProfileApi ufService = null;
     private UserProfile uf = null;
-    private String message = null;
     private Context context;
-    private static final String TAG = "RentalMatesDebug";
+    private SharedPreferences prefs;
+    private IOException ioException;
 
     public UploadUserProfileAsyncTask(Context context, final UserProfile userProfile) {
         this.context = context;
         this.uf = userProfile;
+        prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
+                Context.MODE_PRIVATE);
     }
 
     @Override
@@ -41,10 +51,11 @@ public class UploadUserProfileAsyncTask extends AsyncTask<Context, Void, String>
         try {
             UserProfile uploadedUserProfile = ufService.insert(uf).execute();
             BackendApiService.storeUserProfileId(this.context, uploadedUserProfile.getId());
-            msg = "User Profile uploaded successfully";
+            msg = "SUCCESS";
             Log.d(TAG, "inside insert");
         } catch (IOException e) {
-            msg = "Exception occurred";
+            ioException = e;
+            msg = "EXCEPTION";
             e.printStackTrace();
         }
         return msg;
@@ -52,7 +63,25 @@ public class UploadUserProfileAsyncTask extends AsyncTask<Context, Void, String>
 
     @Override
     protected void onPostExecute(String msg) {
-        Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
-        Logger.getLogger("USERPROFILEAPI").log(Level.INFO, msg);
+        if (msg.equals("SUCCESS")){
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putInt(USER_PROFILE_UPDATED, 1);
+            editor.commit();
+
+            Toast.makeText(context, "UserProfile uploaded", Toast.LENGTH_LONG).show();
+
+            Intent intent = new Intent(context, RegisterFlatActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            context.startActivity(intent);
+        }
+        else if (msg.equals("EXCEPTION")){
+            Log.d(TAG, "IOException: "+ ioException.getMessage());
+            Toast.makeText(context, "IOException: "+ ioException.getMessage(), Toast.LENGTH_LONG).show();
+        }
+        else {
+            Log.d(TAG, "Unable to upload UserProfile data");
+            Toast.makeText(context, "Unable to upload UserProfile data", Toast.LENGTH_LONG).show();
+        }
+
     }
 }

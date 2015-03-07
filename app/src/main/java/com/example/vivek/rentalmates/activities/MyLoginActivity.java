@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.example.vivek.rentalmates.services.BackendApiService;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
+import com.example.vivek.rentalmates.tasks.UploadUserProfileAsyncTask;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.SignInButton;
@@ -184,11 +185,16 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
     public void onConnected(Bundle bundle) {
         progressDialog.cancel();
         Log.d(TAG, "inside onConnected");
-        // Get user's information
-        getProfileInformation();
+
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(SIGN_IN_COMPLETED, true);
         editor.commit();
+
+        // Get user's information
+        UserProfile userProfile = getProfileInformation();
+        txtName.setText(userProfile.getUserName());
+        txtEmail.setText(userProfile.getEmailId());
+        setProfilePicture(userProfile.getProfilePhotoURL());
 
         if(prefs.contains(FIRST_TIME_LOGIN) && prefs.getBoolean(FIRST_TIME_LOGIN, true)) {
             Log.d(TAG, "FIRST_TIME_LOGIN already set to true");
@@ -204,9 +210,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         }
         else {
             Log.d(TAG, "first time login");
-            Intent intent = new Intent(this, RegisterFlatActivity.class);
-            startActivity(intent);
-            finish();
+            new UploadUserProfileAsyncTask(this, userProfile).execute();
         }
         Log.d(TAG, "User sign in completed");
     }
@@ -355,48 +359,18 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
     /**
      * Fetching user's information name, email, profile pic
      * */
-    private void getProfileInformation() {
+    private UserProfile getProfileInformation() {
+        UserProfile userProfile = null;
         try {
             if (Plus.PeopleApi.getCurrentPerson(mClient) != null) {
                 Person currentPerson = Plus.PeopleApi
                         .getCurrentPerson(mClient);
-                String personName = currentPerson.getDisplayName();
-                String location = currentPerson.getCurrentLocation();
-                String personPhotoUrl = currentPerson.getImage().getUrl();
-                String personGooglePlusProfile = currentPerson.getUrl();
-                String email = Plus.AccountApi.getAccountName(mClient);
-
-                if (prefs.contains(USER_PROFILE_UPDATED)) {
-                    Log.d(TAG, "User Profile is already updated");
-                }
-                else {
-                    UserProfile userProfile = new UserProfile();
-                    userProfile.setUserName(personName);
-                    userProfile.setEmailId(email);
-                    userProfile.setCity(location);
-                    backendService.uploadUserProfile(this, userProfile);
-                    SharedPreferences.Editor editor = prefs.edit();
-                    editor.putInt(USER_PROFILE_UPDATED, 1);
-                    editor.commit();
-                }
-
-                Log.e(TAG, "Name: " + personName + ", plusProfile: "
-                        + personGooglePlusProfile + ", email: " + email
-                        + ", Image: " + personPhotoUrl);
-
-                txtName.setText(personName);
-                txtEmail.setText(email);
-
-                // by default the profile url gives 50x50 px image only
-                // we can replace the value with whatever dimension we want by
-                // replacing sz=X
-                personPhotoUrl = personPhotoUrl.substring(0,
-                        personPhotoUrl.length() - 2)
-                        + PROFILE_PIC_SIZE;
-
-                new LoadProfileImage(imgProfilePic).execute(personPhotoUrl);
-
-
+                userProfile = new UserProfile();
+                userProfile.setUserName(currentPerson.getDisplayName());
+                userProfile.setCurrentPlace(currentPerson.getCurrentLocation());
+                userProfile.setProfilePhotoURL(currentPerson.getImage().getUrl());
+                userProfile.setProfileURL(currentPerson.getUrl());
+                userProfile.setEmailId(Plus.AccountApi.getAccountName(mClient));
             } else {
                 Toast.makeText(getApplicationContext(),
                         "Person information is null", Toast.LENGTH_LONG).show();
@@ -404,7 +378,24 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return userProfile;
     }
+
+
+    /**
+     * Function to set profilePicture View
+     * */
+    public void setProfilePicture(String personPhotoUrl){
+        // by default the profile url gives 50x50 px image only
+        // we can replace the value with whatever dimension we want by
+        // replacing sz=X
+        personPhotoUrl = personPhotoUrl.substring(0,
+                personPhotoUrl.length() - 2)
+                + PROFILE_PIC_SIZE;
+
+        new LoadProfileImage(imgProfilePic).execute(personPhotoUrl);
+    }
+
 
     /**
      * Background Async task to load user profile picture from url
