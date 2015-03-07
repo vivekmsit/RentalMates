@@ -69,13 +69,6 @@ public class RegisterFlatActivity extends ActionBarActivity {
         flatInfo.setFlatName(editText1.getText().toString());
         flatInfo.setOwnerEmailId("vivekmsit@gmail.com");
         new RegisterFlatAsyncTask(this, flatInfo).execute();
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(MyLoginActivity.FIRST_TIME_LOGIN, true);
-        editor.commit();
-        Intent intent = new Intent(this, MainTabActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
     }
 
     @Override
