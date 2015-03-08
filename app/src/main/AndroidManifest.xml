@@ -88,6 +88,10 @@
             android:name=".activities.RegisterFlatActivity"
             android:label="@string/title_activity_register_flat" >
         </activity>
+        <activity
+            android:name=".activities.AddExpenseActivity"
+            android:label="@string/title_activity_add_expense" >
+        </activity>
     </application>
 
 </manifest>

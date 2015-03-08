@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.vivek.rentalmates.R;
+import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
 import com.example.vivek.rentalmates.services.BackendApiService;
 import com.example.vivek.rentalmates.tasks.RegisterFlatAsyncTask;

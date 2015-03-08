@@ -92,4 +92,8 @@ public class FlatInfo {
     public void addExpense(ExpenseData data){
         expenses.add(data);
     }
+
+    public List<ExpenseData> getExpenses(){
+        return expenses;
+    }
 }

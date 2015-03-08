@@ -47,6 +47,7 @@ public class FlatInfoEndpoint {
     static {
         // Typically you would register this inside an OfyServive wrapper. See: https://code.google.com/p/objectify-appengine/wiki/BestPractices
         ObjectifyService.register(FlatInfo.class);
+        ObjectifyService.register(ExpenseData.class);
     }
 
     /**
@@ -173,6 +174,7 @@ public class FlatInfoEndpoint {
     public FlatInfo addExpenseData(@Named("id") Long id, ExpenseData expenseData) throws NotFoundException {
         checkExists(id);
         FlatInfo flatInfo = ofy().load().type(FlatInfo.class).id(id).now();
+        ofy().save().entity(expenseData).now();
         expenseData.setFlatId(flatInfo.getFlatId());
         flatInfo.addExpense(expenseData);
         ofy().save().entity(flatInfo).now();

@@ -2,6 +2,8 @@ package com.example.vivek.rentalmates.backend.entities;
 
 import com.example.vivek.rentalmates.backend.entities.FlatInfo;
 import com.google.appengine.api.datastore.Key;
+import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Id;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,11 +12,15 @@ import java.util.List;
 /**
  * Created by vivek on 2/9/2015.
  */
+@Entity
 public class ExpenseData {
+
+    @Id
+    Long id;
 
     private int amount;
     private Date date;
-    private String info;
+    private String description;
     private Long flatId;
     private int currencyType;
     private List<Key> userKeys = new ArrayList<Key>();
@@ -22,7 +28,7 @@ public class ExpenseData {
     ExpenseData(){
         date = new Date();
         amount = 0;
-        info = "NA";
+        description = "NA";
         currencyType = 0;
     }
 
@@ -42,12 +48,12 @@ public class ExpenseData {
         this.date = date;
     }
 
-    public String getInfo() {
-        return info;
+    public String getDescription() {
+        return description;
     }
 
-    public void setInfo(String info) {
-        this.info = info;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setFlatId(Long id){
@@ -56,16 +62,6 @@ public class ExpenseData {
 
     public Long getFlatId(){
         return this.flatId;
-    }
-
-    public FlatInfo getFlatInfo() {
-        FlatInfo flatInfo = new FlatInfo();
-        return flatInfo;
-        //To be implemented
-    }
-
-    public void setFlatInfo(FlatInfo flatInfo) {
-        //To be implemented
     }
 
     public int getCurrencyType() {

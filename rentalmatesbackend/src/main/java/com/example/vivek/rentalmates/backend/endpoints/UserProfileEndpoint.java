@@ -48,6 +48,7 @@ public class UserProfileEndpoint {
         ObjectifyService.register(UserProfile.class);
     }
 
+
     /**
      * Returns the {@link UserProfile} with the corresponding ID.
      *
