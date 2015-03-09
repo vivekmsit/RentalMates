@@ -14,8 +14,6 @@ import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -23,7 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-//import com.example.vivek.rentalmates.backend.ExpenseData;
 import com.example.vivek.rentalmates.services.BackendApiService;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
@@ -58,11 +55,13 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
     public static BackendApiService backendService;
     boolean mBound = false;
 
-    public static GoogleApiClient mClient = null;
-    private SignInButton btnSignIn;
     private boolean mIntentInProgress;
     private boolean mSignInClicked;
+    private boolean mSignInCompleted;
+
+    public static GoogleApiClient mClient = null;
     private ConnectionResult mConnectionResult;
+    private SignInButton btnSignIn;
     private Button btnSignOut, btnRevokeAccess, continueButton;
     private ImageView imgProfilePic;
     private TextView txtName, txtEmail;
@@ -76,6 +75,8 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         Log.d(TAG, "inside onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_login);
+
+        mSignInClicked = false;
 
         btnSignIn = (SignInButton) findViewById(R.id.my_sign_in_button);
         btnSignOut = (Button) findViewById(R.id.btn_sign_out);
@@ -160,28 +161,6 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_my_login, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onConnected(Bundle bundle) {
         progressDialog.cancel();
         Log.d(TAG, "inside onConnected");
@@ -199,24 +178,19 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         if(prefs.contains(FIRST_TIME_LOGIN) && prefs.getBoolean(FIRST_TIME_LOGIN, true)) {
             Log.d(TAG, "FIRST_TIME_LOGIN already set to true");
             if (mSignInClicked == true){
+                mSignInClicked = false;
                 Intent intent = new Intent(this, MainTabActivity.class);
                 startActivity(intent);
                 finish();
             }
             else {
-                mSignInClicked = false;
                 updateUI(true);
             }
         }
-        else {
-            if (mSignInClicked == true) {
+        else if (mSignInClicked == true) {
                 Log.d(TAG, "first time login");
                 new UploadUserProfileAsyncTask(this, userProfile).execute();
             }
-            else {
-                mSignInClicked = false;
-            }
-        }
         Log.d(TAG, "User sign in completed");
     }
 
@@ -298,13 +272,16 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
      * */
     private void signInWithGplus() {
         Log.d(TAG, "inside signInWithGplus");
+        if (mSignInClicked == true){
+            //multiple sign in button click
+            return;
+        }
+        mSignInClicked = true;
         if (mClient.isConnected()){
             mClient.disconnect();
             mClient.connect();
-            mSignInClicked = true;
         } else {
             mClient.connect();
-            mSignInClicked = true;
         }
     }
 

@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.vivek.rentalmates.activities.AddExpenseActivity;
 import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.activities.MainTabActivity;
 import com.example.vivek.rentalmates.activities.MyLoginActivity;
@@ -25,18 +26,20 @@ import java.io.IOException;
 import java.util.List;
 
 public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
-    private static final String TAG = "RentalMatesDebug";
+    private static final String TAG = "ExpenseAsyncTask_Debug";
     private static final String FLAT_INFO_ID = "flat_info_id";
 
     private static FlatInfoApi flatService = null;
     ExpenseData ed;
     private Context context;
+    AddExpenseActivity activity;
     SharedPreferences prefs;
     IOException ioException;
 
-    public AddExpenseAsyncTask(Context context, final ExpenseData expenseData) {
+    public AddExpenseAsyncTask(AddExpenseActivity expenseActivity, Context context, final ExpenseData expenseData) {
         this.context = context;
         this.ed = expenseData;
+        this.activity = expenseActivity;
         prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
     }
@@ -78,7 +81,10 @@ public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
 
     @Override
     protected void onPostExecute(String msg) {
+
         Log.d(TAG, "inside onPostExecute() for AddExpenseAsyncTask");
+        activity.setAddExpenseButtonClicked(false);
+
         if (msg.equals("SUCCESS")){
             Toast.makeText(context, "ExpenseData uploaded", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(context, MainTabActivity.class);

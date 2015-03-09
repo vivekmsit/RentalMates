@@ -16,7 +16,9 @@ import com.example.vivek.rentalmates.tasks.AddExpenseAsyncTask;
 
 public class AddExpenseActivity extends ActionBarActivity implements View.OnClickListener {
 
-    private static final String TAG = "MainTabActivity_Debug";
+    private static final String TAG = "AdExpenseActivity_Debug";
+
+    boolean addExpenseButtonClicked;
 
     EditText descriptionEditText;
     EditText amountEditText;
@@ -24,10 +26,16 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
     Button cancelExpenseButton;
     Button addExpenseButton;
 
+    public void setAddExpenseButtonClicked(boolean  value){
+        addExpenseButtonClicked = value;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_expense);
+
+        addExpenseButtonClicked = false;
 
         descriptionEditText = (EditText) findViewById(R.id.descriptionEditText);
         amountEditText = (EditText) findViewById(R.id.amountEditText);
@@ -57,37 +65,18 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
                 break;
 
             case R.id.addExpenseButton:
+                if (addExpenseButtonClicked == true){
+                    return;
+                }
+                addExpenseButtonClicked = true;
                 ExpenseData expenseData = new ExpenseData();
                 expenseData.setAmount(Integer.parseInt(amountEditText.getText().toString()));
                 expenseData.setDescription(descriptionEditText.getText().toString());
-                new AddExpenseAsyncTask(this, expenseData).execute();
+                new AddExpenseAsyncTask(this, this, expenseData).execute();
                 break;
 
             default:
                 break;
         }
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_add_expense, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
 }

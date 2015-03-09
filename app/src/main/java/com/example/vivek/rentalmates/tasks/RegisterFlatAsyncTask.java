@@ -1,5 +1,6 @@
 package com.example.vivek.rentalmates.tasks;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,8 +11,10 @@ import android.widget.Toast;
 import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.activities.MainTabActivity;
 import com.example.vivek.rentalmates.activities.MyLoginActivity;
+import com.example.vivek.rentalmates.activities.RegisterFlatActivity;
 import com.example.vivek.rentalmates.backend.flatInfoApi.FlatInfoApi;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
+import com.example.vivek.rentalmates.backend.registration.Registration;
 import com.example.vivek.rentalmates.backend.userProfileApi.UserProfileApi;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
 import com.example.vivek.rentalmates.services.BackendApiService;
@@ -31,12 +34,14 @@ public class RegisterFlatAsyncTask extends AsyncTask<Context, Void, String> {
     private static FlatInfoApi flatService = null;
     private FlatInfo fi = null;
     private Context context;
+    RegisterFlatActivity activity;
     SharedPreferences prefs;
     IOException ioException;
 
-    public RegisterFlatAsyncTask(Context context, final FlatInfo flatInfo) {
+    public RegisterFlatAsyncTask(RegisterFlatActivity flatActivity, Context context, final FlatInfo flatInfo) {
         this.context = context;
         this.fi = flatInfo;
+        this.activity = flatActivity;
         prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
     }
@@ -64,7 +69,10 @@ public class RegisterFlatAsyncTask extends AsyncTask<Context, Void, String> {
 
     @Override
     protected void onPostExecute(String msg) {
+
         Log.d(TAG, "inside onPostExecute() for RegisterFlatAsyncTask");
+        activity.setRegisterButtonClicked(false);
+
         if (msg.equals("SUCCESS")){
             SharedPreferences.Editor editor = prefs.edit();
             editor.putBoolean(MyLoginActivity.FIRST_TIME_LOGIN, true);

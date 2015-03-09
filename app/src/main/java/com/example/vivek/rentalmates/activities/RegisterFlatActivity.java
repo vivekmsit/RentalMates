@@ -1,27 +1,21 @@
 package com.example.vivek.rentalmates.activities;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.vivek.rentalmates.R;
-import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
-import com.example.vivek.rentalmates.services.BackendApiService;
 import com.example.vivek.rentalmates.tasks.RegisterFlatAsyncTask;
-
-import org.w3c.dom.Text;
 
 public class RegisterFlatActivity extends ActionBarActivity {
 
+    boolean registerButtonClicked;
     TextView textView1;
     TextView textView2;
     TextView textView3;
@@ -30,10 +24,15 @@ public class RegisterFlatActivity extends ActionBarActivity {
     Button registerButton;
     SharedPreferences prefs;
 
+    public void setRegisterButtonClicked(boolean value){
+        registerButtonClicked = value;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_flat);
+        registerButtonClicked = false;
         textView1 = (TextView) findViewById(R.id.textView5);
         textView2 = (TextView) findViewById(R.id.textView6);
         textView3 = (TextView) findViewById(R.id.textView4);
@@ -66,31 +65,13 @@ public class RegisterFlatActivity extends ActionBarActivity {
     }
 
     public void onRegisterFlatButtonClick(View view){
+        if (registerButtonClicked == true) {
+            return;
+        }
+        registerButtonClicked = true;
         FlatInfo flatInfo = new FlatInfo();
         flatInfo.setFlatName(editText1.getText().toString());
         flatInfo.setOwnerEmailId("vivekmsit@gmail.com");
-        new RegisterFlatAsyncTask(this, flatInfo).execute();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_register_flat, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        new RegisterFlatAsyncTask(this, this, flatInfo).execute();
     }
 }
