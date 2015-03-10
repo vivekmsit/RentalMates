@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
@@ -68,10 +69,22 @@ public class RegisterFlatActivity extends ActionBarActivity {
         if (registerButtonClicked == true) {
             return;
         }
+        if (verifyFlatInfoData() == false){
+            return;
+        }
         registerButtonClicked = true;
         FlatInfo flatInfo = new FlatInfo();
         flatInfo.setFlatName(editText1.getText().toString());
         flatInfo.setOwnerEmailId("vivekmsit@gmail.com");
         new RegisterFlatAsyncTask(this, this, flatInfo).execute();
+    }
+
+    public boolean verifyFlatInfoData() {
+        if (editText1.getText().toString().trim().matches("")) {
+            Toast.makeText(this, "No Flat Name entered", Toast.LENGTH_LONG).show();
+            return false;
+        } else {
+            return true;
+        }
     }
 }

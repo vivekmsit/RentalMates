@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.activities.MainTabActivity;
+import com.example.vivek.rentalmates.activities.MyLoginActivity;
 import com.example.vivek.rentalmates.activities.RegisterFlatActivity;
 import com.example.vivek.rentalmates.backend.userProfileApi.UserProfileApi;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
@@ -32,10 +33,12 @@ public class UploadUserProfileAsyncTask extends AsyncTask<Context, Void, String>
     private Context context;
     private SharedPreferences prefs;
     private IOException ioException;
+    private MyLoginActivity activity;
 
-    public UploadUserProfileAsyncTask(Context context, final UserProfile userProfile) {
+    public UploadUserProfileAsyncTask(MyLoginActivity myLoginActivity, Context context, final UserProfile userProfile) {
         this.context = context;
         this.uf = userProfile;
+        activity = myLoginActivity;
         prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
     }
@@ -63,6 +66,10 @@ public class UploadUserProfileAsyncTask extends AsyncTask<Context, Void, String>
 
     @Override
     protected void onPostExecute(String msg) {
+
+        Log.d(TAG, "inside onPostExecute() for RegisterFlatAsyncTask");
+        activity.setSignInClicked(false);
+
         if (msg.equals("SUCCESS")){
             SharedPreferences.Editor editor = prefs.edit();
             editor.putInt(USER_PROFILE_UPDATED, 1);

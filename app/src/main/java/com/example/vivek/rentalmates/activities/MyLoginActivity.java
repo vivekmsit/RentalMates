@@ -70,6 +70,11 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
 
     SharedPreferences prefs = null;
 
+
+    public void setSignInClicked(boolean value){
+        mSignInClicked = value;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "inside onCreate");
@@ -189,7 +194,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         }
         else if (mSignInClicked == true) {
                 Log.d(TAG, "first time login");
-                new UploadUserProfileAsyncTask(this, userProfile).execute();
+                new UploadUserProfileAsyncTask(this, this, userProfile).execute();
             }
         Log.d(TAG, "User sign in completed");
     }

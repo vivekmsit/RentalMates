@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
@@ -68,6 +69,9 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
                 if (addExpenseButtonClicked == true){
                     return;
                 }
+                if (verifyExpenseData() == false) {
+                    return;
+                }
                 addExpenseButtonClicked = true;
                 ExpenseData expenseData = new ExpenseData();
                 expenseData.setAmount(Integer.parseInt(amountEditText.getText().toString()));
@@ -77,6 +81,18 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
 
             default:
                 break;
+        }
+    }
+
+    public boolean verifyExpenseData() {
+        if (descriptionEditText.getText().toString().trim().matches("")) {
+            Toast.makeText(this, "No description entered", Toast.LENGTH_LONG).show();
+            return false;
+        } else if (amountEditText.getText().toString().trim().matches("")) {
+            Toast.makeText(this, "No amount entered", Toast.LENGTH_LONG).show();
+            return false;
+        } else {
+            return true;
         }
     }
 }
