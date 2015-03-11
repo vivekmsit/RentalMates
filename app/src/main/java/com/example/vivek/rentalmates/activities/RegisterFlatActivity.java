@@ -66,10 +66,7 @@ public class RegisterFlatActivity extends ActionBarActivity {
     }
 
     public void onRegisterFlatButtonClick(View view){
-        if (registerButtonClicked == true) {
-            return;
-        }
-        if (verifyFlatInfoData() == false){
+        if (registerButtonClicked == true || verifyFlatInfoData() == false) {
             return;
         }
         registerButtonClicked = true;

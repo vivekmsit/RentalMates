@@ -5,6 +5,7 @@ import com.google.appengine.api.datastore.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
  * Created by vivek on 2/9/2015.
  */
 @Entity
-public class ExpenseData {
+public class ExpenseData implements Serializable{
 
     @Id
     Long id;
@@ -21,9 +22,9 @@ public class ExpenseData {
     private int amount;
     private Date date;
     private String description;
+    private String ownerEmailId;
     private Long flatId;
     private int currencyType;
-    private List<Key> userKeys = new ArrayList<Key>();
 
     ExpenseData(){
         date = new Date();
@@ -52,6 +53,14 @@ public class ExpenseData {
         return description;
     }
 
+    public String getOwnerEmailId(){
+        return ownerEmailId;
+    }
+
+    public void setOwnerEmailId(String emailId){
+        this.ownerEmailId = emailId;
+    }
+
     public void setDescription(String description) {
         this.description = description;
     }
@@ -70,14 +79,6 @@ public class ExpenseData {
 
     public void setCurrencyType(int currencyType) {
         this.currencyType = currencyType;
-    }
-
-    public List<Key> getUserKeys() {
-        return userKeys;
-    }
-
-    public void setUserKeys(List<Key> userKeys) {
-        this.userKeys = userKeys;
     }
 
 }

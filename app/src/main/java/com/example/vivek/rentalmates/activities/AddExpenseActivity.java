@@ -66,16 +66,14 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
                 break;
 
             case R.id.addExpenseButton:
-                if (addExpenseButtonClicked == true){
-                    return;
-                }
-                if (verifyExpenseData() == false) {
+                if (addExpenseButtonClicked == true || verifyExpenseData() == false){
                     return;
                 }
                 addExpenseButtonClicked = true;
                 ExpenseData expenseData = new ExpenseData();
                 expenseData.setAmount(Integer.parseInt(amountEditText.getText().toString()));
                 expenseData.setDescription(descriptionEditText.getText().toString());
+                expenseData.setOwnerEmailId("vivekmsit@gmail.com");
                 new AddExpenseAsyncTask(this, this, expenseData).execute();
                 break;
 

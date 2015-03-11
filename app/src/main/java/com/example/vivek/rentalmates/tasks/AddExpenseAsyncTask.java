@@ -8,21 +8,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.activities.AddExpenseActivity;
 import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.activities.MainTabActivity;
-import com.example.vivek.rentalmates.activities.MyLoginActivity;
 import com.example.vivek.rentalmates.backend.flatInfoApi.FlatInfoApi;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
-import com.example.vivek.rentalmates.services.BackendApiService;
+import com.example.vivek.rentalmates.others.LocalExpenseData;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
@@ -54,6 +57,7 @@ public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
         }
         try {
             Long flatId = prefs.getLong(FLAT_INFO_ID, 0);
+            ed.setFlatId(flatId);
             FlatInfo uploadedFlatInfo = flatService.addExpenseData(flatId, ed).execute();
             if (uploadedFlatInfo == null){
                 Log.d(TAG, "uploadedFlatInfo is null");
@@ -63,10 +67,25 @@ public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
                 if (expenses == null){
                     Log.d(TAG, "expenses is null");
                 } else {
+                    //storing expenses into a getFiles
+                    List<LocalExpenseData> localExpenses = new ArrayList<>();
                     for(ExpenseData uploadedExpenseData : expenses) {
+                        int amount = uploadedExpenseData.getAmount();
+                        String description = uploadedExpenseData.getDescription();
+                        String owner = uploadedExpenseData.getOwnerEmailId();
                         Log.d(TAG, "description is: " + uploadedExpenseData.getDescription());
                         Log.d(TAG, "amount is: " + uploadedExpenseData.getAmount());
+                        Log.d(TAG, "owner is: " + uploadedExpenseData.getOwnerEmailId());
+                        LocalExpenseData data = new LocalExpenseData(amount, description, owner);
+                        localExpenses.add(data);
                     }
+
+                    String path = Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_MOVIES).getPath();
+                    FileOutputStream fos = new FileOutputStream(path + "/" + "expenses.tmp");
+                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+                    oos.writeObject(localExpenses);
+                    oos.close();
                 }
             }
             msg = "SUCCESS";

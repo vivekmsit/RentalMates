@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#7BF6B6"
-    tools:context="com.example.vivek.rentalmates.fragments.ExpensesFragment">
+    tools:context="com.example.vivek.rentalmates.fragments.MainFragment">
 
     <!-- TODO: Update blank fragment layout -->
 

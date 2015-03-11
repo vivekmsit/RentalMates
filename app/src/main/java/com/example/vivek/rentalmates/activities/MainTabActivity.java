@@ -12,7 +12,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
-import com.example.vivek.rentalmates.fragments.ExpensesFragment;
+import com.example.vivek.rentalmates.fragments.ExpenseDataListFragment;
+import com.example.vivek.rentalmates.fragments.MainFragment;
 import com.example.vivek.rentalmates.fragments.NewsFeedFragment;
 import com.example.vivek.rentalmates.fragments.SearchRoomiesFragment;
 import com.example.vivek.rentalmates.fragments.SettingsFragment;
@@ -37,7 +38,9 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
         setContentView(R.layout.activity_main_tab);
         viewPager = (ViewPager)findViewById(R.id.pager);
         FragmentManager fragmentManager = getSupportFragmentManager();
+        Log.d(TAG, "testing1");
         viewPager.setAdapter(new MyAdapter(fragmentManager));
+        Log.d(TAG, "testing2");
         // Initializing google plus api client
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -100,12 +103,14 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
         public Fragment getItem(int position) {
             Fragment fragment = null;
             if (position == 0) {
-                fragment = new ExpensesFragment();
-            } else if (position == 1) {
-                fragment = new SearchRoomiesFragment();
+                fragment = new MainFragment();
+            }else if (position == 1) {
+                fragment = new ExpenseDataListFragment();
             } else if (position == 2) {
+                fragment = new SearchRoomiesFragment();
+            } else if (position == 3) {
                 fragment = new NewsFeedFragment();
-            } else if (position == 3){
+            } else if (position == 4){
                 fragment = new SettingsFragment();
             }
             return fragment;
@@ -113,18 +118,20 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
 
         @Override
         public int getCount() {
-            return 4;
+            return 5;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             if (position == 0) {
+                return "MainFragment";
+            }else if (position == 1) {
                 return "Expenses";
-            } else if (position == 1) {
-                return "Search Roomies";
             } else if (position == 2) {
-                return "News Feed";
+                return "Search Roomies";
             } else if (position == 3) {
+                return "News Feed";
+            } else if (position == 4) {
                 return "Settings";
             }
             else {

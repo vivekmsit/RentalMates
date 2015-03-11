@@ -3,7 +3,6 @@ package com.example.vivek.rentalmates.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,16 +11,15 @@ import android.widget.Button;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.activities.AddExpenseActivity;
-import com.example.vivek.rentalmates.activities.MainTabActivity;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link android.app.Fragment} subclass.
  */
-public class ExpensesFragment extends android.support.v4.app.Fragment implements View.OnClickListener {
+public class MainFragment extends android.support.v4.app.Fragment implements View.OnClickListener {
 
     Button addExpenseFragment;
 
-    public ExpensesFragment() {
+    public MainFragment() {
         // Required empty public constructor
     }
 
@@ -30,7 +28,7 @@ public class ExpensesFragment extends android.support.v4.app.Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_expenses, container, false);
+        return inflater.inflate(R.layout.fragment_main, container, false);
     }
 
     @Override
