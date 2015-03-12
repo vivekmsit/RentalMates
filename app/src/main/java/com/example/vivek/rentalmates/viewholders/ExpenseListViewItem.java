@@ -1,5 +1,7 @@
 package com.example.vivek.rentalmates.viewholders;
 
+import com.example.vivek.rentalmates.others.LocalExpenseData;
+
 /**
  * Created by vivek on 3/10/2015.
  */
@@ -8,9 +10,9 @@ public class ExpenseListViewItem {
     public final String description;  // the text for the ListView item description
     public final String ownerEmailId;
 
-    public ExpenseListViewItem(int amount, String description, String ownerEmailId) {
-        this.amount = amount;
-        this.description = description;
-        this.ownerEmailId = ownerEmailId;
+    public ExpenseListViewItem(LocalExpenseData expenseData) {
+        this.amount = expenseData.getAmount();
+        this.description = expenseData.getDescription();
+        this.ownerEmailId = expenseData.getOwnerEmailId();
     }
 }

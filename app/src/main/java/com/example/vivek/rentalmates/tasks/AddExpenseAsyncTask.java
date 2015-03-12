@@ -67,25 +67,11 @@ public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
                 if (expenses == null){
                     Log.d(TAG, "expenses is null");
                 } else {
-                    //storing expenses into a getFiles
-                    List<LocalExpenseData> localExpenses = new ArrayList<>();
-                    for(ExpenseData uploadedExpenseData : expenses) {
-                        int amount = uploadedExpenseData.getAmount();
-                        String description = uploadedExpenseData.getDescription();
-                        String owner = uploadedExpenseData.getOwnerEmailId();
-                        Log.d(TAG, "description is: " + uploadedExpenseData.getDescription());
-                        Log.d(TAG, "amount is: " + uploadedExpenseData.getAmount());
-                        Log.d(TAG, "owner is: " + uploadedExpenseData.getOwnerEmailId());
-                        LocalExpenseData data = new LocalExpenseData(amount, description, owner);
-                        localExpenses.add(data);
+                    msg = LocalExpenseData.storeExpenseDataList(expenses);
+                    if (msg.equals("EXCEPTION")){
+                        msg = "FILEEXCEPTION";
+                        return msg;
                     }
-
-                    String path = Environment.getExternalStoragePublicDirectory(
-                            Environment.DIRECTORY_MOVIES).getPath();
-                    FileOutputStream fos = new FileOutputStream(path + "/" + "expenses.tmp");
-                    ObjectOutputStream oos = new ObjectOutputStream(fos);
-                    oos.writeObject(localExpenses);
-                    oos.close();
                 }
             }
             msg = "SUCCESS";

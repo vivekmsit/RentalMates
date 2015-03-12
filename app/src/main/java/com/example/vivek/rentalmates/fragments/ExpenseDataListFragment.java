@@ -8,6 +8,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.adapters.ExpenseListViewAdapter;
+import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
 import com.example.vivek.rentalmates.others.LocalExpenseData;
 import com.example.vivek.rentalmates.viewholders.ExpenseListViewItem;
 
@@ -32,13 +33,13 @@ public class ExpenseDataListFragment extends android.support.v4.app.ListFragment
         Log.d(TAG, "inside onCreate");
         super.onCreate(savedInstanceState);
 
-        List<LocalExpenseData> expenses = getExpenses();
+        List<LocalExpenseData> expenses = LocalExpenseData.restoreExpenseDataList();
         if (expenses == null){
-            mItems.add(new ExpenseListViewItem(0, "Description", "ownerEmailId"));
+            mItems.add(new ExpenseListViewItem(new LocalExpenseData()));
         }
         else {
             for (LocalExpenseData expenseData : expenses) {
-                mItems.add(new ExpenseListViewItem(expenseData.getAmount(), expenseData.getDescription(), expenseData.getOwner()));
+                mItems.add(new ExpenseListViewItem(expenseData));
             }
         }
         setListAdapter(new ExpenseListViewAdapter(getActivity(), mItems));
@@ -55,39 +56,5 @@ public class ExpenseDataListFragment extends android.support.v4.app.ListFragment
         super.onListItemClick(l, v, position, id);
         ExpenseListViewItem item = mItems.get(position);
         Toast.makeText(getActivity(), item.description, Toast.LENGTH_SHORT).show();
-    }
-
-    //get list of expensedata from expenses.tmp file
-    public List<LocalExpenseData> getExpenses(){
-        List<LocalExpenseData> localExpenses = new ArrayList<>();
-        String path = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_MOVIES).getPath();
-        FileInputStream fis = null;
-        try{
-            fis = new FileInputStream(path+"/"+"expenses.tmp");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-        ObjectInputStream ois = null;
-        try {
-            ois = new ObjectInputStream(fis);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-        try {
-            localExpenses = (List<LocalExpenseData>) ois.readObject();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            ois.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return localExpenses;
     }
 }

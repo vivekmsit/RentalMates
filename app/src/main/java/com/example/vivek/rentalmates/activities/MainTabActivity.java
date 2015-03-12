@@ -38,9 +38,7 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
         setContentView(R.layout.activity_main_tab);
         viewPager = (ViewPager)findViewById(R.id.pager);
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Log.d(TAG, "testing1");
         viewPager.setAdapter(new MyAdapter(fragmentManager));
-        Log.d(TAG, "testing2");
         // Initializing google plus api client
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)

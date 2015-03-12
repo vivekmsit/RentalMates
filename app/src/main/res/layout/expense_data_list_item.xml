@@ -5,29 +5,31 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:gravity="center_vertical"
-    android:background="#09AD7E"
     android:padding="5dp" >
 
     <!-- the innner view - provides the white rectangle -->
     <RelativeLayout android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#FF6666" >
+        android:background="#ffff9c89" >
 
         <TextView android:id="@+id/amountListView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:textAppearance="@android:style/TextAppearance.Small" />
 
         <!-- the container view for the title and description -->
         <RelativeLayout android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/amountListView"
+            android:layout_weight="3"
             android:layout_centerVertical="true" >
 
             <!-- the title view -->
             <TextView android:id="@+id/descriptionListView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+
                 android:textAppearance="@android:style/TextAppearance.Medium" />
 
             <!-- the description view -->

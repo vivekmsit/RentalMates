@@ -1,19 +1,35 @@
 package com.example.vivek.rentalmates.others;
 
+import android.os.Environment;
+import android.util.Log;
+
+import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by vivek on 3/11/2015.
  */
 public class LocalExpenseData implements Serializable{
+
+    private static final String TAG = "LocalExpenseData_Debug";
+
     private int amount;
     private String description;
-    private String owner;
+    private String ownerEmailId;
 
-    public LocalExpenseData(int amount, String description, String owner) {
-        this.amount = amount;
-        this.description = description;
-        this.owner = owner;
+    public LocalExpenseData(){
+        this.amount = 0;
+        this.description = "description";
+        this.ownerEmailId = "emailId";
     }
 
     public int getAmount() {
@@ -32,11 +48,77 @@ public class LocalExpenseData implements Serializable{
         this.description = description;
     }
 
-    public String getOwner() {
-        return owner;
+    public String getOwnerEmailId() {
+        return ownerEmailId;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public void setOwnerEmailId(String emailId) {
+        this.ownerEmailId = emailId;
+    }
+
+    public static List<LocalExpenseData> getLocalExpenseDataList(List<ExpenseData> expenses){
+        List<LocalExpenseData> localExpenses = new ArrayList<>();
+        for (ExpenseData expenseData: expenses){
+            LocalExpenseData data = new LocalExpenseData();
+            data.setAmount( expenseData.getAmount());
+            data.setDescription(expenseData.getDescription());
+            data.setOwnerEmailId(expenseData.getOwnerEmailId());
+            localExpenses.add(data);
+        }
+        return localExpenses;
+    }
+
+    public static String storeExpenseDataList(List<ExpenseData> expenses){
+        String message = "";
+        List<LocalExpenseData> localExpenses = getLocalExpenseDataList(expenses);
+        try {
+            String path = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_MOVIES).getPath();
+            FileOutputStream fos = new FileOutputStream(path + "/" + "expenses.tmp");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(localExpenses);
+            oos.close();
+            Log.d(TAG, "localExpenses stored successfully");
+            message = "SUCCESS";
+        } catch (IOException e) {
+            Log.d(TAG, "exception occurred during writing to file " + e.toString());
+            e.printStackTrace();
+            message = "EXCEPTION";
+        }
+        return message;
+    }
+
+    public static List<LocalExpenseData> restoreExpenseDataList() {
+        List<LocalExpenseData> localExpenses = new ArrayList<>();
+        String path = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_MOVIES).getPath();
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(path + "/" + "expenses.tmp");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+        ObjectInputStream ois = null;
+        try {
+            ois = new ObjectInputStream(fis);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        try {
+            localExpenses = (List<LocalExpenseData>) ois.readObject();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            Log.d(TAG, "localExpenses read successfully");
+            ois.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return localExpenses;
     }
 }
