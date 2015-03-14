@@ -82,10 +82,21 @@ public class UserProfileEndpoint {
         // Objectify ID generator, e.g. long or String, then you should generate the unique ID yourself prior to saving.
         //
         // If your client provides the ID then you should probably use PUT instead.
-        ofy().save().entity(userProfile).now();
-        logger.info("Created UserProfile.");
-
-        return ofy().load().entity(userProfile).now();
+        String emailId = userProfile.getEmailId();
+        Query query = ofy().load().type(UserProfile.class);
+        query = query.filter("emailId" + " = ", emailId);
+        List<UserProfile> profiles =  query.list();
+        UserProfile finalUserProfile;
+        if (profiles.size() == 0) {
+            logger.info("Created UserProfile.");
+            ofy().save().entity(userProfile).now();
+            finalUserProfile = ofy().load().entity(userProfile).now();
+            finalUserProfile.setCreateProfileResult("NEW_USER_PROFILE");
+        } else {
+            finalUserProfile = profiles.get(0);
+            finalUserProfile.setCreateProfileResult("OLD_USER_PROFILE");
+        }
+        return finalUserProfile;
     }
 
     /**

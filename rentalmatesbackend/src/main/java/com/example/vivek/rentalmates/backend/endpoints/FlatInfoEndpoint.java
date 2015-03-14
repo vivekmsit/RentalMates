@@ -2,6 +2,7 @@ package com.example.vivek.rentalmates.backend.endpoints;
 
 import com.example.vivek.rentalmates.backend.entities.ExpenseData;
 import com.example.vivek.rentalmates.backend.entities.FlatInfo;
+import com.example.vivek.rentalmates.backend.entities.UserProfile;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
@@ -83,9 +84,30 @@ public class FlatInfoEndpoint {
         // Objectify ID generator, e.g. long or String, then you should generate the unique ID yourself prior to saving.
         //
         // If your client provides the ID then you should probably use PUT instead.
-        ofy().save().entity(flatInfo).now();
-        logger.info("Created FlatInfo.");
-        return ofy().load().entity(flatInfo).now();
+        String flatName = flatInfo.getFlatName();
+        Query query = ofy().load().type(FlatInfo.class);
+        query = query.filter("flatName" + " = ", flatName);
+        List<FlatInfo> flats =  query.list();
+        FlatInfo finalFlatInfo;
+        if (flats.size() == 0) {
+            logger.info("Created FlatInfo.");
+            ofy().save().entity(flatInfo).now();
+
+            //Add created FlatInfo flatId to corresponding UserProfile flatIds list
+            finalFlatInfo = ofy().load().entity(flatInfo).now();
+            Long userProfileId = finalFlatInfo.getUserProfileId();
+            UserProfile relatedUserProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
+            relatedUserProfile.addFlatId(finalFlatInfo.getFlatId());
+            relatedUserProfile.setPrimaryFlatId(finalFlatInfo.getFlatId());
+            relatedUserProfile.incrementNumberOfFlats();
+            ofy().save().entity(relatedUserProfile).now();
+
+            finalFlatInfo.setCreateFlatResult("NEW_FLAT_INFO");
+        } else {
+            finalFlatInfo = flats.get(0);
+            finalFlatInfo.setCreateFlatResult("OLD_FLAT_INFO");
+        }
+        return finalFlatInfo;
     }
 
     /**
@@ -163,7 +185,7 @@ public class FlatInfoEndpoint {
     /**
      * Adds new ExpenseData inside specified {@code FlatInfo}.
      *
-     * @param id the ID of the entity to delete
+     * @param id the ID of the FlatInfo in which ExpenseData is to be added
      * @throws NotFoundException if the {@code id} does not correspond to an existing
      *                           {@code FlatInfo}
      */
@@ -177,9 +199,35 @@ public class FlatInfoEndpoint {
         ofy().save().entity(expenseData).now();
         expenseData.setFlatId(flatInfo.getFlatId());
         flatInfo.addExpense(expenseData);
+        flatInfo.incrementNumberOfExpenses();
         ofy().save().entity(flatInfo).now();
         logger.info("Added a new ExpenseData for FlatInfo with ID: " + id);
         return ofy().load().entity(flatInfo).now();
     }
 
+    /**
+     * Get ExpenseData list from specified {@code FlatInfo}.
+     *
+     * @param id the ID of the FlatInfo which contains ExpenseData list
+     * @throws NotFoundException if the {@code id} does not correspond to an existing
+     *                           {@code FlatInfo}
+     */
+    @ApiMethod(
+            name = "getExpenseDataList",
+            path = "flatInfo2/{id}",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public List<ExpenseData> getExpenseDataList(@Named("id") Long id) throws NotFoundException {
+        checkExists(id);
+        List<ExpenseData> expenses = new ArrayList<>();
+        FlatInfo flatInfo = ofy().load().type(FlatInfo.class).id(id).now();
+        if (flatInfo == null){
+            logger.info("Added a new ExpenseData for FlatInfo with ID: " + id);
+            return null;
+        }
+        else {
+            logger.info("Added a new ExpenseData for FlatInfo with ID: " + id);
+            expenses = flatInfo.getExpenses();
+            return expenses;
+        }
+    }
 }

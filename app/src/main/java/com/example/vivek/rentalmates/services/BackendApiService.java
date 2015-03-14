@@ -33,7 +33,7 @@ public class BackendApiService extends Service {
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String SENDER_ID = "56111997016";
     private static final String USER_PROFILE_ID = "user_profile_id";
-    private static final String FLAT_INFO_ID = "flat_info_id";
+    private static final String PRIMARY_FLAT_ID = "primary_flat_id";
 
     private GoogleCloudMessaging gcm;
     private static UserProfileApi ufService = null;
@@ -93,17 +93,17 @@ public class BackendApiService extends Service {
         }
     }
 
-    public static void storeFlatInfoId(Context context, Long id){
+    public static void storePrimaryFlatId(Context context, Long id){
         String msg = "";
         SharedPreferences prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
-        if (prefs.contains(FLAT_INFO_ID)){
+        if (prefs.contains(PRIMARY_FLAT_ID)){
             msg = "flatInfoId is already stored in shared preferences";
             Log.d(TAG, msg);
         } else {
-            Log.i(TAG, "Saving flatInfoId in shared preferences" + id);
+            Log.d(TAG, "Saving flatInfoId in shared preferences" + id);
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putLong(FLAT_INFO_ID, id);
+            editor.putLong(PRIMARY_FLAT_ID, id);
             editor.commit();
         }
     }

@@ -34,6 +34,7 @@ public class UploadUserProfileAsyncTask extends AsyncTask<Context, Void, String>
     private SharedPreferences prefs;
     private IOException ioException;
     private MyLoginActivity activity;
+    private Long primaryFlatId;
 
     public UploadUserProfileAsyncTask(MyLoginActivity myLoginActivity, Context context, final UserProfile userProfile) {
         this.context = context;
@@ -54,7 +55,16 @@ public class UploadUserProfileAsyncTask extends AsyncTask<Context, Void, String>
         try {
             UserProfile uploadedUserProfile = ufService.insert(uf).execute();
             BackendApiService.storeUserProfileId(this.context, uploadedUserProfile.getId());
-            msg = "SUCCESS";
+            if (uploadedUserProfile.getNumberOfFlats()==0){
+                msg = "SUCCESS_NO_FLAT_REGISTERED";
+            } else {
+                msg = "SUCCESS_FLAT_REGISTERED";
+                primaryFlatId = uploadedUserProfile.getPrimaryFlatId();
+                BackendApiService.storePrimaryFlatId(this.context, primaryFlatId);
+            }
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putInt(USER_PROFILE_UPDATED, 1);
+            editor.commit();
             Log.d(TAG, "inside insert");
         } catch (IOException e) {
             ioException = e;
@@ -67,19 +77,18 @@ public class UploadUserProfileAsyncTask extends AsyncTask<Context, Void, String>
     @Override
     protected void onPostExecute(String msg) {
 
-        Log.d(TAG, "inside onPostExecute() for RegisterFlatAsyncTask");
+        Log.d(TAG, "inside onPostExecute() for UploadUserProfileAsyncTask");
         activity.setSignInClicked(false);
 
-        if (msg.equals("SUCCESS")){
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putInt(USER_PROFILE_UPDATED, 1);
-            editor.commit();
-
+        if (msg.equals("SUCCESS_NO_FLAT_REGISTERED")){
             Toast.makeText(context, "UserProfile uploaded", Toast.LENGTH_LONG).show();
 
             Intent intent = new Intent(context, RegisterFlatActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);
+        } else if (msg.equals("SUCCESS_FLAT_REGISTERED")) {
+            Toast.makeText(context, "Flat already registered for you\n retrieving more information", Toast.LENGTH_LONG).show();
+            new GetExpenseDataListAsyncTask(this.context, true).execute();
         }
         else if (msg.equals("EXCEPTION")){
             Log.d(TAG, "IOException: "+ ioException.getMessage());

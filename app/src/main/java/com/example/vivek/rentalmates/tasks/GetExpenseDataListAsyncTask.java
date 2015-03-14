@@ -1,14 +1,13 @@
 package com.example.vivek.rentalmates.tasks;
 
 /**
- * Created by vivek on 3/8/2015.
+ * Created by vivek on 3/14/2015.
  */
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -17,32 +16,28 @@ import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.activities.MainTabActivity;
 import com.example.vivek.rentalmates.backend.flatInfoApi.FlatInfoApi;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
+import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseDataCollection;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
 import com.example.vivek.rentalmates.others.LocalExpenseData;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
-    private static final String TAG = "ExpenseAsyncTask_Debug";
+public class GetExpenseDataListAsyncTask extends AsyncTask<Context, Void, String> {
+    private static final String TAG = "GetExpenseTask_Debug";
     private static final String PRIMARY_FLAT_ID = "primary_flat_id";
 
     private static FlatInfoApi flatService = null;
-    ExpenseData ed;
     private Context context;
-    AddExpenseActivity activity;
     SharedPreferences prefs;
     IOException ioException;
-
-    public AddExpenseAsyncTask(AddExpenseActivity expenseActivity, Context context, final ExpenseData expenseData) {
+    boolean appStartup;
+    public GetExpenseDataListAsyncTask(Context context, final boolean startup) {
         this.context = context;
-        this.ed = expenseData;
-        this.activity = expenseActivity;
+        this.appStartup = startup;
         prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
     }
@@ -57,24 +52,15 @@ public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
         }
         try {
             Long flatId = prefs.getLong(PRIMARY_FLAT_ID, 0);
-            ed.setFlatId(flatId);
-            FlatInfo uploadedFlatInfo = flatService.addExpenseData(flatId, ed).execute();
-            if (uploadedFlatInfo == null){
-                Log.d(TAG, "uploadedFlatInfo is null");
+            ExpenseDataCollection expensesCollection= flatService.getExpenseDataList(flatId).execute();
+            msg = "SUCCESS";
+            if (expensesCollection == null){
+                Log.d(TAG, "expenses is null");
             }
             else {
-                List<ExpenseData> expenses = uploadedFlatInfo.getExpenses();
-                if (expenses == null){
-                    Log.d(TAG, "expenses is null");
-                } else {
-                    msg = LocalExpenseData.storeExpenseDataList(expenses);
-                    if (msg.equals("EXCEPTION")){
-                        msg = "FILEEXCEPTION";
-                        return msg;
-                    }
-                }
+                List<ExpenseData> expenses = expensesCollection.getItems();
+                msg = LocalExpenseData.storeExpenseDataList(expenses);
             }
-            msg = "SUCCESS";
             Log.d(TAG, "inside addExpense");
         } catch (IOException e) {
             ioException = e;
@@ -87,10 +73,9 @@ public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
     @Override
     protected void onPostExecute(String msg) {
 
-        Log.d(TAG, "inside onPostExecute() for AddExpenseAsyncTask");
-        activity.setAddExpenseButtonClicked(false);
+        Log.d(TAG, "inside onPostExecute() for GetExpenseDataListAsyncTask");
 
-        if (msg.equals("SUCCESS")){
+        if (msg.equals("SUCCESS") && this.appStartup == true){
             Toast.makeText(context, "ExpenseData uploaded", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(context, MainTabActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -106,4 +91,5 @@ public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
         }
     }
 }
+
 

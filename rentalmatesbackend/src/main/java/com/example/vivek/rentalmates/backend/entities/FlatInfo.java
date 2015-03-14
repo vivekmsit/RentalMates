@@ -49,11 +49,15 @@ public class FlatInfo {
     @Index
     private String ownerEmailId;
 
+    private Long userProfileId;
+
+    private String createFlatResult;
+
     private List<BlobKey> flatPicturesBlobKeys;
 
     private List<ExpenseData> expenses = new ArrayList<ExpenseData>();
 
-    //private Map<String, ExpenseData> occupants = new HashMap<>();
+    private int numberOfExpenses;
 
     // you can add more fields...
 
@@ -96,4 +100,37 @@ public class FlatInfo {
     public List<ExpenseData> getExpenses(){
         return expenses;
     }
+
+    public Long getUserProfileId() {
+        return userProfileId;
+    }
+
+    public String getCreateFlatResult() {
+        return createFlatResult;
+    }
+
+    public void setCreateFlatResult(String createFlatResult) {
+        this.createFlatResult = createFlatResult;
+    }
+
+    public void setUserProfileId(Long userProfileId) {
+        this.userProfileId = userProfileId;
+    }
+
+    public int getNumberOfExpenses() {
+        return numberOfExpenses;
+    }
+
+    public void setNumberOfExpenses(int numberOfExpenses) {
+        this.numberOfExpenses = numberOfExpenses;
+    }
+
+    public void incrementNumberOfExpenses() {
+        numberOfExpenses++;
+    }
+
+    public void decrementNumberOfExpenses() {
+        numberOfExpenses--;
+    }
+
 }

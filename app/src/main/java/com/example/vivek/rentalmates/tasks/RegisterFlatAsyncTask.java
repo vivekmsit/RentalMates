@@ -56,8 +56,13 @@ public class RegisterFlatAsyncTask extends AsyncTask<Context, Void, String> {
         }
         try {
             FlatInfo uploadedFlatInfo = flatService.insert(fi).execute();
-            BackendApiService.storeFlatInfoId(this.context, uploadedFlatInfo.getFlatId());
-            msg = "SUCCESS";
+            String status = uploadedFlatInfo.getCreateFlatResult();
+            if (status.equals("NEW_FLAT_INFO")){
+                BackendApiService.storePrimaryFlatId(this.context, uploadedFlatInfo.getFlatId());
+                msg = "SUCCESS_NEW_FLAT";
+            } else if (status.equals("OLD_FLAT_INFO")){
+                msg = "SUCCESS_OLD_FLAT";
+            }
             Log.d(TAG, "inside insert");
         } catch (IOException e) {
             ioException = e;
@@ -73,7 +78,7 @@ public class RegisterFlatAsyncTask extends AsyncTask<Context, Void, String> {
         Log.d(TAG, "inside onPostExecute() for RegisterFlatAsyncTask");
         activity.setRegisterButtonClicked(false);
 
-        if (msg.equals("SUCCESS")){
+        if (msg.equals("SUCCESS_NEW_FLAT")){
             SharedPreferences.Editor editor = prefs.edit();
             editor.putBoolean(MyLoginActivity.FIRST_TIME_LOGIN, true);
             editor.commit();
@@ -83,6 +88,8 @@ public class RegisterFlatAsyncTask extends AsyncTask<Context, Void, String> {
             Intent intent = new Intent(context, MainTabActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);
+        } else if (msg.equals("SUCCESS_OLD_FLAT")) {
+            Toast.makeText(context, "Flat with given name already registered. \n Please enter different name", Toast.LENGTH_LONG).show();
         }
         else if (msg.equals("EXCEPTION")){
             Log.d(TAG, "IOException: "+ ioException.getMessage());

@@ -16,6 +16,8 @@ import com.example.vivek.rentalmates.tasks.RegisterFlatAsyncTask;
 
 public class RegisterFlatActivity extends ActionBarActivity {
 
+    private static final String USER_PROFILE_ID = "user_profile_id";
+
     boolean registerButtonClicked;
     TextView textView1;
     TextView textView2;
@@ -73,6 +75,7 @@ public class RegisterFlatActivity extends ActionBarActivity {
         FlatInfo flatInfo = new FlatInfo();
         flatInfo.setFlatName(editText1.getText().toString());
         flatInfo.setOwnerEmailId("vivekmsit@gmail.com");
+        flatInfo.setUserProfileId(prefs.getLong(USER_PROFILE_ID, 0));
         new RegisterFlatAsyncTask(this, this, flatInfo).execute();
     }
 

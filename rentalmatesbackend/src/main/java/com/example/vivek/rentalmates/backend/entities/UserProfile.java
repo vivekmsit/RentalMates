@@ -6,6 +6,9 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * The Objectify object model for device registrations we are persisting
  */
@@ -28,6 +31,13 @@ public class UserProfile {
     @Index
     private String emailId;
 
+    private String createProfileResult;
+
+    private List<Long> flatIds = new ArrayList<>();
+
+    private Long primaryFlatId;
+
+    private int numberOfFlats;
     // you can add more fields...
 
     public UserProfile() {
@@ -75,5 +85,53 @@ public class UserProfile {
 
     public void setEmailId(String emailId) {
         this.emailId = emailId;
+    }
+
+    public String getCreateProfileResult() {
+        return createProfileResult;
+    }
+
+    public void setCreateProfileResult(String createProfileResult) {
+        this.createProfileResult = createProfileResult;
+    }
+
+    public List<Long> getFlatIds() {
+        return flatIds;
+    }
+
+    public void setFlatIds(List<Long> flatIds) {
+        this.flatIds = flatIds;
+    }
+
+    public void addFlatId(Long flatId){
+        flatIds.add(flatId);
+    }
+
+    public void removeFlatId(Long flatId){
+        flatIds.remove(flatId);
+    }
+
+    public Long getPrimaryFlatId() {
+        return primaryFlatId;
+    }
+
+    public void setPrimaryFlatId(Long primaryFlatId) {
+        this.primaryFlatId = primaryFlatId;
+    }
+
+    public int getNumberOfFlats() {
+        return numberOfFlats;
+    }
+
+    public void setNumberOfFlats(int numberOfFlats) {
+        this.numberOfFlats = numberOfFlats;
+    }
+
+    public void incrementNumberOfFlats(){
+        numberOfFlats++;
+    }
+
+    public void decrementNumberOfFlats() {
+        numberOfFlats--;
     }
 }
