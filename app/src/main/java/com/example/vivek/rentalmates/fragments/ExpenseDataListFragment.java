@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.adapters.ExpenseListViewAdapter;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
+import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
+import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
 import com.example.vivek.rentalmates.others.LocalExpenseData;
 import com.example.vivek.rentalmates.viewholders.ExpenseListViewItem;
 
@@ -33,12 +35,16 @@ public class ExpenseDataListFragment extends android.support.v4.app.ListFragment
         Log.d(TAG, "inside onCreate");
         super.onCreate(savedInstanceState);
 
-        List<LocalExpenseData> expenses = LocalExpenseData.restoreExpenseDataList();
+        List<ExpenseData> expenses = LocalExpenseData.restoreExpenseDataList();
         if (expenses == null){
-            mItems.add(new ExpenseListViewItem(new LocalExpenseData()));
+            ExpenseData data = new ExpenseData();
+            data.setAmount(0);
+            data.setDescription("Description");
+            data.setOwnerEmailId("vivekmsit@gmail.com");
+            mItems.add(new ExpenseListViewItem(data));
         }
         else {
-            for (LocalExpenseData expenseData : expenses) {
+            for (ExpenseData expenseData : expenses) {
                 mItems.add(new ExpenseListViewItem(expenseData));
             }
         }

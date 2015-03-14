@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import sun.rmi.runtime.Log;
+
 /**
  * Created by vivek on 2/9/2015.
  */
@@ -29,7 +31,8 @@ public class ExpenseData implements Serializable{
     ExpenseData(){
         date = new Date();
         amount = 0;
-        description = "NA";
+        description = "Description";
+        ownerEmailId = "EmailId";
         currencyType = 0;
     }
 

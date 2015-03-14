@@ -56,7 +56,19 @@ public class LocalExpenseData implements Serializable{
         this.ownerEmailId = emailId;
     }
 
-    public static List<LocalExpenseData> getLocalExpenseDataList(List<ExpenseData> expenses){
+    public static List<ExpenseData> convertLocalExpenseToExpense(List<LocalExpenseData> expenses){
+        List<ExpenseData> localExpenses = new ArrayList<>();
+        for (LocalExpenseData expenseData: expenses){
+            ExpenseData data = new ExpenseData();
+            data.setAmount( expenseData.getAmount());
+            data.setDescription(expenseData.getDescription());
+            data.setOwnerEmailId(expenseData.getOwnerEmailId());
+            localExpenses.add(data);
+        }
+        return localExpenses;
+    }
+
+    public static List<LocalExpenseData> convertExpenseToLocalExpense(List<ExpenseData> expenses){
         List<LocalExpenseData> localExpenses = new ArrayList<>();
         for (ExpenseData expenseData: expenses){
             LocalExpenseData data = new LocalExpenseData();
@@ -70,7 +82,7 @@ public class LocalExpenseData implements Serializable{
 
     public static String storeExpenseDataList(List<ExpenseData> expenses){
         String message = "";
-        List<LocalExpenseData> localExpenses = getLocalExpenseDataList(expenses);
+        List<LocalExpenseData> localExpenses = convertExpenseToLocalExpense(expenses);
         try {
             String path = Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_MOVIES).getPath();
@@ -88,7 +100,7 @@ public class LocalExpenseData implements Serializable{
         return message;
     }
 
-    public static List<LocalExpenseData> restoreExpenseDataList() {
+    public static List<ExpenseData> restoreExpenseDataList() {
         List<LocalExpenseData> localExpenses = new ArrayList<>();
         String path = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_MOVIES).getPath();
@@ -119,6 +131,7 @@ public class LocalExpenseData implements Serializable{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return localExpenses;
+        List<ExpenseData> restoredList = convertLocalExpenseToExpense(localExpenses);
+        return restoredList;
     }
 }
