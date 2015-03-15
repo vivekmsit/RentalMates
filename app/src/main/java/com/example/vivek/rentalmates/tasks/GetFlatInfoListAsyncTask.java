@@ -11,31 +11,36 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.vivek.rentalmates.activities.AddExpenseActivity;
+import com.example.vivek.rentalmates.activities.DetermineFlatActivity;
 import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.activities.MainTabActivity;
+import com.example.vivek.rentalmates.activities.RegisterFlatActivity;
 import com.example.vivek.rentalmates.backend.flatInfoApi.FlatInfoApi;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseDataCollection;
-import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
+import com.example.vivek.rentalmates.backend.userProfileApi.UserProfileApi;
+import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
+import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfoCollection;
 import com.example.vivek.rentalmates.others.LocalExpenseData;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
-public class GetExpenseDataListAsyncTask extends AsyncTask<Context, Void, String> {
-    private static final String TAG = "GetExpenseTask_Debug";
-    private static final String PRIMARY_FLAT_ID = "primary_flat_id";
+public class GetFlatInfoListAsyncTask extends AsyncTask<Context, Void, String> {
 
-    private static FlatInfoApi flatService = null;
+    private static final String TAG = "GetFlatListTask_Debug";
+    private static final String PRIMARY_FLAT_ID = "primary_flat_id";
+    private static final String USER_PROFILE_ID = "user_profile_id";
+
+    private static UserProfileApi ufService = null;
     private Context context;
     SharedPreferences prefs;
     IOException ioException;
     boolean appStartup;
-    public GetExpenseDataListAsyncTask(Context context, final boolean startup) {
+
+    public GetFlatInfoListAsyncTask(Context context, final boolean startup) {
         this.context = context;
         this.appStartup = startup;
         prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
@@ -45,23 +50,21 @@ public class GetExpenseDataListAsyncTask extends AsyncTask<Context, Void, String
     @Override
     protected String doInBackground(Context... params) {
         String msg = "";
-        if (flatService == null){
-            FlatInfoApi.Builder builder1 = new FlatInfoApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
+        if (ufService == null){
+            UserProfileApi.Builder builder1 = new UserProfileApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
                     .setRootUrl("https://kinetic-wind-814.appspot.com/_ah/api/");
-            flatService = builder1.build();
+            ufService = builder1.build();
         }
         try {
-            Long flatId = prefs.getLong(PRIMARY_FLAT_ID, 0);
-            ExpenseDataCollection expensesCollection= flatService.getExpenseDataList(flatId).execute();
-            msg = "SUCCESS";
-            if (expensesCollection == null){
+            Long flatId = prefs.getLong(USER_PROFILE_ID, 0);
+            FlatInfoCollection flatInfoCollection= ufService.getFlatInfoList(flatId).execute();
+            if (flatInfoCollection == null){
                 Log.d(TAG, "expenses is null");
+                msg = "SUCCESS_NO_FLATS";
             }
             else {
-                List<ExpenseData> expenses = expensesCollection.getItems();
-                if (expenses != null) {
-                    msg = LocalExpenseData.storeExpenseDataList(expenses);
-                }
+                List<FlatInfo> flats = flatInfoCollection.getItems();
+                msg = "SUCCESS_FLATS";
             }
             Log.d(TAG, "inside addExpense");
         } catch (IOException e) {
@@ -75,23 +78,26 @@ public class GetExpenseDataListAsyncTask extends AsyncTask<Context, Void, String
     @Override
     protected void onPostExecute(String msg) {
 
-        Log.d(TAG, "inside onPostExecute() for GetExpenseDataListAsyncTask");
+        Log.d(TAG, "inside onPostExecute() for GetFlatInfoListAsyncTask");
 
-        if (msg.equals("SUCCESS") && this.appStartup == true){
-            Toast.makeText(context, "ExpenseData retrieved successfully", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(context, MainTabActivity.class);
+        if (msg.equals("SUCCESS_FLATS")){
+            Toast.makeText(context, "FlatInfo List retrieved successfully", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(context, DetermineFlatActivity.class);
+            intent.putExtra("FLAT_REGISTERED", true);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);
+        }
+        else if (msg.equals("SUCCESS_NO_FLATS")) {
+            //rare case
+            Toast.makeText(context, "No flat registered for given user", Toast.LENGTH_LONG).show();
         }
         else if (msg.equals("EXCEPTION")){
             Log.d(TAG, "IOException: "+ ioException.getMessage());
             Toast.makeText(context, "IOException: "+ ioException.getMessage(), Toast.LENGTH_LONG).show();
         }
         else {
-            Log.d(TAG, "Unable to upload ExpenseData");
-            Toast.makeText(context, "Unable to upload ExpenseData", Toast.LENGTH_LONG).show();
+            Log.d(TAG, "Unable to retrieve FlatInfo List");
+            Toast.makeText(context, "Unable to retrieve FlatInfo List", Toast.LENGTH_LONG).show();
         }
     }
 }
-
-

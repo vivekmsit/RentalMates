@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.vivek.rentalmates.activities.DetermineFlatActivity;
 import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.activities.MainTabActivity;
 import com.example.vivek.rentalmates.activities.MyLoginActivity;
@@ -81,14 +82,15 @@ public class UploadUserProfileAsyncTask extends AsyncTask<Context, Void, String>
         activity.setSignInClicked(false);
 
         if (msg.equals("SUCCESS_NO_FLAT_REGISTERED")){
-            Toast.makeText(context, "UserProfile uploaded", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "UserProfile uploaded", Toast.LENGTH_SHORT).show();
 
-            Intent intent = new Intent(context, RegisterFlatActivity.class);
+            Intent intent = new Intent(context, DetermineFlatActivity.class);
+            intent.putExtra("FLAT_REGISTERED", false);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);
         } else if (msg.equals("SUCCESS_FLAT_REGISTERED")) {
-            Toast.makeText(context, "Flat already registered for you\n retrieving more information", Toast.LENGTH_LONG).show();
-            new GetExpenseDataListAsyncTask(this.context, true).execute();
+            Toast.makeText(context, "Flat already registered, Retrieving FlatInfo list", Toast.LENGTH_SHORT).show();
+            new GetFlatInfoListAsyncTask(this.context, true).execute();
         }
         else if (msg.equals("EXCEPTION")){
             Log.d(TAG, "IOException: "+ ioException.getMessage());

@@ -1,5 +1,7 @@
 package com.example.vivek.rentalmates.backend.endpoints;
 
+import com.example.vivek.rentalmates.backend.entities.ExpenseData;
+import com.example.vivek.rentalmates.backend.entities.FlatInfo;
 import com.example.vivek.rentalmates.backend.entities.UserProfile;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -183,5 +185,39 @@ public class UserProfileEndpoint {
         query = query.filter(type + " = ", value);
         List<UserProfile> profiles =  query.list();
         return profiles;
+    }
+
+
+    /**
+     * Get ExpenseData list from specified {@code FlatInfo}.
+     *
+     * @param id the ID of the FlatInfo which contains ExpenseData list
+     * @throws NotFoundException if the {@code id} does not correspond to an existing
+     *                           {@code FlatInfo}
+     */
+    @ApiMethod(
+            name = "getFlatInfoList",
+            path = "getFlatInfo/{id}",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public List<FlatInfo> getFlatInfoList(@Named("id") Long id) throws NotFoundException {
+        checkExists(id);
+        List<FlatInfo> flats = new ArrayList<>();
+        UserProfile userProfile = ofy().load().type(UserProfile.class).id(id).now();
+        if (userProfile == null ){
+            logger.info("No UserProfile exists with ID: " + id);
+            return null;
+        } else if (userProfile.getNumberOfFlats()==0) {
+            logger.info("No FlatInfo registered for UserProfile with ID: " + id);
+            return null;
+        }
+        else {
+            logger.info("Added a new ExpenseData for FlatInfo with ID: " + id);
+            List<Long> flatIds = userProfile.getFlatIds();
+            for (Long flatId: flatIds) {
+                FlatInfo flatInfo = ofy().load().type(FlatInfo.class).id(flatId).now();
+                flats.add(flatInfo);
+            }
+            return flats;
+        }
     }
 }

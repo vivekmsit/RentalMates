@@ -97,15 +97,10 @@ public class BackendApiService extends Service {
         String msg = "";
         SharedPreferences prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
-        if (prefs.contains(PRIMARY_FLAT_ID)){
-            msg = "flatInfoId is already stored in shared preferences";
-            Log.d(TAG, msg);
-        } else {
-            Log.d(TAG, "Saving flatInfoId in shared preferences" + id);
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putLong(PRIMARY_FLAT_ID, id);
-            editor.commit();
-        }
+        Log.d(TAG, "Saving flatInfoId in shared preferences" + id);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putLong(PRIMARY_FLAT_ID, id);
+        editor.commit();
     }
 
     public void uploadUserProfile(final Context context, final UserProfile userProfile){
@@ -242,7 +237,7 @@ public class BackendApiService extends Service {
             @Override
             protected String doInBackground(Context... params) {
                 try {
-                    FlatInfo uploadedFlatInfo = flatService.insert(flatInfo).execute();
+                    FlatInfo uploadedFlatInfo = flatService.registerNewFlat(flatInfo).execute();
                     msg = "flat info uploaded successfully";
                     Log.d(TAG, msg);
                 } catch (IOException e) {

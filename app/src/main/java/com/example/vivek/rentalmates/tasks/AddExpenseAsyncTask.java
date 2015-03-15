@@ -91,7 +91,7 @@ public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
         activity.setAddExpenseButtonClicked(false);
 
         if (msg.equals("SUCCESS")){
-            Toast.makeText(context, "ExpenseData uploaded", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "ExpenseData uploaded", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(context, MainTabActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);

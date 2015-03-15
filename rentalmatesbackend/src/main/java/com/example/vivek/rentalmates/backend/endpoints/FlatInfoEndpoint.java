@@ -75,15 +75,10 @@ public class FlatInfoEndpoint {
      * Inserts a new {@code FlatInfo}.
      */
     @ApiMethod(
-            name = "insert",
-            path = "flatInfo",
+            name = "registerNewFlat",
+            path = "registerNewFlat",
             httpMethod = ApiMethod.HttpMethod.POST)
-    public FlatInfo insert(FlatInfo flatInfo) {
-        // Typically in a RESTful API a POST does not have a known ID (assuming the ID is used in the resource path).
-        // You should validate that flatInfo.id has not been set. If the ID type is not supported by the
-        // Objectify ID generator, e.g. long or String, then you should generate the unique ID yourself prior to saving.
-        //
-        // If your client provides the ID then you should probably use PUT instead.
+    public FlatInfo registerNewFlat(FlatInfo flatInfo) {
         String flatName = flatInfo.getFlatName();
         Query query = ofy().load().type(FlatInfo.class);
         query = query.filter("flatName" + " = ", flatName);
@@ -91,6 +86,8 @@ public class FlatInfoEndpoint {
         FlatInfo finalFlatInfo;
         if (flats.size() == 0) {
             logger.info("Created FlatInfo.");
+            flatInfo.addUserId(flatInfo.getUserProfileId());
+            flatInfo.incrementNumberOfUsers();
             ofy().save().entity(flatInfo).now();
 
             //Add created FlatInfo flatId to corresponding UserProfile flatIds list
@@ -105,6 +102,40 @@ public class FlatInfoEndpoint {
             finalFlatInfo.setCreateFlatResult("NEW_FLAT_INFO");
         } else {
             finalFlatInfo = flats.get(0);
+            finalFlatInfo.setCreateFlatResult("OLD_FLAT_INFO");
+        }
+        return finalFlatInfo;
+    }
+
+    /**
+     * Inserts a new {@code FlatInfo}.
+     */
+    @ApiMethod(
+            name = "registerWithOldFlat",
+            path = "registerWithOldFlat",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public FlatInfo registerWithOldFlat(@Named("flatName") String flatName, @Named("userProfileId") Long userProfileId) {
+        Query query = ofy().load().type(FlatInfo.class);
+        query = query.filter("flatName" + " = ", flatName);
+        List<FlatInfo> flats =  query.list();
+        FlatInfo finalFlatInfo;
+        if (flats.size() == 0) {
+            logger.info("Created FlatInfo.");
+            return null;
+        } else {
+            finalFlatInfo = flats.get(0);
+            //Add flatId of flat to UserProfile flatIds List
+            UserProfile userProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
+            if (!userProfile.getFlatIds().contains(finalFlatInfo.getFlatId())) {
+                userProfile.addFlatId(finalFlatInfo.getFlatId());
+                ofy().save().entity(userProfile).now();
+            }
+            //Add userProfileId to FlatInfo userIds List
+            if (!finalFlatInfo.getUserIds().contains(userProfileId)) {
+                finalFlatInfo.addUserId(userProfileId);
+                finalFlatInfo.incrementNumberOfUsers();
+                ofy().save().entity(finalFlatInfo).now();
+            }
             finalFlatInfo.setCreateFlatResult("OLD_FLAT_INFO");
         }
         return finalFlatInfo;

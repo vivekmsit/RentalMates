@@ -34,8 +34,6 @@ public class FlatInfo {
     @Index
     private boolean available;
 
-    private int numberOfRoommates;
-
     @Index
     private FlatType type; //1bhk/2bhk/3bhk/villa
 
@@ -53,16 +51,22 @@ public class FlatInfo {
 
     private String createFlatResult;
 
+    private List<Long> userIds = new ArrayList<>();
+
     private List<BlobKey> flatPicturesBlobKeys;
 
     private List<ExpenseData> expenses = new ArrayList<ExpenseData>();
 
     private int numberOfExpenses;
 
+    private int numberOfUsers;
+
     // you can add more fields...
 
     public FlatInfo() {
         date = new Date();
+        numberOfUsers = 0;
+        numberOfExpenses = 0;
     }
 
     public Long getFlatId(){
@@ -75,6 +79,14 @@ public class FlatInfo {
 
     public void setFlatName(String name) {
         this.flatName = name;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 
     public String getCity() {
@@ -113,6 +125,14 @@ public class FlatInfo {
         this.createFlatResult = createFlatResult;
     }
 
+    public List<Long> getUserIds() {
+        return userIds;
+    }
+
+    public void setUserIds(List<Long> userIds) {
+        this.userIds = userIds;
+    }
+
     public void setUserProfileId(Long userProfileId) {
         this.userProfileId = userProfileId;
     }
@@ -131,6 +151,30 @@ public class FlatInfo {
 
     public void decrementNumberOfExpenses() {
         numberOfExpenses--;
+    }
+
+    public void addUserId(Long id) {
+        userIds.add(id);
+    }
+
+    public void removeUserId(Long id) {
+        userIds.remove(id);
+    }
+
+    public int getNumberOfUsers() {
+        return numberOfUsers;
+    }
+
+    public void setNumberOfUsers(int numberOfUsers) {
+        this.numberOfUsers = numberOfUsers;
+    }
+
+    public void incrementNumberOfUsers() {
+        numberOfUsers++;
+    }
+
+    public void decrementNumberOfUsers() {
+        numberOfUsers--;
     }
 
 }

@@ -21,5 +21,6 @@
     <string name="title_activity_first">Rental Mates</string>
     <string name="title_activity_register_flat">RegisterFlatActivity</string>
     <string name="title_activity_add_expense">AddExpenseActivity</string>
+    <string name="title_activity_determine_flat">DetermineFlatActivity</string>
 
 </resources>
