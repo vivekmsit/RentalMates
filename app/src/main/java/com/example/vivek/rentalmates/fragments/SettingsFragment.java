@@ -18,6 +18,8 @@ import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.activities.MyLoginActivity;
 
+import java.io.File;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -67,6 +69,9 @@ public class SettingsFragment extends android.support.v4.app.Fragment implements
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.clear();
                 editor.commit();
+                String path = getActivity().getApplicationContext().getFilesDir().getPath()+"/" + "expenses.tmp";
+                File file = new File(path);
+                file.delete();
                 Toast.makeText(getActivity(), "SharedPreferences data cleared", Toast.LENGTH_LONG).show();
                 Log.d(TAG, "SharedPreferences data cleared");
                 break;

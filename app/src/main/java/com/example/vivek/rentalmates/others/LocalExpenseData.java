@@ -1,5 +1,6 @@
 package com.example.vivek.rentalmates.others;
 
+import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
@@ -80,12 +81,12 @@ public class LocalExpenseData implements Serializable{
         return localExpenses;
     }
 
-    public static String storeExpenseDataList(List<ExpenseData> expenses){
+    public static String storeExpenseDataList(Context context, List<ExpenseData> expenses){
         String message = "";
         List<LocalExpenseData> localExpenses = convertExpenseToLocalExpense(expenses);
         try {
-            String path = Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_MOVIES).getPath();
+            String path = context.getApplicationContext().getFilesDir().getPath();
+            Log.d(TAG, "path is: " + path);
             FileOutputStream fos = new FileOutputStream(path + "/" + "expenses.tmp");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(localExpenses);
@@ -100,10 +101,9 @@ public class LocalExpenseData implements Serializable{
         return message;
     }
 
-    public static List<ExpenseData> restoreExpenseDataList() {
+    public static List<ExpenseData> restoreExpenseDataList(Context context) {
         List<LocalExpenseData> localExpenses = new ArrayList<>();
-        String path = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_MOVIES).getPath();
+        String path = context.getApplicationContext().getFilesDir().getPath();
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(path + "/" + "expenses.tmp");

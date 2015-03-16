@@ -34,6 +34,7 @@ public class RegisterWithOldFlatAsyncTask extends AsyncTask<Context, Void, Strin
     DetermineFlatActivity activity;
     SharedPreferences prefs;
     IOException ioException;
+    Long flatId;
 
     public RegisterWithOldFlatAsyncTask(DetermineFlatActivity flatActivity, Context context, final String flatName) {
         this.context = context;
@@ -60,6 +61,7 @@ public class RegisterWithOldFlatAsyncTask extends AsyncTask<Context, Void, Strin
                 msg = "SUCCESS_NO_FLAT_AVAILABLE";
             } else {
                 msg = "SUCCESS_FLAT_AVAILABLE";
+                flatId = newFlatInfo.getFlatId();
                 BackendApiService.storePrimaryFlatId(this.context, newFlatInfo.getFlatId());
             }
             Log.d(TAG, "inside insert");
@@ -75,6 +77,7 @@ public class RegisterWithOldFlatAsyncTask extends AsyncTask<Context, Void, Strin
     protected void onPostExecute(String msg) {
 
         Log.d(TAG, "inside onPostExecute() for RegisterFlatAsyncTask");
+        activity.setRegisterWithOldFlatButtonClicked(false);
 
         if (msg.equals("SUCCESS_FLAT_AVAILABLE")){
             SharedPreferences.Editor editor = prefs.edit();
@@ -82,7 +85,7 @@ public class RegisterWithOldFlatAsyncTask extends AsyncTask<Context, Void, Strin
             editor.commit();
 
             Toast.makeText(context, "Registered with old flat: "+ flatName + "\nretrieving ExpenseData info", Toast.LENGTH_SHORT).show();
-            new GetExpenseDataListAsyncTask(context, true).execute();
+            new GetExpenseDataListAsyncTask(context, flatId, true).execute();
         }
         else if (msg.equals("SUCCESS_NO_FLAT_AVAILABLE")) {
             Toast.makeText(context, "Flat with given name doesn't exist.\nPlease enter different name", Toast.LENGTH_LONG).show();

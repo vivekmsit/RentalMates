@@ -26,12 +26,12 @@ import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GetFlatInfoListAsyncTask extends AsyncTask<Context, Void, String> {
 
     private static final String TAG = "GetFlatListTask_Debug";
-    private static final String PRIMARY_FLAT_ID = "primary_flat_id";
     private static final String USER_PROFILE_ID = "user_profile_id";
 
     private static UserProfileApi ufService = null;
@@ -39,6 +39,7 @@ public class GetFlatInfoListAsyncTask extends AsyncTask<Context, Void, String> {
     SharedPreferences prefs;
     IOException ioException;
     boolean appStartup;
+    List<FlatInfo> flats;
 
     public GetFlatInfoListAsyncTask(Context context, final boolean startup) {
         this.context = context;
@@ -63,7 +64,7 @@ public class GetFlatInfoListAsyncTask extends AsyncTask<Context, Void, String> {
                 msg = "SUCCESS_NO_FLATS";
             }
             else {
-                List<FlatInfo> flats = flatInfoCollection.getItems();
+                flats = flatInfoCollection.getItems();
                 msg = "SUCCESS_FLATS";
             }
             Log.d(TAG, "inside addExpense");
@@ -84,6 +85,16 @@ public class GetFlatInfoListAsyncTask extends AsyncTask<Context, Void, String> {
             Toast.makeText(context, "FlatInfo List retrieved successfully", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(context, DetermineFlatActivity.class);
             intent.putExtra("FLAT_REGISTERED", true);
+            List<Long> flatIds = new ArrayList<>();
+            List<String> flatNames = new ArrayList<>();
+            int current = 0;
+            for (FlatInfo flatInfo: flats) {
+                flatIds.add(current,flatInfo.getFlatId());
+                flatNames.add(current, flatInfo.getFlatName());
+                current++;
+            }
+            intent.putExtra("flatIds", (java.io.Serializable) flatIds);
+            intent.putExtra("flatNames", (java.io.Serializable) flatNames);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);
         }

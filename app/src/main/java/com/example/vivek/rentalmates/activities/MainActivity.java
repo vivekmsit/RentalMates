@@ -1,6 +1,5 @@
 package com.example.vivek.rentalmates.activities;
 
-import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -23,13 +22,11 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void onGetUserDataButtonClick(View v){
-        Intent intent = new Intent(this, UserProfileActivity.class);
-        startActivity(intent);
+        //To be implemented
     }
 
     public void onQueryProfilesButtonClick(View v){
-        Intent intent = new Intent(this, QueryActivity.class);
-        startActivity(intent);
+        //To be implemented
     }
 
 

@@ -67,7 +67,7 @@ public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
                 if (expenses == null){
                     Log.d(TAG, "expenses is null");
                 } else {
-                    msg = LocalExpenseData.storeExpenseDataList(expenses);
+                    msg = LocalExpenseData.storeExpenseDataList(context, expenses);
                     if (msg.equals("EXCEPTION")){
                         msg = "FILEEXCEPTION";
                         return msg;

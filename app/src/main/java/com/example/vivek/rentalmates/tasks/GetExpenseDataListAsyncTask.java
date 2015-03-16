@@ -19,6 +19,7 @@ import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseDataCollection;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
 import com.example.vivek.rentalmates.others.LocalExpenseData;
+import com.example.vivek.rentalmates.services.BackendApiService;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
@@ -28,16 +29,19 @@ import java.util.List;
 
 public class GetExpenseDataListAsyncTask extends AsyncTask<Context, Void, String> {
     private static final String TAG = "GetExpenseTask_Debug";
-    private static final String PRIMARY_FLAT_ID = "primary_flat_id";
 
     private static FlatInfoApi flatService = null;
     private Context context;
     SharedPreferences prefs;
     IOException ioException;
     boolean appStartup;
-    public GetExpenseDataListAsyncTask(Context context, final boolean startup) {
+    Long flatId;
+
+    public GetExpenseDataListAsyncTask(Context context, final Long flatId, final boolean startup) {
         this.context = context;
         this.appStartup = startup;
+        this.flatId = flatId;
+
         prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
     }
@@ -51,7 +55,6 @@ public class GetExpenseDataListAsyncTask extends AsyncTask<Context, Void, String
             flatService = builder1.build();
         }
         try {
-            Long flatId = prefs.getLong(PRIMARY_FLAT_ID, 0);
             ExpenseDataCollection expensesCollection= flatService.getExpenseDataList(flatId).execute();
             msg = "SUCCESS";
             if (expensesCollection == null){
@@ -60,7 +63,7 @@ public class GetExpenseDataListAsyncTask extends AsyncTask<Context, Void, String
             else {
                 List<ExpenseData> expenses = expensesCollection.getItems();
                 if (expenses != null) {
-                    msg = LocalExpenseData.storeExpenseDataList(expenses);
+                    msg = LocalExpenseData.storeExpenseDataList(context, expenses);
                 }
             }
             Log.d(TAG, "inside addExpense");
@@ -79,6 +82,8 @@ public class GetExpenseDataListAsyncTask extends AsyncTask<Context, Void, String
 
         if (msg.equals("SUCCESS") && this.appStartup == true){
             Toast.makeText(context, "ExpenseData retrieved successfully", Toast.LENGTH_SHORT).show();
+            BackendApiService.storePrimaryFlatId(this.context, flatId);
+
             Intent intent = new Intent(context, MainTabActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);

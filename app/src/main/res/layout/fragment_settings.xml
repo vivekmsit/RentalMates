@@ -17,8 +17,8 @@
         android:layout_margin="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Clear Data"
+        android:text="Clear App Data"
         android:id="@+id/cleardatabutton"
-        android:layout_gravity="center_horizontal|top" />
+        android:layout_gravity="right|top" />
 
 </FrameLayout>

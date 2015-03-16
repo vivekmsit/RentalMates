@@ -35,7 +35,7 @@ public class ExpenseDataListFragment extends android.support.v4.app.ListFragment
         Log.d(TAG, "inside onCreate");
         super.onCreate(savedInstanceState);
 
-        List<ExpenseData> expenses = LocalExpenseData.restoreExpenseDataList();
+        List<ExpenseData> expenses = LocalExpenseData.restoreExpenseDataList(getActivity().getApplicationContext());
         if (expenses == null){
             ExpenseData data = new ExpenseData();
             data.setAmount(0);

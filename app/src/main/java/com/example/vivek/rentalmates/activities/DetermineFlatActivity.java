@@ -19,6 +19,9 @@ import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.tasks.GetExpenseDataListAsyncTask;
 import com.example.vivek.rentalmates.tasks.RegisterWithOldFlatAsyncTask;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DetermineFlatActivity extends ActionBarActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener{
 
     private static final String TAG = "DetermineFlat_Debug";
@@ -31,6 +34,16 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
     Button continueWithOldFlatButton;
     Button registerWithOldFlatButton;
     Button registerNewFlatButton;
+
+    boolean registerWithOldFlatButtonClicked;
+    boolean alreadyRegisteredFlat;
+    List<Long> flatIds = new ArrayList<>();
+    List<String> flatNames = new ArrayList<>();
+    Long selectedFlatId;
+
+    public void setRegisterWithOldFlatButtonClicked(boolean value) {
+        registerWithOldFlatButtonClicked = value;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,16 +64,22 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
         registerNewFlatButton.setOnClickListener(this);
 
         Intent intent = getIntent();
-        boolean alreadyRegisteredFlat = intent.getBooleanExtra("FLAT_REGISTERED", false);
+        alreadyRegisteredFlat = intent.getBooleanExtra("FLAT_REGISTERED", false);
+        flatIds = (List<Long>)intent.getSerializableExtra("flatIds");
+        flatNames = (List<String>)intent.getSerializableExtra("flatNames");
+        selectedFlatId = flatIds.get(0);
+
         if (!alreadyRegisteredFlat) {
             alreadyTextView.setVisibility(View.INVISIBLE);
             chooseFlatSpinner.setVisibility(View.INVISIBLE);
             continueWithOldFlatButton.setVisibility(View.INVISIBLE);
         }
 
-        ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.type, android.R.layout.simple_spinner_dropdown_item);
-        chooseFlatSpinner.setAdapter(adapter);
+        ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, flatNames);
+        chooseFlatSpinner.setAdapter(stringArrayAdapter);
         chooseFlatSpinner.setOnItemSelectedListener(this);
+
+        registerWithOldFlatButtonClicked = false;
     }
 
     @Override
@@ -71,10 +90,14 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
 
             case R.id.continueWithOldFlatButton:
                 Toast.makeText(this, "retrieving ExpenseData list", Toast.LENGTH_SHORT).show();
-                new GetExpenseDataListAsyncTask(this, true).execute();
+                new GetExpenseDataListAsyncTask(this, selectedFlatId, true).execute();
                 break;
 
             case R.id.registerWithOldFlatButton:
+                if (registerWithOldFlatButtonClicked == true || verifyFlatInfoData() == false) {
+                    return;
+                }
+                registerWithOldFlatButtonClicked = true;
                 Toast.makeText(this, "registering with old flat", Toast.LENGTH_LONG).show();
                 new RegisterWithOldFlatAsyncTask(this, this,alreadyRegisteredFlatEditText.getText().toString()).execute();
                 break;
@@ -89,10 +112,18 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
         }
     }
 
+    public boolean verifyFlatInfoData() {
+        if (alreadyRegisteredFlatEditText.getText().toString().trim().matches("")) {
+            Toast.makeText(this, "No Flat Name entered", Toast.LENGTH_LONG).show();
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        TextView textView= (TextView)view;
-        String queryType = textView.getText().toString();
+        selectedFlatId = flatIds.get(position);
     }
 
     @Override
