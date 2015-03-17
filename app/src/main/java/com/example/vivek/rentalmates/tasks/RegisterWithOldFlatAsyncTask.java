@@ -14,6 +14,7 @@ import com.example.vivek.rentalmates.activities.MyLoginActivity;
 import com.example.vivek.rentalmates.activities.RegisterFlatActivity;
 import com.example.vivek.rentalmates.backend.flatInfoApi.FlatInfoApi;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
+import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.services.BackendApiService;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
@@ -25,7 +26,6 @@ import java.io.IOException;
  */
 public class RegisterWithOldFlatAsyncTask extends AsyncTask<Context, Void, String> {
     private static final String TAG = "RegisterWithOld_Debug";
-    private static final String USER_PROFILE_ID = "user_profile_id";
 
     private static FlatInfoApi flatService = null;
     private String flatName;
@@ -54,7 +54,7 @@ public class RegisterWithOldFlatAsyncTask extends AsyncTask<Context, Void, Strin
             flatService = builder1.build();
         }
         try {
-            Long userProfileId = prefs.getLong(USER_PROFILE_ID, 0);
+            Long userProfileId = prefs.getLong(AppConstants.USER_PROFILE_ID, 0);
             Log.d(TAG, "userprofileid is: " + userProfileId);
             newFlatInfo = flatService.registerWithOldFlat(this.flatName, userProfileId).execute();
             if (newFlatInfo == null){
@@ -80,10 +80,6 @@ public class RegisterWithOldFlatAsyncTask extends AsyncTask<Context, Void, Strin
         activity.setRegisterWithOldFlatButtonClicked(false);
 
         if (msg.equals("SUCCESS_FLAT_AVAILABLE")){
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean(MyLoginActivity.FIRST_TIME_LOGIN, true);
-            editor.commit();
-
             Toast.makeText(context, "Registered with old flat: "+ flatName + "\nretrieving ExpenseData info", Toast.LENGTH_SHORT).show();
             new GetExpenseDataListAsyncTask(context, flatId, true).execute();
         }

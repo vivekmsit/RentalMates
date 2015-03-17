@@ -18,6 +18,7 @@ import com.example.vivek.rentalmates.activities.MainTabActivity;
 import com.example.vivek.rentalmates.backend.flatInfoApi.FlatInfoApi;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
+import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.LocalExpenseData;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
@@ -30,7 +31,6 @@ import java.util.List;
 
 public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
     private static final String TAG = "ExpenseAsyncTask_Debug";
-    private static final String PRIMARY_FLAT_ID = "primary_flat_id";
 
     private static FlatInfoApi flatService = null;
     ExpenseData ed;
@@ -56,7 +56,7 @@ public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
             flatService = builder1.build();
         }
         try {
-            Long flatId = prefs.getLong(PRIMARY_FLAT_ID, 0);
+            Long flatId = prefs.getLong(AppConstants.PRIMARY_FLAT_ID, 0);
             ed.setFlatId(flatId);
             FlatInfo uploadedFlatInfo = flatService.addExpenseData(flatId, ed).execute();
             if (uploadedFlatInfo == null){

@@ -1,6 +1,8 @@
 package com.example.vivek.rentalmates.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -65,9 +67,11 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
 
         Intent intent = getIntent();
         alreadyRegisteredFlat = intent.getBooleanExtra("FLAT_REGISTERED", false);
-        flatIds = (List<Long>)intent.getSerializableExtra("flatIds");
-        flatNames = (List<String>)intent.getSerializableExtra("flatNames");
-        selectedFlatId = flatIds.get(0);
+        if (alreadyRegisteredFlat) {
+            flatIds = (List<Long>)intent.getSerializableExtra("flatIds");
+            flatNames = (List<String>)intent.getSerializableExtra("flatNames");
+            selectedFlatId = flatIds.get(0);
+        }
 
         if (!alreadyRegisteredFlat) {
             alreadyTextView.setVisibility(View.INVISIBLE);
@@ -89,6 +93,10 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
         switch (v.getId()) {
 
             case R.id.continueWithOldFlatButton:
+                if (alreadyRegisteredFlat == false) {
+                    Toast.makeText(this, "No Flat registered yet", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 Toast.makeText(this, "retrieving ExpenseData list", Toast.LENGTH_SHORT).show();
                 new GetExpenseDataListAsyncTask(this, selectedFlatId, true).execute();
                 break;

@@ -1,6 +1,8 @@
 package com.example.vivek.rentalmates.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
+import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.tasks.AddExpenseAsyncTask;
 
 public class AddExpenseActivity extends ActionBarActivity implements View.OnClickListener {
@@ -26,6 +29,9 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
     Button editUsersButton;
     Button cancelExpenseButton;
     Button addExpenseButton;
+
+    SharedPreferences prefs;
+
 
     public void setAddExpenseButtonClicked(boolean  value){
         addExpenseButtonClicked = value;
@@ -47,6 +53,9 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
         editUsersButton.setOnClickListener(this);
         cancelExpenseButton.setOnClickListener(this);
         addExpenseButton.setOnClickListener(this);
+
+        prefs = this.getSharedPreferences(MainActivity.class.getSimpleName(),
+                Context.MODE_PRIVATE);
     }
 
     @Override
@@ -73,7 +82,7 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
                 ExpenseData expenseData = new ExpenseData();
                 expenseData.setAmount(Integer.parseInt(amountEditText.getText().toString()));
                 expenseData.setDescription(descriptionEditText.getText().toString());
-                expenseData.setOwnerEmailId("vivekmsit@gmail.com");
+                expenseData.setOwnerEmailId(prefs.getString(AppConstants.EMAIL_ID, "no_email_id"));
                 new AddExpenseAsyncTask(this, this, expenseData).execute();
                 break;
 

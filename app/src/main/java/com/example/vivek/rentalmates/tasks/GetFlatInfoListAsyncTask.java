@@ -13,15 +13,10 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.activities.DetermineFlatActivity;
 import com.example.vivek.rentalmates.activities.MainActivity;
-import com.example.vivek.rentalmates.activities.MainTabActivity;
-import com.example.vivek.rentalmates.activities.RegisterFlatActivity;
-import com.example.vivek.rentalmates.backend.flatInfoApi.FlatInfoApi;
-import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
-import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseDataCollection;
 import com.example.vivek.rentalmates.backend.userProfileApi.UserProfileApi;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfoCollection;
-import com.example.vivek.rentalmates.others.LocalExpenseData;
+import com.example.vivek.rentalmates.others.AppConstants;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
@@ -32,7 +27,6 @@ import java.util.List;
 public class GetFlatInfoListAsyncTask extends AsyncTask<Context, Void, String> {
 
     private static final String TAG = "GetFlatListTask_Debug";
-    private static final String USER_PROFILE_ID = "user_profile_id";
 
     private static UserProfileApi ufService = null;
     private Context context;
@@ -57,7 +51,7 @@ public class GetFlatInfoListAsyncTask extends AsyncTask<Context, Void, String> {
             ufService = builder1.build();
         }
         try {
-            Long flatId = prefs.getLong(USER_PROFILE_ID, 0);
+            Long flatId = prefs.getLong(AppConstants.USER_PROFILE_ID, 0);
             FlatInfoCollection flatInfoCollection= ufService.getFlatInfoList(flatId).execute();
             if (flatInfoCollection == null){
                 Log.d(TAG, "expenses is null");
@@ -83,6 +77,7 @@ public class GetFlatInfoListAsyncTask extends AsyncTask<Context, Void, String> {
 
         if (msg.equals("SUCCESS_FLATS")){
             Toast.makeText(context, "FlatInfo List retrieved successfully", Toast.LENGTH_SHORT).show();
+
             Intent intent = new Intent(context, DetermineFlatActivity.class);
             intent.putExtra("FLAT_REGISTERED", true);
             List<Long> flatIds = new ArrayList<>();

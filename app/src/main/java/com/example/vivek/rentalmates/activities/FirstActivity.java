@@ -8,9 +8,10 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 
 import com.example.vivek.rentalmates.R;
+import com.example.vivek.rentalmates.others.AppConstants;
 
 public class FirstActivity extends ActionBarActivity {
-    private static final String SIGN_IN_COMPLETED = "sign_in_completed";
+    private static final String TAG = "FirstActivity_Debug";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +25,7 @@ public class FirstActivity extends ActionBarActivity {
         final Class<? extends Activity> activityClass;
         SharedPreferences prefs = this.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
-        if(prefs.contains(SIGN_IN_COMPLETED) && prefs.getBoolean(SIGN_IN_COMPLETED, true))
+        if(prefs.contains(AppConstants.SIGN_IN_COMPLETED) && prefs.getBoolean(AppConstants.SIGN_IN_COMPLETED, true))
             activityClass = MainTabActivity.class;
         else
             activityClass = MyLoginActivity.class;

@@ -79,10 +79,6 @@ public class RegisterFlatAsyncTask extends AsyncTask<Context, Void, String> {
         activity.setRegisterButtonClicked(false);
 
         if (msg.equals("SUCCESS_NEW_FLAT")){
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean(MyLoginActivity.FIRST_TIME_LOGIN, true);
-            editor.commit();
-
             Toast.makeText(context, "FlatInfo uploaded", Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent(context, MainTabActivity.class);

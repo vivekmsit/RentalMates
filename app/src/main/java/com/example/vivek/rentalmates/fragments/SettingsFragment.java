@@ -27,8 +27,8 @@ public class SettingsFragment extends android.support.v4.app.Fragment implements
 
     private static final String TAG = "SettingsFragment_Debug";
 
-    private Button accountbutton;
-    private Button cleardatabutton;
+    private Button accountButton;
+    private Button clearDataButton;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -46,10 +46,10 @@ public class SettingsFragment extends android.support.v4.app.Fragment implements
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        accountbutton = (Button) getView().findViewById(R.id.accountbutton);
-        cleardatabutton = (Button) getView().findViewById(R.id.cleardatabutton);
-        accountbutton.setOnClickListener(this);
-        cleardatabutton.setOnClickListener(this);
+        accountButton = (Button) getView().findViewById(R.id.accountbutton);
+        clearDataButton = (Button) getView().findViewById(R.id.cleardatabutton);
+        accountButton.setOnClickListener(this);
+        clearDataButton.setOnClickListener(this);
     }
 
     @Override

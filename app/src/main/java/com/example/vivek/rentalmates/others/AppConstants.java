@@ -3,7 +3,7 @@ package com.example.vivek.rentalmates.others;
 /**
  * Created by vivek on 3/17/2015.
  */
-public class StringConstants {
+public class AppConstants {
     public static final String PROPERTY_APP_VERSION = "appVersion";
     public static final String PROPERTY_REG_ID = "registration_id";
     public static final String SENDER_ID = "56111997016";
@@ -12,7 +12,8 @@ public class StringConstants {
     public static final String USER_PROFILE_UPDATED = "user_profile_updated";
     public static final String SIGN_IN_COMPLETED = "sign_in_completed";
     public static final String FIRST_TIME_LOGIN = "first_time_login";
+    public static final String EMAIL_ID = "email_id";
 
-    StringConstants() {
+    AppConstants() {
     }
 }

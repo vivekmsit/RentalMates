@@ -9,25 +9,21 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.activities.DetermineFlatActivity;
 import com.example.vivek.rentalmates.activities.MainActivity;
-import com.example.vivek.rentalmates.activities.MainTabActivity;
 import com.example.vivek.rentalmates.activities.MyLoginActivity;
-import com.example.vivek.rentalmates.activities.RegisterFlatActivity;
 import com.example.vivek.rentalmates.backend.userProfileApi.UserProfileApi;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
+import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.services.BackendApiService;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Created by vivek on 1/8/2015.
  */
 public class UploadUserProfileAsyncTask extends AsyncTask<Context, Void, String> {
     private static final String TAG = "UploadUser_Debug";
-    public static final String USER_PROFILE_UPDATED = "user_profile_updated";
 
     private static UserProfileApi ufService = null;
     private UserProfile uf = null;
@@ -64,7 +60,7 @@ public class UploadUserProfileAsyncTask extends AsyncTask<Context, Void, String>
                 BackendApiService.storePrimaryFlatId(this.context, primaryFlatId);
             }
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putInt(USER_PROFILE_UPDATED, 1);
+            editor.putInt(AppConstants.USER_PROFILE_UPDATED, 1);
             editor.commit();
             Log.d(TAG, "inside insert");
         } catch (IOException e) {
@@ -88,7 +84,8 @@ public class UploadUserProfileAsyncTask extends AsyncTask<Context, Void, String>
             intent.putExtra("FLAT_REGISTERED", false);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);
-        } else if (msg.equals("SUCCESS_FLAT_REGISTERED")) {
+        }
+        else if (msg.equals("SUCCESS_FLAT_REGISTERED")) {
             Toast.makeText(context, "Flat already registered, Retrieving FlatInfo list", Toast.LENGTH_SHORT).show();
             new GetFlatInfoListAsyncTask(this.context, true).execute();
         }

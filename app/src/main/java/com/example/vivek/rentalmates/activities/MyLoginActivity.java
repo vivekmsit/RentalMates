@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.services.BackendApiService;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
@@ -44,9 +45,6 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
     private static final int RC_SIGN_IN = 0;
     // Profile pic image size in pixels
     private static final int PROFILE_PIC_SIZE = 400;
-    public static final String USER_PROFILE_UPDATED = "user_profile_updated";
-    public static final String SIGN_IN_COMPLETED = "sign_in_completed";
-    public static final String FIRST_TIME_LOGIN = "first_time_login";
     /**
      * A flag indicating that a PendingIntent is in progress and prevents us
      * from starting further intents.
@@ -95,14 +93,9 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
 
         prefs = this.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
-        if (prefs.contains(SIGN_IN_COMPLETED) && prefs.getBoolean(SIGN_IN_COMPLETED, true)) {
+        if (prefs.contains(AppConstants.SIGN_IN_COMPLETED) && prefs.getBoolean(AppConstants.SIGN_IN_COMPLETED, true)) {
             btnSignIn.setVisibility(View.INVISIBLE);
             Log.d(TAG, "User is already sign in");
-        }
-        else {
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean(SIGN_IN_COMPLETED, false);
-            editor.commit();
         }
 
         progressDialog = new ProgressDialog(this);
@@ -170,17 +163,13 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         progressDialog.cancel();
         Log.d(TAG, "inside onConnected");
 
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(SIGN_IN_COMPLETED, true);
-        editor.commit();
-
         // Get user's information
         UserProfile userProfile = getProfileInformation();
         txtName.setText(userProfile.getUserName());
         txtEmail.setText(userProfile.getEmailId());
         setProfilePicture(userProfile.getProfilePhotoURL());
 
-        if(prefs.contains(FIRST_TIME_LOGIN) && prefs.getBoolean(FIRST_TIME_LOGIN, true)) {
+        if(prefs.contains(AppConstants.FIRST_TIME_LOGIN) && prefs.getBoolean(AppConstants.FIRST_TIME_LOGIN, true)) {
             Log.d(TAG, "FIRST_TIME_LOGIN already set to true");
             if (mSignInClicked == true){
                 mSignInClicked = false;
@@ -194,8 +183,16 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         }
         else if (mSignInClicked == true) {
                 Log.d(TAG, "first time login");
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putBoolean(AppConstants.SIGN_IN_COMPLETED, false);
+                editor.putString(AppConstants.EMAIL_ID, userProfile.getEmailId());
+                editor.commit();
                 new UploadUserProfileAsyncTask(this, this, userProfile).execute();
             }
+        else {
+            Log.d(TAG, "Login Required state");
+            updateUI(false);
+        }
         Log.d(TAG, "User sign in completed");
     }
 
@@ -302,7 +299,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
             updateUI(false);
         }
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(SIGN_IN_COMPLETED, false);
+        editor.putBoolean(AppConstants.SIGN_IN_COMPLETED, false);
         editor.commit();
     }
 
@@ -327,7 +324,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
                     });
         }
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(SIGN_IN_COMPLETED, false);
+        editor.putBoolean(AppConstants.SIGN_IN_COMPLETED, false);
         editor.commit();
     }
 

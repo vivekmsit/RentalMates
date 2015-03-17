@@ -17,6 +17,7 @@ import com.example.vivek.rentalmates.fragments.MainFragment;
 import com.example.vivek.rentalmates.fragments.NewsFeedFragment;
 import com.example.vivek.rentalmates.fragments.SearchRoomiesFragment;
 import com.example.vivek.rentalmates.fragments.SettingsFragment;
+import com.example.vivek.rentalmates.others.AppConstants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -25,7 +26,6 @@ import com.google.android.gms.plus.Plus;
 public class MainTabActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     private static final String TAG = "MainTabActivity_Debug";
-    private static final String SIGN_IN_COMPLETED = "sign_in_completed";
 
     ViewPager viewPager;
     private GoogleApiClient mGoogleApiClient;
@@ -69,9 +69,13 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
     @Override
     public void onConnected(Bundle bundle) {
         Log.d(TAG, "inside onConnected");
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(SIGN_IN_COMPLETED, true);
-        editor.commit();
+
+        if (prefs.contains(AppConstants.SIGN_IN_COMPLETED)) {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean(AppConstants.SIGN_IN_COMPLETED, true);
+            editor.putBoolean(AppConstants.FIRST_TIME_LOGIN, true);
+            editor.commit();
+        }
     }
 
     @Override

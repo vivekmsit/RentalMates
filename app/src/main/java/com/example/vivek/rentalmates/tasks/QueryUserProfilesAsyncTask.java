@@ -20,11 +20,12 @@ import java.util.logging.Logger;
  * Created by vivek on 1/8/2015.
  */
 public class QueryUserProfilesAsyncTask extends AsyncTask<Context, Void, String> {
+    private static final String TAG = "RentalMatesDebug";
+
     private static UserProfileApi ufService = null;
     private Context context;
     private String type = null;
     private String value = null;
-    private static final String TAG = "RentalMatesDebug";
 
     public QueryUserProfilesAsyncTask(Context context, final String type, final String value) {
         this.context = context;

@@ -19,6 +19,7 @@ import com.example.vivek.rentalmates.backend.registration.Registration;
 import com.example.vivek.rentalmates.backend.userProfileApi.UserProfileApi;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfileCollection;
+import com.example.vivek.rentalmates.others.AppConstants;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
@@ -29,8 +30,6 @@ import java.util.Map;
 
 public class BackendApiService extends Service {
     private static final String TAG = "RentalMatesDebug";
-    private static final String USER_PROFILE_ID = "user_profile_id";
-    private static final String PRIMARY_FLAT_ID = "primary_flat_id";
 
     // Binder given to clients
     private final IBinder mBinder = new LocalBinder();
@@ -66,13 +65,13 @@ public class BackendApiService extends Service {
         String msg = "";
         SharedPreferences prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
-        if (prefs.contains(USER_PROFILE_ID)){
+        if (prefs.contains(AppConstants.USER_PROFILE_ID)){
             msg = "userProfileId is already stored in shared preferences";
             Log.d(TAG, msg);
         } else {
             Log.i(TAG, "Saving userProfileId in shared preferences" + id);
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putLong(USER_PROFILE_ID, id);
+            editor.putLong(AppConstants.USER_PROFILE_ID, id);
             editor.commit();
         }
     }
@@ -83,7 +82,7 @@ public class BackendApiService extends Service {
                 Context.MODE_PRIVATE);
         Log.d(TAG, "Saving flatInfoId in shared preferences" + id);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putLong(PRIMARY_FLAT_ID, id);
+        editor.putLong(AppConstants.PRIMARY_FLAT_ID, id);
         editor.commit();
     }
 }
