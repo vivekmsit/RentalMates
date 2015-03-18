@@ -48,6 +48,13 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
                 .build();
         prefs = this.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
+        if (prefs.contains(AppConstants.SIGN_IN_COMPLETED)) {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean(AppConstants.SIGN_IN_COMPLETED, true);
+            editor.putBoolean(AppConstants.FIRST_TIME_LOGIN, true);
+            editor.commit();
+        }
+        this.setTitle(getTitle()+ ": " + prefs.getString(AppConstants.PRIMARY_FLAT_NAME, "no_flat_name"));
     }
 
     @Override
@@ -69,13 +76,6 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
     @Override
     public void onConnected(Bundle bundle) {
         Log.d(TAG, "inside onConnected");
-
-        if (prefs.contains(AppConstants.SIGN_IN_COMPLETED)) {
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean(AppConstants.SIGN_IN_COMPLETED, true);
-            editor.putBoolean(AppConstants.FIRST_TIME_LOGIN, true);
-            editor.commit();
-        }
     }
 
     @Override

@@ -59,6 +59,7 @@ public class RegisterFlatAsyncTask extends AsyncTask<Context, Void, String> {
             String status = uploadedFlatInfo.getCreateFlatResult();
             if (status.equals("NEW_FLAT_INFO")){
                 BackendApiService.storePrimaryFlatId(this.context, uploadedFlatInfo.getFlatId());
+                BackendApiService.storePrimaryFlatName(this.context, uploadedFlatInfo.getFlatName());
                 msg = "SUCCESS_NEW_FLAT";
             } else if (status.equals("OLD_FLAT_INFO")){
                 msg = "SUCCESS_OLD_FLAT";

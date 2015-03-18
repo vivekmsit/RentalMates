@@ -75,7 +75,7 @@ public class RegisterFlatActivity extends ActionBarActivity {
         registerButtonClicked = true;
         FlatInfo flatInfo = new FlatInfo();
         flatInfo.setFlatName(editText1.getText().toString());
-        flatInfo.setOwnerEmailId("vivekmsit@gmail.com");
+        flatInfo.setOwnerEmailId(prefs.getString(AppConstants.EMAIL_ID, "no_email_id"));
         flatInfo.setUserProfileId(prefs.getLong(AppConstants.USER_PROFILE_ID, 0));
         new RegisterFlatAsyncTask(this, this, flatInfo).execute();
     }

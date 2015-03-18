@@ -85,4 +85,14 @@ public class BackendApiService extends Service {
         editor.putLong(AppConstants.PRIMARY_FLAT_ID, id);
         editor.commit();
     }
+
+    public static void storePrimaryFlatName(Context context, String flatName){
+        String msg = "";
+        SharedPreferences prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
+                Context.MODE_PRIVATE);
+        Log.d(TAG, "Saving flatName in shared preferences" + flatName);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(AppConstants.PRIMARY_FLAT_NAME, flatName);
+        editor.commit();
+    }
 }

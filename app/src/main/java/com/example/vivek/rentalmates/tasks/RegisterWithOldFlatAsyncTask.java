@@ -62,6 +62,7 @@ public class RegisterWithOldFlatAsyncTask extends AsyncTask<Context, Void, Strin
             } else {
                 msg = "SUCCESS_FLAT_AVAILABLE";
                 flatId = newFlatInfo.getFlatId();
+                BackendApiService.storePrimaryFlatName(this.context, newFlatInfo.getFlatName());
                 BackendApiService.storePrimaryFlatId(this.context, newFlatInfo.getFlatId());
             }
             Log.d(TAG, "inside insert");

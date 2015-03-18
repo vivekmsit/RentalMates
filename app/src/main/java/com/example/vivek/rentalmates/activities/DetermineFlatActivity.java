@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
+import com.example.vivek.rentalmates.services.BackendApiService;
 import com.example.vivek.rentalmates.tasks.GetExpenseDataListAsyncTask;
 import com.example.vivek.rentalmates.tasks.RegisterWithOldFlatAsyncTask;
 
@@ -42,6 +43,7 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
     List<Long> flatIds = new ArrayList<>();
     List<String> flatNames = new ArrayList<>();
     Long selectedFlatId;
+    String selectedFlatName;
 
     public void setRegisterWithOldFlatButtonClicked(boolean value) {
         registerWithOldFlatButtonClicked = value;
@@ -71,6 +73,7 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
             flatIds = (List<Long>)intent.getSerializableExtra("flatIds");
             flatNames = (List<String>)intent.getSerializableExtra("flatNames");
             selectedFlatId = flatIds.get(0);
+            selectedFlatName = flatNames.get(0);
         }
 
         if (!alreadyRegisteredFlat) {
@@ -98,6 +101,7 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
                     return;
                 }
                 Toast.makeText(this, "retrieving ExpenseData list", Toast.LENGTH_SHORT).show();
+                BackendApiService.storePrimaryFlatName(this, selectedFlatName);
                 new GetExpenseDataListAsyncTask(this, selectedFlatId, true).execute();
                 break;
 
@@ -132,6 +136,7 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         selectedFlatId = flatIds.get(position);
+        selectedFlatName = flatNames.get(position);
     }
 
     @Override

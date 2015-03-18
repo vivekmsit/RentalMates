@@ -128,6 +128,8 @@ public class FlatInfoEndpoint {
             UserProfile userProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
             if (!userProfile.getFlatIds().contains(finalFlatInfo.getFlatId())) {
                 userProfile.addFlatId(finalFlatInfo.getFlatId());
+                userProfile.setPrimaryFlatId(finalFlatInfo.getFlatId());
+                userProfile.incrementNumberOfFlats();
                 ofy().save().entity(userProfile).now();
             }
             //Add userProfileId to FlatInfo userIds List
