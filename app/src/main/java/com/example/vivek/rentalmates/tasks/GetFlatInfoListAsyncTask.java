@@ -51,8 +51,8 @@ public class GetFlatInfoListAsyncTask extends AsyncTask<Context, Void, String> {
             ufService = builder1.build();
         }
         try {
-            Long flatId = prefs.getLong(AppConstants.USER_PROFILE_ID, 0);
-            FlatInfoCollection flatInfoCollection= ufService.getFlatInfoList(flatId).execute();
+            Long userProfileId = prefs.getLong(AppConstants.USER_PROFILE_ID, 0);
+            FlatInfoCollection flatInfoCollection= ufService.getFlatInfoList(userProfileId).execute();
             if (flatInfoCollection == null){
                 Log.d(TAG, "expenses is null");
                 msg = "SUCCESS_NO_FLATS";

@@ -220,4 +220,39 @@ public class UserProfileEndpoint {
             return flats;
         }
     }
+
+
+    /**
+     * Returns the {@link UserProfile} with the corresponding ID.
+     *
+     * @param id the ID of the entity to be retrieved
+     * @return the entity with the corresponding ID
+     * @throws NotFoundException if there is no {@code UserProfile} with the provided ID.
+     */
+    @ApiMethod(
+            name = "getUserProfileList",
+            path = "getUserProfileList/{id}",
+            httpMethod = ApiMethod.HttpMethod.GET)
+    public List<UserProfile> getUserProfileList(@Named("id") Long id) throws NotFoundException {
+        List<UserProfile> profiles = new ArrayList<>();
+        List<Long> tempIds = new ArrayList<>();
+
+        UserProfile currentUserProfile = ofy().load().type(UserProfile.class).id(id).now();
+
+        if (currentUserProfile.getNumberOfFlats() == 0) {
+            return null;
+        }
+        for (Long flatId: currentUserProfile.getFlatIds()) {
+            FlatInfo flatInfo = ofy().load().type(FlatInfo.class).id(flatId).now();
+
+            for (Long userId: flatInfo.getUserIds()) {
+                if (!tempIds.contains(userId)) {
+                    UserProfile userProfile = ofy().load().type(UserProfile.class).id(userId).now();
+                    profiles.add(userProfile);
+                    tempIds.add(userId);
+                }
+            }
+        }
+        return profiles;
+    }
 }

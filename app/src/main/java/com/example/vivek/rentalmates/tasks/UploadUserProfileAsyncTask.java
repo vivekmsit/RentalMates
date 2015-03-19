@@ -62,6 +62,7 @@ public class UploadUserProfileAsyncTask extends AsyncTask<Context, Void, String>
             SharedPreferences.Editor editor = prefs.edit();
             editor.putInt(AppConstants.USER_PROFILE_UPDATED, 1);
             editor.commit();
+            new GetUserProfileListAsyncTask(context).execute();
             Log.d(TAG, "inside insert");
         } catch (IOException e) {
             ioException = e;
