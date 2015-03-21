@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.vivek.rentalmates.others.AppData;
 
@@ -52,11 +51,11 @@ public class LoadProfileImageAsyncTask extends AsyncTask<String, Void, Bitmap> {
     protected void onPostExecute(Bitmap result) {
         if (result != null) {
             Log.d(TAG, "ProfilePicture retrieved successfully for " + this.emailId);
-            String path = context.getApplicationContext().getFilesDir().getPath() + "/" + this.emailId;
-            File file = new File(path);
+            String path = context.getApplicationContext().getFilesDir().getPath() + "/" + this.emailId + ".png";
             try {
-                OutputStream outputStream = new FileOutputStream(file);
-                result.compress(Bitmap.CompressFormat.JPEG, 85, outputStream);
+                OutputStream outputStream = new FileOutputStream(path);
+                Bitmap newResult = Bitmap.createScaledBitmap(result, 200, 200, true);
+                newResult.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
                 this.appData.getProfilePicturesPath().put(this.emailId, path);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();

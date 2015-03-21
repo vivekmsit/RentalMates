@@ -12,16 +12,28 @@
         android:layout_height="wrap_content"
         android:background="#ffff9c89" >
 
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="name"
+            android:paddingTop="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp" />
+
         <TextView android:id="@+id/amountListView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textStyle="bold"
+            android:layout_below="@+id/imageView"
             android:textAppearance="@android:style/TextAppearance.Small" />
 
         <!-- the container view for the title and description -->
         <RelativeLayout android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/amountListView"
+            android:layout_toRightOf="@id/imageView"
             android:layout_weight="3"
             android:layout_centerVertical="true" >
 
