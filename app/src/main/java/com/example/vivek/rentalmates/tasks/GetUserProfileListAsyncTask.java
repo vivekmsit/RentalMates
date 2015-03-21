@@ -80,6 +80,7 @@ public class GetUserProfileListAsyncTask extends AsyncTask<Context, Void, String
 
         if (msg.equals("SUCCESS_PROFILES")){
             Toast.makeText(context, "UserProfile List retrieved successfully/Number of Users: " + userProfiles.size(), Toast.LENGTH_SHORT).show();
+            appData.updateProfilePictures(context, userProfiles);
         }
         else if (msg.equals("SUCCESS_NO_PROFILES")) {
             Toast.makeText(context, "No user profiles available", Toast.LENGTH_LONG);

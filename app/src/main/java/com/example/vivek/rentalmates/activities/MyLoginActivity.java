@@ -22,9 +22,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.others.AppConstants;
+import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.services.BackendApiService;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
+import com.example.vivek.rentalmates.tasks.LoadProfileImageAsyncTask;
 import com.example.vivek.rentalmates.tasks.UploadUserProfileAsyncTask;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -52,6 +54,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
 
     public static BackendApiService backendService;
     boolean mBound = false;
+    private AppData appData;
 
     private boolean mIntentInProgress;
     private boolean mSignInClicked;
@@ -113,6 +116,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN).build();
+        appData = AppData.getInstance();
     }
 
     @Override
@@ -167,7 +171,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         UserProfile userProfile = getProfileInformation();
         txtName.setText(userProfile.getUserName());
         txtEmail.setText(userProfile.getEmailId());
-        setProfilePicture(userProfile.getProfilePhotoURL());
+        setProfilePicture(userProfile);
 
         if(prefs.contains(AppConstants.FIRST_TIME_LOGIN) && prefs.getBoolean(AppConstants.FIRST_TIME_LOGIN, true)) {
             Log.d(TAG, "FIRST_TIME_LOGIN already set to true");
@@ -370,44 +374,15 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
     /**
      * Function to set profilePicture View
      * */
-    public void setProfilePicture(String personPhotoUrl){
-        // by default the profile url gives 50x50 px image only
-        // we can replace the value with whatever dimension we want by
-        // replacing sz=X
-        personPhotoUrl = personPhotoUrl.substring(0,
-                personPhotoUrl.length() - 2)
-                + PROFILE_PIC_SIZE;
-
-        new LoadProfileImage(imgProfilePic).execute(personPhotoUrl);
-    }
-
-
-    /**
-     * Background Async task to load user profile picture from url
-     * */
-    private class LoadProfileImage extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public LoadProfileImage(ImageView bmImage) {
-            this.bmImage = bmImage;
+    public void setProfilePicture(UserProfile userProfile){
+        String emailId = userProfile.getEmailId();
+        Bitmap bm = appData.getProfilePictureBitmap(this, emailId);
+        if (bm == null) {
+            Toast.makeText(this, "no profile picture found", Toast.LENGTH_LONG).show();
+            Log.d(TAG, "no profile picture found");
+            return;
         }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
+        imgProfilePic.setImageBitmap(bm);
     }
 
     /** Defines callbacks for service binding, passed to bindService() */
