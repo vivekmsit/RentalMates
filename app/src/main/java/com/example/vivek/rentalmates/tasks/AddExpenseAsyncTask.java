@@ -19,6 +19,7 @@ import com.example.vivek.rentalmates.backend.flatInfoApi.FlatInfoApi;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
 import com.example.vivek.rentalmates.others.AppConstants;
+import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.others.LocalExpenseData;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
@@ -38,11 +39,13 @@ public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
     AddExpenseActivity activity;
     SharedPreferences prefs;
     IOException ioException;
+    AppData appData;
 
     public AddExpenseAsyncTask(AddExpenseActivity expenseActivity, Context context, final ExpenseData expenseData) {
         this.context = context;
         this.ed = expenseData;
         this.activity = expenseActivity;
+        appData = AppData.getInstance();
         prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
     }
@@ -67,11 +70,13 @@ public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
                 if (expenses == null){
                     Log.d(TAG, "expenses is null");
                 } else {
-                    msg = LocalExpenseData.storeExpenseDataList(context, expenses);
-                    if (msg.equals("EXCEPTION")){
-                        msg = "FILEEXCEPTION";
-                        return msg;
+                    boolean status = appData.storeExpenseDataList(context, expenses);
+                    if (status) {
+                        msg = "SUCCESS";
+                    } else {
+                        msg = "EXCEPTION";
                     }
+                    return msg;
                 }
             }
             msg = "SUCCESS";

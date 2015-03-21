@@ -18,6 +18,7 @@ import com.example.vivek.rentalmates.fragments.NewsFeedFragment;
 import com.example.vivek.rentalmates.fragments.SearchRoomiesFragment;
 import com.example.vivek.rentalmates.fragments.SettingsFragment;
 import com.example.vivek.rentalmates.others.AppConstants;
+import com.example.vivek.rentalmates.others.AppData;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;

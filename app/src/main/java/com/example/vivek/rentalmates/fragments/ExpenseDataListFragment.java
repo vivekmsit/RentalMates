@@ -1,5 +1,6 @@
 package com.example.vivek.rentalmates.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -11,6 +12,7 @@ import com.example.vivek.rentalmates.adapters.ExpenseListViewAdapter;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
+import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.others.LocalExpenseData;
 import com.example.vivek.rentalmates.viewholders.ExpenseListViewItem;
 
@@ -25,6 +27,8 @@ public class ExpenseDataListFragment extends android.support.v4.app.ListFragment
 
     private static final String TAG = "ExpenseList_Debug";
 
+    AppData appData;
+    Context context;
     private List<ExpenseListViewItem> mItems = new ArrayList<>();
 
     public ExpenseDataListFragment() {
@@ -34,8 +38,10 @@ public class ExpenseDataListFragment extends android.support.v4.app.ListFragment
     public void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "inside onCreate");
         super.onCreate(savedInstanceState);
+        appData = AppData.getInstance();
+        context = getActivity().getApplicationContext();
 
-        List<ExpenseData> expenses = LocalExpenseData.restoreExpenseDataList(getActivity().getApplicationContext());
+        List<ExpenseData> expenses = appData.getExpenses();
         if (expenses == null){
             ExpenseData data = new ExpenseData();
             data.setAmount(0);

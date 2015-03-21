@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.activities.MyLoginActivity;
+import com.example.vivek.rentalmates.others.AppData;
 
 import java.io.File;
 
@@ -29,6 +30,7 @@ public class SettingsFragment extends android.support.v4.app.Fragment implements
 
     private Button accountButton;
     private Button clearDataButton;
+    private AppData appData;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -50,6 +52,7 @@ public class SettingsFragment extends android.support.v4.app.Fragment implements
         clearDataButton = (Button) getView().findViewById(R.id.cleardatabutton);
         accountButton.setOnClickListener(this);
         clearDataButton.setOnClickListener(this);
+        appData = AppData.getInstance();
     }
 
     @Override
@@ -69,11 +72,7 @@ public class SettingsFragment extends android.support.v4.app.Fragment implements
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.clear();
                 editor.commit();
-                String path = getActivity().getApplicationContext().getFilesDir().getPath()+"/" + "expenses.tmp";
-                File file = new File(path);
-                file.delete();
-                Toast.makeText(getActivity(), "SharedPreferences data cleared", Toast.LENGTH_LONG).show();
-                Log.d(TAG, "SharedPreferences data cleared");
+                appData.clearAppData(getActivity().getApplicationContext());
                 break;
 
             default:

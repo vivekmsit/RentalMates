@@ -9,14 +9,18 @@ import android.os.Bundle;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.others.AppConstants;
+import com.example.vivek.rentalmates.others.AppData;
 
 public class FirstActivity extends ActionBarActivity {
     private static final String TAG = "FirstActivity_Debug";
+    AppData appData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
+        appData = AppData.getInstance();
+        appData.restoreAppData(this);
     }
 
     @Override

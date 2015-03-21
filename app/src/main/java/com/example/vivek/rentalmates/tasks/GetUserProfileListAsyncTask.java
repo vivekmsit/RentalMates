@@ -15,6 +15,7 @@ import com.example.vivek.rentalmates.backend.userProfileApi.UserProfileApi;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfileCollection;
 import com.example.vivek.rentalmates.others.AppConstants;
+import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.others.LocalUserProfile;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
@@ -31,10 +32,12 @@ public class GetUserProfileListAsyncTask extends AsyncTask<Context, Void, String
     private Context context;
     SharedPreferences prefs;
     IOException ioException;
+    AppData appData;
     List<UserProfile> userProfiles = new ArrayList<>();
 
     public GetUserProfileListAsyncTask(Context context) {
         this.context = context;
+        appData = AppData.getInstance();
         prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
     }
@@ -57,7 +60,7 @@ public class GetUserProfileListAsyncTask extends AsyncTask<Context, Void, String
             else {
                 userProfiles = userProfileCollection.getItems();
                 if (userProfiles != null) {
-                    LocalUserProfile.storeUserProfileList(context, userProfiles);
+                    appData.storeUserProfileList(context, userProfiles);
                 }
                 msg = "SUCCESS_PROFILES";
             }

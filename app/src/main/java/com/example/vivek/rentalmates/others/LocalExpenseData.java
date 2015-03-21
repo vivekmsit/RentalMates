@@ -58,6 +58,9 @@ public class LocalExpenseData implements Serializable{
     }
 
     public static List<ExpenseData> convertLocalExpenseToExpense(List<LocalExpenseData> expenses){
+        if (expenses == null) {
+            return null;
+        }
         List<ExpenseData> localExpenses = new ArrayList<>();
         for (LocalExpenseData expenseData: expenses){
             ExpenseData data = new ExpenseData();
@@ -70,6 +73,9 @@ public class LocalExpenseData implements Serializable{
     }
 
     public static List<LocalExpenseData> convertExpenseToLocalExpense(List<ExpenseData> expenses){
+        if (expenses == null) {
+            return null;
+        }
         List<LocalExpenseData> localExpenses = new ArrayList<>();
         for (ExpenseData expenseData: expenses){
             LocalExpenseData data = new LocalExpenseData();
@@ -79,59 +85,5 @@ public class LocalExpenseData implements Serializable{
             localExpenses.add(data);
         }
         return localExpenses;
-    }
-
-    public static String storeExpenseDataList(Context context, List<ExpenseData> expenses){
-        String message = "";
-        List<LocalExpenseData> localExpenses = convertExpenseToLocalExpense(expenses);
-        try {
-            String path = context.getApplicationContext().getFilesDir().getPath();
-            Log.d(TAG, "path is: " + path);
-            FileOutputStream fos = new FileOutputStream(path + "/" + "expenses.tmp");
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(localExpenses);
-            oos.close();
-            Log.d(TAG, "localExpenses stored successfully");
-            message = "SUCCESS";
-        } catch (IOException e) {
-            Log.d(TAG, "exception occurred during writing to file " + e.toString());
-            e.printStackTrace();
-            message = "EXCEPTION";
-        }
-        return message;
-    }
-
-    public static List<ExpenseData> restoreExpenseDataList(Context context) {
-        List<LocalExpenseData> localExpenses = new ArrayList<>();
-        String path = context.getApplicationContext().getFilesDir().getPath();
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(path + "/" + "expenses.tmp");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-        ObjectInputStream ois = null;
-        try {
-            ois = new ObjectInputStream(fis);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-        try {
-            localExpenses = (List<LocalExpenseData>) ois.readObject();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            Log.d(TAG, "localExpenses read successfully");
-            ois.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        List<ExpenseData> restoredList = convertLocalExpenseToExpense(localExpenses);
-        return restoredList;
     }
 }

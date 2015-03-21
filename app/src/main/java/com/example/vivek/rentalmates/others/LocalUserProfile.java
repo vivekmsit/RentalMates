@@ -128,6 +128,9 @@ public class LocalUserProfile implements Serializable {
     }
 
     public static List<UserProfile> convertLocalUserProfileToUserProfile(List<LocalUserProfile> profiles){
+        if (profiles == null) {
+            return null;
+        }
         List<UserProfile> localUserProfiles = new ArrayList<>();
         for (LocalUserProfile profile: profiles){
             UserProfile data = new UserProfile();
@@ -144,6 +147,9 @@ public class LocalUserProfile implements Serializable {
     }
 
     public static List<LocalUserProfile> convertUserProfileToLocalUserProfile(List<UserProfile> profiles){
+        if (profiles == null) {
+            return null;
+        }
         List<LocalUserProfile> localUserProfiles = new ArrayList<>();
         for (UserProfile profile: profiles){
             LocalUserProfile data = new LocalUserProfile();
@@ -157,59 +163,5 @@ public class LocalUserProfile implements Serializable {
             localUserProfiles.add(data);
         }
         return localUserProfiles;
-    }
-
-    public static String storeUserProfileList(Context context, List<UserProfile> profiles){
-        String message = "";
-        List<LocalUserProfile> localUserProfiles = convertUserProfileToLocalUserProfile(profiles);
-        try {
-            String path = context.getApplicationContext().getFilesDir().getPath();
-            Log.d(TAG, "path is: " + path);
-            FileOutputStream fos = new FileOutputStream(path + "/" + "userProfiles.tmp");
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(localUserProfiles);
-            oos.close();
-            Log.d(TAG, "localUserProfiles stored successfully");
-            message = "SUCCESS";
-        } catch (IOException e) {
-            Log.d(TAG, "exception occurred during writing to file " + e.toString());
-            e.printStackTrace();
-            message = "EXCEPTION";
-        }
-        return message;
-    }
-
-    public static List<UserProfile> restoreUserProfileList(Context context) {
-        List<LocalUserProfile> localUserProfiles = new ArrayList<>();
-        String path = context.getApplicationContext().getFilesDir().getPath();
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(path + "/" + "userProfiles.tmp");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-        ObjectInputStream ois = null;
-        try {
-            ois = new ObjectInputStream(fis);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-        try {
-            localUserProfiles = (List<LocalUserProfile>) ois.readObject();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            Log.d(TAG, "localUserProfiles read successfully");
-            ois.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        List<UserProfile> restoredList = convertLocalUserProfileToUserProfile(localUserProfiles);
-        return restoredList;
     }
 }

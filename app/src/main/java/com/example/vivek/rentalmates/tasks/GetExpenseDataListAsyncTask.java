@@ -19,6 +19,7 @@ import com.example.vivek.rentalmates.backend.flatInfoApi.FlatInfoApi;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseDataCollection;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
+import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.others.LocalExpenseData;
 import com.example.vivek.rentalmates.services.BackendApiService;
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -37,11 +38,13 @@ public class GetExpenseDataListAsyncTask extends AsyncTask<Context, Void, String
     IOException ioException;
     boolean appStartup;
     Long flatId;
+    AppData appData;
 
     public GetExpenseDataListAsyncTask(Context context, final Long flatId, final boolean startup) {
         this.context = context;
         this.appStartup = startup;
         this.flatId = flatId;
+        this.appData = AppData.getInstance();
 
         prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
@@ -64,7 +67,7 @@ public class GetExpenseDataListAsyncTask extends AsyncTask<Context, Void, String
             else {
                 List<ExpenseData> expenses = expensesCollection.getItems();
                 if (expenses != null) {
-                    msg = LocalExpenseData.storeExpenseDataList(context, expenses);
+                    this.appData.storeExpenseDataList(context, expenses);
                 }
             }
             Log.d(TAG, "inside addExpense");
