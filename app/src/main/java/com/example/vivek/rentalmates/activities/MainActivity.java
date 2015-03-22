@@ -17,15 +17,15 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
     }
 
-    public void onGcmRegisterButtonClick(View v){
+    public void onGcmRegisterButtonClick(View v) {
         new GcmRegistrationAsyncTask(this).execute();
     }
 
-    public void onGetUserDataButtonClick(View v){
+    public void onGetUserDataButtonClick(View v) {
         //To be implemented
     }
 
-    public void onQueryProfilesButtonClick(View v){
+    public void onQueryProfilesButtonClick(View v) {
         //To be implemented
     }
 

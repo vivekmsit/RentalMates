@@ -1,24 +1,25 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.vivek.rentalmates.fragments.SettingsFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
     <Button
-        android:layout_margin="16dp"
+        android:id="@+id/accountbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="My Account"
-        android:id="@+id/accountbutton"
-        android:layout_gravity="left|top" />
+        android:layout_gravity="left|top"
+        android:layout_margin="16dp"
+        android:text="My Account" />
 
     <Button
-        android:layout_margin="16dp"
+        android:id="@+id/cleardatabutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Clear App Data"
-        android:id="@+id/cleardatabutton"
-        android:layout_gravity="right|top" />
+        android:layout_gravity="right|top"
+        android:layout_margin="16dp"
+        android:text="Clear App Data" />
 
 </FrameLayout>

@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -18,28 +19,34 @@ import com.example.vivek.rentalmates.fragments.NewsFeedFragment;
 import com.example.vivek.rentalmates.fragments.SearchRoomiesFragment;
 import com.example.vivek.rentalmates.fragments.SettingsFragment;
 import com.example.vivek.rentalmates.others.AppConstants;
-import com.example.vivek.rentalmates.others.AppData;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 
-public class MainTabActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+public class MainTabActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "MainTabActivity_Debug";
 
-    ViewPager viewPager;
+    private ViewPager viewPager;
+    private Toolbar toolBar;
     private GoogleApiClient mGoogleApiClient;
-    SharedPreferences prefs;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "inside onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tab);
-        viewPager = (ViewPager)findViewById(R.id.pager);
+
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        toolBar = (Toolbar) findViewById(R.id.app_bar);
+
+        setSupportActionBar(toolBar);
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         viewPager.setAdapter(new MyAdapter(fragmentManager));
+
         // Initializing google plus api client
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -47,6 +54,7 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .build();
+
         prefs = this.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
         if (prefs.contains(AppConstants.SIGN_IN_COMPLETED)) {
@@ -55,7 +63,8 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
             editor.putBoolean(AppConstants.FIRST_TIME_LOGIN, true);
             editor.commit();
         }
-        this.setTitle(getTitle()+ ": " + prefs.getString(AppConstants.PRIMARY_FLAT_NAME, "no_flat_name"));
+        String finalTitle = toolBar.getTitle() + prefs.getString(AppConstants.PRIMARY_FLAT_NAME, "no_flat_name");
+        toolBar.setTitle(finalTitle);
     }
 
     @Override
@@ -89,7 +98,7 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Toast.makeText(this, "Sign In Failed", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "inside onConnectionFailed");
-        Log.d(TAG, "Failure Reason: "+ connectionResult.toString());
+        Log.d(TAG, "Failure Reason: " + connectionResult.toString());
         if (!connectionResult.hasResolution()) {
             GooglePlayServicesUtil.getErrorDialog(connectionResult.getErrorCode(), this,
                     0).show();
@@ -107,13 +116,13 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
             Fragment fragment = null;
             if (position == 0) {
                 fragment = new MainFragment();
-            }else if (position == 1) {
+            } else if (position == 1) {
                 fragment = new ExpenseDataListFragment();
             } else if (position == 2) {
                 fragment = new SearchRoomiesFragment();
             } else if (position == 3) {
                 fragment = new NewsFeedFragment();
-            } else if (position == 4){
+            } else if (position == 4) {
                 fragment = new SettingsFragment();
             }
             return fragment;
@@ -128,16 +137,15 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
         public CharSequence getPageTitle(int position) {
             if (position == 0) {
                 return "MainFragment";
-            }else if (position == 1) {
+            } else if (position == 1) {
                 return "Expenses";
             } else if (position == 2) {
-                return "Search Roomies";
+                return "Search Roommates";
             } else if (position == 3) {
                 return "News Feed";
             } else if (position == 4) {
                 return "Settings";
-            }
-            else {
+            } else {
                 return null;
             }
         }

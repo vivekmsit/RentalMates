@@ -43,7 +43,7 @@ public class LocalUserProfile implements Serializable {
     private int numberOfFlats;
 
     //Default Constructor
-    public LocalUserProfile(){
+    public LocalUserProfile() {
 
     }
 
@@ -127,12 +127,12 @@ public class LocalUserProfile implements Serializable {
         this.numberOfFlats = numberOfFlats;
     }
 
-    public static List<UserProfile> convertLocalUserProfileToUserProfile(List<LocalUserProfile> profiles){
+    public static List<UserProfile> convertLocalUserProfileToUserProfile(List<LocalUserProfile> profiles) {
         if (profiles == null) {
             return null;
         }
         List<UserProfile> localUserProfiles = new ArrayList<>();
-        for (LocalUserProfile profile: profiles){
+        for (LocalUserProfile profile : profiles) {
             UserProfile data = new UserProfile();
 
             data.setId(profile.getUserProfileId());
@@ -146,12 +146,12 @@ public class LocalUserProfile implements Serializable {
         return localUserProfiles;
     }
 
-    public static List<LocalUserProfile> convertUserProfileToLocalUserProfile(List<UserProfile> profiles){
+    public static List<LocalUserProfile> convertUserProfileToLocalUserProfile(List<UserProfile> profiles) {
         if (profiles == null) {
             return null;
         }
         List<LocalUserProfile> localUserProfiles = new ArrayList<>();
-        for (UserProfile profile: profiles){
+        for (UserProfile profile : profiles) {
             LocalUserProfile data = new LocalUserProfile();
 
             data.setUserProfileId(profile.getId());

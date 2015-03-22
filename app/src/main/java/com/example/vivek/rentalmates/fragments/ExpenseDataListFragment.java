@@ -42,14 +42,13 @@ public class ExpenseDataListFragment extends android.support.v4.app.ListFragment
         context = getActivity().getApplicationContext();
 
         List<ExpenseData> expenses = appData.getExpenses();
-        if (expenses == null){
+        if (expenses == null) {
             ExpenseData data = new ExpenseData();
             data.setAmount(0);
             data.setDescription("Description");
             data.setOwnerEmailId("vivekmsit@gmail.com");
             mItems.add(new ExpenseListViewItem(data));
-        }
-        else {
+        } else {
             for (ExpenseData expenseData : expenses) {
                 mItems.add(new ExpenseListViewItem(expenseData));
             }

@@ -34,7 +34,7 @@ public class ExpenseListViewAdapter extends ArrayAdapter<ExpenseListViewItem> {
         Log.d(TAG, "inside getView()");
         ViewHolder viewHolder;
 
-        if(convertView == null) {
+        if (convertView == null) {
             // inflate the GridView item layout
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.expense_data_list_item, parent, false);

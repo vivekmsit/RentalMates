@@ -58,7 +58,7 @@ public class SettingsFragment extends android.support.v4.app.Fragment implements
     @Override
     public void onClick(View v) {
 
-        switch (v.getId()){
+        switch (v.getId()) {
 
             case R.id.accountbutton:
                 Log.d(TAG, "account button clicked");

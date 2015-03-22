@@ -45,19 +45,18 @@ public class GetUserProfileListAsyncTask extends AsyncTask<Context, Void, String
     @Override
     protected String doInBackground(Context... params) {
         String msg = "";
-        if (ufService == null){
+        if (ufService == null) {
             UserProfileApi.Builder builder1 = new UserProfileApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
                     .setRootUrl("https://kinetic-wind-814.appspot.com/_ah/api/");
             ufService = builder1.build();
         }
         try {
             Long userProfileId = prefs.getLong(AppConstants.USER_PROFILE_ID, 0);
-            UserProfileCollection userProfileCollection= ufService.getUserProfileList(userProfileId).execute();
-            if (userProfileCollection == null){
+            UserProfileCollection userProfileCollection = ufService.getUserProfileList(userProfileId).execute();
+            if (userProfileCollection == null) {
                 Log.d(TAG, "expenses is null");
                 msg = "SUCCESS_NO_PROFILES";
-            }
-            else {
+            } else {
                 userProfiles = userProfileCollection.getItems();
                 if (userProfiles != null) {
                     appData.storeUserProfileList(context, userProfiles);
@@ -78,18 +77,15 @@ public class GetUserProfileListAsyncTask extends AsyncTask<Context, Void, String
 
         Log.d(TAG, "inside onPostExecute() for GetUserProfileListAsyncTask");
 
-        if (msg.equals("SUCCESS_PROFILES")){
+        if (msg.equals("SUCCESS_PROFILES")) {
             Toast.makeText(context, "UserProfile List retrieved successfully/Number of Users: " + userProfiles.size(), Toast.LENGTH_SHORT).show();
             appData.updateProfilePictures(context, userProfiles);
-        }
-        else if (msg.equals("SUCCESS_NO_PROFILES")) {
+        } else if (msg.equals("SUCCESS_NO_PROFILES")) {
             Toast.makeText(context, "No user profiles available", Toast.LENGTH_LONG);
-        }
-        else if (msg.equals("EXCEPTION")){
-            Log.d(TAG, "IOException: "+ ioException.getMessage());
-            Toast.makeText(context, "IOException: "+ ioException.getMessage(), Toast.LENGTH_LONG).show();
-        }
-        else {
+        } else if (msg.equals("EXCEPTION")) {
+            Log.d(TAG, "IOException: " + ioException.getMessage());
+            Toast.makeText(context, "IOException: " + ioException.getMessage(), Toast.LENGTH_LONG).show();
+        } else {
             Log.d(TAG, "Unable to upload ExpenseData");
             Toast.makeText(context, "Unable to upload ExpenseData", Toast.LENGTH_LONG).show();
         }

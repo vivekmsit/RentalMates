@@ -49,7 +49,6 @@ public class LocalFlatInfo {
     private int numberOfUsers;
 
 
-
     public Long getFlatId() {
         return flatId;
     }
@@ -167,12 +166,12 @@ public class LocalFlatInfo {
 
     }
 
-    public static List<FlatInfo> convertLocalFlatInfoToFlatInfo(List<LocalFlatInfo> localFlats){
+    public static List<FlatInfo> convertLocalFlatInfoToFlatInfo(List<LocalFlatInfo> localFlats) {
         if (localFlats == null) {
             return null;
         }
         List<FlatInfo> flats = new ArrayList<>();
-        for (LocalFlatInfo localFlat: localFlats){
+        for (LocalFlatInfo localFlat : localFlats) {
             FlatInfo data = new FlatInfo();
 
             data.setUserProfileId(localFlat.getUserProfileId());
@@ -189,12 +188,12 @@ public class LocalFlatInfo {
         return flats;
     }
 
-    public static List<LocalFlatInfo> convertFlatInfoToLocalFlatInfo(List<FlatInfo> flats){
+    public static List<LocalFlatInfo> convertFlatInfoToLocalFlatInfo(List<FlatInfo> flats) {
         if (flats == null) {
             return null;
         }
         List<LocalFlatInfo> localFlats = new ArrayList<>();
-        for (FlatInfo flat: flats){
+        for (FlatInfo flat : flats) {
             LocalFlatInfo data = new LocalFlatInfo();
 
             data.setUserProfileId(flat.getUserProfileId());

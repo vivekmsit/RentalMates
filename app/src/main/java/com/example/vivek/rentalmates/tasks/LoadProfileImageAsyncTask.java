@@ -20,7 +20,7 @@ import java.io.OutputStream;
 
 /**
  * Background Async task to load user profile picture from url
- * */
+ */
 public class LoadProfileImageAsyncTask extends AsyncTask<String, Void, Bitmap> {
 
     private static final String TAG = "LoadProfileImage_Debug";

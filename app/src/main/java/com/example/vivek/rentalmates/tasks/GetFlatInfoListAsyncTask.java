@@ -45,19 +45,18 @@ public class GetFlatInfoListAsyncTask extends AsyncTask<Context, Void, String> {
     @Override
     protected String doInBackground(Context... params) {
         String msg = "";
-        if (ufService == null){
+        if (ufService == null) {
             UserProfileApi.Builder builder1 = new UserProfileApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
                     .setRootUrl("https://kinetic-wind-814.appspot.com/_ah/api/");
             ufService = builder1.build();
         }
         try {
             Long userProfileId = prefs.getLong(AppConstants.USER_PROFILE_ID, 0);
-            FlatInfoCollection flatInfoCollection= ufService.getFlatInfoList(userProfileId).execute();
-            if (flatInfoCollection == null){
+            FlatInfoCollection flatInfoCollection = ufService.getFlatInfoList(userProfileId).execute();
+            if (flatInfoCollection == null) {
                 Log.d(TAG, "expenses is null");
                 msg = "SUCCESS_NO_FLATS";
-            }
-            else {
+            } else {
                 flats = flatInfoCollection.getItems();
                 msg = "SUCCESS_FLATS";
             }
@@ -75,7 +74,7 @@ public class GetFlatInfoListAsyncTask extends AsyncTask<Context, Void, String> {
 
         Log.d(TAG, "inside onPostExecute() for GetFlatInfoListAsyncTask");
 
-        if (msg.equals("SUCCESS_FLATS")){
+        if (msg.equals("SUCCESS_FLATS")) {
             Toast.makeText(context, "FlatInfo List retrieved successfully", Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent(context, DetermineFlatActivity.class);
@@ -83,8 +82,8 @@ public class GetFlatInfoListAsyncTask extends AsyncTask<Context, Void, String> {
             List<Long> flatIds = new ArrayList<>();
             List<String> flatNames = new ArrayList<>();
             int current = 0;
-            for (FlatInfo flatInfo: flats) {
-                flatIds.add(current,flatInfo.getFlatId());
+            for (FlatInfo flatInfo : flats) {
+                flatIds.add(current, flatInfo.getFlatId());
                 flatNames.add(current, flatInfo.getFlatName());
                 current++;
             }
@@ -92,16 +91,13 @@ public class GetFlatInfoListAsyncTask extends AsyncTask<Context, Void, String> {
             intent.putExtra("flatNames", (java.io.Serializable) flatNames);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);
-        }
-        else if (msg.equals("SUCCESS_NO_FLATS")) {
+        } else if (msg.equals("SUCCESS_NO_FLATS")) {
             //rare case
             Toast.makeText(context, "No flat registered for given user", Toast.LENGTH_LONG).show();
-        }
-        else if (msg.equals("EXCEPTION")){
-            Log.d(TAG, "IOException: "+ ioException.getMessage());
-            Toast.makeText(context, "IOException: "+ ioException.getMessage(), Toast.LENGTH_LONG).show();
-        }
-        else {
+        } else if (msg.equals("EXCEPTION")) {
+            Log.d(TAG, "IOException: " + ioException.getMessage());
+            Toast.makeText(context, "IOException: " + ioException.getMessage(), Toast.LENGTH_LONG).show();
+        } else {
             Log.d(TAG, "Unable to retrieve FlatInfo List");
             Toast.makeText(context, "Unable to retrieve FlatInfo List", Toast.LENGTH_LONG).show();
         }

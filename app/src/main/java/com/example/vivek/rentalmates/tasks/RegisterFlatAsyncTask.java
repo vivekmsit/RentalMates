@@ -49,7 +49,7 @@ public class RegisterFlatAsyncTask extends AsyncTask<Context, Void, String> {
     @Override
     protected String doInBackground(Context... params) {
         String msg = "";
-        if (flatService == null){
+        if (flatService == null) {
             FlatInfoApi.Builder builder1 = new FlatInfoApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
                     .setRootUrl("https://kinetic-wind-814.appspot.com/_ah/api/");
             flatService = builder1.build();
@@ -57,11 +57,11 @@ public class RegisterFlatAsyncTask extends AsyncTask<Context, Void, String> {
         try {
             FlatInfo uploadedFlatInfo = flatService.registerNewFlat(fi).execute();
             String status = uploadedFlatInfo.getCreateFlatResult();
-            if (status.equals("NEW_FLAT_INFO")){
+            if (status.equals("NEW_FLAT_INFO")) {
                 BackendApiService.storePrimaryFlatId(this.context, uploadedFlatInfo.getFlatId());
                 BackendApiService.storePrimaryFlatName(this.context, uploadedFlatInfo.getFlatName());
                 msg = "SUCCESS_NEW_FLAT";
-            } else if (status.equals("OLD_FLAT_INFO")){
+            } else if (status.equals("OLD_FLAT_INFO")) {
                 msg = "SUCCESS_OLD_FLAT";
             }
             Log.d(TAG, "inside insert");
@@ -79,7 +79,7 @@ public class RegisterFlatAsyncTask extends AsyncTask<Context, Void, String> {
         Log.d(TAG, "inside onPostExecute() for RegisterFlatAsyncTask");
         activity.setRegisterButtonClicked(false);
 
-        if (msg.equals("SUCCESS_NEW_FLAT")){
+        if (msg.equals("SUCCESS_NEW_FLAT")) {
             Toast.makeText(context, "FlatInfo uploaded", Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent(context, MainTabActivity.class);
@@ -87,12 +87,10 @@ public class RegisterFlatAsyncTask extends AsyncTask<Context, Void, String> {
             context.startActivity(intent);
         } else if (msg.equals("SUCCESS_OLD_FLAT")) {
             Toast.makeText(context, "Flat with given name already registered. \n Please enter different name", Toast.LENGTH_LONG).show();
-        }
-        else if (msg.equals("EXCEPTION")){
-            Log.d(TAG, "IOException: "+ ioException.getMessage());
-            Toast.makeText(context, "IOException: "+ ioException.getMessage(), Toast.LENGTH_LONG).show();
-        }
-        else {
+        } else if (msg.equals("EXCEPTION")) {
+            Log.d(TAG, "IOException: " + ioException.getMessage());
+            Toast.makeText(context, "IOException: " + ioException.getMessage(), Toast.LENGTH_LONG).show();
+        } else {
             Log.d(TAG, "Unable to upload FlatInfo data");
             Toast.makeText(context, "Unable to upload FlatInfo data", Toast.LENGTH_LONG).show();
         }

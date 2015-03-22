@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  * Created by vivek on 3/20/2015.
  */
-public class AppData implements Serializable{
+public class AppData implements Serializable {
 
     private static final String TAG = "AppData_Debug";
 
@@ -101,7 +101,7 @@ public class AppData implements Serializable{
         return storeAppData(context);
     }
 
-    public boolean storeAppData(Context context){
+    public boolean storeAppData(Context context) {
         boolean status = false;
         String path = context.getApplicationContext().getFilesDir().getPath();
         Log.d(TAG, "path is: " + path);
@@ -150,8 +150,8 @@ public class AppData implements Serializable{
         return true;
     }
 
-    public void  clearAppData(Context context){
-        String path = context.getFilesDir().getPath()+"/" + "appData.tmp";
+    public void clearAppData(Context context) {
+        String path = context.getFilesDir().getPath() + "/" + "appData.tmp";
         File file = new File(path);
         file.delete();
         this.userProfiles = null;
@@ -163,9 +163,9 @@ public class AppData implements Serializable{
 
     public boolean updateProfilePictures(Context context, List<UserProfile> currentProfiles) {
         String emailId;
-        for (UserProfile userProfile: currentProfiles) {
+        for (UserProfile userProfile : currentProfiles) {
             emailId = userProfile.getEmailId();
-            if (!profilePicturesPath.containsKey(emailId)){
+            if (!profilePicturesPath.containsKey(emailId)) {
                 String personPhotoUrl = userProfile.getProfilePhotoURL();
                 personPhotoUrl = personPhotoUrl.substring(0,
                         personPhotoUrl.length() - 2)

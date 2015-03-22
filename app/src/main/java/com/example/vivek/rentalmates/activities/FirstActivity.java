@@ -29,7 +29,7 @@ public class FirstActivity extends ActionBarActivity {
         final Class<? extends Activity> activityClass;
         SharedPreferences prefs = this.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
-        if(prefs.contains(AppConstants.SIGN_IN_COMPLETED) && prefs.getBoolean(AppConstants.SIGN_IN_COMPLETED, true))
+        if (prefs.contains(AppConstants.SIGN_IN_COMPLETED) && prefs.getBoolean(AppConstants.SIGN_IN_COMPLETED, true))
             activityClass = MainTabActivity.class;
         else
             activityClass = MyLoginActivity.class;

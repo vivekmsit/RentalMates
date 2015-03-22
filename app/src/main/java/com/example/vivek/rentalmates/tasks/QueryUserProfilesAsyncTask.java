@@ -36,14 +36,14 @@ public class QueryUserProfilesAsyncTask extends AsyncTask<Context, Void, String>
     @Override
     protected String doInBackground(Context... params) {
         String msg = "";
-        if (ufService == null){
+        if (ufService == null) {
             UserProfileApi.Builder builder1 = new UserProfileApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
                     .setRootUrl("https://kinetic-wind-814.appspot.com/_ah/api/");
             ufService = builder1.build();
         }
         try {
             UserProfileCollection ufc = ufService.queryUserProfiles(type, value).execute();
-            if (ufc == null){
+            if (ufc == null) {
                 Log.d(TAG, "No values are present");
                 return msg;
             }
@@ -52,7 +52,7 @@ public class QueryUserProfilesAsyncTask extends AsyncTask<Context, Void, String>
                 msg = "No profiles matched query";
                 return msg;
             }
-            for (UserProfile uf : profiles){
+            for (UserProfile uf : profiles) {
                 msg = msg + "\n" + uf.getUserName();
                 Log.d(TAG, "msg is: " + msg);
             }

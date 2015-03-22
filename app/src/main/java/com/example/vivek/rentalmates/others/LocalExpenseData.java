@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by vivek on 3/11/2015.
  */
-public class LocalExpenseData implements Serializable{
+public class LocalExpenseData implements Serializable {
 
     private static final String TAG = "LocalExpenseData_Debug";
 
@@ -27,7 +27,7 @@ public class LocalExpenseData implements Serializable{
     private String description;
     private String ownerEmailId;
 
-    public LocalExpenseData(){
+    public LocalExpenseData() {
         this.amount = 0;
         this.description = "description";
         this.ownerEmailId = "emailId";
@@ -57,14 +57,14 @@ public class LocalExpenseData implements Serializable{
         this.ownerEmailId = emailId;
     }
 
-    public static List<ExpenseData> convertLocalExpenseToExpense(List<LocalExpenseData> expenses){
+    public static List<ExpenseData> convertLocalExpenseToExpense(List<LocalExpenseData> expenses) {
         if (expenses == null) {
             return null;
         }
         List<ExpenseData> localExpenses = new ArrayList<>();
-        for (LocalExpenseData expenseData: expenses){
+        for (LocalExpenseData expenseData : expenses) {
             ExpenseData data = new ExpenseData();
-            data.setAmount( expenseData.getAmount());
+            data.setAmount(expenseData.getAmount());
             data.setDescription(expenseData.getDescription());
             data.setOwnerEmailId(expenseData.getOwnerEmailId());
             localExpenses.add(data);
@@ -72,14 +72,14 @@ public class LocalExpenseData implements Serializable{
         return localExpenses;
     }
 
-    public static List<LocalExpenseData> convertExpenseToLocalExpense(List<ExpenseData> expenses){
+    public static List<LocalExpenseData> convertExpenseToLocalExpense(List<ExpenseData> expenses) {
         if (expenses == null) {
             return null;
         }
         List<LocalExpenseData> localExpenses = new ArrayList<>();
-        for (ExpenseData expenseData: expenses){
+        for (ExpenseData expenseData : expenses) {
             LocalExpenseData data = new LocalExpenseData();
-            data.setAmount( expenseData.getAmount());
+            data.setAmount(expenseData.getAmount());
             data.setDescription(expenseData.getDescription());
             data.setOwnerEmailId(expenseData.getOwnerEmailId());
             localExpenses.add(data);

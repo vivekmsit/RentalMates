@@ -33,7 +33,7 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
     SharedPreferences prefs;
 
 
-    public void setAddExpenseButtonClicked(boolean  value){
+    public void setAddExpenseButtonClicked(boolean value) {
         addExpenseButtonClicked = value;
     }
 
@@ -62,7 +62,7 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
     public void onClick(View v) {
         Log.d(TAG, "inside onClick");
 
-        switch(v.getId()){
+        switch (v.getId()) {
 
             case R.id.editUsersButton:
                 //To be implemented
@@ -75,7 +75,7 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
                 break;
 
             case R.id.addExpenseButton:
-                if (addExpenseButtonClicked == true || verifyExpenseData() == false){
+                if (addExpenseButtonClicked == true || verifyExpenseData() == false) {
                     return;
                 }
                 addExpenseButtonClicked = true;

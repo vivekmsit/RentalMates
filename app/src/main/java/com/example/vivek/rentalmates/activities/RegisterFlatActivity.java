@@ -28,7 +28,7 @@ public class RegisterFlatActivity extends ActionBarActivity {
     Button registerButton;
     SharedPreferences prefs;
 
-    public void setRegisterButtonClicked(boolean value){
+    public void setRegisterButtonClicked(boolean value) {
         registerButtonClicked = value;
     }
 
@@ -48,8 +48,8 @@ public class RegisterFlatActivity extends ActionBarActivity {
                 Context.MODE_PRIVATE);
     }
 
-    void updateView(boolean isFlatAlreadyRegistered){
-        if (isFlatAlreadyRegistered){
+    void updateView(boolean isFlatAlreadyRegistered) {
+        if (isFlatAlreadyRegistered) {
             textView1.setVisibility(View.GONE);
             textView2.setVisibility(View.GONE);
             textView3.setVisibility(View.GONE);
@@ -57,8 +57,7 @@ public class RegisterFlatActivity extends ActionBarActivity {
             button1.setVisibility(View.GONE);
             registerButton.setVisibility(View.GONE);
             registerButton.setText("NEXT");
-        }
-        else {
+        } else {
             textView1.setVisibility(View.VISIBLE);
             textView2.setVisibility(View.VISIBLE);
             textView3.setVisibility(View.VISIBLE);
@@ -68,7 +67,7 @@ public class RegisterFlatActivity extends ActionBarActivity {
         }
     }
 
-    public void onRegisterFlatButtonClick(View view){
+    public void onRegisterFlatButtonClick(View view) {
         if (registerButtonClicked == true || verifyFlatInfoData() == false) {
             return;
         }

@@ -25,7 +25,7 @@ import com.example.vivek.rentalmates.tasks.RegisterWithOldFlatAsyncTask;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DetermineFlatActivity extends ActionBarActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener{
+public class DetermineFlatActivity extends ActionBarActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "DetermineFlat_Debug";
 
@@ -70,8 +70,8 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
         Intent intent = getIntent();
         alreadyRegisteredFlat = intent.getBooleanExtra("FLAT_REGISTERED", false);
         if (alreadyRegisteredFlat) {
-            flatIds = (List<Long>)intent.getSerializableExtra("flatIds");
-            flatNames = (List<String>)intent.getSerializableExtra("flatNames");
+            flatIds = (List<Long>) intent.getSerializableExtra("flatIds");
+            flatNames = (List<String>) intent.getSerializableExtra("flatNames");
             selectedFlatId = flatIds.get(0);
             selectedFlatName = flatNames.get(0);
         }
@@ -91,7 +91,7 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
 
     @Override
     public void onClick(View v) {
-        Log.d(TAG,"inside onClick");
+        Log.d(TAG, "inside onClick");
 
         switch (v.getId()) {
 
@@ -111,7 +111,7 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
                 }
                 registerWithOldFlatButtonClicked = true;
                 Toast.makeText(this, "registering with old flat", Toast.LENGTH_LONG).show();
-                new RegisterWithOldFlatAsyncTask(this, this,alreadyRegisteredFlatEditText.getText().toString()).execute();
+                new RegisterWithOldFlatAsyncTask(this, this, alreadyRegisteredFlatEditText.getText().toString()).execute();
                 break;
 
             case R.id.registerNewFlatButton:

@@ -50,7 +50,7 @@ public class GcmRegistrationAsyncTask extends AsyncTask<Context, Void, String> {
 
             SharedPreferences prefs = getGCMPreferences(context);
 
-            if (prefs.contains(PROPERTY_REG_ID)){
+            if (prefs.contains(PROPERTY_REG_ID)) {
                 msg = "Device is already registered with GCM";
 //                regService.unregister(getRegistrationId()).execute();
                 Log.d(TAG, msg);
@@ -113,8 +113,9 @@ public class GcmRegistrationAsyncTask extends AsyncTask<Context, Void, String> {
     /**
      * Stores the registration ID and app versionCode in the application's
      * {@code SharedPreferences}.
+     *
      * @param context application's context.
-     * @param regId registration ID
+     * @param regId   registration ID
      */
     private void storeRegistrationId(Context context, String regId) {
         final SharedPreferences prefs = getGCMPreferences(context);
@@ -126,10 +127,11 @@ public class GcmRegistrationAsyncTask extends AsyncTask<Context, Void, String> {
         editor.commit();
     }
 
-    private String getRegistrationId(){
+    private String getRegistrationId() {
         final SharedPreferences prefs = getGCMPreferences(context);
         return prefs.getString(PROPERTY_REG_ID, "defaultValue");
     }
+
     @Override
     protected void onPostExecute(String msg) {
         Toast.makeText(context, msg, Toast.LENGTH_LONG).show();

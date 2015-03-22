@@ -72,7 +72,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
     SharedPreferences prefs = null;
 
 
-    public void setSignInClicked(boolean value){
+    public void setSignInClicked(boolean value) {
         mSignInClicked = value;
     }
 
@@ -87,7 +87,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         btnSignIn = (SignInButton) findViewById(R.id.my_sign_in_button);
         btnSignOut = (Button) findViewById(R.id.btn_sign_out);
         btnRevokeAccess = (Button) findViewById(R.id.btn_revoke_access);
-        continueButton = (Button)findViewById(R.id.continue_button);
+        continueButton = (Button) findViewById(R.id.continue_button);
 
         imgProfilePic = (ImageView) findViewById(R.id.imgProfilePic);
         txtName = (TextView) findViewById(R.id.txtName);
@@ -146,7 +146,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
 
     /**
      * Method to resolve any signin errors
-     * */
+     */
     private void resolveSignInError() {
         Log.d(TAG, "inside resolveSignInError");
         if (mConnectionResult.hasResolution()) {
@@ -173,27 +173,24 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         txtEmail.setText(userProfile.getEmailId());
         setProfilePicture(userProfile);
 
-        if(prefs.contains(AppConstants.FIRST_TIME_LOGIN) && prefs.getBoolean(AppConstants.FIRST_TIME_LOGIN, true)) {
+        if (prefs.contains(AppConstants.FIRST_TIME_LOGIN) && prefs.getBoolean(AppConstants.FIRST_TIME_LOGIN, true)) {
             Log.d(TAG, "FIRST_TIME_LOGIN already set to true");
-            if (mSignInClicked == true){
+            if (mSignInClicked == true) {
                 mSignInClicked = false;
                 Intent intent = new Intent(this, MainTabActivity.class);
                 startActivity(intent);
                 finish();
-            }
-            else {
+            } else {
                 updateUI(true);
             }
-        }
-        else if (mSignInClicked == true) {
-                Log.d(TAG, "first time login");
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putBoolean(AppConstants.SIGN_IN_COMPLETED, false);
-                editor.putString(AppConstants.EMAIL_ID, userProfile.getEmailId());
-                editor.commit();
-                new UploadUserProfileAsyncTask(this, this, userProfile).execute();
-            }
-        else {
+        } else if (mSignInClicked == true) {
+            Log.d(TAG, "first time login");
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean(AppConstants.SIGN_IN_COMPLETED, false);
+            editor.putString(AppConstants.EMAIL_ID, userProfile.getEmailId());
+            editor.commit();
+            new UploadUserProfileAsyncTask(this, this, userProfile).execute();
+        } else {
             Log.d(TAG, "Login Required state");
             updateUI(false);
         }
@@ -211,7 +208,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
     public void onConnectionFailed(ConnectionResult connectionResult) {
         progressDialog.cancel();
         Log.d(TAG, "inside onConnectionFailed");
-        Log.d(TAG, "Failure Reason: "+ connectionResult.toString());
+        Log.d(TAG, "Failure Reason: " + connectionResult.toString());
         if (!connectionResult.hasResolution()) {
             GooglePlayServicesUtil.getErrorDialog(connectionResult.getErrorCode(), this,
                     0).show();
@@ -232,7 +229,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
 
     /**
      * Updating the UI, showing/hiding buttons and profile layout
-     * */
+     */
     private void updateUI(boolean isSignedIn) {
         Log.d(TAG, "inside updateUI");
         if (isSignedIn) {
@@ -275,15 +272,15 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
 
     /**
      * Sign-in into google
-     * */
+     */
     private void signInWithGplus() {
         Log.d(TAG, "inside signInWithGplus");
-        if (mSignInClicked == true){
+        if (mSignInClicked == true) {
             //multiple sign in button click
             return;
         }
         mSignInClicked = true;
-        if (mClient.isConnected()){
+        if (mClient.isConnected()) {
             mClient.disconnect();
             mClient.connect();
         } else {
@@ -293,7 +290,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
 
     /**
      * Sign-out from google
-     * */
+     */
     private void signOutFromGplus() {
         Log.d(TAG, "inside signOutFromGplus");
         if (mClient.isConnected()) {
@@ -310,7 +307,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
 
     /**
      * Revoking access from google
-     * */
+     */
     private void revokeGplusAccess() {
         Log.d(TAG, "inside revokeGplusAccess");
         if (mClient.isConnected()) {
@@ -336,7 +333,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, "inside onActivityResult");
-        if (requestCode == RC_SIGN_IN && resultCode == RESULT_OK){
+        if (requestCode == RC_SIGN_IN && resultCode == RESULT_OK) {
             if (!mClient.isConnected() && !mClient.isConnecting()) {
                 Log.d(TAG, "connecting again");
                 mClient.connect();
@@ -347,7 +344,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
 
     /**
      * Fetching user's information name, email, profile pic
-     * */
+     */
     private UserProfile getProfileInformation() {
         UserProfile userProfile = null;
         try {
@@ -373,8 +370,8 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
 
     /**
      * Function to set profilePicture View
-     * */
-    public void setProfilePicture(UserProfile userProfile){
+     */
+    public void setProfilePicture(UserProfile userProfile) {
         String emailId = userProfile.getEmailId();
         Bitmap bm = appData.getProfilePictureBitmap(this, emailId);
         if (bm == null) {
@@ -385,7 +382,9 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         imgProfilePic.setImageBitmap(bm);
     }
 
-    /** Defines callbacks for service binding, passed to bindService() */
+    /**
+     * Defines callbacks for service binding, passed to bindService()
+     */
     private ServiceConnection mConnection = new ServiceConnection() {
 
         @Override

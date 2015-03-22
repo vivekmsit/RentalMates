@@ -8,12 +8,12 @@
     <!-- TODO: Update blank fragment layout -->
 
     <Button
-        android:layout_margin="16dp"
-        android:background="#09AD7E"
+        android:id="@+id/addExpenseButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Expense"
-        android:id="@+id/addExpenseButton"
-        android:layout_gravity="left|top" />
+        android:layout_gravity="left|top"
+        android:layout_margin="16dp"
+        android:background="#09AD7E"
+        android:text="Add Expense" />
 
 </FrameLayout>

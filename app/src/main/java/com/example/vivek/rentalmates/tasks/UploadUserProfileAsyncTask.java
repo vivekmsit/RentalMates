@@ -44,7 +44,7 @@ public class UploadUserProfileAsyncTask extends AsyncTask<Context, Void, String>
     @Override
     protected String doInBackground(Context... params) {
         String msg = "";
-        if (ufService == null){
+        if (ufService == null) {
             UserProfileApi.Builder builder1 = new UserProfileApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
                     .setRootUrl("https://kinetic-wind-814.appspot.com/_ah/api/");
             ufService = builder1.build();
@@ -52,7 +52,7 @@ public class UploadUserProfileAsyncTask extends AsyncTask<Context, Void, String>
         try {
             UserProfile uploadedUserProfile = ufService.insert(uf).execute();
             BackendApiService.storeUserProfileId(this.context, uploadedUserProfile.getId());
-            if (uploadedUserProfile.getNumberOfFlats()==0){
+            if (uploadedUserProfile.getNumberOfFlats() == 0) {
                 msg = "SUCCESS_NO_FLAT_REGISTERED";
             } else {
                 msg = "SUCCESS_FLAT_REGISTERED";
@@ -78,23 +78,20 @@ public class UploadUserProfileAsyncTask extends AsyncTask<Context, Void, String>
         Log.d(TAG, "inside onPostExecute() for UploadUserProfileAsyncTask");
         activity.setSignInClicked(false);
 
-        if (msg.equals("SUCCESS_NO_FLAT_REGISTERED")){
+        if (msg.equals("SUCCESS_NO_FLAT_REGISTERED")) {
             Toast.makeText(context, "UserProfile uploaded", Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent(context, DetermineFlatActivity.class);
             intent.putExtra("FLAT_REGISTERED", false);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);
-        }
-        else if (msg.equals("SUCCESS_FLAT_REGISTERED")) {
+        } else if (msg.equals("SUCCESS_FLAT_REGISTERED")) {
             Toast.makeText(context, "Flat already registered, Retrieving FlatInfo list", Toast.LENGTH_SHORT).show();
             new GetFlatInfoListAsyncTask(this.context, true).execute();
-        }
-        else if (msg.equals("EXCEPTION")){
-            Log.d(TAG, "IOException: "+ ioException.getMessage());
-            Toast.makeText(context, "IOException: "+ ioException.getMessage(), Toast.LENGTH_LONG).show();
-        }
-        else {
+        } else if (msg.equals("EXCEPTION")) {
+            Log.d(TAG, "IOException: " + ioException.getMessage());
+            Toast.makeText(context, "IOException: " + ioException.getMessage(), Toast.LENGTH_LONG).show();
+        } else {
             Log.d(TAG, "Unable to upload UserProfile data");
             Toast.makeText(context, "Unable to upload UserProfile data", Toast.LENGTH_LONG).show();
         }

@@ -41,7 +41,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Vie
     @Override
     public void onClick(View v) {
 
-        switch(v.getId()){
+        switch (v.getId()) {
 
             case R.id.addExpenseButton:
                 Intent intent = new Intent(getActivity(), AddExpenseActivity.class);

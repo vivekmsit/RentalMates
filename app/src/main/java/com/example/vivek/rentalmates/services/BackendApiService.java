@@ -47,25 +47,26 @@ public class BackendApiService extends Service {
             return BackendApiService.this;
         }
     }
+
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
     }
 
-    public static void printSharedPreferenceValues(SharedPreferences prefs){
-        Map<String,?> keys = prefs.getAll();
-        for(Map.Entry<String,?> entry : keys.entrySet()){
-            Log.d("map values",entry.getKey() + ": " +
+    public static void printSharedPreferenceValues(SharedPreferences prefs) {
+        Map<String, ?> keys = prefs.getAll();
+        for (Map.Entry<String, ?> entry : keys.entrySet()) {
+            Log.d("map values", entry.getKey() + ": " +
                     entry.getValue().toString());
         }
     }
 
 
-    public static void storeUserProfileId(Context context, Long id){
+    public static void storeUserProfileId(Context context, Long id) {
         String msg = "";
         SharedPreferences prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
-        if (prefs.contains(AppConstants.USER_PROFILE_ID)){
+        if (prefs.contains(AppConstants.USER_PROFILE_ID)) {
             msg = "userProfileId is already stored in shared preferences";
             Log.d(TAG, msg);
         } else {
@@ -76,7 +77,7 @@ public class BackendApiService extends Service {
         }
     }
 
-    public static void storePrimaryFlatId(Context context, Long id){
+    public static void storePrimaryFlatId(Context context, Long id) {
         String msg = "";
         SharedPreferences prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
@@ -86,7 +87,7 @@ public class BackendApiService extends Service {
         editor.commit();
     }
 
-    public static void storePrimaryFlatName(Context context, String flatName){
+    public static void storePrimaryFlatName(Context context, String flatName) {
         String msg = "";
         SharedPreferences prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);

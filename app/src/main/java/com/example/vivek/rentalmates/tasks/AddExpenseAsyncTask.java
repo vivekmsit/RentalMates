@@ -53,7 +53,7 @@ public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
     @Override
     protected String doInBackground(Context... params) {
         String msg = "";
-        if (flatService == null){
+        if (flatService == null) {
             FlatInfoApi.Builder builder1 = new FlatInfoApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
                     .setRootUrl("https://kinetic-wind-814.appspot.com/_ah/api/");
             flatService = builder1.build();
@@ -62,12 +62,11 @@ public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
             Long flatId = prefs.getLong(AppConstants.PRIMARY_FLAT_ID, 0);
             ed.setFlatId(flatId);
             FlatInfo uploadedFlatInfo = flatService.addExpenseData(flatId, ed).execute();
-            if (uploadedFlatInfo == null){
+            if (uploadedFlatInfo == null) {
                 Log.d(TAG, "uploadedFlatInfo is null");
-            }
-            else {
+            } else {
                 List<ExpenseData> expenses = uploadedFlatInfo.getExpenses();
-                if (expenses == null){
+                if (expenses == null) {
                     Log.d(TAG, "expenses is null");
                 } else {
                     boolean status = appData.storeExpenseDataList(context, expenses);
@@ -95,17 +94,15 @@ public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
         Log.d(TAG, "inside onPostExecute() for AddExpenseAsyncTask");
         activity.setAddExpenseButtonClicked(false);
 
-        if (msg.equals("SUCCESS")){
+        if (msg.equals("SUCCESS")) {
             Toast.makeText(context, "ExpenseData uploaded", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(context, MainTabActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);
-        }
-        else if (msg.equals("EXCEPTION")){
-            Log.d(TAG, "IOException: "+ ioException.getMessage());
-            Toast.makeText(context, "IOException: "+ ioException.getMessage(), Toast.LENGTH_LONG).show();
-        }
-        else {
+        } else if (msg.equals("EXCEPTION")) {
+            Log.d(TAG, "IOException: " + ioException.getMessage());
+            Toast.makeText(context, "IOException: " + ioException.getMessage(), Toast.LENGTH_LONG).show();
+        } else {
             Log.d(TAG, "Unable to upload ExpenseData");
             Toast.makeText(context, "Unable to upload ExpenseData", Toast.LENGTH_LONG).show();
         }
