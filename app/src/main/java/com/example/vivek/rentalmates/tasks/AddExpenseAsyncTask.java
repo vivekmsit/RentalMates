@@ -55,7 +55,7 @@ public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
         String msg = "";
         if (flatService == null) {
             FlatInfoApi.Builder builder1 = new FlatInfoApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
-                    .setRootUrl("https://kinetic-wind-814.appspot.com/_ah/api/");
+                    .setRootUrl(AppConstants.BACKEND_ROOT_URL);
             flatService = builder1.build();
         }
         try {

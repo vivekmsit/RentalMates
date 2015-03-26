@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.example.vivek.rentalmates.backend.userProfileApi.UserProfileApi;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfileCollection;
+import com.example.vivek.rentalmates.others.AppConstants;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
@@ -38,7 +39,7 @@ public class QueryUserProfilesAsyncTask extends AsyncTask<Context, Void, String>
         String msg = "";
         if (ufService == null) {
             UserProfileApi.Builder builder1 = new UserProfileApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
-                    .setRootUrl("https://kinetic-wind-814.appspot.com/_ah/api/");
+                    .setRootUrl(AppConstants.BACKEND_ROOT_URL);
             ufService = builder1.build();
         }
         try {

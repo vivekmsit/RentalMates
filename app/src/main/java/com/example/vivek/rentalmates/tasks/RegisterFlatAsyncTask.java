@@ -17,6 +17,7 @@ import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
 import com.example.vivek.rentalmates.backend.registration.Registration;
 import com.example.vivek.rentalmates.backend.userProfileApi.UserProfileApi;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
+import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.services.BackendApiService;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
@@ -51,7 +52,7 @@ public class RegisterFlatAsyncTask extends AsyncTask<Context, Void, String> {
         String msg = "";
         if (flatService == null) {
             FlatInfoApi.Builder builder1 = new FlatInfoApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
-                    .setRootUrl("https://kinetic-wind-814.appspot.com/_ah/api/");
+                    .setRootUrl(AppConstants.BACKEND_ROOT_URL);
             flatService = builder1.build();
         }
         try {

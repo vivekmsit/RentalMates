@@ -19,6 +19,7 @@ import com.example.vivek.rentalmates.backend.flatInfoApi.FlatInfoApi;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseDataCollection;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
+import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.others.LocalExpenseData;
 import com.example.vivek.rentalmates.services.BackendApiService;
@@ -55,7 +56,7 @@ public class GetExpenseDataListAsyncTask extends AsyncTask<Context, Void, String
         String msg = "";
         if (flatService == null) {
             FlatInfoApi.Builder builder1 = new FlatInfoApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
-                    .setRootUrl("https://kinetic-wind-814.appspot.com/_ah/api/");
+                    .setRootUrl(AppConstants.BACKEND_ROOT_URL);
             flatService = builder1.build();
         }
         try {

@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.backend.registration.Registration;
+import com.example.vivek.rentalmates.others.AppConstants;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
@@ -39,7 +40,7 @@ public class GcmRegistrationAsyncTask extends AsyncTask<Context, Void, String> {
         String msg = "";
         if (regService == null) {
             Registration.Builder builder = new Registration.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
-                    .setRootUrl("https://kinetic-wind-814.appspot.com/_ah/api/");
+                    .setRootUrl(AppConstants.BACKEND_ROOT_URL);
             regService = builder.build();
         }
 

@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.fragments.ExpenseDataListFragment;
 import com.example.vivek.rentalmates.fragments.MainFragment;
+import com.example.vivek.rentalmates.fragments.NavigationDrawerFragment;
 import com.example.vivek.rentalmates.fragments.NewsFeedFragment;
 import com.example.vivek.rentalmates.fragments.SearchRoomiesFragment;
 import com.example.vivek.rentalmates.fragments.SettingsFragment;
@@ -65,6 +67,11 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
         }
         String finalTitle = toolBar.getTitle() + prefs.getString(AppConstants.PRIMARY_FLAT_NAME, "no_flat_name");
         toolBar.setTitle(finalTitle);
+
+        NavigationDrawerFragment drawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
+        drawerFragment.setup((DrawerLayout) findViewById(R.id.drawer_layout), toolBar);
+
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     @Override

@@ -46,7 +46,7 @@ public class UploadUserProfileAsyncTask extends AsyncTask<Context, Void, String>
         String msg = "";
         if (ufService == null) {
             UserProfileApi.Builder builder1 = new UserProfileApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
-                    .setRootUrl("https://kinetic-wind-814.appspot.com/_ah/api/");
+                    .setRootUrl(AppConstants.BACKEND_ROOT_URL);
             ufService = builder1.build();
         }
         try {
