@@ -22,5 +22,7 @@
     <string name="title_activity_register_flat">RegisterFlatActivity</string>
     <string name="title_activity_add_expense">AddExpenseActivity</string>
     <string name="title_activity_determine_flat">DetermineFlatActivity</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
 
 </resources>

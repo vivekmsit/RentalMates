@@ -34,12 +34,19 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
     private Toolbar toolBar;
     private GoogleApiClient mGoogleApiClient;
     private SharedPreferences prefs;
+    private NavigationDrawerFragment drawerFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "inside onCreate");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_tab);
+        try {
+            setContentView(R.layout.activity_main_tab);
+        } catch (Exception e) {
+            Log.d(TAG, e.getMessage()+e.toString());
+            return;
+        }
+
 
         viewPager = (ViewPager) findViewById(R.id.pager);
         toolBar = (Toolbar) findViewById(R.id.app_bar);
@@ -67,10 +74,6 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
         }
         String finalTitle = toolBar.getTitle() + prefs.getString(AppConstants.PRIMARY_FLAT_NAME, "no_flat_name");
         toolBar.setTitle(finalTitle);
-
-        NavigationDrawerFragment drawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
-        drawerFragment.setup((DrawerLayout) findViewById(R.id.drawer_layout), toolBar);
-
         getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
@@ -78,6 +81,8 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
     protected void onStart() {
         super.onStart();
         Log.d(TAG, "inside onStart");
+        drawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
+        drawerFragment.setup(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolBar);
         mGoogleApiClient.connect();
     }
 
