@@ -40,12 +40,7 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "inside onCreate");
         super.onCreate(savedInstanceState);
-        try {
-            setContentView(R.layout.activity_main_tab);
-        } catch (Exception e) {
-            Log.d(TAG, e.getMessage()+e.toString());
-            return;
-        }
+        setContentView(R.layout.activity_main_tab);
 
 
         viewPager = (ViewPager) findViewById(R.id.pager);

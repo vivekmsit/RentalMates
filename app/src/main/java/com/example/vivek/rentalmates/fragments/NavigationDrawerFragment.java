@@ -13,9 +13,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.activities.MainActivity;
+import com.example.vivek.rentalmates.others.AppConstants;
+import com.example.vivek.rentalmates.others.AppData;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,6 +35,7 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
     private boolean mFromSavedInstanceState;
     private SharedPreferences prefs;
     private View containerView;
+    private ImageView drawerImageView;
 
     public NavigationDrawerFragment() {
         // Required empty public constructor
@@ -53,6 +57,10 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
         if (savedInstanceState != null) {
             mFromSavedInstanceState = true;
         }
+        drawerImageView = (ImageView) getView().findViewById(R.id.drawerImageView);
+        AppData appData = AppData.getInstance();
+        String emailId = prefs.getString(AppConstants.EMAIL_ID, "no_email_id");
+        drawerImageView.setImageBitmap(appData.getProfilePictureBitmap(getActivity(), emailId));
     }
 
     @Override
@@ -75,7 +83,7 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
                 super.onDrawerOpened(drawerView);
                 if (!mUserLearnedDrawer) {
                     mUserLearnedDrawer = true;
-                    saveToPreferences(KEY_USER_LEARNED_DRAWER, mUserLearnedDrawer+"");
+                    saveToPreferences(KEY_USER_LEARNED_DRAWER, mUserLearnedDrawer + "");
                 }
                 getActivity().invalidateOptionsMenu();
             }
@@ -89,7 +97,7 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 if (slideOffset < 0.6) {
-                    toolbar.setAlpha(1-slideOffset);
+                    toolbar.setAlpha(1 - slideOffset);
                 }
             }
         };
