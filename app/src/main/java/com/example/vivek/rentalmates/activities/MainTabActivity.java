@@ -122,9 +122,9 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
         public Fragment getItem(int position) {
             Fragment fragment = null;
             if (position == 0) {
-                fragment = new MainFragment();
+                fragment = new ExpenseDataListFragment();;
             } else if (position == 1) {
-                fragment = new ExpenseDataListFragment();
+                fragment = new MainFragment();
             } else if (position == 2) {
                 fragment = new SearchRoomiesFragment();
             } else if (position == 3) {
@@ -143,9 +143,9 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
         @Override
         public CharSequence getPageTitle(int position) {
             if (position == 0) {
-                return "MainFragment";
-            } else if (position == 1) {
                 return "Expenses";
+            } else if (position == 1) {
+                return "MainFragment";
             } else if (position == 2) {
                 return "Search Roommates";
             } else if (position == 3) {

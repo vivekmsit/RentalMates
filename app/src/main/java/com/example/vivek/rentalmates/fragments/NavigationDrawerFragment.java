@@ -8,17 +8,25 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.activities.MainActivity;
+import com.example.vivek.rentalmates.adapters.DrawerListViewAdapter;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
+import com.example.vivek.rentalmates.viewholders.DrawerListItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,6 +44,9 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
     private SharedPreferences prefs;
     private View containerView;
     private ImageView drawerImageView;
+    private TextView userNameTextView;
+    private RecyclerView recyclerView;
+    private DrawerListViewAdapter drawerListViewAdapter;
 
     public NavigationDrawerFragment() {
         // Required empty public constructor
@@ -57,18 +68,43 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
         if (savedInstanceState != null) {
             mFromSavedInstanceState = true;
         }
+
         drawerImageView = (ImageView) getView().findViewById(R.id.drawerImageView);
         AppData appData = AppData.getInstance();
         String emailId = prefs.getString(AppConstants.EMAIL_ID, "no_email_id");
         drawerImageView.setImageBitmap(appData.getProfilePictureBitmap(getActivity(), emailId));
+
+        userNameTextView = (TextView) getView().findViewById(R.id.userNameTextView);
+        String userName = prefs.getString(AppConstants.USER_NAME, "no_user_name");
+        userNameTextView.setText(userName);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG, "inside onCreateView");
+        Log.d(TAG, "inside onCreateView1");
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
+        View layout = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
+        recyclerView = (RecyclerView) layout.findViewById(R.id.listDrawer);
+        drawerListViewAdapter = new DrawerListViewAdapter(getActivity(), getData());
+        recyclerView.setAdapter(drawerListViewAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        return layout;
+    }
+
+
+    public static List<DrawerListItem> getData() {
+        List<DrawerListItem> data = new ArrayList<>();
+        int[] icons = {R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher};
+        String[] titles = {"first", "second", "third", "four"};
+        for (int i = 0; i < titles.length && i < icons.length; i++) {
+            DrawerListItem current = new DrawerListItem();
+            current.iconId = icons[i];
+            current.title = titles[i];
+            data.add(current);
+        }
+        return data;
     }
 
 

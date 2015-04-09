@@ -188,6 +188,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
             SharedPreferences.Editor editor = prefs.edit();
             editor.putBoolean(AppConstants.SIGN_IN_COMPLETED, false);
             editor.putString(AppConstants.EMAIL_ID, userProfile.getEmailId());
+            editor.putString(AppConstants.USER_NAME, userProfile.getUserName());
             editor.commit();
             new UploadUserProfileAsyncTask(this, this, userProfile).execute();
         } else {

@@ -18,6 +18,7 @@ public class AppConstants {
     public static final String SIGN_IN_COMPLETED = "sign_in_completed";
     public static final String FIRST_TIME_LOGIN = "first_time_login";
     public static final String EMAIL_ID = "email_id";
+    public static final String USER_NAME = "user_name";
 
     AppConstants() {
     }

@@ -6,6 +6,7 @@
     tools:context="com.example.vivek.rentalmates.fragments.NavigationDrawerFragment">
 
     <RelativeLayout
+        android:id="@+id/profileRelativeLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="#ffffb86e">
@@ -15,11 +16,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="name"
-            android:layout_centerInParent="true"
             android:paddingBottom="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="10dp" />
 
+        <TextView
+            android:id="@+id/userNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/drawerImageView"
+            android:text="Large Text"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
     </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/listDrawer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/abc_item_background_holo_light"
+        android:layout_below="@+id/profileRelativeLayout">
+
+    </android.support.v7.widget.RecyclerView>
+
 </RelativeLayout>
