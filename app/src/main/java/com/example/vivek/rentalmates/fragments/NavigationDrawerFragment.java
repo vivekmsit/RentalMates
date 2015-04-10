@@ -49,6 +49,7 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
     private DrawerListViewAdapter drawerListViewAdapter;
 
     public NavigationDrawerFragment() {
+        mUserLearnedDrawer = false;
         // Required empty public constructor
     }
 
@@ -64,7 +65,7 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
         super.onActivityCreated(savedInstanceState);
         prefs = getActivity().getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
-        mUserLearnedDrawer = Boolean.valueOf(readFromPreferences(KEY_USER_LEARNED_DRAWER, "false"));
+        mUserLearnedDrawer = prefs.getBoolean(KEY_USER_LEARNED_DRAWER, false);
         if (savedInstanceState != null) {
             mFromSavedInstanceState = true;
         }
@@ -82,7 +83,7 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG, "inside onCreateView1");
+        Log.d(TAG, "inside onCreateView");
 
         // Inflate the layout for this fragment
         View layout = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
@@ -96,8 +97,8 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
 
     public static List<DrawerListItem> getData() {
         List<DrawerListItem> data = new ArrayList<>();
-        int[] icons = {R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher};
-        String[] titles = {"first", "second", "third", "four"};
+        int[] icons = {R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher};
+        String[] titles = {"Manage Profile", "Manage Flat Info", "Manage Services", "Account Settings", "Developer Mode"};
         for (int i = 0; i < titles.length && i < icons.length; i++) {
             DrawerListItem current = new DrawerListItem();
             current.iconId = icons[i];
@@ -117,10 +118,6 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                if (!mUserLearnedDrawer) {
-                    mUserLearnedDrawer = true;
-                    saveToPreferences(KEY_USER_LEARNED_DRAWER, mUserLearnedDrawer + "");
-                }
                 getActivity().invalidateOptionsMenu();
             }
 
@@ -140,6 +137,10 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
 
         if (!mUserLearnedDrawer && !mFromSavedInstanceState) {
             mDrawerLayout.openDrawer(containerView);
+            mUserLearnedDrawer = true;
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean(KEY_USER_LEARNED_DRAWER, true);
+            editor.apply();
         }
 
         mDrawerLayout.setDrawerListener(drawerToggle);
@@ -149,15 +150,5 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
                 drawerToggle.syncState();
             }
         });
-    }
-
-    public void saveToPreferences(String preferenceName, String preferenceValue) {
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(preferenceName, preferenceValue);
-        editor.apply();
-    }
-
-    public String readFromPreferences(String preferenceName, String defaultValue) {
-        return prefs.getString(preferenceName, defaultValue);
     }
 }

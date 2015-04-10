@@ -19,7 +19,6 @@ import com.example.vivek.rentalmates.fragments.MainFragment;
 import com.example.vivek.rentalmates.fragments.NavigationDrawerFragment;
 import com.example.vivek.rentalmates.fragments.NewsFeedFragment;
 import com.example.vivek.rentalmates.fragments.SearchRoomiesFragment;
-import com.example.vivek.rentalmates.fragments.SettingsFragment;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -122,22 +121,21 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
         public Fragment getItem(int position) {
             Fragment fragment = null;
             if (position == 0) {
-                fragment = new ExpenseDataListFragment();;
+                fragment = new ExpenseDataListFragment();
+                ;
             } else if (position == 1) {
                 fragment = new MainFragment();
             } else if (position == 2) {
                 fragment = new SearchRoomiesFragment();
             } else if (position == 3) {
                 fragment = new NewsFeedFragment();
-            } else if (position == 4) {
-                fragment = new SettingsFragment();
             }
             return fragment;
         }
 
         @Override
         public int getCount() {
-            return 5;
+            return 4;
         }
 
         @Override
@@ -150,8 +148,6 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
                 return "Search Roommates";
             } else if (position == 3) {
                 return "News Feed";
-            } else if (position == 4) {
-                return "Settings";
             } else {
                 return null;
             }

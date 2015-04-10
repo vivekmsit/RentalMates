@@ -9,6 +9,7 @@
         android:id="@+id/profileRelativeLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:background="#ffffb86e">
 
         <ImageView
@@ -35,8 +36,8 @@
         android:id="@+id/listDrawer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/abc_item_background_holo_light"
-        android:layout_below="@+id/profileRelativeLayout">
+        android:layout_below="@+id/profileRelativeLayout"
+        android:background="@drawable/abc_item_background_holo_light">
 
     </android.support.v7.widget.RecyclerView>
 

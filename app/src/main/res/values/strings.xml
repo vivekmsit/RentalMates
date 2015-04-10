@@ -24,5 +24,6 @@
     <string name="title_activity_determine_flat">DetermineFlatActivity</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
+    <string name="title_activity_developer_mode">DeveloperModeActivity</string>
 
 </resources>
