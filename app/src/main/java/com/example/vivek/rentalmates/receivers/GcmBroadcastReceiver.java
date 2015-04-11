@@ -1,10 +1,12 @@
-package com.example.vivek.rentalmates;
+package com.example.vivek.rentalmates.receivers;
 
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.WakefulBroadcastReceiver;
+
+import com.example.vivek.rentalmates.services.GcmIntentService;
 
 /**
  * Created by vivek on 1/9/2015.

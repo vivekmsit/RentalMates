@@ -1,4 +1,4 @@
-package com.example.vivek.rentalmates.backend;
+package com.example.vivek.rentalmates.backend.ofy;
 
 import com.example.vivek.rentalmates.backend.entities.ExpenseData;
 import com.example.vivek.rentalmates.backend.entities.FlatInfo;

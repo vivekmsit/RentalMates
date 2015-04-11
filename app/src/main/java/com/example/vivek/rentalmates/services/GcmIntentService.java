@@ -1,4 +1,4 @@
-package com.example.vivek.rentalmates;
+package com.example.vivek.rentalmates.services;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
 
+import com.example.vivek.rentalmates.receivers.GcmBroadcastReceiver;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.util.logging.Level;

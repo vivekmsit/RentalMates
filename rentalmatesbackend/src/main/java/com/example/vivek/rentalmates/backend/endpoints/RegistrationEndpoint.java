@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 import javax.inject.Named;
 
-import static com.example.vivek.rentalmates.backend.OfyService.ofy;
+import static com.example.vivek.rentalmates.backend.ofy.OfyService.ofy;
 
 /**
  * A registration endpoint class we are exposing for a device's GCM registration id on the backend

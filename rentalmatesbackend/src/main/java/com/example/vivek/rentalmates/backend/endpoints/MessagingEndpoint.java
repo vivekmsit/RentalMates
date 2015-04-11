@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 
 import javax.inject.Named;
 
-import static com.example.vivek.rentalmates.backend.OfyService.ofy;
+import static com.example.vivek.rentalmates.backend.ofy.OfyService.ofy;
 
 /**
  * An endpoint to send messages to devices registered with the backend
