@@ -20,6 +20,7 @@ import com.example.vivek.rentalmates.fragments.NavigationDrawerFragment;
 import com.example.vivek.rentalmates.fragments.NewsFeedFragment;
 import com.example.vivek.rentalmates.fragments.SearchRoomiesFragment;
 import com.example.vivek.rentalmates.others.AppConstants;
+import com.example.vivek.rentalmates.tabs.SlidingTabLayout;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -30,6 +31,7 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
     private static final String TAG = "MainTabActivity_Debug";
 
     private ViewPager viewPager;
+    private SlidingTabLayout mTabs;
     private Toolbar toolBar;
     private GoogleApiClient mGoogleApiClient;
     private SharedPreferences prefs;
@@ -49,6 +51,9 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         viewPager.setAdapter(new MyAdapter(fragmentManager));
+
+        mTabs = (SlidingTabLayout) findViewById(R.id.tabs);
+        mTabs.setViewPager(viewPager);
 
         // Initializing google plus api client
         mGoogleApiClient = new GoogleApiClient.Builder(this)
