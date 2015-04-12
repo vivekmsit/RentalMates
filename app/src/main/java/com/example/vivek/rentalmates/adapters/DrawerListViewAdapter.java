@@ -52,11 +52,6 @@ public class DrawerListViewAdapter extends RecyclerView.Adapter<DrawerListViewAd
         viewHolder.imageView.setImageResource(current.iconId);
     }
 
-    public void delete(int position) {
-        data.remove(position);
-        notifyItemRemoved(position);
-    }
-
     @Override
     public int getItemCount() {
         return data.size();

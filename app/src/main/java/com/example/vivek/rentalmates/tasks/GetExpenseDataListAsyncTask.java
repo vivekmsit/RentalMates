@@ -19,6 +19,7 @@ import com.example.vivek.rentalmates.backend.flatInfoApi.FlatInfoApi;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseDataCollection;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
+import com.example.vivek.rentalmates.interfaces.ExpenseDataListLoadedListener;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.others.LocalExpenseData;
@@ -40,6 +41,7 @@ public class GetExpenseDataListAsyncTask extends AsyncTask<Context, Void, String
     boolean appStartup;
     Long flatId;
     AppData appData;
+    public ExpenseDataListLoadedListener loadedListener;
 
     public GetExpenseDataListAsyncTask(Context context, final Long flatId, final boolean startup) {
         this.context = context;
@@ -70,7 +72,6 @@ public class GetExpenseDataListAsyncTask extends AsyncTask<Context, Void, String
                     this.appData.storeExpenseDataList(context, expenses);
                 }
             }
-            Log.d(TAG, "inside addExpense");
         } catch (IOException e) {
             ioException = e;
             msg = "EXCEPTION";
@@ -91,9 +92,12 @@ public class GetExpenseDataListAsyncTask extends AsyncTask<Context, Void, String
             Intent intent = new Intent(context, MainTabActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);
+        } else if (msg.equals("SUCCESS") && this.appStartup == false && loadedListener != null) {
+            loadedListener.onExpenseDataListLoaded();
         } else if (msg.equals("EXCEPTION")) {
             Log.d(TAG, "IOException: " + ioException.getMessage());
             Toast.makeText(context, "IOException: " + ioException.getMessage(), Toast.LENGTH_LONG).show();
+            loadedListener.onExpenseDataListLoadFailed();
         } else {
             Log.d(TAG, "Unable to upload ExpenseData");
             Toast.makeText(context, "Unable to upload ExpenseData", Toast.LENGTH_LONG).show();
