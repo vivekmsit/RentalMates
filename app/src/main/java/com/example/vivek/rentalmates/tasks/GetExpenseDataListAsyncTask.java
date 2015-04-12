@@ -29,6 +29,7 @@ import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class GetExpenseDataListAsyncTask extends AsyncTask<Context, Void, String> {
@@ -69,6 +70,8 @@ public class GetExpenseDataListAsyncTask extends AsyncTask<Context, Void, String
             } else {
                 List<ExpenseData> expenses = expensesCollection.getItems();
                 if (expenses != null) {
+                    //Store in Sorted order by Date
+                    Collections.reverse(expenses);
                     this.appData.storeExpenseDataList(context, expenses);
                 }
             }

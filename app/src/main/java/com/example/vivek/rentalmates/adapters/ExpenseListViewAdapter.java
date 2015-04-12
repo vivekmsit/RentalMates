@@ -36,6 +36,11 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
         this.data = data;
     }
 
+    public void setData(List<ExpenseListItem> data) {
+        this.data.clear();
+        this.data.addAll(data);
+    }
+
     @Override
     public ExpenseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.d(TAG, "inside onCreateViewHolder");

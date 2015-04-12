@@ -59,13 +59,17 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
         // Inflate the layout for this fragment
         View layout = inflater.inflate(R.layout.fragment_expenses, container, false);
 
-        swipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeListExpenses);
-        swipeRefreshLayout.setOnRefreshListener(this);
-
+        //Initialize RecyclerView
         recyclerView = (RecyclerView) layout.findViewById(R.id.listExpenses);
         expenseListViewAdapter = new ExpenseListViewAdapter(getActivity(), getData());
         recyclerView.setAdapter(expenseListViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        //Initialize SwipeRefreshLayout
+        swipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeListExpenses);
+        swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setProgressBackgroundColor(R.color.primaryColor);
+
         return layout;
     }
 
@@ -111,6 +115,7 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
         if (swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(false);
         }
+        expenseListViewAdapter.setData(getData());
         expenseListViewAdapter.notifyDataSetChanged();
     }
 

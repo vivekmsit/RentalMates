@@ -28,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
@@ -69,6 +70,7 @@ public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
                 if (expenses == null) {
                     Log.d(TAG, "expenses is null");
                 } else {
+                    Collections.reverse(expenses);
                     boolean status = appData.storeExpenseDataList(context, expenses);
                     if (status) {
                         msg = "SUCCESS";
