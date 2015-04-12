@@ -43,17 +43,18 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tab);
 
-
         viewPager = (ViewPager) findViewById(R.id.pager);
-        toolBar = (Toolbar) findViewById(R.id.app_bar);
 
+        toolBar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolBar);
+        toolBar.setTitleTextColor(getResources().getColor(R.color.white));
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         viewPager.setAdapter(new MyAdapter(fragmentManager));
 
         mTabs = (SlidingTabLayout) findViewById(R.id.tabs);
         mTabs.setViewPager(viewPager);
+        mTabs.setBackgroundColor(getResources().getColor(R.color.primaryColor));
 
         // Initializing google plus api client
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -71,8 +72,9 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
             editor.putBoolean(AppConstants.FIRST_TIME_LOGIN, true);
             editor.commit();
         }
-        String finalTitle = toolBar.getTitle() + prefs.getString(AppConstants.PRIMARY_FLAT_NAME, "no_flat_name");
-        toolBar.setTitle(finalTitle);
+
+        String finalTitle = toolBar.getTitle() + ": " + prefs.getString(AppConstants.PRIMARY_FLAT_NAME, "no_flat_name");
+        getSupportActionBar().setTitle(finalTitle);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
@@ -127,7 +129,6 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
             Fragment fragment = null;
             if (position == 0) {
                 fragment = new ExpenseDataListFragment();
-                ;
             } else if (position == 1) {
                 fragment = new MainFragment();
             } else if (position == 2) {

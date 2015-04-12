@@ -9,8 +9,7 @@
     <!-- the innner view - provides the white rectangle -->
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="#ffbaffd6">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/imageView"
