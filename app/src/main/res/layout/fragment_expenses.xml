@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -7,17 +8,25 @@
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipeListExpenses"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/listExpenses"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/abc_item_background_holo_light">
-
-        </android.support.v7.widget.RecyclerView>
+            android:background="@drawable/abc_item_background_holo_light" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
+    <com.melnykov.fab.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_add_white_24dp_mdpi"
+        fab:fab_colorNormal="@color/primaryColor"
+        fab:fab_colorPressed="@color/primaryColor"
+        fab:fab_colorRipple="@color/primaryColor" />
 
-</LinearLayout>
+</FrameLayout>

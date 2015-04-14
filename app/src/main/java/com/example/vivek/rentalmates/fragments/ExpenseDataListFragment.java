@@ -1,6 +1,7 @@
 package com.example.vivek.rentalmates.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,12 +13,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
+import com.example.vivek.rentalmates.activities.AddExpenseActivity;
 import com.example.vivek.rentalmates.activities.MainActivity;
-import com.example.vivek.rentalmates.adapters.DrawerListViewAdapter;
 import com.example.vivek.rentalmates.adapters.ExpenseListViewAdapter;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
 import com.example.vivek.rentalmates.interfaces.ExpenseDataListLoadedListener;
@@ -25,6 +24,7 @@ import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.tasks.GetExpenseDataListAsyncTask;
 import com.example.vivek.rentalmates.viewholders.ExpenseListItem;
+import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +39,7 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
     private ExpenseListViewAdapter expenseListViewAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private SharedPreferences prefs;
+    private FloatingActionButton fab;
 
     public ExpenseDataListFragment() {
         Log.d(TAG, "inside constructor");
@@ -65,10 +66,25 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
         recyclerView.setAdapter(expenseListViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        //Initialize FloatingActionButton
+        fab = (FloatingActionButton) layout.findViewById(R.id.fab);
+        fab.setType(FloatingActionButton.TYPE_NORMAL);
+        fab.setShadow(true);
+        fab.attachToRecyclerView(recyclerView);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, AddExpenseActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
+        });
+
         //Initialize SwipeRefreshLayout
         swipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeListExpenses);
         swipeRefreshLayout.setOnRefreshListener(this);
-        swipeRefreshLayout.setProgressBackgroundColor(R.color.primaryColor);
+        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.primaryColor));
+        swipeRefreshLayout.setColorSchemeColors(R.color.white, R.color.purple, R.color.green, R.color.orange);
 
         return layout;
     }
@@ -80,7 +96,6 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
         prefs = getActivity().getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
     }
-
 
     public List<ExpenseListItem> getData() {
         Log.d(TAG, "inside getData");

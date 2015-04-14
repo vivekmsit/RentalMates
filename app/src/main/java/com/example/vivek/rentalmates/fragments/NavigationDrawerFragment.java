@@ -98,8 +98,8 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
     public static List<DrawerListItem> getData() {
         Log.d(TAG, "inside getData");
         List<DrawerListItem> data = new ArrayList<>();
-        int[] icons = {R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher};
-        String[] titles = {"Manage Profile", "Manage Flat Info", "Manage Services", "Account Settings", "Developer Mode"};
+        int[] icons = {R.drawable.ic_action_person_light, R.drawable.ic_action_person_light, R.drawable.ic_action_person_light, R.drawable.ic_action_settings_light, R.drawable.ic_action_person_light, R.drawable.ic_action_about_light};
+        String[] titles = {"Manage Profile", "Manage Flat Info", "Manage Services", "Account Settings", "Developer Mode", "About"};
         for (int i = 0; i < titles.length && i < icons.length; i++) {
             DrawerListItem current = new DrawerListItem();
             current.iconId = icons[i];
