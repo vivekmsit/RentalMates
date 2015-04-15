@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.viewholders.ExpenseListItem;
+import com.pkmmte.view.CircularImageView;
 
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
     public void onBindViewHolder(ExpenseViewHolder viewHolder, int position) {
         Log.d(TAG, "inside onBindViewHolder");
         ExpenseListItem current = data.get(position);
-        viewHolder.imageView.setImageBitmap(appData.getProfilePictureBitmap(context, current.ownerEmailId));
+        viewHolder.circularImageView.setImageBitmap(appData.getProfilePictureBitmap(context, current.ownerEmailId));
         viewHolder.amount.setText(Integer.toString(current.amount));
         viewHolder.description.setText(current.description);
         viewHolder.owner.setText(current.ownerEmailId);
@@ -68,15 +69,15 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
      * The view holder design pattern prevents using findViewById()
      * repeatedly in the getView() method of the adapter.
      */
-    class ExpenseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        ImageView imageView;
+    class ExpenseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        CircularImageView circularImageView;
         TextView amount;
         TextView description;
         TextView owner;
 
         public ExpenseViewHolder(View itemView) {
             super(itemView);
-            imageView = (ImageView) itemView.findViewById(R.id.imageView);
+            circularImageView = (CircularImageView) itemView.findViewById(R.id.expenseImageView);
             amount = (TextView) itemView.findViewById(R.id.amountListView);
             description = (TextView) itemView.findViewById(R.id.descriptionListView);
             owner = (TextView) itemView.findViewById(R.id.ownerListView);

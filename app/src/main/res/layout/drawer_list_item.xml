@@ -24,6 +24,6 @@
         android:layout_gravity="center_vertical"
         android:paddingLeft="20dp"
         android:text="List Name"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </LinearLayout>

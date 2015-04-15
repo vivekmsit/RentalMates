@@ -24,6 +24,7 @@ import com.example.vivek.rentalmates.adapters.DrawerListViewAdapter;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.viewholders.DrawerListItem;
+import com.pkmmte.view.CircularImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,10 +44,10 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
     private boolean mFromSavedInstanceState;
     private SharedPreferences prefs;
     private View containerView;
-    private ImageView drawerImageView;
     private TextView userNameTextView;
     private RecyclerView recyclerView;
     private DrawerListViewAdapter drawerListViewAdapter;
+    private CircularImageView circularImageView;
 
     public NavigationDrawerFragment() {
         mUserLearnedDrawer = false;
@@ -70,11 +71,13 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
             mFromSavedInstanceState = true;
         }
 
-        drawerImageView = (ImageView) getView().findViewById(R.id.drawerImageView);
+        //Initialize CircularImageView
+        circularImageView = (CircularImageView) getView().findViewById(R.id.drawerImageView);
         AppData appData = AppData.getInstance();
         String emailId = prefs.getString(AppConstants.EMAIL_ID, "no_email_id");
-        drawerImageView.setImageBitmap(appData.getProfilePictureBitmap(getActivity(), emailId));
+        circularImageView.setImageBitmap(appData.getProfilePictureBitmap(getActivity(), emailId));
 
+        //Initialize UserName TextView
         userNameTextView = (TextView) getView().findViewById(R.id.userNameTextView);
         String userName = prefs.getString(AppConstants.USER_NAME, "no_user_name");
         userNameTextView.setText(userName);
