@@ -8,6 +8,7 @@ import com.googlecode.objectify.annotation.Index;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
 /**
  * The Objectify object model for device registrations we are persisting
@@ -20,6 +21,8 @@ public class UserProfile {
 
     @Index
     private String userName;
+
+    private Date date;
 
     private String profileURL;
 
@@ -35,12 +38,22 @@ public class UserProfile {
 
     private List<Long> flatIds = new ArrayList<>();
 
+    private List<Long> expenseGroupIds = new ArrayList<>();
+
     private Long primaryFlatId;
 
+    private Long flatExpenseGroupId;
+
     private int numberOfFlats;
+
+    private int numberOfExpenseGroups;
+
     // you can add more fields...
 
     public UserProfile() {
+        numberOfFlats = 0;
+        numberOfExpenseGroups = 0;
+        date = new Date();
     }
 
     public Long getId(){
@@ -103,12 +116,32 @@ public class UserProfile {
         this.flatIds = flatIds;
     }
 
+    public List<Long> getExpenseGroupIds() {
+        return expenseGroupIds;
+    }
+
+    public void setExpenseGroupIds(List<Long> expenseGroupIds) {
+        this.expenseGroupIds = expenseGroupIds;
+    }
+
+    public void addExpenseGroupId(Long expenseGroupId) {
+        expenseGroupIds.add(expenseGroupId);
+        numberOfExpenseGroups++;
+    }
+
+    public void deleteExpenseGroupId(Long expenseGroupId) {
+        expenseGroupIds.remove(expenseGroupId);
+        numberOfExpenseGroups--;
+    }
+
     public void addFlatId(Long flatId){
         flatIds.add(flatId);
+        numberOfFlats++;
     }
 
     public void removeFlatId(Long flatId){
         flatIds.remove(flatId);
+        numberOfFlats--;
     }
 
     public Long getPrimaryFlatId() {
@@ -119,6 +152,14 @@ public class UserProfile {
         this.primaryFlatId = primaryFlatId;
     }
 
+    public Long getFlatExpenseGroupId() {
+        return flatExpenseGroupId;
+    }
+
+    public void setFlatExpenseGroupId(Long flatExpenseGroupId) {
+        this.flatExpenseGroupId = flatExpenseGroupId;
+    }
+
     public int getNumberOfFlats() {
         return numberOfFlats;
     }
@@ -127,11 +168,11 @@ public class UserProfile {
         this.numberOfFlats = numberOfFlats;
     }
 
-    public void incrementNumberOfFlats(){
-        numberOfFlats++;
+    public int getNumberOfExpenseGroups() {
+        return numberOfExpenseGroups;
     }
 
-    public void decrementNumberOfFlats() {
-        numberOfFlats--;
+    public void setNumberOfExpenseGroups(int numberOfExpenseGroups) {
+        this.numberOfExpenseGroups = numberOfExpenseGroups;
     }
 }

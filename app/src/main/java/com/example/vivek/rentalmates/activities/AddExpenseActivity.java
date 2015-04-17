@@ -6,15 +6,13 @@ import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
-import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
+import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.tasks.AddExpenseAsyncTask;
 
@@ -83,6 +81,9 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
                 expenseData.setAmount(Integer.parseInt(amountEditText.getText().toString()));
                 expenseData.setDescription(descriptionEditText.getText().toString());
                 expenseData.setOwnerEmailId(prefs.getString(AppConstants.EMAIL_ID, "no_email_id"));
+                //To be changed later
+                Long expenseGroupId = prefs.getLong(AppConstants.FLAT_EXPENSE_GROUP_ID, 0);
+                expenseData.setExpenseGroupId(expenseGroupId);
                 new AddExpenseAsyncTask(this, this, expenseData).execute();
                 break;
 

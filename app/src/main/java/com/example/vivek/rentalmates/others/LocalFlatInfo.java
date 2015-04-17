@@ -1,6 +1,6 @@
 package com.example.vivek.rentalmates.others;
 
-import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
+import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
 
 import java.util.ArrayList;
@@ -179,7 +179,6 @@ public class LocalFlatInfo {
             data.setOwnerEmailId(localFlat.getOwnerEmailId());
             data.setFlatName(localFlat.getFlatName());
             data.setOwnerEmailId(localFlat.getOwnerEmailId());
-            data.setExpenses(localFlat.getExpenses());
             data.setNumberOfUsers(localFlat.getNumberOfUsers());
             data.setUserIds(localFlat.getUserIds());
 

@@ -3,10 +3,11 @@ package com.example.vivek.rentalmates.others;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
+import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
 import com.example.vivek.rentalmates.tasks.LoadProfileImageAsyncTask;
@@ -20,10 +21,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -49,9 +47,6 @@ public class AppData implements Serializable {
     }
 
     private AppData() {
-        this.userProfiles = null;
-        this.flats = null;
-        this.expenses = null;
     }
 
     public List<LocalUserProfile> getUserProfiles() {
@@ -98,6 +93,15 @@ public class AppData implements Serializable {
 
     public boolean storeExpenseDataList(Context context, List<ExpenseData> expenses) {
         this.expenses = LocalExpenseData.convertExpenseToLocalExpense(expenses);
+        return storeAppData(context);
+    }
+
+    public boolean addLocalExpenseData(Context context, ExpenseData expense) {
+        LocalExpenseData data = new LocalExpenseData();
+        data.setAmount(expense.getAmount());
+        data.setDescription(expense.getDescription());
+        data.setOwnerEmailId(expense.getOwnerEmailId());
+        this.expenses.add(data);
         return storeAppData(context);
     }
 

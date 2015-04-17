@@ -1,6 +1,6 @@
 package com.example.vivek.rentalmates.viewholders;
 
-import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
+import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 
 /**
  * Created by vivek on 3/10/2015.

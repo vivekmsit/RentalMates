@@ -1,6 +1,7 @@
 package com.example.vivek.rentalmates.backend.endpoints;
 
 import com.example.vivek.rentalmates.backend.entities.ExpenseData;
+import com.example.vivek.rentalmates.backend.entities.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.entities.FlatInfo;
 import com.example.vivek.rentalmates.backend.entities.UserProfile;
 import com.google.api.server.spi.config.Api;
@@ -87,7 +88,7 @@ public class UserProfileEndpoint {
         String emailId = userProfile.getEmailId();
         Query query = ofy().load().type(UserProfile.class);
         query = query.filter("emailId" + " = ", emailId);
-        List<UserProfile> profiles =  query.list();
+        List<UserProfile> profiles = query.list();
         UserProfile finalUserProfile;
         if (profiles.size() == 0) {
             logger.info("Created UserProfile.");
@@ -180,10 +181,10 @@ public class UserProfileEndpoint {
             name = "queryUserProfiles",
             path = "queryUserProfiles",
             httpMethod = ApiMethod.HttpMethod.POST)
-    public List<UserProfile> queryUserProfiles(@Named("type") String type,@Named("value") String value ) {
+    public List<UserProfile> queryUserProfiles(@Named("type") String type, @Named("value") String value) {
         Query query = ofy().load().type(UserProfile.class);
         query = query.filter(type + " = ", value);
-        List<UserProfile> profiles =  query.list();
+        List<UserProfile> profiles = query.list();
         return profiles;
     }
 
@@ -203,17 +204,16 @@ public class UserProfileEndpoint {
         checkExists(id);
         List<FlatInfo> flats = new ArrayList<>();
         UserProfile userProfile = ofy().load().type(UserProfile.class).id(id).now();
-        if (userProfile == null ){
+        if (userProfile == null) {
             logger.info("No UserProfile exists with ID: " + id);
             return null;
-        } else if (userProfile.getNumberOfFlats()==0) {
+        } else if (userProfile.getNumberOfFlats() == 0) {
             logger.info("No FlatInfo registered for UserProfile with ID: " + id);
             return null;
-        }
-        else {
+        } else {
             logger.info("Added a new ExpenseData for FlatInfo with ID: " + id);
             List<Long> flatIds = userProfile.getFlatIds();
-            for (Long flatId: flatIds) {
+            for (Long flatId : flatIds) {
                 FlatInfo flatInfo = ofy().load().type(FlatInfo.class).id(flatId).now();
                 flats.add(flatInfo);
             }
@@ -239,13 +239,16 @@ public class UserProfileEndpoint {
 
         UserProfile currentUserProfile = ofy().load().type(UserProfile.class).id(id).now();
 
+        profiles.add(currentUserProfile);
+        tempIds.add(currentUserProfile.getId());
+
         if (currentUserProfile.getNumberOfFlats() == 0) {
-            return null;
+            return profiles;
         }
-        for (Long flatId: currentUserProfile.getFlatIds()) {
+        for (Long flatId : currentUserProfile.getFlatIds()) {
             FlatInfo flatInfo = ofy().load().type(FlatInfo.class).id(flatId).now();
 
-            for (Long userId: flatInfo.getUserIds()) {
+            for (Long userId : flatInfo.getUserIds()) {
                 if (!tempIds.contains(userId)) {
                     UserProfile userProfile = ofy().load().type(UserProfile.class).id(userId).now();
                     profiles.add(userProfile);

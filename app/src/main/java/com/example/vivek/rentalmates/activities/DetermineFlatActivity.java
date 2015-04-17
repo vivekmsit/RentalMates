@@ -1,13 +1,9 @@
 package com.example.vivek.rentalmates.activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,7 +15,7 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.services.BackendApiService;
-import com.example.vivek.rentalmates.tasks.GetExpenseDataListAsyncTask;
+import com.example.vivek.rentalmates.tasks.GetAllExpenseListAsyncTask;
 import com.example.vivek.rentalmates.tasks.RegisterWithOldFlatAsyncTask;
 
 import java.util.ArrayList;
@@ -102,7 +98,7 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
                 }
                 Toast.makeText(this, "retrieving ExpenseData list", Toast.LENGTH_SHORT).show();
                 BackendApiService.storePrimaryFlatName(this, selectedFlatName);
-                new GetExpenseDataListAsyncTask(this, selectedFlatId, true).execute();
+                new GetAllExpenseListAsyncTask(this, selectedFlatId, true).execute();
                 break;
 
             case R.id.registerWithOldFlatButton:

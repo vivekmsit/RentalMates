@@ -1,6 +1,7 @@
 package com.example.vivek.rentalmates.backend.ofy;
 
 import com.example.vivek.rentalmates.backend.entities.ExpenseData;
+import com.example.vivek.rentalmates.backend.entities.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.entities.FlatInfo;
 import com.example.vivek.rentalmates.backend.entities.RegistrationRecord;
 import com.example.vivek.rentalmates.backend.entities.UserProfile;
@@ -19,6 +20,7 @@ public class OfyService {
         ObjectifyService.register(UserProfile.class);
         ObjectifyService.register(FlatInfo.class);
         ObjectifyService.register(ExpenseData.class);
+        ObjectifyService.register(ExpenseGroup.class);
     }
 
     public static Objectify ofy() {

@@ -11,40 +11,35 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.vivek.rentalmates.activities.AddExpenseActivity;
 import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.activities.MainTabActivity;
-import com.example.vivek.rentalmates.activities.MyLoginActivity;
-import com.example.vivek.rentalmates.backend.flatInfoApi.FlatInfoApi;
-import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
-import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseDataCollection;
-import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
-import com.example.vivek.rentalmates.interfaces.ExpenseDataListLoadedListener;
+import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.ExpenseGroupApi;
+import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
+import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseDataCollection;
+import com.example.vivek.rentalmates.interfaces.OnAllExpenseListLoadedListener;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
-import com.example.vivek.rentalmates.others.LocalExpenseData;
 import com.example.vivek.rentalmates.services.BackendApiService;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class GetExpenseDataListAsyncTask extends AsyncTask<Context, Void, String> {
+public class GetAllExpenseListAsyncTask extends AsyncTask<Context, Void, String> {
     private static final String TAG = "GetExpenseTask_Debug";
 
-    private static FlatInfoApi flatService = null;
+    private static ExpenseGroupApi expenseService = null;
     private Context context;
     SharedPreferences prefs;
     IOException ioException;
     boolean appStartup;
     Long flatId;
     AppData appData;
-    public ExpenseDataListLoadedListener loadedListener;
+    public OnAllExpenseListLoadedListener loadedListener;
 
-    public GetExpenseDataListAsyncTask(Context context, final Long flatId, final boolean startup) {
+    public GetAllExpenseListAsyncTask(Context context, final Long flatId, final boolean startup) {
         this.context = context;
         this.appStartup = startup;
         this.flatId = flatId;
@@ -57,13 +52,14 @@ public class GetExpenseDataListAsyncTask extends AsyncTask<Context, Void, String
     @Override
     protected String doInBackground(Context... params) {
         String msg = "";
-        if (flatService == null) {
-            FlatInfoApi.Builder builder1 = new FlatInfoApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
+        if (expenseService == null) {
+            ExpenseGroupApi.Builder builder1 = new ExpenseGroupApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
                     .setRootUrl(AppConstants.BACKEND_ROOT_URL);
-            flatService = builder1.build();
+            expenseService = builder1.build();
         }
         try {
-            ExpenseDataCollection expensesCollection = flatService.getExpenseDataList(flatId).execute();
+            Long userProfileId = prefs.getLong(AppConstants.USER_PROFILE_ID, 0);
+            ExpenseDataCollection expensesCollection = expenseService.getAllExpensesList(userProfileId).execute();
             msg = "SUCCESS";
             if (expensesCollection == null) {
                 Log.d(TAG, "expenses is null");

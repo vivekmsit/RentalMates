@@ -55,9 +55,7 @@ public class FlatInfo {
 
     private List<BlobKey> flatPicturesBlobKeys;
 
-    private List<ExpenseData> expenses = new ArrayList<ExpenseData>();
-
-    private int numberOfExpenses;
+    private Long expenseGroupId;
 
     private int numberOfUsers;
 
@@ -66,7 +64,6 @@ public class FlatInfo {
     public FlatInfo() {
         date = new Date();
         numberOfUsers = 0;
-        numberOfExpenses = 0;
     }
 
     public Long getFlatId(){
@@ -105,12 +102,12 @@ public class FlatInfo {
         this.ownerEmailId = emailId;
     }
 
-    public void addExpense(ExpenseData data){
-        expenses.add(data);
+    public Long getExpenseGroupId() {
+        return expenseGroupId;
     }
 
-    public List<ExpenseData> getExpenses(){
-        return expenses;
+    public void setExpenseGroupId(Long expenseGroupId) {
+        this.expenseGroupId = expenseGroupId;
     }
 
     public Long getUserProfileId() {
@@ -137,28 +134,14 @@ public class FlatInfo {
         this.userProfileId = userProfileId;
     }
 
-    public int getNumberOfExpenses() {
-        return numberOfExpenses;
-    }
-
-    public void setNumberOfExpenses(int numberOfExpenses) {
-        this.numberOfExpenses = numberOfExpenses;
-    }
-
-    public void incrementNumberOfExpenses() {
-        numberOfExpenses++;
-    }
-
-    public void decrementNumberOfExpenses() {
-        numberOfExpenses--;
-    }
-
     public void addUserId(Long id) {
         userIds.add(id);
+        numberOfUsers++;
     }
 
     public void removeUserId(Long id) {
         userIds.remove(id);
+        numberOfUsers--;
     }
 
     public int getNumberOfUsers() {
@@ -167,14 +150,6 @@ public class FlatInfo {
 
     public void setNumberOfUsers(int numberOfUsers) {
         this.numberOfUsers = numberOfUsers;
-    }
-
-    public void incrementNumberOfUsers() {
-        numberOfUsers++;
-    }
-
-    public void decrementNumberOfUsers() {
-        numberOfUsers--;
     }
 
 }

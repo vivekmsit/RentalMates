@@ -25,7 +25,7 @@ public class ExpenseData implements Serializable{
     private Date date;
     private String description;
     private String ownerEmailId;
-    private Long flatId;
+    private Long expenseGroupId;
     private int currencyType;
 
     ExpenseData(){
@@ -34,6 +34,10 @@ public class ExpenseData implements Serializable{
         description = "Description";
         ownerEmailId = "EmailId";
         currencyType = 0;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public int getAmount() {
@@ -68,12 +72,12 @@ public class ExpenseData implements Serializable{
         this.description = description;
     }
 
-    public void setFlatId(Long id){
-        this.flatId = id;
+    public Long getExpenseGroupId() {
+        return expenseGroupId;
     }
 
-    public Long getFlatId(){
-        return this.flatId;
+    public void setExpenseGroupId(Long expenseGroupId) {
+        this.expenseGroupId = expenseGroupId;
     }
 
     public int getCurrencyType() {

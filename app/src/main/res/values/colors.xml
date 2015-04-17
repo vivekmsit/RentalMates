@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <color name="primaryColor">#FF9800</color>
     <color name="primaryColorDark">#F57C00</color>
     <color name="accentColor">#F44336</color>
@@ -9,5 +8,7 @@
     <color name="purple">#9933CC</color>
     <color name="green">#669900</color>
     <color name="orange">#FF8800</color>
-
+    <color name="facebookBackground">#f7f7f7</color>
+    <color name="grey">#808080</color>
+    <color name="lightGrey">#e5e5e5</color>
 </resources>

@@ -87,6 +87,16 @@ public class BackendApiService extends Service {
         editor.commit();
     }
 
+    public static void storeFlatExpenseGroupId(Context context, Long id) {
+        String msg = "";
+        SharedPreferences prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
+                Context.MODE_PRIVATE);
+        Log.d(TAG, "Saving flatE in shared preferences" + id);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putLong(AppConstants.FLAT_EXPENSE_GROUP_ID, id);
+        editor.commit();
+    }
+
     public static void storePrimaryFlatName(Context context, String flatName) {
         String msg = "";
         SharedPreferences prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),

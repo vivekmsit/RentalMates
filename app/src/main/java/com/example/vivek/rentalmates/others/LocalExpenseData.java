@@ -1,17 +1,7 @@
 package com.example.vivek.rentalmates.others;
 
-import android.content.Context;
-import android.os.Environment;
-import android.util.Log;
+import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 
-import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

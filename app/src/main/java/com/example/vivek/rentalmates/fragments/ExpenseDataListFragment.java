@@ -18,18 +18,18 @@ import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.activities.AddExpenseActivity;
 import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.adapters.ExpenseListViewAdapter;
-import com.example.vivek.rentalmates.backend.flatInfoApi.model.ExpenseData;
-import com.example.vivek.rentalmates.interfaces.ExpenseDataListLoadedListener;
+import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
+import com.example.vivek.rentalmates.interfaces.OnAllExpenseListLoadedListener;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
-import com.example.vivek.rentalmates.tasks.GetExpenseDataListAsyncTask;
+import com.example.vivek.rentalmates.tasks.GetAllExpenseListAsyncTask;
 import com.example.vivek.rentalmates.viewholders.ExpenseListItem;
 import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, ExpenseDataListLoadedListener {
+public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, OnAllExpenseListLoadedListener {
 
     private static final String TAG = "ExpenseList_Debug";
 
@@ -97,6 +97,7 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
                 Context.MODE_PRIVATE);
     }
 
+
     public List<ExpenseListItem> getData() {
         Log.d(TAG, "inside getData");
         List<ExpenseListItem> mItems = new ArrayList<>();
@@ -119,7 +120,7 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
     public void onRefresh() {
         Log.d(TAG, "inside onRefresh");
         Long flatId = prefs.getLong(AppConstants.PRIMARY_FLAT_ID, 0);
-        GetExpenseDataListAsyncTask task = new GetExpenseDataListAsyncTask(context, flatId, false);
+        GetAllExpenseListAsyncTask task = new GetAllExpenseListAsyncTask(context, flatId, false);
         task.loadedListener = this;
         task.execute();
     }

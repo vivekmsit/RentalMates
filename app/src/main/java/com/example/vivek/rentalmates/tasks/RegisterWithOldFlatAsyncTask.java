@@ -1,7 +1,6 @@
 package com.example.vivek.rentalmates.tasks;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -9,9 +8,6 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.activities.DetermineFlatActivity;
 import com.example.vivek.rentalmates.activities.MainActivity;
-import com.example.vivek.rentalmates.activities.MainTabActivity;
-import com.example.vivek.rentalmates.activities.MyLoginActivity;
-import com.example.vivek.rentalmates.activities.RegisterFlatActivity;
 import com.example.vivek.rentalmates.backend.flatInfoApi.FlatInfoApi;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
 import com.example.vivek.rentalmates.others.AppConstants;
@@ -82,7 +78,7 @@ public class RegisterWithOldFlatAsyncTask extends AsyncTask<Context, Void, Strin
 
         if (msg.equals("SUCCESS_FLAT_AVAILABLE")) {
             Toast.makeText(context, "Registered with old flat: " + flatName + "\nretrieving ExpenseData info", Toast.LENGTH_SHORT).show();
-            new GetExpenseDataListAsyncTask(context, flatId, true).execute();
+            new GetAllExpenseListAsyncTask(context, flatId, true).execute();
         } else if (msg.equals("SUCCESS_NO_FLAT_AVAILABLE")) {
             Toast.makeText(context, "Flat with given name doesn't exist.\nPlease enter different name", Toast.LENGTH_LONG).show();
         } else if (msg.equals("EXCEPTION")) {

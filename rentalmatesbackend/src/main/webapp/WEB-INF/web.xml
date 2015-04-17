@@ -16,7 +16,8 @@
             <param-value>com.example.vivek.rentalmates.backend.endpoints.RegistrationEndpoint,
                 com.example.vivek.rentalmates.backend.endpoints.MessagingEndpoint,
                 com.example.vivek.rentalmates.backend.endpoints.UserProfileEndpoint,
-                com.example.vivek.rentalmates.backend.endpoints.FlatInfoEndpoint</param-value>
+                com.example.vivek.rentalmates.backend.endpoints.FlatInfoEndpoint,
+                com.example.vivek.rentalmates.backend.endpoints.ExpenseGroupEndpoint</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>

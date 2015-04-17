@@ -1,6 +1,7 @@
 package com.example.vivek.rentalmates.backend.endpoints;
 
 import com.example.vivek.rentalmates.backend.entities.ExpenseData;
+import com.example.vivek.rentalmates.backend.entities.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.entities.FlatInfo;
 import com.example.vivek.rentalmates.backend.entities.UserProfile;
 import com.google.api.server.spi.config.Api;
@@ -49,6 +50,7 @@ public class FlatInfoEndpoint {
         // Typically you would register this inside an OfyServive wrapper. See: https://code.google.com/p/objectify-appengine/wiki/BestPractices
         ObjectifyService.register(FlatInfo.class);
         ObjectifyService.register(ExpenseData.class);
+        ObjectifyService.register(ExpenseGroup.class);
     }
 
     /**
@@ -85,9 +87,23 @@ public class FlatInfoEndpoint {
         List<FlatInfo> flats =  query.list();
         FlatInfo finalFlatInfo;
         if (flats.size() == 0) {
-            logger.info("Created FlatInfo.");
+            //create a new ExpenseGroup for given flat
+            ExpenseGroup expenseGroup = new ExpenseGroup();
+            expenseGroup.setName(flatName+"_expense");
+            Query query1 = ofy().load().type(ExpenseGroup.class);
+            query1 = query1.filter("name" + " = ", expenseGroup.getName());
+            List<ExpenseGroup> groups =  query1.list();
+            ExpenseGroup finalExpenseGroup;
+            if (groups.size() == 0) {
+                ofy().save().entity(expenseGroup).now();
+                finalExpenseGroup = ofy().load().entity(expenseGroup).now();
+            } else {
+                finalExpenseGroup = groups.get(0);
+            }
+
+            //update flatInfo here
+            flatInfo.setExpenseGroupId(finalExpenseGroup.getId());
             flatInfo.addUserId(flatInfo.getUserProfileId());
-            flatInfo.incrementNumberOfUsers();
             ofy().save().entity(flatInfo).now();
 
             //Add created FlatInfo flatId to corresponding UserProfile flatIds list
@@ -96,7 +112,8 @@ public class FlatInfoEndpoint {
             UserProfile relatedUserProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
             relatedUserProfile.addFlatId(finalFlatInfo.getFlatId());
             relatedUserProfile.setPrimaryFlatId(finalFlatInfo.getFlatId());
-            relatedUserProfile.incrementNumberOfFlats();
+            relatedUserProfile.addExpenseGroupId(finalExpenseGroup.getId());
+            relatedUserProfile.setFlatExpenseGroupId(finalExpenseGroup.getId());
             ofy().save().entity(relatedUserProfile).now();
 
             finalFlatInfo.setCreateFlatResult("NEW_FLAT_INFO");
@@ -104,6 +121,7 @@ public class FlatInfoEndpoint {
             finalFlatInfo = flats.get(0);
             finalFlatInfo.setCreateFlatResult("OLD_FLAT_INFO");
         }
+        logger.info("Created FlatInfo.");
         return finalFlatInfo;
     }
 
@@ -128,7 +146,6 @@ public class FlatInfoEndpoint {
             UserProfile userProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
             if (!userProfile.getFlatIds().contains(finalFlatInfo.getFlatId())) {
                 userProfile.addFlatId(finalFlatInfo.getFlatId());
-                userProfile.incrementNumberOfFlats();
             }
             userProfile.setPrimaryFlatId(finalFlatInfo.getFlatId());
             ofy().save().entity(userProfile).now();
@@ -136,7 +153,6 @@ public class FlatInfoEndpoint {
             //Add userProfileId to FlatInfo userIds List
             if (!finalFlatInfo.getUserIds().contains(userProfileId)) {
                 finalFlatInfo.addUserId(userProfileId);
-                finalFlatInfo.incrementNumberOfUsers();
                 ofy().save().entity(finalFlatInfo).now();
             }
             finalFlatInfo.setCreateFlatResult("OLD_FLAT_INFO");
@@ -212,56 +228,6 @@ public class FlatInfoEndpoint {
             ofy().load().type(FlatInfo.class).id(id).safe();
         } catch (com.googlecode.objectify.NotFoundException e) {
             throw new NotFoundException("Could not find FlatInfo with ID: " + id);
-        }
-    }
-
-
-    /**
-     * Adds new ExpenseData inside specified {@code FlatInfo}.
-     *
-     * @param id the ID of the FlatInfo in which ExpenseData is to be added
-     * @throws NotFoundException if the {@code id} does not correspond to an existing
-     *                           {@code FlatInfo}
-     */
-    @ApiMethod(
-            name = "addExpenseData",
-            path = "flatInfo1/{id}",
-            httpMethod = ApiMethod.HttpMethod.POST)
-    public FlatInfo addExpenseData(@Named("id") Long id, ExpenseData expenseData) throws NotFoundException {
-        checkExists(id);
-        FlatInfo flatInfo = ofy().load().type(FlatInfo.class).id(id).now();
-        ofy().save().entity(expenseData).now();
-        expenseData.setFlatId(flatInfo.getFlatId());
-        flatInfo.addExpense(expenseData);
-        flatInfo.incrementNumberOfExpenses();
-        ofy().save().entity(flatInfo).now();
-        logger.info("Added a new ExpenseData for FlatInfo with ID: " + id);
-        return ofy().load().entity(flatInfo).now();
-    }
-
-    /**
-     * Get ExpenseData list from specified {@code FlatInfo}.
-     *
-     * @param id the ID of the FlatInfo which contains ExpenseData list
-     * @throws NotFoundException if the {@code id} does not correspond to an existing
-     *                           {@code FlatInfo}
-     */
-    @ApiMethod(
-            name = "getExpenseDataList",
-            path = "flatInfo2/{id}",
-            httpMethod = ApiMethod.HttpMethod.POST)
-    public List<ExpenseData> getExpenseDataList(@Named("id") Long id) throws NotFoundException {
-        checkExists(id);
-        List<ExpenseData> expenses = new ArrayList<>();
-        FlatInfo flatInfo = ofy().load().type(FlatInfo.class).id(id).now();
-        if (flatInfo == null){
-            logger.info("Added a new ExpenseData for FlatInfo with ID: " + id);
-            return null;
-        }
-        else {
-            logger.info("Added a new ExpenseData for FlatInfo with ID: " + id);
-            expenses = flatInfo.getExpenses();
-            return expenses;
         }
     }
 }
