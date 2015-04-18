@@ -45,6 +45,7 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
     private SharedPreferences prefs;
     private View containerView;
     private TextView userNameTextView;
+    private TextView emailTextView;
     private RecyclerView recyclerView;
     private DrawerListViewAdapter drawerListViewAdapter;
     private CircularImageView circularImageView;
@@ -81,6 +82,10 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
         userNameTextView = (TextView) getView().findViewById(R.id.userNameTextView);
         String userName = prefs.getString(AppConstants.USER_NAME, "no_user_name");
         userNameTextView.setText(userName);
+
+        //Initialize UserEmailId TextView
+        emailTextView = (TextView) getView().findViewById(R.id.userEmailTextView);
+        emailTextView.setText(emailId);
     }
 
     @Override

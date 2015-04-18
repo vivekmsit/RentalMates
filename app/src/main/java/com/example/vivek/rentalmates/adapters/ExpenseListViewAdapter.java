@@ -57,7 +57,9 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
         viewHolder.circularImageView.setImageBitmap(appData.getProfilePictureBitmap(context, current.ownerEmailId));
         viewHolder.amount.setText(Integer.toString(current.amount));
         viewHolder.description.setText(current.description);
-        viewHolder.owner.setText(current.ownerEmailId);
+        viewHolder.userName.setText(current.userName);
+        viewHolder.groupName.setText(current.groupName);
+        viewHolder.date.setText(current.date);
     }
 
     @Override
@@ -73,14 +75,18 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
         CircularImageView circularImageView;
         TextView amount;
         TextView description;
-        TextView owner;
+        TextView userName;
+        TextView groupName;
+        TextView date;
 
         public ExpenseViewHolder(View itemView) {
             super(itemView);
             circularImageView = (CircularImageView) itemView.findViewById(R.id.expenseImageView);
-            amount = (TextView) itemView.findViewById(R.id.amountListView);
-            description = (TextView) itemView.findViewById(R.id.descriptionListView);
-            owner = (TextView) itemView.findViewById(R.id.ownerListView);
+            amount = (TextView) itemView.findViewById(R.id.amountTextView);
+            description = (TextView) itemView.findViewById(R.id.descriptionTextView);
+            userName  = (TextView) itemView.findViewById(R.id.userNameTextView);
+            groupName = (TextView) itemView.findViewById(R.id.groupNameTextView);
+            date = (TextView) itemView.findViewById(R.id.dateTextView);
             itemView.setOnClickListener(this);
         }
 

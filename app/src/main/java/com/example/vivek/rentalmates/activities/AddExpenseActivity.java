@@ -78,12 +78,13 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
                 }
                 addExpenseButtonClicked = true;
                 ExpenseData expenseData = new ExpenseData();
+                //expenseData.setDate(new LocalDate());
                 expenseData.setAmount(Integer.parseInt(amountEditText.getText().toString()));
                 expenseData.setDescription(descriptionEditText.getText().toString());
                 expenseData.setOwnerEmailId(prefs.getString(AppConstants.EMAIL_ID, "no_email_id"));
-                //To be changed later
-                Long expenseGroupId = prefs.getLong(AppConstants.FLAT_EXPENSE_GROUP_ID, 0);
-                expenseData.setExpenseGroupId(expenseGroupId);
+                expenseData.setUserName(prefs.getString(AppConstants.USER_NAME, "no_user_name"));
+                expenseData.setExpenseGroupName(prefs.getString(AppConstants.PRIMARY_FLAT_NAME, "no_flat_name"));
+                expenseData.setExpenseGroupId(prefs.getLong(AppConstants.FLAT_EXPENSE_GROUP_ID, 0));
                 new AddExpenseAsyncTask(this, this, expenseData).execute();
                 break;
 

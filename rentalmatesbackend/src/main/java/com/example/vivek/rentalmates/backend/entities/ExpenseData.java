@@ -1,16 +1,10 @@
 package com.example.vivek.rentalmates.backend.entities;
 
-import com.example.vivek.rentalmates.backend.entities.FlatInfo;
-import com.google.appengine.api.datastore.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
-import sun.rmi.runtime.Log;
 
 /**
  * Created by vivek on 2/9/2015.
@@ -25,7 +19,9 @@ public class ExpenseData implements Serializable{
     private Date date;
     private String description;
     private String ownerEmailId;
+    private String userName;
     private Long expenseGroupId;
+    private String expenseGroupName;
     private int currencyType;
 
     ExpenseData(){
@@ -68,6 +64,14 @@ public class ExpenseData implements Serializable{
         this.ownerEmailId = emailId;
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     public void setDescription(String description) {
         this.description = description;
     }
@@ -78,6 +82,14 @@ public class ExpenseData implements Serializable{
 
     public void setExpenseGroupId(Long expenseGroupId) {
         this.expenseGroupId = expenseGroupId;
+    }
+
+    public String getExpenseGroupName() {
+        return expenseGroupName;
+    }
+
+    public void setExpenseGroupName(String expenseGroupName) {
+        this.expenseGroupName = expenseGroupName;
     }
 
     public int getCurrencyType() {

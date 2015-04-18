@@ -4,6 +4,7 @@ import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.Expe
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -16,11 +17,15 @@ public class LocalExpenseData implements Serializable {
     private int amount;
     private String description;
     private String ownerEmailId;
+    private String userName;
+    private String expenseGroupName;
+    private Date date;
 
     public LocalExpenseData() {
         this.amount = 0;
         this.description = "description";
         this.ownerEmailId = "emailId";
+        this.expenseGroupName = "GROUP NAME";
     }
 
     public int getAmount() {
@@ -47,6 +52,30 @@ public class LocalExpenseData implements Serializable {
         this.ownerEmailId = emailId;
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getExpenseGroupName() {
+        return expenseGroupName;
+    }
+
+    public void setExpenseGroupName(String expenseGroupName) {
+        this.expenseGroupName = expenseGroupName;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
     public static List<ExpenseData> convertLocalExpenseToExpense(List<LocalExpenseData> expenses) {
         if (expenses == null) {
             return null;
@@ -57,6 +86,9 @@ public class LocalExpenseData implements Serializable {
             data.setAmount(expenseData.getAmount());
             data.setDescription(expenseData.getDescription());
             data.setOwnerEmailId(expenseData.getOwnerEmailId());
+            data.setExpenseGroupName(expenseData.getExpenseGroupName());
+            //data.setDate(expenseData.getDate());
+            data.setUserName(expenseData.getUserName());
             localExpenses.add(data);
         }
         return localExpenses;
@@ -72,6 +104,9 @@ public class LocalExpenseData implements Serializable {
             data.setAmount(expenseData.getAmount());
             data.setDescription(expenseData.getDescription());
             data.setOwnerEmailId(expenseData.getOwnerEmailId());
+            data.setExpenseGroupName(expenseData.getExpenseGroupName());
+            //data.setDate(expenseData.getDate());
+            data.setUserName(expenseData.getUserName());
             localExpenses.add(data);
         }
         return localExpenses;

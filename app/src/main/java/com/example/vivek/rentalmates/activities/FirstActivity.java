@@ -20,7 +20,6 @@ public class FirstActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
         appData = AppData.getInstance();
-        appData.restoreAppData(this);
     }
 
     @Override
@@ -29,9 +28,10 @@ public class FirstActivity extends ActionBarActivity {
         final Class<? extends Activity> activityClass;
         SharedPreferences prefs = this.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
-        if (prefs.contains(AppConstants.SIGN_IN_COMPLETED) && prefs.getBoolean(AppConstants.SIGN_IN_COMPLETED, true))
+        if (prefs.contains(AppConstants.SIGN_IN_COMPLETED) && prefs.getBoolean(AppConstants.SIGN_IN_COMPLETED, true)) {
+            appData.restoreAppData(this);
             activityClass = MainTabActivity.class;
-        else
+        } else
             activityClass = MyLoginActivity.class;
 
         Intent newActivity = new Intent(this, activityClass);

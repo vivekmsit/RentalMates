@@ -22,7 +22,6 @@ import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
 import java.io.IOException;
-import java.util.Collections;
 
 public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
     private static final String TAG = "ExpenseAsyncTask_Debug";

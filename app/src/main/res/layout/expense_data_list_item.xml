@@ -9,6 +9,7 @@
 
     <!-- the innner view - provides the white rectangle -->
     <RelativeLayout
+        android:id="@+id/topExpenseLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
@@ -32,7 +33,7 @@
             android:paddingLeft="10dp">
 
             <TextView
-                android:id="@+id/amountListView"
+                android:id="@+id/userNameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -41,22 +42,50 @@
 
             <!-- the title view -->
             <TextView
-                android:id="@+id/descriptionListView"
+                android:id="@+id/amountTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/amountListView"
+                android:layout_below="@+id/userNameTextView"
 
                 android:textAppearance="@android:style/TextAppearance.Medium" />
 
             <!-- the description view -->
             <TextView
-                android:id="@+id/ownerListView"
+                android:id="@+id/dateTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/descriptionListView"
+                android:layout_below="@id/amountTextView"
                 android:textAppearance="@android:style/TextAppearance.Small" />
         </RelativeLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="5dp"
+            android:background="@color/green">
+
+            <TextView
+                android:id="@+id/groupNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:text="GROUP NAME"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+        </LinearLayout>
+
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/descriptionTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/topExpenseLayout"
+        android:layout_centerHorizontal="true"
+        android:background="@color/yellow"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:text="Description" />
 
 </RelativeLayout>
