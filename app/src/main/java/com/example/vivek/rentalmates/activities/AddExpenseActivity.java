@@ -73,7 +73,7 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
                 break;
 
             case R.id.addExpenseButton:
-                if (addExpenseButtonClicked == true || verifyExpenseData() == false) {
+                if (addExpenseButtonClicked || !verifyExpenseData()) {
                     return;
                 }
                 addExpenseButtonClicked = true;

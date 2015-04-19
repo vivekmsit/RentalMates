@@ -78,7 +78,7 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
             continueWithOldFlatButton.setVisibility(View.INVISIBLE);
         }
 
-        ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, flatNames);
+        ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, flatNames);
         chooseFlatSpinner.setAdapter(stringArrayAdapter);
         chooseFlatSpinner.setOnItemSelectedListener(this);
 
@@ -92,7 +92,7 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
         switch (v.getId()) {
 
             case R.id.continueWithOldFlatButton:
-                if (alreadyRegisteredFlat == false) {
+                if (!alreadyRegisteredFlat) {
                     Toast.makeText(this, "No Flat registered yet", Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -102,7 +102,7 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
                 break;
 
             case R.id.registerWithOldFlatButton:
-                if (registerWithOldFlatButtonClicked == true || verifyFlatInfoData() == false) {
+                if (registerWithOldFlatButtonClicked || !verifyFlatInfoData()) {
                     return;
                 }
                 registerWithOldFlatButtonClicked = true;

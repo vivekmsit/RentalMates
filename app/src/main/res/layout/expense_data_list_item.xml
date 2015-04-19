@@ -2,11 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_gravity="center"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:layout_marginEnd="10dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="5dp"
     android:background="@drawable/custom_ripple_effect_bg"
     android:clickable="true"
-    android:gravity="center_vertical"
+    android:elevation="2dp"
     android:padding="5dp">
 
     <!-- the innner view - provides the white rectangle -->
@@ -30,15 +33,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/expenseImageView"
-            android:layout_weight="3"
-            android:paddingLeft="10dp">
+            android:layout_toEndOf="@id/expenseImageView"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp">
 
             <TextView
                 android:id="@+id/userNameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:textAppearance="@android:style/TextAppearance.Medium"
                 android:textStyle="bold" />
 
@@ -63,7 +65,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_marginTop="5dp"
             android:background="@color/green">
 
