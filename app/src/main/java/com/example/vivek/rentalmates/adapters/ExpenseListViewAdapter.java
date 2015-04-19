@@ -55,7 +55,7 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
         Log.d(TAG, "inside onBindViewHolder");
         ExpenseListItem current = data.get(position);
         viewHolder.circularImageView.setImageBitmap(appData.getProfilePictureBitmap(context, current.ownerEmailId));
-        viewHolder.amount.setText(Integer.toString(current.amount));
+        viewHolder.amount.setText("Rs " + Integer.toString(current.amount));
         viewHolder.description.setText(current.description);
         viewHolder.userName.setText(current.userName);
         viewHolder.groupName.setText(current.groupName);
