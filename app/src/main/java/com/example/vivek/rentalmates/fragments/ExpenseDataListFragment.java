@@ -41,6 +41,7 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
     private SharedPreferences prefs;
     private FloatingActionButton fab;
 
+
     public ExpenseDataListFragment() {
         Log.d(TAG, "inside constructor");
     }

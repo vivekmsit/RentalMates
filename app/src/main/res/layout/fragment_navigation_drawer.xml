@@ -32,7 +32,7 @@
             android:layout_below="@+id/drawerImageView"
             android:layout_marginLeft="10dp"
             android:text="Large Text"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/white" />
 
         <TextView
@@ -43,7 +43,7 @@
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
             android:text="Email Id"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/white" />
 
     </RelativeLayout>

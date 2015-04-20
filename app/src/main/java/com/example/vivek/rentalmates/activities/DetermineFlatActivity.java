@@ -38,8 +38,10 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
     boolean alreadyRegisteredFlat;
     List<Long> flatIds = new ArrayList<>();
     List<String> flatNames = new ArrayList<>();
+    List<Long> groupExpenseIds = new ArrayList<>();
     Long selectedFlatId;
     String selectedFlatName;
+    Long selectedGroupExpenseId;
 
     public void setRegisterWithOldFlatButtonClicked(boolean value) {
         registerWithOldFlatButtonClicked = value;
@@ -68,8 +70,10 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
         if (alreadyRegisteredFlat) {
             flatIds = (List<Long>) intent.getSerializableExtra("flatIds");
             flatNames = (List<String>) intent.getSerializableExtra("flatNames");
+            groupExpenseIds = (List<Long>) intent.getSerializableExtra("groupExpenseIds");
             selectedFlatId = flatIds.get(0);
             selectedFlatName = flatNames.get(0);
+            selectedGroupExpenseId = groupExpenseIds.get(0);
         }
 
         if (!alreadyRegisteredFlat) {
@@ -97,7 +101,9 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
                     return;
                 }
                 Toast.makeText(this, "retrieving ExpenseData list", Toast.LENGTH_SHORT).show();
+                BackendApiService.storePrimaryFlatId(this, selectedFlatId);
                 BackendApiService.storePrimaryFlatName(this, selectedFlatName);
+                BackendApiService.storeFlatExpenseGroupId(this, selectedGroupExpenseId);
                 new GetAllExpenseListAsyncTask(this, selectedFlatId, true).execute();
                 break;
 
@@ -133,6 +139,7 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         selectedFlatId = flatIds.get(position);
         selectedFlatName = flatNames.get(position);
+        selectedGroupExpenseId = groupExpenseIds.get(position);
     }
 
     @Override

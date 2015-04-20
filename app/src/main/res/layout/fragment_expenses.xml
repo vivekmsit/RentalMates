@@ -13,7 +13,8 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/listExpenses"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:background="@color/fb_feed_bg"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

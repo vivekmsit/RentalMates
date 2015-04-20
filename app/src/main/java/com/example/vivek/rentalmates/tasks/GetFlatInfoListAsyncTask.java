@@ -81,14 +81,17 @@ public class GetFlatInfoListAsyncTask extends AsyncTask<Context, Void, String> {
             intent.putExtra("FLAT_REGISTERED", true);
             List<Long> flatIds = new ArrayList<>();
             List<String> flatNames = new ArrayList<>();
+            List<Long> groupExpenseIds = new ArrayList<>();
             int current = 0;
             for (FlatInfo flatInfo : flats) {
                 flatIds.add(current, flatInfo.getFlatId());
                 flatNames.add(current, flatInfo.getFlatName());
+                groupExpenseIds.add(current, flatInfo.getExpenseGroupId());
                 current++;
             }
             intent.putExtra("flatIds", (java.io.Serializable) flatIds);
             intent.putExtra("flatNames", (java.io.Serializable) flatNames);
+            intent.putExtra("groupExpenseIds", (java.io.Serializable)groupExpenseIds);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);
         } else if (msg.equals("SUCCESS_NO_FLATS")) {

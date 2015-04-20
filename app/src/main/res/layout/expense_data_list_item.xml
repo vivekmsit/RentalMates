@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="5dp"
-    android:layout_marginEnd="10dp"
-    android:layout_marginStart="10dp"
-    android:layout_marginTop="5dp"
+    android:layout_marginBottom="3dp"
+    android:layout_marginEnd="6dp"
+    android:layout_marginStart="6dp"
+    android:layout_marginTop="3dp"
     android:background="@drawable/custom_ripple_effect_bg"
     android:clickable="true"
     android:elevation="2dp"
@@ -20,8 +20,10 @@
 
         <com.pkmmte.view.CircularImageView
             android:id="@+id/expenseImageView"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
             android:src="@drawable/ic_launcher"
             app:border="false"
             app:border_color="#EEEEEE"
@@ -87,15 +89,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="USER NAME"
-            android:textAppearance="@android:style/TextAppearance.Medium" />
+            android:textAppearance="@android:style/TextAppearance.Small" />
 
         <TextView
             android:id="@+id/dateTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/userNameTextView"
-            android:paddingLeft="20dp"
+            android:layout_toEndOf="@id/userNameTextView"
+            android:paddingStart="20dp"
+            android:paddingEnd="10dp"
             android:text="DATE"
             android:textAppearance="@android:style/TextAppearance.Small" />
 

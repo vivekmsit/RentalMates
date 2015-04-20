@@ -26,7 +26,7 @@ public class RegisterWithOldFlatAsyncTask extends AsyncTask<Context, Void, Strin
     private static FlatInfoApi flatService = null;
     private String flatName;
     private Context context;
-    FlatInfo newFlatInfo;
+    FlatInfo oldFlatInfo;
     DetermineFlatActivity activity;
     SharedPreferences prefs;
     IOException ioException;
@@ -52,14 +52,15 @@ public class RegisterWithOldFlatAsyncTask extends AsyncTask<Context, Void, Strin
         try {
             Long userProfileId = prefs.getLong(AppConstants.USER_PROFILE_ID, 0);
             Log.d(TAG, "userprofileid is: " + userProfileId);
-            newFlatInfo = flatService.registerWithOldFlat(this.flatName, userProfileId).execute();
-            if (newFlatInfo == null) {
+            oldFlatInfo = flatService.registerWithOldFlat(this.flatName, userProfileId).execute();
+            if (oldFlatInfo == null) {
                 msg = "SUCCESS_NO_FLAT_AVAILABLE";
             } else {
                 msg = "SUCCESS_FLAT_AVAILABLE";
-                flatId = newFlatInfo.getFlatId();
-                BackendApiService.storePrimaryFlatName(this.context, newFlatInfo.getFlatName());
-                BackendApiService.storePrimaryFlatId(this.context, newFlatInfo.getFlatId());
+                flatId = oldFlatInfo.getFlatId();
+                BackendApiService.storePrimaryFlatId(this.context, oldFlatInfo.getFlatId());
+                BackendApiService.storePrimaryFlatName(this.context, oldFlatInfo.getFlatName());
+                BackendApiService.storeFlatExpenseGroupId(this.context, oldFlatInfo.getExpenseGroupId());
             }
             Log.d(TAG, "inside insert");
         } catch (IOException e) {
