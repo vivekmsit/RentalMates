@@ -9,7 +9,7 @@
     android:layout_marginTop="3dp"
     android:background="@drawable/custom_ripple_effect_bg"
     android:clickable="true"
-    android:elevation="2dp"
+    android:elevation="4dp"
     android:padding="5dp">
 
     <!-- the innner view - provides the white rectangle -->
@@ -22,8 +22,8 @@
             android:id="@+id/expenseImageView"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:paddingStart="5dp"
             android:paddingEnd="5dp"
+            android:paddingStart="5dp"
             android:src="@drawable/ic_launcher"
             app:border="false"
             app:border_color="#EEEEEE"
@@ -97,8 +97,8 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@id/userNameTextView"
-            android:paddingStart="20dp"
             android:paddingEnd="10dp"
+            android:paddingStart="20dp"
             android:text="DATE"
             android:textAppearance="@android:style/TextAppearance.Small" />
 

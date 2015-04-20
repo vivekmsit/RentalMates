@@ -10,6 +10,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,6 +97,15 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
         super.onActivityCreated(savedInstanceState);
         prefs = getActivity().getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
+        startSwipeRefreshLayout();
+    }
+
+
+    public void startSwipeRefreshLayout() {
+        swipeRefreshLayout.setProgressViewOffset(false, 0,
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
+        swipeRefreshLayout.setRefreshing(true);
+        onRefresh();
     }
 
 
