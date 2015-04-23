@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +16,9 @@ import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.tasks.AddExpenseAsyncTask;
+import com.google.api.client.util.DateTime;
+
+import java.util.Date;
 
 public class AddExpenseActivity extends ActionBarActivity implements View.OnClickListener {
 
@@ -25,8 +29,8 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
     EditText descriptionEditText;
     EditText amountEditText;
     Button editUsersButton;
-    Button cancelExpenseButton;
     Button addExpenseButton;
+    Toolbar toolBar;
 
     SharedPreferences prefs;
 
@@ -45,12 +49,14 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
         descriptionEditText = (EditText) findViewById(R.id.descriptionEditText);
         amountEditText = (EditText) findViewById(R.id.amountEditText);
         editUsersButton = (Button) findViewById(R.id.editUsersButton);
-        cancelExpenseButton = (Button) findViewById(R.id.cancelExpenseButton);
         addExpenseButton = (Button) findViewById(R.id.addExpenseButton);
+        toolBar = (Toolbar) findViewById(R.id.app_bar);
 
         editUsersButton.setOnClickListener(this);
-        cancelExpenseButton.setOnClickListener(this);
         addExpenseButton.setOnClickListener(this);
+
+        setSupportActionBar(toolBar);
+        setTitle("New Expense");
 
         prefs = this.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
@@ -66,19 +72,13 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
                 //To be implemented
                 break;
 
-            case R.id.cancelExpenseButton:
-                Intent intent1 = new Intent(this, MainTabActivity.class);
-                intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent1);
-                break;
-
             case R.id.addExpenseButton:
                 if (addExpenseButtonClicked || !verifyExpenseData()) {
                     return;
                 }
                 addExpenseButtonClicked = true;
                 ExpenseData expenseData = new ExpenseData();
-                //expenseData.setDate(new LocalDate());
+                expenseData.setDate(new DateTime(new Date()));
                 expenseData.setAmount(Integer.parseInt(amountEditText.getText().toString()));
                 expenseData.setDescription(descriptionEditText.getText().toString());
                 expenseData.setOwnerEmailId(prefs.getString(AppConstants.EMAIL_ID, "no_email_id"));

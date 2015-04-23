@@ -19,6 +19,6 @@ public class ExpenseListItem {
         this.ownerEmailId = expenseData.getOwnerEmailId();
         this.userName = expenseData.getUserName();
         this.groupName = expenseData.getExpenseGroupName();
-        this.date = "Date";
+        this.date = expenseData.getDate().toString();
     }
 }

@@ -101,6 +101,9 @@ public class AppData implements Serializable {
         data.setAmount(expense.getAmount());
         data.setDescription(expense.getDescription());
         data.setOwnerEmailId(expense.getOwnerEmailId());
+        data.setDate(expense.getDate());
+        data.setExpenseGroupName(expense.getExpenseGroupName());
+        data.setUserName(expense.getUserName());
         this.expenses.add(data);
         return storeAppData(context);
     }

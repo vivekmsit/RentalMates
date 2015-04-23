@@ -1,6 +1,7 @@
 package com.example.vivek.rentalmates.others;
 
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
+import com.google.api.client.util.DateTime;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class LocalExpenseData implements Serializable {
     private String ownerEmailId;
     private String userName;
     private String expenseGroupName;
-    private Date date;
+    private DateTime date;
 
     public LocalExpenseData() {
         this.amount = 0;
@@ -68,11 +69,11 @@ public class LocalExpenseData implements Serializable {
         this.expenseGroupName = expenseGroupName;
     }
 
-    public Date getDate() {
+    public DateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(DateTime date) {
         this.date = date;
     }
 
@@ -87,7 +88,7 @@ public class LocalExpenseData implements Serializable {
             data.setDescription(expenseData.getDescription());
             data.setOwnerEmailId(expenseData.getOwnerEmailId());
             data.setExpenseGroupName(expenseData.getExpenseGroupName());
-            //data.setDate(expenseData.getDate());
+            data.setDate(expenseData.getDate());
             data.setUserName(expenseData.getUserName());
             localExpenses.add(data);
         }
@@ -105,7 +106,7 @@ public class LocalExpenseData implements Serializable {
             data.setDescription(expenseData.getDescription());
             data.setOwnerEmailId(expenseData.getOwnerEmailId());
             data.setExpenseGroupName(expenseData.getExpenseGroupName());
-            //data.setDate(expenseData.getDate());
+            data.setDate(expenseData.getDate());
             data.setUserName(expenseData.getUserName());
             localExpenses.add(data);
         }
