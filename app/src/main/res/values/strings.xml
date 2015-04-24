@@ -13,6 +13,12 @@
         <item>emailId</item>
     </string-array>
 
+    <string-array name="expenseMenuOptions">
+        <item>edit expense</item>
+        <item>delete expense</item>
+        <item>go to expense group</item>
+    </string-array>
+
     <string name="title_activity_my_login">MyLoginActivity</string>
     <string name="title_activity_main_tab">RentalMates</string>
 

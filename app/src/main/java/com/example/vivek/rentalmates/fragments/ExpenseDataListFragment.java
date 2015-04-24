@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -64,7 +65,7 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
 
         //Initialize RecyclerView
         recyclerView = (RecyclerView) layout.findViewById(R.id.listExpenses);
-        expenseListViewAdapter = new ExpenseListViewAdapter(getActivity(), getData());
+        expenseListViewAdapter = new ExpenseListViewAdapter(getActivity(), getData(), getFragmentManager());
         recyclerView.setAdapter(expenseListViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -85,9 +86,10 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
         //Initialize SwipeRefreshLayout
         swipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeListExpenses);
         swipeRefreshLayout.setOnRefreshListener(this);
-        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.primaryColor));
-        swipeRefreshLayout.setColorSchemeColors(R.color.white, R.color.purple, R.color.green, R.color.orange);
-
+        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.white));
+        swipeRefreshLayout.setColorSchemeColors(R.color.primaryColor, R.color.purple, R.color.green, R.color.orange);
+        swipeRefreshLayout.setProgressViewOffset(false, 0,
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
         return layout;
     }
 
@@ -102,8 +104,6 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
 
 
     public void startSwipeRefreshLayout() {
-        swipeRefreshLayout.setProgressViewOffset(false, 0,
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
         swipeRefreshLayout.setRefreshing(true);
         onRefresh();
     }

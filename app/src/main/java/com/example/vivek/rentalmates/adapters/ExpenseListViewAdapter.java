@@ -1,16 +1,18 @@
 package com.example.vivek.rentalmates.adapters;
 
 import android.content.Context;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
+import com.example.vivek.rentalmates.dialogs.ExpenseMenuDialog;
 import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.viewholders.ExpenseListItem;
 import com.pkmmte.view.CircularImageView;
@@ -28,13 +30,15 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
     private AppData appData;
     private LayoutInflater inflater;
     private Context context;
+    private FragmentManager manager;
 
-    public ExpenseListViewAdapter(Context context, List<ExpenseListItem> data) {
+    public ExpenseListViewAdapter(Context context, List<ExpenseListItem> data, FragmentManager manager) {
         Log.d(TAG, "inside Constructor");
         appData = AppData.getInstance();
         inflater = LayoutInflater.from(context);
         this.context = context;
         this.data = data;
+        this.manager = manager;
     }
 
     public void setData(List<ExpenseListItem> data) {
@@ -71,7 +75,7 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
      * The view holder design pattern prevents using findViewById()
      * repeatedly in the getView() method of the adapter.
      */
-    class ExpenseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ExpenseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         CircularImageView circularImageView;
         TextView amount;
         TextView description;
@@ -88,6 +92,7 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
             groupName = (TextView) itemView.findViewById(R.id.groupNameTextView);
             date = (TextView) itemView.findViewById(R.id.dateTextView);
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         @Override
@@ -95,6 +100,13 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
             Log.d(TAG, "inside onClick");
             ExpenseListItem currentItem = data.get(getPosition());
             Toast.makeText(context, currentItem.description, Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            DialogFragment newFragment = new ExpenseMenuDialog();
+            newFragment.show(manager, "menus");
+            return false;
         }
     }
 }
