@@ -21,6 +21,7 @@ public class LocalExpenseData implements Serializable {
     private String userName;
     private String expenseGroupName;
     private DateTime date;
+    private Long expenseId;
 
     public LocalExpenseData() {
         this.amount = 0;
@@ -77,6 +78,14 @@ public class LocalExpenseData implements Serializable {
         this.date = date;
     }
 
+    public Long getExpenseId() {
+        return expenseId;
+    }
+
+    public void setExpenseId(Long expenseId) {
+        this.expenseId = expenseId;
+    }
+
     public static List<ExpenseData> convertLocalExpenseToExpense(List<LocalExpenseData> expenses) {
         if (expenses == null) {
             return null;
@@ -90,6 +99,7 @@ public class LocalExpenseData implements Serializable {
             data.setExpenseGroupName(expenseData.getExpenseGroupName());
             data.setDate(expenseData.getDate());
             data.setUserName(expenseData.getUserName());
+            data.setId(expenseData.getExpenseId());
             localExpenses.add(data);
         }
         return localExpenses;
@@ -108,6 +118,7 @@ public class LocalExpenseData implements Serializable {
             data.setExpenseGroupName(expenseData.getExpenseGroupName());
             data.setDate(expenseData.getDate());
             data.setUserName(expenseData.getUserName());
+            data.setExpenseId(expenseData.getId());
             localExpenses.add(data);
         }
         return localExpenses;

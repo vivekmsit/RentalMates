@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +20,7 @@ import com.example.vivek.rentalmates.activities.AddExpenseActivity;
 import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.adapters.ExpenseListViewAdapter;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
-import com.example.vivek.rentalmates.interfaces.OnAllExpenseListLoadedListener;
+import com.example.vivek.rentalmates.interfaces.OnAllExpenseListLoadedReceiver;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.tasks.GetAllExpenseListAsyncTask;
@@ -31,7 +30,7 @@ import com.melnykov.fab.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, OnAllExpenseListLoadedListener {
+public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, OnAllExpenseListLoadedReceiver {
 
     private static final String TAG = "ExpenseList_Debug";
 
@@ -132,12 +131,12 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
         Log.d(TAG, "inside onRefresh");
         Long flatId = prefs.getLong(AppConstants.PRIMARY_FLAT_ID, 0);
         GetAllExpenseListAsyncTask task = new GetAllExpenseListAsyncTask(context, flatId, false);
-        task.loadedListener = this;
+        task.loadedReceiver = this;
         task.execute();
     }
 
     @Override
-    public void onExpenseDataListLoaded() {
+    public void onExpenseDataListLoadSuccessful() {
         Log.d(TAG, "inside onExpenseDataListLoaded");
         if (swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(false);

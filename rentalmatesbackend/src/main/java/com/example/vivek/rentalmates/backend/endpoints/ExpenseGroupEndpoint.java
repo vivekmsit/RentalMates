@@ -110,7 +110,7 @@ public class ExpenseGroupEndpoint {
             httpMethod = ApiMethod.HttpMethod.PUT)
     public ExpenseGroup update(@Named("id") Long id, ExpenseGroup expenseGroup) throws NotFoundException {
         // TODO: You should validate your ID parameter against your resource's ID here.
-        checkExists(id);
+        checkExpenseGroupExists(id);
         ofy().save().entity(expenseGroup).now();
         logger.info("Updated ExpenseGroup: " + expenseGroup);
         return ofy().load().entity(expenseGroup).now();
@@ -128,7 +128,7 @@ public class ExpenseGroupEndpoint {
             path = "expenseGroup/{id}",
             httpMethod = ApiMethod.HttpMethod.DELETE)
     public void remove(@Named("id") Long id) throws NotFoundException {
-        checkExists(id);
+        checkExpenseGroupExists(id);
         ofy().delete().type(ExpenseGroup.class).id(id).now();
         logger.info("Deleted ExpenseGroup with ID: " + id);
     }
@@ -158,11 +158,20 @@ public class ExpenseGroupEndpoint {
         return CollectionResponse.<ExpenseGroup>builder().setItems(expenseGroupList).setNextPageToken(queryIterator.getCursor().toWebSafeString()).build();
     }
 
-    private void checkExists(Long id) throws NotFoundException {
+    private void checkExpenseGroupExists(Long id) throws NotFoundException {
         try {
             ofy().load().type(ExpenseGroup.class).id(id).safe();
         } catch (com.googlecode.objectify.NotFoundException e) {
             throw new NotFoundException("Could not find ExpenseGroup with ID: " + id);
+        }
+    }
+
+
+    private void checkExpenseExists(Long id) throws NotFoundException {
+        try {
+            ofy().load().type(ExpenseData.class).id(id).safe();
+        } catch (com.googlecode.objectify.NotFoundException e) {
+            throw new NotFoundException("Could not find ExpenseData with ID: " + id);
         }
     }
 
@@ -176,7 +185,7 @@ public class ExpenseGroupEndpoint {
             httpMethod = ApiMethod.HttpMethod.POST)
     public ExpenseData addExpenseData(ExpenseData expenseData) throws NotFoundException {
         Long expenseGroupId = expenseData.getExpenseGroupId();
-        checkExists(expenseGroupId);
+        checkExpenseGroupExists(expenseGroupId);
         ExpenseGroup expenseGroup = ofy().load().type(ExpenseGroup.class).id(expenseGroupId).now();
         expenseData.setExpenseGroupId(expenseGroupId);
         ofy().save().entity(expenseData).now();
@@ -194,7 +203,7 @@ public class ExpenseGroupEndpoint {
             path = "expenseGroupGetExpenses",
             httpMethod = ApiMethod.HttpMethod.POST)
     public List<ExpenseData> getExpenses(@Named("id") Long expenseGroupId) throws NotFoundException {
-        checkExists(expenseGroupId);
+        checkExpenseGroupExists(expenseGroupId);
         ExpenseGroup expenseGroup = ofy().load().type(ExpenseGroup.class).id(expenseGroupId).now();
         List<ExpenseData> expenses = new ArrayList<>();
         for (Long expenseId : expenseGroup.getExpenseDataIds()) {
@@ -238,5 +247,26 @@ public class ExpenseGroupEndpoint {
             return null;
         }
         return expenses;
+    }
+
+    /**
+     * Deletes the specified {@code ExpenseData}.
+     *
+     * @param id the ID of the entity to delete
+     * @throws NotFoundException if the {@code id} does not correspond to an existing
+     *                           {@code ExpenseGroup}
+     */
+    @ApiMethod(
+            name = "deleteExpense",
+            path = "expenseGroup1/{id}",
+            httpMethod = ApiMethod.HttpMethod.DELETE)
+    public void deleteExpense(@Named("id") Long id) throws NotFoundException {
+        checkExpenseExists(id);
+        ExpenseData expenseData = ofy().load().type(ExpenseData.class).id(id).now();
+        ExpenseGroup expenseGroup = ofy().load().type(ExpenseGroup.class).id(expenseData.getExpenseGroupId()).now();
+        expenseGroup.deleteExpenseId(expenseData.getId());
+        ofy().save().entity(expenseGroup).now();
+        ofy().delete().type(ExpenseData.class).id(id).now();
+        logger.info("Deleted ExpenseData with ID: " + id);
     }
 }

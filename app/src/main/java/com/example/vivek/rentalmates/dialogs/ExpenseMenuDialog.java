@@ -9,15 +9,16 @@ import android.util.Log;
 
 import com.example.vivek.rentalmates.R;
 
-public class ExpenseMenuDialog extends DialogFragment{
+public class ExpenseMenuDialog extends DialogFragment {
 
     private static final String TAG = "ExpenseMenu_Debug";
 
-    public ExpenseMenuDialog(){
+    public ExpenseMenuDialog() {
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        final Long expenseId = getArguments().getLong("ExpenseId");
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setItems(R.array.expenseMenuOptions, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
@@ -25,7 +26,11 @@ public class ExpenseMenuDialog extends DialogFragment{
                     case 0:
                         break;
                     case 1:
-                        new UserConfirmationDeleteExpenseDialog().show(getFragmentManager(), "MyDialog");
+                        UserConfirmationDeleteExpenseDialog expenseDialog = new UserConfirmationDeleteExpenseDialog();
+                        Bundle bundle = new Bundle();
+                        bundle.putLong("ExpenseId", expenseId);
+                        expenseDialog.setArguments(bundle);
+                        expenseDialog.show(getFragmentManager(), "MyDialog");
                         break;
                     case 2:
                         break;

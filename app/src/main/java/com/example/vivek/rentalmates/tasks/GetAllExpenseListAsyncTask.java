@@ -1,8 +1,5 @@
 package com.example.vivek.rentalmates.tasks;
 
-/**
- * Created by vivek on 3/14/2015.
- */
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +13,7 @@ import com.example.vivek.rentalmates.activities.MainTabActivity;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.ExpenseGroupApi;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseDataCollection;
-import com.example.vivek.rentalmates.interfaces.OnAllExpenseListLoadedListener;
+import com.example.vivek.rentalmates.interfaces.OnAllExpenseListLoadedReceiver;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.services.BackendApiService;
@@ -37,7 +34,7 @@ public class GetAllExpenseListAsyncTask extends AsyncTask<Context, Void, String>
     boolean appStartup;
     Long flatId;
     AppData appData;
-    public OnAllExpenseListLoadedListener loadedListener;
+    public OnAllExpenseListLoadedReceiver loadedReceiver;
 
     public GetAllExpenseListAsyncTask(Context context, final Long flatId, final boolean startup) {
         this.context = context;
@@ -51,7 +48,7 @@ public class GetAllExpenseListAsyncTask extends AsyncTask<Context, Void, String>
 
     @Override
     protected String doInBackground(Context... params) {
-        String msg = "";
+        String msg;
         if (expenseService == null) {
             ExpenseGroupApi.Builder builder1 = new ExpenseGroupApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
                     .setRootUrl(AppConstants.BACKEND_ROOT_URL);
@@ -84,19 +81,19 @@ public class GetAllExpenseListAsyncTask extends AsyncTask<Context, Void, String>
 
         Log.d(TAG, "inside onPostExecute() for GetExpenseDataListAsyncTask");
 
-        if (msg.equals("SUCCESS") && this.appStartup == true) {
+        if (msg.equals("SUCCESS") && this.appStartup) {
             Toast.makeText(context, "ExpenseData retrieved successfully", Toast.LENGTH_SHORT).show();
             BackendApiService.storePrimaryFlatId(this.context, flatId);
 
             Intent intent = new Intent(context, MainTabActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);
-        } else if (msg.equals("SUCCESS") && this.appStartup == false && loadedListener != null) {
-            loadedListener.onExpenseDataListLoaded();
-        } else if (msg.equals("EXCEPTION")) {
+        } else if (msg.equals("SUCCESS") && !this.appStartup && loadedReceiver != null) {
+            loadedReceiver.onExpenseDataListLoadSuccessful();
+        } else if (msg.equals("EXCEPTION") && loadedReceiver != null) {
             Log.d(TAG, "IOException: " + ioException.getMessage());
             Toast.makeText(context, "IOException: " + ioException.getMessage(), Toast.LENGTH_LONG).show();
-            loadedListener.onExpenseDataListLoadFailed();
+            loadedReceiver.onExpenseDataListLoadFailed();
         } else {
             Log.d(TAG, "Unable to upload ExpenseData");
             Toast.makeText(context, "Unable to upload ExpenseData", Toast.LENGTH_LONG).show();

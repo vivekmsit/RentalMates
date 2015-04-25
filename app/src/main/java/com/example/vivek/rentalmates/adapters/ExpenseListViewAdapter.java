@@ -1,6 +1,7 @@
 package com.example.vivek.rentalmates.adapters;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
+import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.dialogs.ExpenseMenuDialog;
 import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.viewholders.ExpenseListItem;
@@ -101,6 +103,10 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
         @Override
         public boolean onLongClick(View v) {
             DialogFragment newFragment = new ExpenseMenuDialog();
+            ExpenseData expenseData = appData.getExpenses().get(getPosition());
+            Bundle bundle = new Bundle();
+            bundle.putLong("ExpenseId", expenseData.getId());
+            newFragment.setArguments(bundle);
             newFragment.show(manager, "menus");
             return false;
         }
