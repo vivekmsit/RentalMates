@@ -9,21 +9,33 @@ import android.util.Log;
 
 import com.example.vivek.rentalmates.R;
 
-/**
- * Created by vivek on 4/24/2015.
- */
 public class ExpenseMenuDialog extends DialogFragment{
 
     private static final String TAG = "ExpenseMenu_Debug";
+
+    public ExpenseMenuDialog(){
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setItems(R.array.expenseMenuOptions, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.d(TAG, "inside onClick");
-                    }
-                });
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        break;
+                    case 1:
+                        new UserConfirmationDeleteExpenseDialog().show(getFragmentManager(), "MyDialog");
+                        break;
+                    case 2:
+                        break;
+                    default:
+                        dialog.dismiss();
+                        break;
+                }
+                Log.d(TAG, "inside onClick");
+            }
+        });
         return builder.create();
     }
 }

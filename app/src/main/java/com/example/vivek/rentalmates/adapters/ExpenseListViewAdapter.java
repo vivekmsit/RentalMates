@@ -19,9 +19,6 @@ import com.pkmmte.view.CircularImageView;
 
 import java.util.List;
 
-/**
- * Created by vivek on 3/10/2015.
- */
 public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListViewAdapter.ExpenseViewHolder> {
 
     private static final String TAG = "ExpenseAdapter_Debug";
@@ -50,8 +47,7 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
     public ExpenseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.d(TAG, "inside onCreateViewHolder");
         View view = inflater.inflate(R.layout.expense_data_list_item, parent, false);
-        ExpenseViewHolder holder = new ExpenseViewHolder(view);
-        return holder;
+        return new ExpenseViewHolder(view);
     }
 
     @Override
