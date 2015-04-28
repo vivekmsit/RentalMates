@@ -96,6 +96,13 @@ public class AppData implements Serializable {
         return storeAppData(context);
     }
 
+    public boolean deleteExpenseData(Context context, int position) {
+        if (this.expenses != null) {
+            this.expenses.remove(position);
+        }
+        return storeAppData(context);
+    }
+
     public boolean addLocalExpenseData(Context context, ExpenseData expense) {
         LocalExpenseData data = new LocalExpenseData();
         data.setAmount(expense.getAmount());
@@ -109,7 +116,7 @@ public class AppData implements Serializable {
     }
 
     public boolean storeAppData(Context context) {
-        boolean status = false;
+        boolean status;
         String path = context.getApplicationContext().getFilesDir().getPath();
         Log.d(TAG, "path is: " + path);
         try {

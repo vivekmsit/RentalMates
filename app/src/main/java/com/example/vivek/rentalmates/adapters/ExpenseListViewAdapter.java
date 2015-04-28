@@ -1,6 +1,8 @@
 package com.example.vivek.rentalmates.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
@@ -16,6 +18,7 @@ import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.dialogs.ExpenseMenuDialog;
 import com.example.vivek.rentalmates.others.AppData;
+import com.example.vivek.rentalmates.tasks.GetUserProfileListAsyncTask;
 import com.example.vivek.rentalmates.viewholders.ExpenseListItem;
 import com.pkmmte.view.CircularImageView;
 
@@ -56,7 +59,16 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
     public void onBindViewHolder(ExpenseViewHolder viewHolder, int position) {
         Log.d(TAG, "inside onBindViewHolder");
         ExpenseListItem current = data.get(position);
-        viewHolder.circularImageView.setImageBitmap(appData.getProfilePictureBitmap(context, current.ownerEmailId));
+        if (appData.getProfilePicturesPath().containsKey(current.ownerEmailId)) {
+            viewHolder.circularImageView.setImageBitmap(appData.getProfilePictureBitmap(context, current.ownerEmailId));
+        } else {
+            //show ic_launcher in place of profile picture if profile picture is not available
+            Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
+            Bitmap newBitmap = Bitmap.createScaledBitmap(bm, 200, 200, true);
+            viewHolder.circularImageView.setImageBitmap(newBitmap);
+            //Download new user profiles related data
+            new GetUserProfileListAsyncTask(context).execute();
+        }
         viewHolder.amount.setText("Rs " + Integer.toString(current.amount));
         viewHolder.description.setText(current.description);
         viewHolder.userName.setText(current.userName);
@@ -86,7 +98,7 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
             circularImageView = (CircularImageView) itemView.findViewById(R.id.expenseImageView);
             amount = (TextView) itemView.findViewById(R.id.amountTextView);
             description = (TextView) itemView.findViewById(R.id.descriptionTextView);
-            userName  = (TextView) itemView.findViewById(R.id.userNameTextView);
+            userName = (TextView) itemView.findViewById(R.id.userNameTextView);
             groupName = (TextView) itemView.findViewById(R.id.groupNameTextView);
             date = (TextView) itemView.findViewById(R.id.dateTextView);
             itemView.setOnClickListener(this);
@@ -106,6 +118,7 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
             ExpenseData expenseData = appData.getExpenses().get(getPosition());
             Bundle bundle = new Bundle();
             bundle.putLong("ExpenseId", expenseData.getId());
+            bundle.putInt("position", getPosition());
             newFragment.setArguments(bundle);
             newFragment.show(manager, "menus");
             return false;

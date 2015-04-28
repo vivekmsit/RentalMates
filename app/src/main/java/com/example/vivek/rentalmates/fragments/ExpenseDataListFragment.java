@@ -21,6 +21,7 @@ import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.adapters.ExpenseListViewAdapter;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.interfaces.OnAllExpenseListLoadedReceiver;
+import com.example.vivek.rentalmates.interfaces.OnDeleteExpenseReceiver;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.tasks.GetAllExpenseListAsyncTask;
@@ -30,7 +31,7 @@ import com.melnykov.fab.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, OnAllExpenseListLoadedReceiver {
+public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, OnAllExpenseListLoadedReceiver, OnDeleteExpenseReceiver {
 
     private static final String TAG = "ExpenseList_Debug";
 
@@ -151,5 +152,17 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
         if (swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(false);
         }
+    }
+
+    @Override
+    public void onExpenseDeleteSuccessful(int position) {
+        expenseListViewAdapter.notifyItemRemoved(position);
+        appData.deleteExpenseData(context, position);
+        expenseListViewAdapter.setData(getData());
+    }
+
+    @Override
+    public void onExpenseDeleteFailed() {
+        //Do nothing
     }
 }

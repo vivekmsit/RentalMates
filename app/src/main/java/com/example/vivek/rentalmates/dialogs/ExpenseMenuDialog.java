@@ -19,6 +19,7 @@ public class ExpenseMenuDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Long expenseId = getArguments().getLong("ExpenseId");
+        final int currentPosition = getArguments().getInt("position");
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setItems(R.array.expenseMenuOptions, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
@@ -29,6 +30,7 @@ public class ExpenseMenuDialog extends DialogFragment {
                         UserConfirmationDeleteExpenseDialog expenseDialog = new UserConfirmationDeleteExpenseDialog();
                         Bundle bundle = new Bundle();
                         bundle.putLong("ExpenseId", expenseId);
+                        bundle.putInt("position", currentPosition);
                         expenseDialog.setArguments(bundle);
                         expenseDialog.show(getFragmentManager(), "MyDialog");
                         break;

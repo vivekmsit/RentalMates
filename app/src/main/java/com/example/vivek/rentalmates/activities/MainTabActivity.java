@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.SparseArray;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
@@ -114,11 +115,13 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
         if (!connectionResult.hasResolution()) {
             GooglePlayServicesUtil.getErrorDialog(connectionResult.getErrorCode(), this,
                     0).show();
-            return;
         }
     }
 
-    class MyAdapter extends FragmentStatePagerAdapter {
+    public class MyAdapter extends FragmentStatePagerAdapter {
+
+        SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
+
         public MyAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -133,6 +136,7 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
             } else if (position == 2) {
                 fragment = new NewsFeedFragment();
             }
+            registeredFragments.put(position, fragment);
             return fragment;
         }
 
@@ -152,6 +156,10 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
             } else {
                 return null;
             }
+        }
+
+        public Fragment getRegisteredFragment(int position) {
+            return registeredFragments.get(position);
         }
     }
 }

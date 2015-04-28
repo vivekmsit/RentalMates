@@ -17,11 +17,13 @@ public class DeleteExpenseAsyncTask extends AsyncTask<Context, Void, String> {
     private static final String TAG = "DeleteExpenseTask_Debug";
 
     private static ExpenseGroupApi expenseGroupService = null;
-    Long expenseDataId;
+
+    private Long expenseDataId;
     private Context context;
+    private IOException ioException;
 
     public OnDeleteExpenseReceiver receiver;
-    IOException ioException;
+    public int position;
 
     public DeleteExpenseAsyncTask(Context context, final Long expenseDataId) {
         this.context = context;
@@ -55,7 +57,7 @@ public class DeleteExpenseAsyncTask extends AsyncTask<Context, Void, String> {
         if (msg.equals("SUCCESS")) {
             Toast.makeText(context, "ExpenseData deleted", Toast.LENGTH_SHORT).show();
             if (receiver != null) {
-                receiver.onExpenseDeleteSuccessful();
+                receiver.onExpenseDeleteSuccessful(position);
             }
         } else if (msg.equals("EXCEPTION")) {
             Log.d(TAG, "IOException: " + ioException.getMessage());
