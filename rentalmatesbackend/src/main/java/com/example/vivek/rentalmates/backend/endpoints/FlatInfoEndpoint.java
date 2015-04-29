@@ -144,10 +144,15 @@ public class FlatInfoEndpoint {
             finalFlatInfo = flats.get(0);
             //Add flatId of flat to UserProfile flatIds List
             UserProfile userProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
+            ExpenseGroup flatExpenseGroup = ofy().load().type(ExpenseGroup.class).id(finalFlatInfo.getExpenseGroupId()).now();
             if (!userProfile.getFlatIds().contains(finalFlatInfo.getFlatId())) {
                 userProfile.addFlatId(finalFlatInfo.getFlatId());
             }
             userProfile.setPrimaryFlatId(finalFlatInfo.getFlatId());
+            if (!userProfile.getExpenseGroupIds().contains(flatExpenseGroup.getId())) {
+                userProfile.addExpenseGroupId(flatExpenseGroup.getId());
+            }
+            userProfile.setFlatExpenseGroupId(flatExpenseGroup.getId());
             ofy().save().entity(userProfile).now();
 
             //Add userProfileId to FlatInfo userIds List
