@@ -9,9 +9,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by vivek on 2/9/2015.
- */
 @Entity
 public class ExpenseGroup implements Serializable {
 
@@ -26,14 +23,17 @@ public class ExpenseGroup implements Serializable {
     private String description;
     private String ownerEmailId;
     private int numberOfExpenses;
+    private int numberOfMembers;
     private String operationResult;
     private List<Long> expenseDataIds = new ArrayList<>();
+    private List<Long> memberIds = new ArrayList<>();
 
     public ExpenseGroup() {
         date = new Date();
         description = "Description";
         ownerEmailId = "EmailId";
         numberOfExpenses = 0;
+        numberOfMembers = 0;
     }
 
     public Long getId() {
@@ -76,6 +76,14 @@ public class ExpenseGroup implements Serializable {
         return numberOfExpenses;
     }
 
+    public int getNumberOfMembers() {
+        return numberOfMembers;
+    }
+
+    public void setNumberOfMembers(int numberOfMembers) {
+        this.numberOfMembers = numberOfMembers;
+    }
+
     public void setNumberOfExpenses(int numberOfExpenses) {
         this.numberOfExpenses = numberOfExpenses;
     }
@@ -96,6 +104,14 @@ public class ExpenseGroup implements Serializable {
         this.expenseDataIds = expenseDataIds;
     }
 
+    public List<Long> getMemberIds() {
+        return memberIds;
+    }
+
+    public void setMemberIds(List<Long> memberIds) {
+        this.memberIds = memberIds;
+    }
+
     public void addExpenseId(Long expenseId) {
         expenseDataIds.add(expenseId);
         numberOfExpenses++;
@@ -104,5 +120,15 @@ public class ExpenseGroup implements Serializable {
     public void deleteExpenseId(Long expenseId) {
         expenseDataIds.remove(expenseId);
         numberOfExpenses--;
+    }
+
+    public void addMemberId(Long memberId) {
+        memberIds.add(memberId);
+        numberOfMembers++;
+    }
+
+    public void deleteMemberId(Long memberId) {
+        memberIds.remove(memberId);
+        numberOfMembers--;
     }
 }

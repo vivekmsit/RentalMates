@@ -4,13 +4,12 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-/**
- * Created by vivek on 2/9/2015.
- */
 @Entity
-public class ExpenseData implements Serializable{
+public class ExpenseData implements Serializable {
 
     @Id
     Long id;
@@ -23,8 +22,10 @@ public class ExpenseData implements Serializable{
     private Long expenseGroupId;
     private String expenseGroupName;
     private int currencyType;
+    private int numberOfMembers;
+    private List<Long> memberIds = new ArrayList<>();
 
-    ExpenseData(){
+    ExpenseData() {
         date = new Date();
         amount = 0;
         description = "Description";
@@ -56,11 +57,11 @@ public class ExpenseData implements Serializable{
         return description;
     }
 
-    public String getOwnerEmailId(){
+    public String getOwnerEmailId() {
         return ownerEmailId;
     }
 
-    public void setOwnerEmailId(String emailId){
+    public void setOwnerEmailId(String emailId) {
         this.ownerEmailId = emailId;
     }
 
@@ -98,6 +99,32 @@ public class ExpenseData implements Serializable{
 
     public void setCurrencyType(int currencyType) {
         this.currencyType = currencyType;
+    }
+
+    public int getNumberOfMembers() {
+        return numberOfMembers;
+    }
+
+    public void setNumberOfMembers(int numberOfMembers) {
+        this.numberOfMembers = numberOfMembers;
+    }
+
+    public List<Long> getMemberIds() {
+        return memberIds;
+    }
+
+    public void setMemberIds(List<Long> memberIds) {
+        this.memberIds = memberIds;
+    }
+
+    public void addMemberId(Long memberId) {
+        memberIds.add(memberId);
+        numberOfMembers++;
+    }
+
+    public void deleteMemberId(Long memberId) {
+        memberIds.remove(memberId);
+        numberOfMembers--;
     }
 
 }

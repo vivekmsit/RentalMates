@@ -84,15 +84,15 @@ public class FlatInfoEndpoint {
         String flatName = flatInfo.getFlatName();
         Query query = ofy().load().type(FlatInfo.class);
         query = query.filter("flatName" + " = ", flatName);
-        List<FlatInfo> flats =  query.list();
+        List<FlatInfo> flats = query.list();
         FlatInfo finalFlatInfo;
         if (flats.size() == 0) {
             //create a new ExpenseGroup for given flat
             ExpenseGroup expenseGroup = new ExpenseGroup();
-            expenseGroup.setName(flatName+"_expense");
+            expenseGroup.setName(flatName + "_expense");
             Query query1 = ofy().load().type(ExpenseGroup.class);
             query1 = query1.filter("name" + " = ", expenseGroup.getName());
-            List<ExpenseGroup> groups =  query1.list();
+            List<ExpenseGroup> groups = query1.list();
             ExpenseGroup finalExpenseGroup;
             if (groups.size() == 0) {
                 ofy().save().entity(expenseGroup).now();
@@ -116,6 +116,11 @@ public class FlatInfoEndpoint {
             relatedUserProfile.setFlatExpenseGroupId(finalExpenseGroup.getId());
             ofy().save().entity(relatedUserProfile).now();
 
+            if (!finalExpenseGroup.getMemberIds().contains(userProfileId)) {
+                finalExpenseGroup.addMemberId(userProfileId);
+                ofy().save().entity(finalExpenseGroup).now();
+            }
+
             finalFlatInfo.setCreateFlatResult("NEW_FLAT_INFO");
         } else {
             finalFlatInfo = flats.get(0);
@@ -135,7 +140,7 @@ public class FlatInfoEndpoint {
     public FlatInfo registerWithOldFlat(@Named("flatName") String flatName, @Named("userProfileId") Long userProfileId) {
         Query query = ofy().load().type(FlatInfo.class);
         query = query.filter("flatName" + " = ", flatName);
-        List<FlatInfo> flats =  query.list();
+        List<FlatInfo> flats = query.list();
         FlatInfo finalFlatInfo;
         if (flats.size() == 0) {
             logger.info("Created FlatInfo.");
@@ -159,6 +164,10 @@ public class FlatInfoEndpoint {
             if (!finalFlatInfo.getUserIds().contains(userProfileId)) {
                 finalFlatInfo.addUserId(userProfileId);
                 ofy().save().entity(finalFlatInfo).now();
+            }
+            if (!flatExpenseGroup.getMemberIds().contains(userProfileId)) {
+                flatExpenseGroup.addMemberId(userProfileId);
+                ofy().save().entity(flatExpenseGroup).now();
             }
             finalFlatInfo.setCreateFlatResult("OLD_FLAT_INFO");
         }
