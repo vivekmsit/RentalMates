@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
+import com.example.vivek.rentalmates.backend.userProfileApi.model.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
 import com.example.vivek.rentalmates.tasks.LoadProfileImageAsyncTask;
 
@@ -33,13 +34,10 @@ public class AppData implements Serializable {
     private static final String TAG = "AppData_Debug";
 
     private Map<String, String> profilePicturesPath = new HashMap<>();
-
     private List<LocalUserProfile> userProfiles = new ArrayList<>();
-
     private List<LocalFlatInfo> flats = new ArrayList<>();
-
     private List<LocalExpenseData> expenses = new ArrayList<>();
-
+    private List<LocalExpenseGroup> expenseGroups = new ArrayList<>();
     private static AppData appDataInstance = new AppData();
 
     public static AppData getInstance() {
@@ -73,12 +71,25 @@ public class AppData implements Serializable {
         this.expenses = expenses;
     }
 
+    public List<LocalExpenseGroup> getExpenseGroups() {
+        return expenseGroups;
+    }
+
+    public void setExpenseGroups(List<LocalExpenseGroup> expenseGroups) {
+        this.expenseGroups = expenseGroups;
+    }
+
     public Map<String, String> getProfilePicturesPath() {
         return profilePicturesPath;
     }
 
     public void setProfilePicturesPath(Map<String, String> profilePicturesPath) {
         this.profilePicturesPath = profilePicturesPath;
+    }
+
+    public boolean storeExpenseGroupList(Context context, List<ExpenseGroup> expenseGroups) {
+        this.expenseGroups = LocalExpenseGroup.convertExpenseToLocalExpense(expenseGroups);
+        return storeAppData(context);
     }
 
     public boolean storeUserProfileList(Context context, List<UserProfile> profiles) {

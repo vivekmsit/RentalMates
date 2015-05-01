@@ -269,4 +269,5 @@ public class ExpenseGroupEndpoint {
         ofy().delete().type(ExpenseData.class).id(id).now();
         logger.info("Deleted ExpenseData with ID: " + id);
     }
+
 }

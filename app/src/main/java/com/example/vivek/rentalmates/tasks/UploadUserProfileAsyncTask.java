@@ -88,6 +88,7 @@ public class UploadUserProfileAsyncTask extends AsyncTask<Context, Void, String>
         } else if (msg.equals("SUCCESS_FLAT_REGISTERED")) {
             Toast.makeText(context, "Flat already registered, Retrieving FlatInfo list", Toast.LENGTH_SHORT).show();
             new GetFlatInfoListAsyncTask(this.context, true).execute();
+            new GetExpenseGroupListAsyncTask(this.context).execute();
         } else if (msg.equals("EXCEPTION")) {
             Log.d(TAG, "IOException: " + ioException.getMessage());
             Toast.makeText(context, "IOException: " + ioException.getMessage(), Toast.LENGTH_LONG).show();

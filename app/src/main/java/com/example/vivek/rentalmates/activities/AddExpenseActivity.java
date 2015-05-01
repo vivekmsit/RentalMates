@@ -14,6 +14,8 @@ import android.widget.Toast;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.others.AppConstants;
+import com.example.vivek.rentalmates.others.AppData;
+import com.example.vivek.rentalmates.others.LocalExpenseGroup;
 import com.example.vivek.rentalmates.tasks.AddExpenseAsyncTask;
 import com.google.api.client.util.DateTime;
 
@@ -23,15 +25,16 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
 
     private static final String TAG = "AdExpenseActivity_Debug";
 
-    boolean addExpenseButtonClicked;
+    private boolean addExpenseButtonClicked;
 
-    EditText descriptionEditText;
-    EditText amountEditText;
-    Button editUsersButton;
-    Button addExpenseButton;
-    Toolbar toolBar;
+    private EditText descriptionEditText;
+    private EditText amountEditText;
+    private Button editUsersButton;
+    private Button addExpenseButton;
+    private Toolbar toolBar;
 
-    SharedPreferences prefs;
+    private SharedPreferences prefs;
+    private AppData appData;
 
 
     public void setAddExpenseButtonClicked(boolean value) {
@@ -59,6 +62,7 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
 
         prefs = this.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
+        appData = AppData.getInstance();
     }
 
     @Override
@@ -84,6 +88,12 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
                 expenseData.setUserName(prefs.getString(AppConstants.USER_NAME, "no_user_name"));
                 expenseData.setExpenseGroupName(prefs.getString(AppConstants.PRIMARY_FLAT_NAME, "no_flat_name"));
                 expenseData.setExpenseGroupId(prefs.getLong(AppConstants.FLAT_EXPENSE_GROUP_ID, 0));
+                for (LocalExpenseGroup group: appData.getExpenseGroups()) {
+                    if (group.getId() == prefs.getLong(AppConstants.FLAT_EXPENSE_GROUP_ID, 0)){
+                        expenseData.setMemberIds(group.getMemberIds());
+                        expenseData.setNumberOfMembers(group.getNumberOfMembers());
+                    }
+                }
                 new AddExpenseAsyncTask(this, this, expenseData).execute();
                 break;
 

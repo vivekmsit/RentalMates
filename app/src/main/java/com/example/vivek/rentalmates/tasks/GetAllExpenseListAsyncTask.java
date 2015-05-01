@@ -29,11 +29,12 @@ public class GetAllExpenseListAsyncTask extends AsyncTask<Context, Void, String>
 
     private static ExpenseGroupApi expenseService = null;
     private Context context;
-    SharedPreferences prefs;
-    IOException ioException;
-    boolean appStartup;
-    Long flatId;
-    AppData appData;
+    private SharedPreferences prefs;
+    private IOException ioException;
+    private boolean appStartup;
+    private Long flatId;
+    private AppData appData;
+
     public OnAllExpenseListLoadedReceiver loadedReceiver;
 
     public GetAllExpenseListAsyncTask(Context context, final Long flatId, final boolean startup) {

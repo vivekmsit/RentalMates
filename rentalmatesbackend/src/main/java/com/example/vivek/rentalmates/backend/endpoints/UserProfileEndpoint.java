@@ -1,6 +1,5 @@
 package com.example.vivek.rentalmates.backend.endpoints;
 
-import com.example.vivek.rentalmates.backend.entities.ExpenseData;
 import com.example.vivek.rentalmates.backend.entities.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.entities.FlatInfo;
 import com.example.vivek.rentalmates.backend.entities.UserProfile;
@@ -158,7 +157,7 @@ public class UserProfileEndpoint {
             query = query.startAt(Cursor.fromWebSafeString(cursor));
         }
         QueryResultIterator<UserProfile> queryIterator = query.iterator();
-        List<UserProfile> userProfileList = new ArrayList<UserProfile>(limit);
+        List<UserProfile> userProfileList = new ArrayList<>();
         while (queryIterator.hasNext()) {
             userProfileList.add(queryIterator.next());
         }
@@ -184,8 +183,7 @@ public class UserProfileEndpoint {
     public List<UserProfile> queryUserProfiles(@Named("type") String type, @Named("value") String value) {
         Query query = ofy().load().type(UserProfile.class);
         query = query.filter(type + " = ", value);
-        List<UserProfile> profiles = query.list();
-        return profiles;
+        return (List<UserProfile>)query.list();
     }
 
 
@@ -257,5 +255,24 @@ public class UserProfileEndpoint {
             }
         }
         return profiles;
+    }
+
+
+    /**
+     * Returns List of {@code ExpenseGroup} for a given {@code UserProfile}.
+     */
+    @ApiMethod(
+            name = "getExpenseGroupList",
+            path = "expenseGroupGetExpenseGroupList",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public List<ExpenseGroup> getExpenseGroupList(@Named("id") Long userProfileId) throws NotFoundException {
+        checkExists(userProfileId);
+        UserProfile userProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
+        List<ExpenseGroup> expenseGroups = new ArrayList<>();
+        for (Long expenseGroupId : userProfile.getExpenseGroupIds()) {
+            ExpenseGroup group = ofy().load().type(ExpenseGroup.class).id(expenseGroupId).now();
+            expenseGroups.add(group);
+        }
+        return expenseGroups;
     }
 }

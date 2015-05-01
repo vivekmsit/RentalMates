@@ -5,12 +5,8 @@ import com.google.api.client.util.DateTime;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-/**
- * Created by vivek on 3/11/2015.
- */
 public class LocalExpenseData implements Serializable {
 
     private static final String TAG = "LocalExpenseData_Debug";

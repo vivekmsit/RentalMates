@@ -1,9 +1,5 @@
 package com.example.vivek.rentalmates.tasks;
 
-/**
- * Created by vivek on 3/14/2015.
- */
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -44,7 +40,7 @@ public class GetFlatInfoListAsyncTask extends AsyncTask<Context, Void, String> {
 
     @Override
     protected String doInBackground(Context... params) {
-        String msg = "";
+        String msg;
         if (ufService == null) {
             UserProfileApi.Builder builder1 = new UserProfileApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
                     .setRootUrl(AppConstants.BACKEND_ROOT_URL);
@@ -74,35 +70,43 @@ public class GetFlatInfoListAsyncTask extends AsyncTask<Context, Void, String> {
 
         Log.d(TAG, "inside onPostExecute() for GetFlatInfoListAsyncTask");
 
-        if (msg.equals("SUCCESS_FLATS")) {
-            Toast.makeText(context, "FlatInfo List retrieved successfully", Toast.LENGTH_SHORT).show();
+        switch (msg) {
+            case "SUCCESS_FLATS":
+                Toast.makeText(context, "FlatInfo List retrieved successfully", Toast.LENGTH_SHORT).show();
 
-            Intent intent = new Intent(context, DetermineFlatActivity.class);
-            intent.putExtra("FLAT_REGISTERED", true);
-            List<Long> flatIds = new ArrayList<>();
-            List<String> flatNames = new ArrayList<>();
-            List<Long> groupExpenseIds = new ArrayList<>();
-            int current = 0;
-            for (FlatInfo flatInfo : flats) {
-                flatIds.add(current, flatInfo.getFlatId());
-                flatNames.add(current, flatInfo.getFlatName());
-                groupExpenseIds.add(current, flatInfo.getExpenseGroupId());
-                current++;
-            }
-            intent.putExtra("flatIds", (java.io.Serializable) flatIds);
-            intent.putExtra("flatNames", (java.io.Serializable) flatNames);
-            intent.putExtra("groupExpenseIds", (java.io.Serializable)groupExpenseIds);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            context.startActivity(intent);
-        } else if (msg.equals("SUCCESS_NO_FLATS")) {
-            //rare case
-            Toast.makeText(context, "No flat registered for given user", Toast.LENGTH_LONG).show();
-        } else if (msg.equals("EXCEPTION")) {
-            Log.d(TAG, "IOException: " + ioException.getMessage());
-            Toast.makeText(context, "IOException: " + ioException.getMessage(), Toast.LENGTH_LONG).show();
-        } else {
-            Log.d(TAG, "Unable to retrieve FlatInfo List");
-            Toast.makeText(context, "Unable to retrieve FlatInfo List", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(context, DetermineFlatActivity.class);
+                intent.putExtra("FLAT_REGISTERED", true);
+                List<Long> flatIds = new ArrayList<>();
+                List<String> flatNames = new ArrayList<>();
+                List<Long> groupExpenseIds = new ArrayList<>();
+                int current = 0;
+                for (FlatInfo flatInfo : flats) {
+                    flatIds.add(current, flatInfo.getFlatId());
+                    flatNames.add(current, flatInfo.getFlatName());
+                    groupExpenseIds.add(current, flatInfo.getExpenseGroupId());
+                    current++;
+                }
+                intent.putExtra("flatIds", (java.io.Serializable) flatIds);
+                intent.putExtra("flatNames", (java.io.Serializable) flatNames);
+                intent.putExtra("groupExpenseIds", (java.io.Serializable) groupExpenseIds);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                context.startActivity(intent);
+                break;
+
+            case "SUCCESS_NO_FLATS":
+                //rare case
+                Toast.makeText(context, "No flat registered for given user", Toast.LENGTH_LONG).show();
+                break;
+
+            case "EXCEPTION":
+                Log.d(TAG, "IOException: " + ioException.getMessage());
+                Toast.makeText(context, "IOException: " + ioException.getMessage(), Toast.LENGTH_LONG).show();
+                break;
+
+            default:
+                Log.d(TAG, "Unable to retrieve FlatInfo List");
+                Toast.makeText(context, "Unable to retrieve FlatInfo List", Toast.LENGTH_LONG).show();
+                break;
         }
     }
 }

@@ -70,7 +70,7 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
             SharedPreferences.Editor editor = prefs.edit();
             editor.putBoolean(AppConstants.SIGN_IN_COMPLETED, true);
             editor.putBoolean(AppConstants.FIRST_TIME_LOGIN, true);
-            editor.commit();
+            editor.apply();
         }
 
         String finalTitle = toolBar.getTitle() + ": " + prefs.getString(AppConstants.PRIMARY_FLAT_NAME, "no_flat_name");
@@ -120,7 +120,7 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
 
     public class MyAdapter extends FragmentStatePagerAdapter {
 
-        SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
+        SparseArray<Fragment> registeredFragments = new SparseArray<>();
 
         public MyAdapter(FragmentManager fm) {
             super(fm);
