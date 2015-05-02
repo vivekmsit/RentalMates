@@ -89,7 +89,7 @@ public class FlatInfoEndpoint {
         if (flats.size() == 0) {
             //create a new ExpenseGroup for given flat
             ExpenseGroup expenseGroup = new ExpenseGroup();
-            expenseGroup.setName(flatName + "_expense");
+            expenseGroup.setName(flatName);
             Query query1 = ofy().load().type(ExpenseGroup.class);
             query1 = query1.filter("name" + " = ", expenseGroup.getName());
             List<ExpenseGroup> groups = query1.list();
@@ -230,7 +230,7 @@ public class FlatInfoEndpoint {
             query = query.startAt(Cursor.fromWebSafeString(cursor));
         }
         QueryResultIterator<FlatInfo> queryIterator = query.iterator();
-        List<FlatInfo> flatInfoList = new ArrayList<FlatInfo>(limit);
+        List<FlatInfo> flatInfoList = new ArrayList<>(limit);
         while (queryIterator.hasNext()) {
             flatInfoList.add(queryIterator.next());
         }

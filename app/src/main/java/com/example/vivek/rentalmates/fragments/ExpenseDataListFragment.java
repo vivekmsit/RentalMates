@@ -165,4 +165,12 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
     public void onExpenseDeleteFailed() {
         //Do nothing
     }
+
+    public void hideFab() {
+        fab.hide();
+    }
+
+    public void showFab() {
+        fab.show();
+    }
 }

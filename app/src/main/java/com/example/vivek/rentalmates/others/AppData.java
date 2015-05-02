@@ -3,7 +3,6 @@ package com.example.vivek.rentalmates.others;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.ArrayMap;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -26,9 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by vivek on 3/20/2015.
- */
+/*Singleton Class to store serializable data*/
 public class AppData implements Serializable {
 
     private static final String TAG = "AppData_Debug";
@@ -38,12 +35,14 @@ public class AppData implements Serializable {
     private List<LocalFlatInfo> flats = new ArrayList<>();
     private List<LocalExpenseData> expenses = new ArrayList<>();
     private List<LocalExpenseGroup> expenseGroups = new ArrayList<>();
+
     private static AppData appDataInstance = new AppData();
 
     public static AppData getInstance() {
         return appDataInstance;
     }
 
+    /* private Constructor of singleton class*/
     private AppData() {
     }
 
@@ -88,7 +87,7 @@ public class AppData implements Serializable {
     }
 
     public boolean storeExpenseGroupList(Context context, List<ExpenseGroup> expenseGroups) {
-        this.expenseGroups = LocalExpenseGroup.convertExpenseToLocalExpense(expenseGroups);
+        this.expenseGroups = LocalExpenseGroup.convertEGroupToLocalEGroup(expenseGroups);
         return storeAppData(context);
     }
 
@@ -175,15 +174,19 @@ public class AppData implements Serializable {
         return true;
     }
 
-    public void clearAppData(Context context) {
+    public boolean clearAppData(Context context) {
         String path = context.getFilesDir().getPath() + "/" + "appData.tmp";
         File file = new File(path);
-        file.delete();
+        if (!file.delete()) {
+            Toast.makeText(context, "File " + path + "could not be deleted", Toast.LENGTH_LONG).show();
+            return false;
+        }
         this.userProfiles = null;
         this.flats = null;
         this.expenses = null;
         Toast.makeText(context, "AppData cleared", Toast.LENGTH_LONG).show();
         Log.d(TAG, "AppData cleared");
+        return true;
     }
 
     public boolean updateProfilePictures(Context context, List<UserProfile> currentProfiles) {

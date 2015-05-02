@@ -36,6 +36,8 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
     private GoogleApiClient mGoogleApiClient;
     private SharedPreferences prefs;
     private NavigationDrawerFragment drawerFragment;
+    private MyAdapter pageAdapter;
+    private int currentPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +52,8 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
         toolBar.setTitleTextColor(getResources().getColor(R.color.white));
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        viewPager.setAdapter(new MyAdapter(fragmentManager));
+        pageAdapter = new MyAdapter(fragmentManager);
+        viewPager.setAdapter(pageAdapter);
 
         mTabs = (SlidingTabLayout) findViewById(R.id.tabs);
         mTabs.setViewPager(viewPager);
@@ -85,6 +88,23 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
         drawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         drawerFragment.setup(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolBar);
         mGoogleApiClient.connect();
+        currentPosition = 0;
+
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int newPosition, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int newPosition) {
+                Log.d(TAG, "onPageSelected " + newPosition);
+                currentPosition = newPosition;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
     }
 
     @Override
@@ -152,7 +172,7 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
             } else if (position == 1) {
                 return "Search Roommates";
             } else if (position == 2) {
-                return "News Feed";
+                return "Recent Activity";
             } else {
                 return null;
             }

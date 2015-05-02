@@ -129,7 +129,7 @@ public class LocalExpenseGroup implements Serializable {
         return expenseGroups;
     }
 
-    public static List<LocalExpenseGroup> convertExpenseToLocalExpense(List<ExpenseGroup> expenseGroups) {
+    public static List<LocalExpenseGroup> convertEGroupToLocalEGroup(List<ExpenseGroup> expenseGroups) {
         if (expenseGroups == null) {
             return null;
         }
