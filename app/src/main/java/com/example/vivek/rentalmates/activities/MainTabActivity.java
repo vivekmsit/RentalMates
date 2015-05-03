@@ -3,6 +3,7 @@ package com.example.vivek.rentalmates.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -74,8 +75,15 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
         });
 
         mTabs = (SlidingTabLayout) findViewById(R.id.tabs);
-        mTabs.setViewPager(viewPager);
         mTabs.setBackgroundColor(getResources().getColor(R.color.primaryColor));
+        mTabs.setDistributeEvenly(true);
+        mTabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
+            @Override
+            public int getIndicatorColor(int position) {
+                return Color.WHITE;
+            }
+        });
+        mTabs.setViewPager(viewPager);
 
         // Initializing google plus api client
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -204,9 +212,9 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
             if (position == 0) {
                 return "Expenses";
             } else if (position == 1) {
-                return "Search Roommates";
+                return "Search";
             } else if (position == 2) {
-                return "Recent Activity";
+                return "Activities";
             } else {
                 return null;
             }
