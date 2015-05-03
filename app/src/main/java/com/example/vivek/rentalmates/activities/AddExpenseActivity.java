@@ -1,6 +1,7 @@
 package com.example.vivek.rentalmates.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
+import com.example.vivek.rentalmates.interfaces.OnAddExpenseReceiver;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.others.LocalExpenseGroup;
@@ -26,20 +28,14 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
     private static final String TAG = "AdExpenseActivity_Debug";
 
     private boolean addExpenseButtonClicked;
-
     private EditText descriptionEditText;
     private EditText amountEditText;
     private Button editUsersButton;
     private Button addExpenseButton;
     private Toolbar toolBar;
-
+    private Context context;
     private SharedPreferences prefs;
     private AppData appData;
-
-
-    public void setAddExpenseButtonClicked(boolean value) {
-        addExpenseButtonClicked = value;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +59,7 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
         prefs = this.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
         appData = AppData.getInstance();
+        context = getApplication().getApplicationContext();
     }
 
     @Override
@@ -94,7 +91,23 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
                         expenseData.setNumberOfMembers(group.getNumberOfMembers());
                     }
                 }
-                new AddExpenseAsyncTask(this, this, expenseData).execute();
+                AddExpenseAsyncTask task = new AddExpenseAsyncTask(this, expenseData);
+                task.receiver = new OnAddExpenseReceiver() {
+                    @Override
+                    public void onAddExpenseSuccessful() {
+                        addExpenseButtonClicked = true;
+                        Toast.makeText(context, "Expense uploaded", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(context, MainTabActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        context.startActivity(intent);
+                    }
+
+                    @Override
+                    public void onAddExpenseFailed() {
+                        addExpenseButtonClicked = true;
+                    }
+                };
+                task.execute();
                 break;
 
             default:
