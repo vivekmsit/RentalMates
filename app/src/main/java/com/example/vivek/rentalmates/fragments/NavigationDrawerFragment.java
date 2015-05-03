@@ -24,6 +24,7 @@ import com.example.vivek.rentalmates.adapters.DrawerListViewAdapter;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.viewholders.DrawerListItem;
+import com.melnykov.fab.FloatingActionButton;
 import com.pkmmte.view.CircularImageView;
 
 import java.util.ArrayList;
@@ -128,12 +129,20 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 getActivity().invalidateOptionsMenu();
+                FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+                if (fab != null) {
+                    fab.hide();
+                }
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
                 getActivity().invalidateOptionsMenu();
+                FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+                if (fab != null) {
+                    fab.show();
+                }
             }
 
             @Override

@@ -1,6 +1,7 @@
 package com.example.vivek.rentalmates.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
@@ -25,6 +27,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
+import com.melnykov.fab.FloatingActionButton;
 
 public class MainTabActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -37,6 +40,7 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
     private SharedPreferences prefs;
     private NavigationDrawerFragment drawerFragment;
     private MyAdapter pageAdapter;
+    private FloatingActionButton fab;
     private int currentPosition;
 
     @Override
@@ -54,6 +58,20 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
         FragmentManager fragmentManager = getSupportFragmentManager();
         pageAdapter = new MyAdapter(fragmentManager);
         viewPager.setAdapter(pageAdapter);
+
+        //Initialize FloatingActionButton
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setType(FloatingActionButton.TYPE_NORMAL);
+        fab.setShadow(true);
+        //fab.attachToRecyclerView(recyclerView);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), AddExpenseActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getApplicationContext().startActivity(intent);
+            }
+        });
 
         mTabs = (SlidingTabLayout) findViewById(R.id.tabs);
         mTabs.setViewPager(viewPager);
@@ -87,6 +105,7 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
         Log.d(TAG, "inside onStart");
         drawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         drawerFragment.setup(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolBar);
+
         mGoogleApiClient.connect();
         currentPosition = 0;
 
@@ -98,6 +117,11 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
             @Override
             public void onPageSelected(int newPosition) {
                 Log.d(TAG, "onPageSelected " + newPosition);
+                if (newPosition == 0) {
+                    fab.show();
+                } else {
+                    fab.hide();
+                }
                 currentPosition = newPosition;
             }
 

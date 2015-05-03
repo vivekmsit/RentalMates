@@ -41,8 +41,6 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
     private ExpenseListViewAdapter expenseListViewAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private SharedPreferences prefs;
-    private FloatingActionButton fab;
-
 
     public ExpenseDataListFragment() {
         Log.d(TAG, "inside constructor");
@@ -68,20 +66,6 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
         expenseListViewAdapter = new ExpenseListViewAdapter(getActivity(), getData(), getFragmentManager());
         recyclerView.setAdapter(expenseListViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        //Initialize FloatingActionButton
-        fab = (FloatingActionButton) layout.findViewById(R.id.fab);
-        fab.setType(FloatingActionButton.TYPE_NORMAL);
-        fab.setShadow(true);
-        fab.attachToRecyclerView(recyclerView);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, AddExpenseActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);
-            }
-        });
 
         //Initialize SwipeRefreshLayout
         swipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeListExpenses);
@@ -164,13 +148,5 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
     @Override
     public void onExpenseDeleteFailed() {
         //Do nothing
-    }
-
-    public void hideFab() {
-        fab.hide();
-    }
-
-    public void showFab() {
-        fab.show();
     }
 }
