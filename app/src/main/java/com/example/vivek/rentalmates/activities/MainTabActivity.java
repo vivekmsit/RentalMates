@@ -50,6 +50,8 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tab);
 
+        currentPosition = 0;
+
         viewPager = (ViewPager) findViewById(R.id.pager);
 
         toolBar = (Toolbar) findViewById(R.id.app_bar);
@@ -74,6 +76,7 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
             }
         });
 
+        //Initialize SlidingTabLayout
         mTabs = (SlidingTabLayout) findViewById(R.id.tabs);
         mTabs.setBackgroundColor(getResources().getColor(R.color.primaryColor));
         mTabs.setDistributeEvenly(true);
@@ -84,6 +87,24 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
             }
         });
         mTabs.setViewPager(viewPager);
+        mTabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int newPosition, float positionOffset, int positionOffsetPixels) {
+            }
+            @Override
+            public void onPageSelected(int newPosition) {
+                Log.d(TAG, "onPageSelected " + newPosition);
+                if (newPosition == 0) {
+                    fab.show();
+                } else {
+                    fab.hide();
+                }
+                currentPosition = newPosition;
+            }
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
 
         // Initializing google plus api client
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -113,30 +134,7 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
         Log.d(TAG, "inside onStart");
         drawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         drawerFragment.setup(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolBar);
-
         mGoogleApiClient.connect();
-        currentPosition = 0;
-
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int newPosition, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int newPosition) {
-                Log.d(TAG, "onPageSelected " + newPosition);
-                if (newPosition == 0) {
-                    fab.show();
-                } else {
-                    fab.hide();
-                }
-                currentPosition = newPosition;
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
     }
 
     @Override
