@@ -15,16 +15,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.activities.MainActivity;
+import com.example.vivek.rentalmates.activities.MainTabActivity;
 import com.example.vivek.rentalmates.adapters.DrawerListViewAdapter;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.viewholders.DrawerListItem;
-import com.melnykov.fab.FloatingActionButton;
 import com.pkmmte.view.CircularImageView;
 
 import java.util.ArrayList;
@@ -40,7 +39,6 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
 
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout mDrawerLayout;
-
     private boolean mUserLearnedDrawer;
     private boolean mFromSavedInstanceState;
     private SharedPreferences prefs;
@@ -50,6 +48,7 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
     private RecyclerView recyclerView;
     private DrawerListViewAdapter drawerListViewAdapter;
     private CircularImageView circularImageView;
+    private MainTabActivity mainTabActivity;
 
     public NavigationDrawerFragment() {
         mUserLearnedDrawer = false;
@@ -72,6 +71,8 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
         if (savedInstanceState != null) {
             mFromSavedInstanceState = true;
         }
+
+        mainTabActivity = (MainTabActivity) getActivity();
 
         //Initialize CircularImageView
         circularImageView = (CircularImageView) getView().findViewById(R.id.drawerImageView);
@@ -129,20 +130,14 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 getActivity().invalidateOptionsMenu();
-                FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
-                if (fab != null) {
-                    fab.hide();
-                }
+                mainTabActivity.hideFab();
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
                 getActivity().invalidateOptionsMenu();
-                FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
-                if (fab != null) {
-                    fab.show();
-                }
+                mainTabActivity.showFab();
             }
 
             @Override

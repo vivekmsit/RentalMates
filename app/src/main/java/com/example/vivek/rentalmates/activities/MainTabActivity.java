@@ -162,6 +162,16 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
         }
     }
 
+    public void showFab() {
+        if (currentPosition == 0) {
+            fab.show();
+        }
+    }
+
+    public void hideFab() {
+        fab.hide();
+    }
+
     public class MyAdapter extends FragmentStatePagerAdapter {
 
         SparseArray<Fragment> registeredFragments = new SparseArray<>();
