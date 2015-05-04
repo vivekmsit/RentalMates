@@ -91,6 +91,7 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
             @Override
             public void onPageScrolled(int newPosition, float positionOffset, int positionOffsetPixels) {
             }
+
             @Override
             public void onPageSelected(int newPosition) {
                 Log.d(TAG, "onPageSelected " + newPosition);
@@ -101,6 +102,7 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
                 }
                 currentPosition = newPosition;
             }
+
             @Override
             public void onPageScrollStateChanged(int state) {
             }

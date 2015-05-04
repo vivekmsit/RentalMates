@@ -1,5 +1,6 @@
 package com.example.vivek.rentalmates.dialogs;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -10,7 +11,6 @@ import android.util.Log;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.activities.MainTabActivity;
-import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.fragments.ExpenseDataListFragment;
 import com.example.vivek.rentalmates.interfaces.OnDeleteExpenseReceiver;
 import com.example.vivek.rentalmates.tasks.DeleteExpenseAsyncTask;
@@ -18,12 +18,14 @@ import com.example.vivek.rentalmates.tasks.DeleteExpenseAsyncTask;
 public class UserConfirmationDeleteExpenseDialog extends DialogFragment {
 
     private static final String TAG = "UserConfirmDelete_Debug";
+    private Activity mainTabActivity;
 
     public UserConfirmationDeleteExpenseDialog() {
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        mainTabActivity = getActivity();
         final Long expenseId = getArguments().getLong("ExpenseId");
         final int currentPosition = getArguments().getInt("position");
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
@@ -36,7 +38,7 @@ public class UserConfirmationDeleteExpenseDialog extends DialogFragment {
                 task.setOnDeleteExpenseReceiver(new OnDeleteExpenseReceiver() {
                     @Override
                     public void onExpenseDeleteSuccessful(int position) {
-                        ViewPager pager = (ViewPager) getActivity().findViewById(R.id.pager);
+                        ViewPager pager = (ViewPager) mainTabActivity.findViewById(R.id.pager);
                         MainTabActivity.MyAdapter adapter = (MainTabActivity.MyAdapter) pager.getAdapter();
                         ExpenseDataListFragment fragment = (ExpenseDataListFragment) adapter.getRegisteredFragment(0);
                         fragment.onExpenseDeleteSuccessful(position);
