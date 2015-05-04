@@ -10,6 +10,9 @@ import android.util.Log;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.activities.MainTabActivity;
+import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
+import com.example.vivek.rentalmates.fragments.ExpenseDataListFragment;
+import com.example.vivek.rentalmates.interfaces.OnDeleteExpenseReceiver;
 import com.example.vivek.rentalmates.tasks.DeleteExpenseAsyncTask;
 
 public class UserConfirmationDeleteExpenseDialog extends DialogFragment {
@@ -30,12 +33,21 @@ public class UserConfirmationDeleteExpenseDialog extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 DeleteExpenseAsyncTask task = new DeleteExpenseAsyncTask(getActivity(), expenseId);
-                ViewPager pager = (ViewPager) getActivity().findViewById(R.id.pager);
-                MainTabActivity.MyAdapter adapter = (MainTabActivity.MyAdapter) pager.getAdapter();
-                task.receiver = (com.example.vivek.rentalmates.interfaces.OnDeleteExpenseReceiver) adapter.getRegisteredFragment(0);
-                task.position = currentPosition;
+                task.setOnDeleteExpenseReceiver(new OnDeleteExpenseReceiver() {
+                    @Override
+                    public void onExpenseDeleteSuccessful(int position) {
+                        ViewPager pager = (ViewPager) getActivity().findViewById(R.id.pager);
+                        MainTabActivity.MyAdapter adapter = (MainTabActivity.MyAdapter) pager.getAdapter();
+                        ExpenseDataListFragment fragment = (ExpenseDataListFragment) adapter.getRegisteredFragment(0);
+                        fragment.onExpenseDeleteSuccessful(position);
+                    }
+
+                    @Override
+                    public void onExpenseDeleteFailed() {
+                    }
+                });
+                task.setPosition(currentPosition);
                 task.execute();
-                Log.d(TAG, "Ok: onClick");
             }
         });
         alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

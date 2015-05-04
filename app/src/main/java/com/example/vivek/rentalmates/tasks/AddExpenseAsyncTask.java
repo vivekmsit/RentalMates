@@ -23,13 +23,16 @@ public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
     private Context context;
     private IOException ioException;
     private AppData appData;
-
-    public OnAddExpenseReceiver receiver;
+    private OnAddExpenseReceiver receiver;
 
     public AddExpenseAsyncTask(Context context, final ExpenseData expenseData) {
         this.context = context;
         this.expenseData = expenseData;
         appData = AppData.getInstance();
+    }
+
+    public void setOnAddExpenseReceiver(OnAddExpenseReceiver receiver) {
+        this.receiver = receiver;
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.example.vivek.rentalmates.tasks;
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,7 +12,7 @@ import com.example.vivek.rentalmates.activities.MainTabActivity;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.ExpenseGroupApi;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseDataCollection;
-import com.example.vivek.rentalmates.interfaces.OnAllExpenseListLoadedReceiver;
+import com.example.vivek.rentalmates.interfaces.OnExpenseListReceiver;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.services.BackendApiService;
@@ -31,20 +30,19 @@ public class GetAllExpenseListAsyncTask extends AsyncTask<Context, Void, String>
     private Context context;
     private SharedPreferences prefs;
     private IOException ioException;
-    private boolean appStartup;
-    private Long flatId;
     private AppData appData;
+    private OnExpenseListReceiver receiver;
 
-    public OnAllExpenseListLoadedReceiver loadedReceiver;
-
-    public GetAllExpenseListAsyncTask(Context context, final Long flatId, final boolean startup) {
+    public GetAllExpenseListAsyncTask(Context context) {
         this.context = context;
-        this.appStartup = startup;
-        this.flatId = flatId;
         this.appData = AppData.getInstance();
 
         prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
+    }
+
+    public void setOnExpenseListReceiver(OnExpenseListReceiver receiver) {
+        this.receiver = receiver;
     }
 
     @Override
@@ -82,22 +80,21 @@ public class GetAllExpenseListAsyncTask extends AsyncTask<Context, Void, String>
 
         Log.d(TAG, "inside onPostExecute() for GetExpenseDataListAsyncTask");
 
-        if (msg.equals("SUCCESS") && this.appStartup) {
-            Toast.makeText(context, "ExpenseData retrieved successfully", Toast.LENGTH_SHORT).show();
-            BackendApiService.storePrimaryFlatId(this.context, flatId);
-
-            Intent intent = new Intent(context, MainTabActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            context.startActivity(intent);
-        } else if (msg.equals("SUCCESS") && !this.appStartup && loadedReceiver != null) {
-            loadedReceiver.onExpenseDataListLoadSuccessful();
-        } else if (msg.equals("EXCEPTION") && loadedReceiver != null) {
-            Log.d(TAG, "IOException: " + ioException.getMessage());
-            Toast.makeText(context, "IOException: " + ioException.getMessage(), Toast.LENGTH_LONG).show();
-            loadedReceiver.onExpenseDataListLoadFailed();
-        } else {
-            Log.d(TAG, "Unable to upload ExpenseData");
-            Toast.makeText(context, "Unable to upload ExpenseData", Toast.LENGTH_LONG).show();
+        switch (msg) {
+            case "SUCCESS":
+                if (receiver != null) {
+                    receiver.onExpenseDataListLoadSuccessful();
+                }
+                break;
+            case "EXCEPTION":
+                Log.d(TAG, "IOException: " + ioException.getMessage());
+                Toast.makeText(context, "IOException: " + ioException.getMessage(), Toast.LENGTH_LONG).show();
+                if (receiver != null) {
+                    receiver.onExpenseDataListLoadFailed();
+                }
+                break;
+            default:
+                break;
         }
     }
 }

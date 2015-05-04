@@ -13,7 +13,7 @@
             android:id="@+id/listExpenses"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white" />
+            android:background="@color/facebookBackground" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

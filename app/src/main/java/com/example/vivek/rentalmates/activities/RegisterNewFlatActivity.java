@@ -1,9 +1,11 @@
 package com.example.vivek.rentalmates.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,25 +14,22 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
+import com.example.vivek.rentalmates.interfaces.OnRegisterNewFlatReceiver;
 import com.example.vivek.rentalmates.others.AppConstants;
-import com.example.vivek.rentalmates.tasks.RegisterFlatAsyncTask;
+import com.example.vivek.rentalmates.tasks.RegisterNewFlatAsyncTask;
 
-public class RegisterFlatActivity extends ActionBarActivity {
+public class RegisterNewFlatActivity extends ActionBarActivity {
 
     private static final String TAG = "RegisterFlat_Debug";
 
     boolean registerButtonClicked;
-    TextView textView1;
-    TextView textView2;
-    TextView textView3;
-    EditText editText1;
-    Button button1;
-    Button registerButton;
-    SharedPreferences prefs;
-
-    public void setRegisterButtonClicked(boolean value) {
-        registerButtonClicked = value;
-    }
+    private TextView textView1;
+    private TextView textView2;
+    private TextView textView3;
+    private EditText editText1;
+    private Button button1;
+    private Button registerButton;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +67,7 @@ public class RegisterFlatActivity extends ActionBarActivity {
     }
 
     public void onRegisterFlatButtonClick(View view) {
-        if (registerButtonClicked == true || verifyFlatInfoData() == false) {
+        if (registerButtonClicked || !verifyFlatInfoData()) {
             return;
         }
         registerButtonClicked = true;
@@ -76,7 +75,28 @@ public class RegisterFlatActivity extends ActionBarActivity {
         flatInfo.setFlatName(editText1.getText().toString());
         flatInfo.setOwnerEmailId(prefs.getString(AppConstants.EMAIL_ID, "no_email_id"));
         flatInfo.setUserProfileId(prefs.getLong(AppConstants.USER_PROFILE_ID, 0));
-        new RegisterFlatAsyncTask(this, this, flatInfo).execute();
+        RegisterNewFlatAsyncTask task = new RegisterNewFlatAsyncTask(this, flatInfo);
+        task.setOnRegisterNewFlatReceiver(new OnRegisterNewFlatReceiver() {
+            @Override
+            public void onRegisterNewFlatSuccessful(FlatInfo flatInfo) {
+                registerButtonClicked = false;
+                if (flatInfo == null) {
+                    Toast.makeText(getApplicationContext(), "Flat with given name already registered. \n Please enter different name", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Toast.makeText(getApplicationContext(), "FlatInfo uploaded", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "FlatInfo uploaded");
+                Intent intent = new Intent(getApplicationContext(), MainTabActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                getApplicationContext().startActivity(intent);
+            }
+
+            @Override
+            public void onRegisterNewFlatFailed() {
+                registerButtonClicked = false;
+            }
+        });
+        task.execute();
     }
 
     public boolean verifyFlatInfoData() {

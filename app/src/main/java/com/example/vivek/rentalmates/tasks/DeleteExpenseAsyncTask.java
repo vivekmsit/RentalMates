@@ -21,13 +21,20 @@ public class DeleteExpenseAsyncTask extends AsyncTask<Context, Void, String> {
     private Long expenseDataId;
     private Context context;
     private IOException ioException;
-
-    public OnDeleteExpenseReceiver receiver;
-    public int position;
+    private OnDeleteExpenseReceiver receiver;
+    private int position;
 
     public DeleteExpenseAsyncTask(Context context, final Long expenseDataId) {
         this.context = context;
         this.expenseDataId = expenseDataId;
+    }
+
+    public void setOnDeleteExpenseReceiver(OnDeleteExpenseReceiver receiver) {
+        this.receiver = receiver;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 
     @Override
@@ -54,20 +61,22 @@ public class DeleteExpenseAsyncTask extends AsyncTask<Context, Void, String> {
 
         Log.d(TAG, "inside onPostExecute() for AddExpenseAsyncTask");
 
-        if (msg.equals("SUCCESS")) {
-            Toast.makeText(context, "ExpenseData deleted", Toast.LENGTH_SHORT).show();
-            if (receiver != null) {
-                receiver.onExpenseDeleteSuccessful(position);
-            }
-        } else if (msg.equals("EXCEPTION")) {
-            Log.d(TAG, "IOException: " + ioException.getMessage());
-            Toast.makeText(context, "IOException: " + ioException.getMessage(), Toast.LENGTH_LONG).show();
-            if (receiver != null) {
-                receiver.onExpenseDeleteFailed();
-            }
-        } else {
-            Log.d(TAG, "Unable to upload ExpenseData");
-            Toast.makeText(context, "Unable to upload ExpenseData", Toast.LENGTH_LONG).show();
+        switch (msg) {
+            case "SUCCESS":
+                Toast.makeText(context, "ExpenseData deleted", Toast.LENGTH_SHORT).show();
+                if (receiver != null) {
+                    receiver.onExpenseDeleteSuccessful(position);
+                }
+                break;
+            case "EXCEPTION":
+                Log.d(TAG, "IOException: " + ioException.getMessage());
+                Toast.makeText(context, "IOException: " + ioException.getMessage(), Toast.LENGTH_LONG).show();
+                if (receiver != null) {
+                    receiver.onExpenseDeleteFailed();
+                }
+                break;
+            default:
+                break;
         }
     }
 }

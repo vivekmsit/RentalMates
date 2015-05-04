@@ -14,6 +14,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
+import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
+import com.example.vivek.rentalmates.interfaces.OnExpenseListReceiver;
+import com.example.vivek.rentalmates.interfaces.OnRegisterWithOldFlatReceiver;
 import com.example.vivek.rentalmates.services.BackendApiService;
 import com.example.vivek.rentalmates.tasks.GetAllExpenseListAsyncTask;
 import com.example.vivek.rentalmates.tasks.RegisterWithOldFlatAsyncTask;
@@ -42,10 +45,6 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
     Long selectedFlatId;
     String selectedFlatName;
     Long selectedGroupExpenseId;
-
-    public void setRegisterWithOldFlatButtonClicked(boolean value) {
-        registerWithOldFlatButtonClicked = value;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +103,9 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
                 BackendApiService.storePrimaryFlatId(this, selectedFlatId);
                 BackendApiService.storePrimaryFlatName(this, selectedFlatName);
                 BackendApiService.storeFlatExpenseGroupId(this, selectedGroupExpenseId);
-                new GetAllExpenseListAsyncTask(this, selectedFlatId, true).execute();
+                FlatInfo flatInfo = new FlatInfo();
+                flatInfo.setFlatId(selectedFlatId);
+                loadAllExpenses(flatInfo);
                 break;
 
             case R.id.registerWithOldFlatButton:
@@ -113,17 +114,54 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
                 }
                 registerWithOldFlatButtonClicked = true;
                 Toast.makeText(this, "registering with old flat", Toast.LENGTH_LONG).show();
-                new RegisterWithOldFlatAsyncTask(this, this, alreadyRegisteredFlatEditText.getText().toString()).execute();
+                RegisterWithOldFlatAsyncTask task = new RegisterWithOldFlatAsyncTask(this, alreadyRegisteredFlatEditText.getText().toString());
+                task.setOnRegisterWithOldFlatReceiver(new OnRegisterWithOldFlatReceiver() {
+                    @Override
+                    public void onRegisterWithOldFlatSuccessful(String message, FlatInfo flatInfo) {
+                        registerWithOldFlatButtonClicked = false;
+                        if (message.equals("SUCCESS_FLAT_AVAILABLE")) {
+                            Toast.makeText(getApplicationContext(), "Registered with old flat: " + flatInfo.getFlatName() + "\nretrieving ExpenseData info", Toast.LENGTH_SHORT).show();
+                            loadAllExpenses(flatInfo);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Flat with given name doesn't exist.\nPlease enter different name", Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onRegisterWithOldFlatFailed() {
+                        registerWithOldFlatButtonClicked = false;
+                    }
+                });
+                task.execute();
                 break;
 
             case R.id.registerNewFlatButton:
-                Intent intent = new Intent(this, RegisterFlatActivity.class);
+                Intent intent = new Intent(this, RegisterNewFlatActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 this.startActivity(intent);
                 break;
             default:
                 break;
         }
+    }
+
+    public void loadAllExpenses(final FlatInfo flatInfo) {
+        GetAllExpenseListAsyncTask task = new GetAllExpenseListAsyncTask(getApplicationContext());
+        task.setOnExpenseListReceiver(new OnExpenseListReceiver() {
+            @Override
+            public void onExpenseDataListLoadSuccessful() {
+                Toast.makeText(getApplicationContext(), "ExpenseData retrieved successfully", Toast.LENGTH_SHORT).show();
+                BackendApiService.storePrimaryFlatId(getApplicationContext(), flatInfo.getFlatId());
+                Intent intent = new Intent(getApplicationContext(), MainTabActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                getApplicationContext().startActivity(intent);
+            }
+
+            @Override
+            public void onExpenseDataListLoadFailed() {
+            }
+        });
+        task.execute();
     }
 
     public boolean verifyFlatInfoData() {
@@ -144,6 +182,5 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
     }
 }

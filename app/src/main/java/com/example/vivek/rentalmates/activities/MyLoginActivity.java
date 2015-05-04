@@ -8,8 +8,6 @@ import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -21,12 +19,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
+import com.example.vivek.rentalmates.interfaces.OnExpenseGroupListReceiver;
+import com.example.vivek.rentalmates.interfaces.OnFlatInfoListReceiver;
+import com.example.vivek.rentalmates.interfaces.OnUploadUserProfileReceiver;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.services.BackendApiService;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
-import com.example.vivek.rentalmates.tasks.LoadProfileImageAsyncTask;
+import com.example.vivek.rentalmates.tasks.GetExpenseGroupListAsyncTask;
+import com.example.vivek.rentalmates.tasks.GetFlatInfoListAsyncTask;
 import com.example.vivek.rentalmates.tasks.UploadUserProfileAsyncTask;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -37,29 +40,21 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 
-import java.io.InputStream;
-
+import java.util.ArrayList;
+import java.util.List;
 
 public class MyLoginActivity extends ActionBarActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     // Logcat tag
     private static final String TAG = "MyLoginActivity_Debug";
     private static final int RC_SIGN_IN = 0;
-    // Profile pic image size in pixels
-    private static final int PROFILE_PIC_SIZE = 400;
-    /**
-     * A flag indicating that a PendingIntent is in progress and prevents us
-     * from starting further intents.
-     */
 
     public static BackendApiService backendService;
+
     boolean mBound = false;
     private AppData appData;
-
     private boolean mIntentInProgress;
     private boolean mSignInClicked;
-    private boolean mSignInCompleted;
-
     public static GoogleApiClient mClient = null;
     private ConnectionResult mConnectionResult;
     private SignInButton btnSignIn;
@@ -68,8 +63,8 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
     private TextView txtName, txtEmail;
     private LinearLayout llProfileLayout;
     private ProgressDialog progressDialog;
-
-    SharedPreferences prefs = null;
+    private Context context;
+    private SharedPreferences prefs;
 
 
     public void setSignInClicked(boolean value) {
@@ -83,6 +78,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         setContentView(R.layout.activity_my_login);
 
         mSignInClicked = false;
+        context = getApplicationContext();
 
         btnSignIn = (SignInButton) findViewById(R.id.my_sign_in_button);
         btnSignOut = (Button) findViewById(R.id.btn_sign_out);
@@ -175,7 +171,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
 
         if (prefs.contains(AppConstants.FIRST_TIME_LOGIN) && prefs.getBoolean(AppConstants.FIRST_TIME_LOGIN, true)) {
             Log.d(TAG, "FIRST_TIME_LOGIN already set to true");
-            if (mSignInClicked == true) {
+            if (mSignInClicked) {
                 mSignInClicked = false;
                 Intent intent = new Intent(this, MainTabActivity.class);
                 startActivity(intent);
@@ -183,19 +179,89 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
             } else {
                 updateUI(true);
             }
-        } else if (mSignInClicked == true) {
-            Log.d(TAG, "first time login");
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean(AppConstants.SIGN_IN_COMPLETED, false);
-            editor.putString(AppConstants.EMAIL_ID, userProfile.getEmailId());
-            editor.putString(AppConstants.USER_NAME, userProfile.getUserName());
-            editor.commit();
-            new UploadUserProfileAsyncTask(this, this, userProfile).execute();
+        } else if (mSignInClicked) {
+            firstTimeLogin(userProfile);
         } else {
             Log.d(TAG, "Login Required state");
             updateUI(false);
         }
         Log.d(TAG, "User sign in completed");
+    }
+
+
+    //First time login related procedure
+    public void firstTimeLogin(UserProfile userProfile) {
+        Log.d(TAG, "first time login");
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(AppConstants.SIGN_IN_COMPLETED, false);
+        editor.putString(AppConstants.EMAIL_ID, userProfile.getEmailId());
+        editor.putString(AppConstants.USER_NAME, userProfile.getUserName());
+        editor.apply();
+
+        //upload user profile to backend
+        UploadUserProfileAsyncTask task = new UploadUserProfileAsyncTask(this, this, userProfile);
+        task.setOnUploadUserProfileReceiver(new OnUploadUserProfileReceiver() {
+            @Override
+            public void onUploadUserProfileSuccessful(String message) {
+                setSignInClicked(false);
+                if (message.equals("SUCCESS_NO_FLAT_REGISTERED")) {
+                    Toast.makeText(context, "UserProfile uploaded", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context, DetermineFlatActivity.class);
+                    intent.putExtra("FLAT_REGISTERED", false);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    context.startActivity(intent);
+
+                } else if (message.equals("SUCCESS_FLAT_REGISTERED")) {
+                    getUserInformation();
+                }
+            }
+
+            @Override
+            public void onUploadUserProfileFailed() {
+            }
+        });
+        task.execute();
+    }
+
+    public void getUserInformation() {
+        //Download FlatInfo List
+        GetFlatInfoListAsyncTask flatTask = new GetFlatInfoListAsyncTask(context);
+        flatTask.setOnFlatInfoListReceiver(new OnFlatInfoListReceiver() {
+            @Override
+            public void onFlatInfoListLoadSuccessful(List<FlatInfo> flats) {
+                if (flats == null) {
+                    Toast.makeText(context, "No flat registered for given user", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Toast.makeText(context, "FlatInfo List retrieved successfully", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context, DetermineFlatActivity.class);
+                intent.putExtra("FLAT_REGISTERED", true);
+                List<Long> flatIds = new ArrayList<>();
+                List<String> flatNames = new ArrayList<>();
+                List<Long> groupExpenseIds = new ArrayList<>();
+                int current = 0;
+                for (FlatInfo flatInfo : flats) {
+                    flatIds.add(current, flatInfo.getFlatId());
+                    flatNames.add(current, flatInfo.getFlatName());
+                    groupExpenseIds.add(current, flatInfo.getExpenseGroupId());
+                    current++;
+                }
+                intent.putExtra("flatIds", (java.io.Serializable) flatIds);
+                intent.putExtra("flatNames", (java.io.Serializable) flatNames);
+                intent.putExtra("groupExpenseIds", (java.io.Serializable) groupExpenseIds);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                context.startActivity(intent);
+            }
+
+            @Override
+            public void onFlatInfoListLoadFailed() {
+            }
+        });
+        flatTask.execute();
+
+        //Download ExpenseGroup List
+        GetExpenseGroupListAsyncTask expenseGroupTask = new GetExpenseGroupListAsyncTask(context);
+        expenseGroupTask.execute();
     }
 
     @Override
@@ -276,7 +342,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
      */
     private void signInWithGplus() {
         Log.d(TAG, "inside signInWithGplus");
-        if (mSignInClicked == true) {
+        if (mSignInClicked) {
             //multiple sign in button click
             return;
         }
@@ -302,7 +368,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         }
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(AppConstants.SIGN_IN_COMPLETED, false);
-        editor.commit();
+        editor.apply();
     }
 
 
@@ -327,7 +393,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         }
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(AppConstants.SIGN_IN_COMPLETED, false);
-        editor.commit();
+        editor.apply();
     }
 
     @Override

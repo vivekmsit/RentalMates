@@ -92,7 +92,7 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
                     }
                 }
                 AddExpenseAsyncTask task = new AddExpenseAsyncTask(this, expenseData);
-                task.receiver = new OnAddExpenseReceiver() {
+                task.setOnAddExpenseReceiver(new OnAddExpenseReceiver() {
                     @Override
                     public void onAddExpenseSuccessful() {
                         addExpenseButtonClicked = true;
@@ -106,7 +106,7 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
                     public void onAddExpenseFailed() {
                         addExpenseButtonClicked = true;
                     }
-                };
+                });
                 task.execute();
                 break;
 

@@ -1,6 +1,6 @@
 package com.example.vivek.rentalmates.interfaces;
 
-public interface OnAllExpenseListLoadedReceiver {
+public interface OnExpenseListReceiver {
     public void onExpenseDataListLoadSuccessful();
 
     public void onExpenseDataListLoadFailed();

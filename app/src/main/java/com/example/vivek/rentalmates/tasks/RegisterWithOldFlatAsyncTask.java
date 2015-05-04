@@ -6,10 +6,10 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.vivek.rentalmates.activities.DetermineFlatActivity;
 import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.backend.flatInfoApi.FlatInfoApi;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
+import com.example.vivek.rentalmates.interfaces.OnRegisterWithOldFlatReceiver;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.services.BackendApiService;
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -17,33 +17,32 @@ import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
 import java.io.IOException;
 
-/**
- * Created by vivek on 3/6/2015.
- */
 public class RegisterWithOldFlatAsyncTask extends AsyncTask<Context, Void, String> {
     private static final String TAG = "RegisterWithOld_Debug";
 
     private static FlatInfoApi flatService = null;
     private String flatName;
     private Context context;
-    FlatInfo oldFlatInfo;
-    DetermineFlatActivity activity;
-    SharedPreferences prefs;
-    IOException ioException;
-    Long flatId;
+    private FlatInfo oldFlatInfo;
+    private SharedPreferences prefs;
+    private IOException ioException;
+    private OnRegisterWithOldFlatReceiver receiver;
 
-    public RegisterWithOldFlatAsyncTask(DetermineFlatActivity flatActivity, Context context, final String flatName) {
+    public RegisterWithOldFlatAsyncTask(Context context, final String flatName) {
         this.context = context;
-        this.activity = flatActivity;
         this.flatName = flatName;
 
         prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
     }
 
+    public void setOnRegisterWithOldFlatReceiver (OnRegisterWithOldFlatReceiver receiver) {
+        this.receiver = receiver;
+    }
+
     @Override
     protected String doInBackground(Context... params) {
-        String msg = "";
+        String msg;
         if (flatService == null) {
             FlatInfoApi.Builder builder1 = new FlatInfoApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
                     .setRootUrl(AppConstants.BACKEND_ROOT_URL);
@@ -57,7 +56,6 @@ public class RegisterWithOldFlatAsyncTask extends AsyncTask<Context, Void, Strin
                 msg = "SUCCESS_NO_FLAT_AVAILABLE";
             } else {
                 msg = "SUCCESS_FLAT_AVAILABLE";
-                flatId = oldFlatInfo.getFlatId();
                 BackendApiService.storePrimaryFlatId(this.context, oldFlatInfo.getFlatId());
                 BackendApiService.storePrimaryFlatName(this.context, oldFlatInfo.getFlatName());
                 BackendApiService.storeFlatExpenseGroupId(this.context, oldFlatInfo.getExpenseGroupId());
@@ -75,19 +73,24 @@ public class RegisterWithOldFlatAsyncTask extends AsyncTask<Context, Void, Strin
     protected void onPostExecute(String msg) {
 
         Log.d(TAG, "inside onPostExecute() for RegisterFlatAsyncTask");
-        activity.setRegisterWithOldFlatButtonClicked(false);
 
-        if (msg.equals("SUCCESS_FLAT_AVAILABLE")) {
-            Toast.makeText(context, "Registered with old flat: " + flatName + "\nretrieving ExpenseData info", Toast.LENGTH_SHORT).show();
-            new GetAllExpenseListAsyncTask(context, flatId, true).execute();
-        } else if (msg.equals("SUCCESS_NO_FLAT_AVAILABLE")) {
-            Toast.makeText(context, "Flat with given name doesn't exist.\nPlease enter different name", Toast.LENGTH_LONG).show();
-        } else if (msg.equals("EXCEPTION")) {
-            Log.d(TAG, "IOException: " + ioException.getMessage());
-            Toast.makeText(context, "IOException: " + ioException.getMessage(), Toast.LENGTH_LONG).show();
-        } else {
-            Log.d(TAG, "Unable to upload FlatInfo data");
-            Toast.makeText(context, "Unable to upload FlatInfo data", Toast.LENGTH_LONG).show();
+        switch(msg) {
+            case "SUCCESS_FLAT_AVAILABLE":
+                if (receiver != null) {
+                    receiver.onRegisterWithOldFlatSuccessful(msg, oldFlatInfo);
+                }
+                break;
+            case "SUCCESS_NO_FLAT_AVAILABLE":
+                if (receiver != null) {
+                    receiver.onRegisterWithOldFlatSuccessful(msg, null);
+                }
+                break;
+            case "EXCEPTION":
+                Log.d(TAG, "IOException: " + ioException.getMessage());
+                Toast.makeText(context, "IOException: " + ioException.getMessage(), Toast.LENGTH_LONG).show();
+                break;
+            default:
+                break;
         }
     }
 }

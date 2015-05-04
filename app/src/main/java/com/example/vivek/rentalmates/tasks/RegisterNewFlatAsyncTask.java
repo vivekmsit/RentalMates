@@ -1,17 +1,13 @@
 package com.example.vivek.rentalmates.tasks;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.vivek.rentalmates.activities.MainActivity;
-import com.example.vivek.rentalmates.activities.MainTabActivity;
-import com.example.vivek.rentalmates.activities.RegisterFlatActivity;
 import com.example.vivek.rentalmates.backend.flatInfoApi.FlatInfoApi;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
+import com.example.vivek.rentalmates.interfaces.OnRegisterNewFlatReceiver;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.services.BackendApiService;
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -19,25 +15,23 @@ import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
 import java.io.IOException;
 
-/**
- * Created by vivek on 3/6/2015.
- */
-public class RegisterFlatAsyncTask extends AsyncTask<Context, Void, String> {
+public class RegisterNewFlatAsyncTask extends AsyncTask<Context, Void, String> {
     private static final String TAG = "RentalMatesDebug";
 
     private static FlatInfoApi flatService = null;
-    private FlatInfo fi = null;
+    private FlatInfo fi;
+    private FlatInfo newFlatInfo;
     private Context context;
-    RegisterFlatActivity activity;
-    SharedPreferences prefs;
-    IOException ioException;
+    private IOException ioException;
+    private OnRegisterNewFlatReceiver receiver;
 
-    public RegisterFlatAsyncTask(RegisterFlatActivity flatActivity, Context context, final FlatInfo flatInfo) {
+    public RegisterNewFlatAsyncTask(Context context, final FlatInfo flatInfo) {
         this.context = context;
         this.fi = flatInfo;
-        this.activity = flatActivity;
-        prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
-                Context.MODE_PRIVATE);
+    }
+
+    public void setOnRegisterNewFlatReceiver(OnRegisterNewFlatReceiver receiver) {
+        this.receiver = receiver;
     }
 
     @Override
@@ -49,7 +43,7 @@ public class RegisterFlatAsyncTask extends AsyncTask<Context, Void, String> {
             flatService = builder1.build();
         }
         try {
-            FlatInfo newFlatInfo = flatService.registerNewFlat(fi).execute();
+            newFlatInfo = flatService.registerNewFlat(fi).execute();
             String status = newFlatInfo.getCreateFlatResult();
             if (status.equals("NEW_FLAT_INFO")) {
                 BackendApiService.storePrimaryFlatId(this.context, newFlatInfo.getFlatId());
@@ -72,22 +66,24 @@ public class RegisterFlatAsyncTask extends AsyncTask<Context, Void, String> {
     protected void onPostExecute(String msg) {
 
         Log.d(TAG, "inside onPostExecute() for RegisterFlatAsyncTask");
-        activity.setRegisterButtonClicked(false);
 
-        if (msg.equals("SUCCESS_NEW_FLAT")) {
-            Toast.makeText(context, "FlatInfo uploaded", Toast.LENGTH_SHORT).show();
-
-            Intent intent = new Intent(context, MainTabActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            context.startActivity(intent);
-        } else if (msg.equals("SUCCESS_OLD_FLAT")) {
-            Toast.makeText(context, "Flat with given name already registered. \n Please enter different name", Toast.LENGTH_LONG).show();
-        } else if (msg.equals("EXCEPTION")) {
-            Log.d(TAG, "IOException: " + ioException.getMessage());
-            Toast.makeText(context, "IOException: " + ioException.getMessage(), Toast.LENGTH_LONG).show();
-        } else {
-            Log.d(TAG, "Unable to upload FlatInfo data");
-            Toast.makeText(context, "Unable to upload FlatInfo data", Toast.LENGTH_LONG).show();
+        switch (msg) {
+            case "SUCCESS_NEW_FLAT":
+                if (receiver != null) {
+                    receiver.onRegisterNewFlatSuccessful(newFlatInfo);
+                }
+                break;
+            case "SUCCESS_OLD_FLAT":
+                if (receiver != null) {
+                    receiver.onRegisterNewFlatSuccessful(null);
+                }
+                break;
+            case "EXCEPTION":
+                Log.d(TAG, "IOException: " + ioException.getMessage());
+                Toast.makeText(context, "IOException: " + ioException.getMessage(), Toast.LENGTH_LONG).show();
+                break;
+            default:
+                break;
         }
     }
 }
