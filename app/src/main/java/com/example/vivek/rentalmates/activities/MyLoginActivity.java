@@ -40,12 +40,10 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MyLoginActivity extends ActionBarActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    // Logcat tag
     private static final String TAG = "MyLoginActivity_Debug";
     private static final int RC_SIGN_IN = 0;
 
@@ -233,24 +231,26 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
                     Toast.makeText(context, "No flat registered for given user", Toast.LENGTH_LONG).show();
                     return;
                 }
+                appData.storeFlatInfoList(context, flats);
                 Toast.makeText(context, "FlatInfo List retrieved successfully", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(context, DetermineFlatActivity.class);
-                intent.putExtra("FLAT_REGISTERED", true);
-                List<Long> flatIds = new ArrayList<>();
-                List<String> flatNames = new ArrayList<>();
-                List<Long> groupExpenseIds = new ArrayList<>();
-                int current = 0;
-                for (FlatInfo flatInfo : flats) {
-                    flatIds.add(current, flatInfo.getFlatId());
-                    flatNames.add(current, flatInfo.getFlatName());
-                    groupExpenseIds.add(current, flatInfo.getExpenseGroupId());
-                    current++;
-                }
-                intent.putExtra("flatIds", (java.io.Serializable) flatIds);
-                intent.putExtra("flatNames", (java.io.Serializable) flatNames);
-                intent.putExtra("groupExpenseIds", (java.io.Serializable) groupExpenseIds);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                context.startActivity(intent);
+
+                //Download ExpenseGroup List
+                GetExpenseGroupListAsyncTask expenseGroupTask = new GetExpenseGroupListAsyncTask(context);
+                expenseGroupTask.setOnExpenseGroupListReceiver(new OnExpenseGroupListReceiver() {
+                    @Override
+                    public void onExpenseGroupListLoadSuccessful() {
+                        Intent intent = new Intent(context, DetermineFlatActivity.class);
+                        intent.putExtra("FLAT_REGISTERED", true);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        context.startActivity(intent);
+                    }
+
+                    @Override
+                    public void onExpenseGroupListLoadFailed() {
+
+                    }
+                });
+                expenseGroupTask.execute();
             }
 
             @Override
@@ -258,10 +258,6 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
             }
         });
         flatTask.execute();
-
-        //Download ExpenseGroup List
-        GetExpenseGroupListAsyncTask expenseGroupTask = new GetExpenseGroupListAsyncTask(context);
-        expenseGroupTask.execute();
     }
 
     @Override

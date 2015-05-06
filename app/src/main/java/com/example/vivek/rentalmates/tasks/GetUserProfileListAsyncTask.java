@@ -1,9 +1,5 @@
 package com.example.vivek.rentalmates.tasks;
 
-/**
- * Created by vivek on 3/14/2015.
- */
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -14,9 +10,9 @@ import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.backend.userProfileApi.UserProfileApi;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfileCollection;
+import com.example.vivek.rentalmates.interfaces.OnUserProfileListReceiver;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
-import com.example.vivek.rentalmates.others.LocalUserProfile;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
@@ -30,10 +26,11 @@ public class GetUserProfileListAsyncTask extends AsyncTask<Context, Void, String
 
     private static UserProfileApi ufService = null;
     private Context context;
-    SharedPreferences prefs;
-    IOException ioException;
-    AppData appData;
-    List<UserProfile> userProfiles = new ArrayList<>();
+    private SharedPreferences prefs;
+    private IOException ioException;
+    private AppData appData;
+    private List<UserProfile> userProfiles = new ArrayList<>();
+    private OnUserProfileListReceiver receiver;
 
     public GetUserProfileListAsyncTask(Context context) {
         this.context = context;
@@ -42,9 +39,13 @@ public class GetUserProfileListAsyncTask extends AsyncTask<Context, Void, String
                 Context.MODE_PRIVATE);
     }
 
+    public void setOnUserProfileListReceiver(OnUserProfileListReceiver receiver) {
+        this.receiver = receiver;
+    }
+
     @Override
     protected String doInBackground(Context... params) {
-        String msg = "";
+        String msg;
         if (ufService == null) {
             UserProfileApi.Builder builder1 = new UserProfileApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
                     .setRootUrl(AppConstants.BACKEND_ROOT_URL);
@@ -77,17 +78,26 @@ public class GetUserProfileListAsyncTask extends AsyncTask<Context, Void, String
 
         Log.d(TAG, "inside onPostExecute() for GetUserProfileListAsyncTask");
 
-        if (msg.equals("SUCCESS_PROFILES")) {
-            Toast.makeText(context, "UserProfile List retrieved successfully/Number of Users: " + userProfiles.size(), Toast.LENGTH_SHORT).show();
-            appData.updateProfilePictures(context, userProfiles);
-        } else if (msg.equals("SUCCESS_NO_PROFILES")) {
-            Toast.makeText(context, "No user profiles available", Toast.LENGTH_LONG);
-        } else if (msg.equals("EXCEPTION")) {
-            Log.d(TAG, "IOException: " + ioException.getMessage());
-            Toast.makeText(context, "IOException: " + ioException.getMessage(), Toast.LENGTH_LONG).show();
-        } else {
-            Log.d(TAG, "Unable to upload ExpenseData");
-            Toast.makeText(context, "Unable to upload ExpenseData", Toast.LENGTH_LONG).show();
+        switch (msg) {
+            case "SUCCESS_PROFILES":
+                if (receiver != null) {
+                    receiver.onUserProfileListLoadSuccessful(userProfiles);
+                }
+                break;
+            case "SUCCESS_NO_PROFILES":
+                if (receiver != null) {
+                    receiver.onUserProfileListLoadSuccessful(null);
+                }
+                break;
+            case "EXCEPTION":
+                Log.d(TAG, "IOException: " + ioException.getMessage());
+                Toast.makeText(context, "IOException: " + ioException.getMessage(), Toast.LENGTH_LONG).show();
+                if (receiver != null) {
+                    receiver.onUserProfileListLoadFailed();
+                }
+                break;
+            default:
+                break;
         }
     }
 }

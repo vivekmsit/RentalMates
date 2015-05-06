@@ -1,16 +1,14 @@
 package com.example.vivek.rentalmates.others;
 
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
-import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
+import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by vivek on 3/20/2015.
- */
-public class LocalFlatInfo {
+public class LocalFlatInfo implements Serializable {
 
     public enum FlatType {
         NOT_AVAILABLE,
@@ -21,32 +19,20 @@ public class LocalFlatInfo {
     }
 
     Long flatId;
-
     private String adminName;
-
     private String flatName; //Should be unique
-
     private boolean available;
-
     private FlatType type; //1bhk/2bhk/3bhk/villa
-
     private String city;
-
     private Date date;
-
     private String ownerEmailId;
-
     private Long userProfileId;
-
     private String createFlatResult;
-
     private List<Long> userIds = new ArrayList<>();
-
     private List<ExpenseData> expenses = new ArrayList<ExpenseData>();
-
     private int numberOfExpenses;
-
     private int numberOfUsers;
+    private Long flatExpenseGroupId;
 
 
     public Long getFlatId() {
@@ -161,6 +147,13 @@ public class LocalFlatInfo {
         this.numberOfUsers = numberOfUsers;
     }
 
+    public Long getFlatExpenseGroupId() {
+        return flatExpenseGroupId;
+    }
+
+    public void setFlatExpenseGroupId(Long flatExpenseGroupId) {
+        this.flatExpenseGroupId = flatExpenseGroupId;
+    }
 
     public LocalFlatInfo() {
 
@@ -181,6 +174,7 @@ public class LocalFlatInfo {
             data.setOwnerEmailId(localFlat.getOwnerEmailId());
             data.setNumberOfUsers(localFlat.getNumberOfUsers());
             data.setUserIds(localFlat.getUserIds());
+            data.setExpenseGroupId(localFlat.getFlatExpenseGroupId());
 
             flats.add(data);
         }
@@ -200,6 +194,16 @@ public class LocalFlatInfo {
             data.setCity(flat.getCity());
             data.setFlatId(flat.getFlatId());
             data.setFlatName(flat.getFlatName());
+            data.setFlatExpenseGroupId(flat.getExpenseGroupId());
+
+            data.setUserProfileId(flat.getUserProfileId());
+            data.setFlatId(flat.getFlatId());
+            data.setOwnerEmailId(flat.getOwnerEmailId());
+            data.setFlatName(flat.getFlatName());
+            data.setOwnerEmailId(flat.getOwnerEmailId());
+            data.setNumberOfUsers(flat.getNumberOfUsers());
+            data.setUserIds(flat.getUserIds());
+            data.setFlatExpenseGroupId(flat.getExpenseGroupId());
 
             localFlats.add(data);
         }

@@ -1,9 +1,5 @@
 package com.example.vivek.rentalmates.tasks;
 
-/**
- * Created by vivek on 3/21/2015.
- */
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,7 +8,6 @@ import android.util.Log;
 
 import com.example.vivek.rentalmates.others.AppData;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -25,9 +20,9 @@ public class LoadProfileImageAsyncTask extends AsyncTask<String, Void, Bitmap> {
 
     private static final String TAG = "LoadProfileImage_Debug";
 
-    Context context;
-    String emailId;
-    AppData appData;
+    private Context context;
+    private String emailId;
+    private AppData appData;
 
     public LoadProfileImageAsyncTask(Context context, String emailId) {
         this.context = context;

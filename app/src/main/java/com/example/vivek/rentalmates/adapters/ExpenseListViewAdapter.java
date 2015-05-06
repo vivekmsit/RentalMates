@@ -18,7 +18,6 @@ import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.dialogs.ExpenseMenuDialog;
 import com.example.vivek.rentalmates.others.AppData;
-import com.example.vivek.rentalmates.tasks.GetUserProfileListAsyncTask;
 import com.example.vivek.rentalmates.viewholders.ExpenseListItem;
 import com.pkmmte.view.CircularImageView;
 
@@ -66,8 +65,6 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
             Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
             Bitmap newBitmap = Bitmap.createScaledBitmap(bm, 200, 200, true);
             viewHolder.circularImageView.setImageBitmap(newBitmap);
-            //Download new user profiles related data
-            new GetUserProfileListAsyncTask(context).execute();
         }
         viewHolder.amount.setText("Rs " + Integer.toString(current.amount));
         viewHolder.description.setText(current.description);

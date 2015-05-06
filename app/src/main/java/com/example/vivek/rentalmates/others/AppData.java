@@ -7,7 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
-import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
+import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
 import com.example.vivek.rentalmates.tasks.LoadProfileImageAsyncTask;
@@ -136,6 +136,7 @@ public class AppData implements Serializable {
             oos.close();
             status = true;
         } catch (IOException e) {
+            Log.d(TAG, "IOException occurred: " + e.getCause() + e.getLocalizedMessage() + e.getMessage());
             Toast.makeText(context, "IOException occurred: " + e.getMessage(), Toast.LENGTH_LONG).show();
             status = false;
         }

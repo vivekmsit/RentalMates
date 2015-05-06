@@ -36,7 +36,7 @@ public class RegisterWithOldFlatAsyncTask extends AsyncTask<Context, Void, Strin
                 Context.MODE_PRIVATE);
     }
 
-    public void setOnRegisterWithOldFlatReceiver (OnRegisterWithOldFlatReceiver receiver) {
+    public void setOnRegisterWithOldFlatReceiver(OnRegisterWithOldFlatReceiver receiver) {
         this.receiver = receiver;
     }
 
@@ -74,7 +74,7 @@ public class RegisterWithOldFlatAsyncTask extends AsyncTask<Context, Void, Strin
 
         Log.d(TAG, "inside onPostExecute() for RegisterFlatAsyncTask");
 
-        switch(msg) {
+        switch (msg) {
             case "SUCCESS_FLAT_AVAILABLE":
                 if (receiver != null) {
                     receiver.onRegisterWithOldFlatSuccessful(msg, oldFlatInfo);
@@ -88,6 +88,9 @@ public class RegisterWithOldFlatAsyncTask extends AsyncTask<Context, Void, Strin
             case "EXCEPTION":
                 Log.d(TAG, "IOException: " + ioException.getMessage());
                 Toast.makeText(context, "IOException: " + ioException.getMessage(), Toast.LENGTH_LONG).show();
+                if (receiver != null) {
+                    receiver.onRegisterWithOldFlatFailed();
+                }
                 break;
             default:
                 break;

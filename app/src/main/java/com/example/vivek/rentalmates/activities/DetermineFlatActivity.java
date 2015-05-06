@@ -1,5 +1,6 @@
 package com.example.vivek.rentalmates.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -15,10 +16,15 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
+import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
 import com.example.vivek.rentalmates.interfaces.OnExpenseListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnRegisterWithOldFlatReceiver;
+import com.example.vivek.rentalmates.interfaces.OnUserProfileListReceiver;
+import com.example.vivek.rentalmates.others.AppData;
+import com.example.vivek.rentalmates.others.LocalFlatInfo;
 import com.example.vivek.rentalmates.services.BackendApiService;
 import com.example.vivek.rentalmates.tasks.GetAllExpenseListAsyncTask;
+import com.example.vivek.rentalmates.tasks.GetUserProfileListAsyncTask;
 import com.example.vivek.rentalmates.tasks.RegisterWithOldFlatAsyncTask;
 
 import java.util.ArrayList;
@@ -28,29 +34,31 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
 
     private static final String TAG = "DetermineFlat_Debug";
 
-    TextView alreadyTextView;
-    TextView newRegisteredTextView;
-    TextView registerNewFlatTextView;
-    Spinner chooseFlatSpinner;
-    EditText alreadyRegisteredFlatEditText;
-    Button continueWithOldFlatButton;
-    Button registerWithOldFlatButton;
-    Button registerNewFlatButton;
-
-    boolean registerWithOldFlatButtonClicked;
-    boolean alreadyRegisteredFlat;
-    List<Long> flatIds = new ArrayList<>();
-    List<String> flatNames = new ArrayList<>();
-    List<Long> groupExpenseIds = new ArrayList<>();
-    Long selectedFlatId;
-    String selectedFlatName;
-    Long selectedGroupExpenseId;
+    private TextView alreadyTextView;
+    private TextView newRegisteredTextView;
+    private TextView registerNewFlatTextView;
+    private Spinner chooseFlatSpinner;
+    private EditText alreadyRegisteredFlatEditText;
+    private Button continueWithOldFlatButton;
+    private Button registerWithOldFlatButton;
+    private Button registerNewFlatButton;
+    private Context context;
+    private AppData appData;
+    private boolean registerWithOldFlatButtonClicked;
+    private boolean alreadyRegisteredFlat;
+    private List<LocalFlatInfo> localFlats = new ArrayList<>();
+    private Long selectedFlatId;
+    private String selectedFlatName;
+    private Long selectedGroupExpenseId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_determine_flat);
 
+        context = getApplicationContext();
+        appData = AppData.getInstance();
+        localFlats = appData.getFlats();
         alreadyTextView = (TextView) findViewById(R.id.alreadyTextView);
         newRegisteredTextView = (TextView) findViewById(R.id.newRegisteredTextView);
         registerNewFlatTextView = (TextView) findViewById(R.id.registerNewFlatTextView);
@@ -67,12 +75,10 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
         Intent intent = getIntent();
         alreadyRegisteredFlat = intent.getBooleanExtra("FLAT_REGISTERED", false);
         if (alreadyRegisteredFlat) {
-            flatIds = (List<Long>) intent.getSerializableExtra("flatIds");
-            flatNames = (List<String>) intent.getSerializableExtra("flatNames");
-            groupExpenseIds = (List<Long>) intent.getSerializableExtra("groupExpenseIds");
-            selectedFlatId = flatIds.get(0);
-            selectedFlatName = flatNames.get(0);
-            selectedGroupExpenseId = groupExpenseIds.get(0);
+            LocalFlatInfo flat = localFlats.get(0);
+            selectedFlatId = flat.getFlatId();
+            selectedFlatName = flat.getFlatName();
+            selectedGroupExpenseId = flat.getFlatExpenseGroupId();
         }
 
         if (!alreadyRegisteredFlat) {
@@ -81,6 +87,10 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
             continueWithOldFlatButton.setVisibility(View.INVISIBLE);
         }
 
+        List<String> flatNames = new ArrayList<>();
+        for (LocalFlatInfo flat : localFlats) {
+            flatNames.add(flat.getFlatName());
+        }
         ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, flatNames);
         chooseFlatSpinner.setAdapter(stringArrayAdapter);
         chooseFlatSpinner.setOnItemSelectedListener(this);
@@ -103,9 +113,7 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
                 BackendApiService.storePrimaryFlatId(this, selectedFlatId);
                 BackendApiService.storePrimaryFlatName(this, selectedFlatName);
                 BackendApiService.storeFlatExpenseGroupId(this, selectedGroupExpenseId);
-                FlatInfo flatInfo = new FlatInfo();
-                flatInfo.setFlatId(selectedFlatId);
-                loadAllExpenses(flatInfo);
+                loadAllUserProfiles();
                 break;
 
             case R.id.registerWithOldFlatButton:
@@ -121,7 +129,8 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
                         registerWithOldFlatButtonClicked = false;
                         if (message.equals("SUCCESS_FLAT_AVAILABLE")) {
                             Toast.makeText(getApplicationContext(), "Registered with old flat: " + flatInfo.getFlatName() + "\nretrieving ExpenseData info", Toast.LENGTH_SHORT).show();
-                            loadAllExpenses(flatInfo);
+                            BackendApiService.storePrimaryFlatId(getApplicationContext(), flatInfo.getFlatId());
+                            loadAllUserProfiles();
                         } else {
                             Toast.makeText(getApplicationContext(), "Flat with given name doesn't exist.\nPlease enter different name", Toast.LENGTH_LONG).show();
                         }
@@ -145,13 +154,34 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
         }
     }
 
-    public void loadAllExpenses(final FlatInfo flatInfo) {
+    public void loadAllUserProfiles() {
+        //Download new user profiles related data
+        GetUserProfileListAsyncTask task = new GetUserProfileListAsyncTask(context);
+        task.setOnUserProfileListReceiver(new OnUserProfileListReceiver() {
+            @Override
+            public void onUserProfileListLoadSuccessful(List<UserProfile> userProfiles) {
+                if (userProfiles == null) {
+                    Toast.makeText(context, "No user profiles available", Toast.LENGTH_LONG);
+                    return;
+                }
+                Toast.makeText(context, "UserProfile List retrieved successfully/Number of Users: " + userProfiles.size(), Toast.LENGTH_SHORT).show();
+                appData.updateProfilePictures(context, userProfiles);
+                loadAllExpenses();
+            }
+
+            @Override
+            public void onUserProfileListLoadFailed() {
+            }
+        });
+        task.execute();
+    }
+
+    public void loadAllExpenses() {
         GetAllExpenseListAsyncTask task = new GetAllExpenseListAsyncTask(getApplicationContext());
         task.setOnExpenseListReceiver(new OnExpenseListReceiver() {
             @Override
             public void onExpenseDataListLoadSuccessful() {
                 Toast.makeText(getApplicationContext(), "ExpenseData retrieved successfully", Toast.LENGTH_SHORT).show();
-                BackendApiService.storePrimaryFlatId(getApplicationContext(), flatInfo.getFlatId());
                 Intent intent = new Intent(getApplicationContext(), MainTabActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 getApplicationContext().startActivity(intent);
@@ -175,9 +205,10 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        selectedFlatId = flatIds.get(position);
-        selectedFlatName = flatNames.get(position);
-        selectedGroupExpenseId = groupExpenseIds.get(position);
+        LocalFlatInfo flatInfo = localFlats.get(position);
+        selectedFlatId = flatInfo.getFlatId();
+        selectedFlatName = flatInfo.getFlatName();
+        selectedGroupExpenseId = flatInfo.getFlatExpenseGroupId();
     }
 
     @Override

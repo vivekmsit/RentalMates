@@ -81,6 +81,9 @@ public class RegisterNewFlatAsyncTask extends AsyncTask<Context, Void, String> {
             case "EXCEPTION":
                 Log.d(TAG, "IOException: " + ioException.getMessage());
                 Toast.makeText(context, "IOException: " + ioException.getMessage(), Toast.LENGTH_LONG).show();
+                if (receiver != null) {
+                    receiver.onRegisterNewFlatFailed();
+                }
                 break;
             default:
                 break;
