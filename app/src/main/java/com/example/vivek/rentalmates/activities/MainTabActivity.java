@@ -21,7 +21,7 @@ import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.fragments.ExpenseDataListFragment;
 import com.example.vivek.rentalmates.fragments.NavigationDrawerFragment;
 import com.example.vivek.rentalmates.fragments.NewsFeedFragment;
-import com.example.vivek.rentalmates.fragments.SearchRoomiesFragment;
+import com.example.vivek.rentalmates.fragments.SearchFragment;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.tabs.SlidingTabLayout;
 import com.google.android.gms.common.ConnectionResult;
@@ -52,14 +52,13 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
 
         currentPosition = 0;
 
-        viewPager = (ViewPager) findViewById(R.id.pager);
-
         toolBar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolBar);
         toolBar.setTitleTextColor(getResources().getColor(R.color.white));
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        pageAdapter = new MyAdapter(fragmentManager);
+        //Initialize ViewPager
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        pageAdapter = new MyAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pageAdapter);
 
         //Initialize FloatingActionButton
@@ -194,9 +193,9 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
             if (position == 0) {
                 fragment = new ExpenseDataListFragment();
             } else if (position == 1) {
-                fragment = new SearchRoomiesFragment();
-            } else if (position == 2) {
                 fragment = new NewsFeedFragment();
+            } else if (position == 2) {
+                fragment = new SearchFragment();
             }
             registeredFragments.put(position, fragment);
             return fragment;
@@ -212,9 +211,9 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
             if (position == 0) {
                 return "Expenses";
             } else if (position == 1) {
-                return "Search";
-            } else if (position == 2) {
                 return "Activities";
+            } else if (position == 2) {
+                return "Search";
             } else {
                 return null;
             }

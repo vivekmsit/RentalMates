@@ -2,14 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FCC98B"
-    tools:context="com.example.vivek.rentalmates.fragments.SearchRoomiesFragment">
+    tools:context="com.example.vivek.rentalmates.fragments.SearchRoomMateFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="16dp"
-        android:text="This is SearchRoomies Fragment" />
+        android:text="Search Room Mate Fragment" />
 
 </FrameLayout>

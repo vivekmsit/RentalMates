@@ -1,7 +1,6 @@
 package com.example.vivek.rentalmates.fragments;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,11 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.vivek.rentalmates.R;
-import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.adapters.ExpenseListViewAdapter;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.interfaces.OnExpenseListReceiver;
-import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.tasks.GetAllExpenseListAsyncTask;
 import com.example.vivek.rentalmates.viewholders.ExpenseListItem;
@@ -31,12 +28,11 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
 
     private static final String TAG = "ExpenseList_Debug";
 
-    AppData appData;
-    Context context;
+    private AppData appData;
+    private Context context;
     private RecyclerView recyclerView;
     private ExpenseListViewAdapter expenseListViewAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private SharedPreferences prefs;
 
     public ExpenseDataListFragment() {
         Log.d(TAG, "inside constructor");
@@ -77,9 +73,7 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        prefs = getActivity().getSharedPreferences(MainActivity.class.getSimpleName(),
-                Context.MODE_PRIVATE);
-        startSwipeRefreshLayout();
+        //startSwipeRefreshLayout();
     }
 
 
@@ -110,7 +104,6 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
     @Override
     public void onRefresh() {
         Log.d(TAG, "inside onRefresh");
-        Long flatId = prefs.getLong(AppConstants.PRIMARY_FLAT_ID, 0);
         GetAllExpenseListAsyncTask task = new GetAllExpenseListAsyncTask(context);
         task.setOnExpenseListReceiver(new OnExpenseListReceiver() {
             @Override
