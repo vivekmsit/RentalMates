@@ -4,8 +4,7 @@ package com.example.vivek.rentalmates.others;
  * Created by vivek on 3/17/2015.
  */
 public class AppConstants {
-    public static final String PROPERTY_APP_VERSION = "appVersion";
-    public static final String PROPERTY_REG_ID = "registration_id";
+    public static final String GCM_REG_ID = "registration_id";
     public static final String SENDER_ID = "56111997016";
     public static final int PROFILE_PIC_SIZE = 400;
     public static final String BACKEND_ROOT_URL = "https://kinetic-wind-814.appspot.com/_ah/api/";

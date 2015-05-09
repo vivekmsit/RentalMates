@@ -85,6 +85,10 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
                 expenseData.setUserName(prefs.getString(AppConstants.USER_NAME, "no_user_name"));
                 expenseData.setExpenseGroupName(prefs.getString(AppConstants.PRIMARY_FLAT_NAME, "no_flat_name"));
                 expenseData.setExpenseGroupId(prefs.getLong(AppConstants.FLAT_EXPENSE_GROUP_ID, 0));
+                if (appData.getExpenseGroups().size() == 0) {
+                    Toast.makeText(this, "No ExpenseGroups available", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 for (LocalExpenseGroup group : appData.getExpenseGroups()) {
                     if (group.getId() == prefs.getLong(AppConstants.FLAT_EXPENSE_GROUP_ID, 0)) {
                         expenseData.setMemberIds(group.getMemberIds());

@@ -22,12 +22,14 @@ import android.widget.Toast;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
 import com.example.vivek.rentalmates.interfaces.OnExpenseGroupListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnFlatInfoListReceiver;
+import com.example.vivek.rentalmates.interfaces.OnGcmRegistrationReceiver;
 import com.example.vivek.rentalmates.interfaces.OnUploadUserProfileReceiver;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.services.BackendApiService;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
+import com.example.vivek.rentalmates.tasks.GcmRegistrationAsyncTask;
 import com.example.vivek.rentalmates.tasks.GetExpenseGroupListAsyncTask;
 import com.example.vivek.rentalmates.tasks.GetFlatInfoListAsyncTask;
 import com.example.vivek.rentalmates.tasks.UploadUserProfileAsyncTask;
@@ -37,6 +39,7 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 
@@ -161,12 +164,6 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         progressDialog.cancel();
         Log.d(TAG, "inside onConnected");
 
-        // Get user's information
-        UserProfile userProfile = getProfileInformation();
-        txtName.setText(userProfile.getUserName());
-        txtEmail.setText(userProfile.getEmailId());
-        setProfilePicture(userProfile);
-
         if (prefs.contains(AppConstants.FIRST_TIME_LOGIN) && prefs.getBoolean(AppConstants.FIRST_TIME_LOGIN, true)) {
             Log.d(TAG, "FIRST_TIME_LOGIN already set to true");
             if (mSignInClicked) {
@@ -178,7 +175,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
                 updateUI(true);
             }
         } else if (mSignInClicked) {
-            firstTimeLogin(userProfile);
+            firstTimeLogin();
         } else {
             Log.d(TAG, "Login Required state");
             updateUI(false);
@@ -186,16 +183,36 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         Log.d(TAG, "User sign in completed");
     }
 
-
     //First time login related procedure
-    public void firstTimeLogin(UserProfile userProfile) {
+    public void firstTimeLogin() {
         Log.d(TAG, "first time login");
+        // Get UserProfile information
+        final UserProfile userProfile = getProfileInformation();
+        txtName.setText(userProfile.getUserName());
+        txtEmail.setText(userProfile.getEmailId());
+        setProfilePicture(userProfile);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(AppConstants.SIGN_IN_COMPLETED, false);
         editor.putString(AppConstants.EMAIL_ID, userProfile.getEmailId());
         editor.putString(AppConstants.USER_NAME, userProfile.getUserName());
         editor.apply();
+        GcmRegistrationAsyncTask task = new GcmRegistrationAsyncTask(context);
+        task.setOnGcmRegistrationReceiver(new OnGcmRegistrationReceiver() {
+            @Override
+            public void onGcmRegisterSuccessful(String regId) {
+                userProfile.setCurrentGcmId(regId);
+                uploadUserProfile(userProfile);
+            }
 
+            @Override
+            public void onGcmRegisterFailed() {
+
+            }
+        });
+        task.execute();
+    }
+
+    public void uploadUserProfile(UserProfile userProfile) {
         //upload user profile to backend
         UploadUserProfileAsyncTask task = new UploadUserProfileAsyncTask(this, this, userProfile);
         task.setOnUploadUserProfileReceiver(new OnUploadUserProfileReceiver() {
@@ -208,9 +225,8 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
                     intent.putExtra("FLAT_REGISTERED", false);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     context.startActivity(intent);
-
                 } else if (message.equals("SUCCESS_FLAT_REGISTERED")) {
-                    getUserInformation();
+                    getCompleteUserInformation();
                 }
             }
 
@@ -221,7 +237,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         task.execute();
     }
 
-    public void getUserInformation() {
+    public void getCompleteUserInformation() {
         //Download FlatInfo List
         GetFlatInfoListAsyncTask flatTask = new GetFlatInfoListAsyncTask(context);
         flatTask.setOnFlatInfoListReceiver(new OnFlatInfoListReceiver() {
@@ -247,7 +263,6 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
 
                     @Override
                     public void onExpenseGroupListLoadFailed() {
-
                     }
                 });
                 expenseGroupTask.execute();

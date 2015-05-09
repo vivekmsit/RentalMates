@@ -3,6 +3,9 @@ package com.example.vivek.rentalmates.backend.endpoints;
 import com.example.vivek.rentalmates.backend.entities.ExpenseData;
 import com.example.vivek.rentalmates.backend.entities.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.entities.UserProfile;
+import com.google.android.gcm.server.Message;
+import com.google.android.gcm.server.Result;
+import com.google.android.gcm.server.Sender;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
@@ -13,6 +16,7 @@ import com.google.appengine.api.datastore.QueryResultIterator;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.cmd.Query;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -183,7 +187,7 @@ public class ExpenseGroupEndpoint {
             name = "addExpenseData",
             path = "expenseGroupAdd",
             httpMethod = ApiMethod.HttpMethod.POST)
-    public ExpenseData addExpenseData(ExpenseData expenseData) throws NotFoundException {
+    public ExpenseData addExpenseData(ExpenseData expenseData) throws NotFoundException, IOException {
         Long expenseGroupId = expenseData.getExpenseGroupId();
         checkExpenseGroupExists(expenseGroupId);
         ExpenseGroup expenseGroup = ofy().load().type(ExpenseGroup.class).id(expenseGroupId).now();
@@ -192,6 +196,8 @@ public class ExpenseGroupEndpoint {
         logger.info("Created ExpenseData.");
         expenseGroup.addExpenseId(expenseData.getId());
         ofy().save().entity(expenseGroup).now();
+        //UserProfile userProfile = ofy().load().type(UserProfile.class).id(expenseGroup.getMemberIds().get(0)).now();
+        //sendMessage(userProfile.getCurrentGcmId(), "GCM: ExpenseData uploaded");
         return ofy().load().entity(expenseData).now();
     }
 
@@ -268,6 +274,20 @@ public class ExpenseGroupEndpoint {
         ofy().save().entity(expenseGroup).now();
         ofy().delete().type(ExpenseData.class).id(id).now();
         logger.info("Deleted ExpenseData with ID: " + id);
+    }
+
+
+    //Function to send message to device having id gcmId using GCM
+    public void sendMessage(@Named("gcmId")String gcmId, @Named("message")String message) throws IOException {
+        String GCM_API_KEY = System.getProperty("gcm.api.key");
+        Sender sender = new Sender(GCM_API_KEY);
+        Message msg = new Message.Builder().addData("message", message).build();
+        Result result = sender.send(msg, gcmId, 3);
+        if (result.getMessageId() != null) {
+            logger.info("Message sent to " + gcmId);
+        } else {
+            logger.info("Error sending message");
+        }
     }
 
 }

@@ -85,17 +85,25 @@ public class UserProfileEndpoint {
         //
         // If your client provides the ID then you should probably use PUT instead.
         String emailId = userProfile.getEmailId();
+        String currentGcmId = userProfile.getCurrentGcmId();
         Query query = ofy().load().type(UserProfile.class);
         query = query.filter("emailId" + " = ", emailId);
         List<UserProfile> profiles = query.list();
         UserProfile finalUserProfile;
         if (profiles.size() == 0) {
             logger.info("Created UserProfile.");
+            userProfile.setCurrentGcmId(currentGcmId);
+            userProfile.addGcmId(currentGcmId);
             ofy().save().entity(userProfile).now();
             finalUserProfile = ofy().load().entity(userProfile).now();
             finalUserProfile.setCreateProfileResult("NEW_USER_PROFILE");
         } else {
             finalUserProfile = profiles.get(0);
+            if (!finalUserProfile.getGcmIds().contains(currentGcmId)) {
+                finalUserProfile.setCurrentGcmId(currentGcmId);
+                finalUserProfile.addGcmId(currentGcmId);
+            }
+            ofy().save().entity(finalUserProfile).now();
             finalUserProfile.setCreateProfileResult("OLD_USER_PROFILE");
         }
         return finalUserProfile;

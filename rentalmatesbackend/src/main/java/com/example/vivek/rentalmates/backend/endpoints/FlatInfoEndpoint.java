@@ -14,6 +14,7 @@ import com.google.appengine.api.datastore.QueryResultIterator;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.cmd.Query;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -137,18 +138,19 @@ public class FlatInfoEndpoint {
             name = "registerWithOldFlat",
             path = "registerWithOldFlat",
             httpMethod = ApiMethod.HttpMethod.POST)
-    public FlatInfo registerWithOldFlat(@Named("flatName") String flatName, @Named("userProfileId") Long userProfileId) {
+    public FlatInfo registerWithOldFlat(@Named("flatName") String flatName, @Named("userProfileId") Long userProfileId) throws IOException {
         Query query = ofy().load().type(FlatInfo.class);
         query = query.filter("flatName" + " = ", flatName);
         List<FlatInfo> flats = query.list();
         FlatInfo finalFlatInfo;
+        UserProfile userProfile;
         if (flats.size() == 0) {
             logger.info("Created FlatInfo.");
             return null;
         } else {
             finalFlatInfo = flats.get(0);
             //Add flatId of flat to UserProfile flatIds List
-            UserProfile userProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
+            userProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
             ExpenseGroup flatExpenseGroup = ofy().load().type(ExpenseGroup.class).id(finalFlatInfo.getExpenseGroupId()).now();
             if (!userProfile.getFlatIds().contains(finalFlatInfo.getFlatId())) {
                 userProfile.addFlatId(finalFlatInfo.getFlatId());

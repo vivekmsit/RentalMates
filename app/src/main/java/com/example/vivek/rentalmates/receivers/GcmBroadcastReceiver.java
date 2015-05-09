@@ -8,9 +8,6 @@ import android.support.v4.content.WakefulBroadcastReceiver;
 
 import com.example.vivek.rentalmates.services.GcmIntentService;
 
-/**
- * Created by vivek on 1/9/2015.
- */
 public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {

@@ -22,33 +22,25 @@ public class UserProfile {
     @Index
     private String userName;
 
-    private Date date;
-
-    private String profileURL;
-
-    private String profilePhotoURL;
-
     @Index
     private String currentPlace;
 
     @Index
     private String emailId;
 
+    private Date date;
+    private String profileURL;
+    private String profilePhotoURL;
     private String createProfileResult;
-
-    private List<Long> flatIds = new ArrayList<>();
-
-    private List<Long> expenseGroupIds = new ArrayList<>();
-
     private Long primaryFlatId;
-
     private Long flatExpenseGroupId;
-
     private int numberOfFlats;
-
     private int numberOfExpenseGroups;
-
-    // you can add more fields...
+    private String currentGcmId;
+    private int numberOfGcmIds;
+    private List<Long> flatIds = new ArrayList<>();
+    private List<Long> expenseGroupIds = new ArrayList<>();
+    private List<String> gcmIds = new ArrayList<>();
 
     public UserProfile() {
         numberOfFlats = 0;
@@ -174,5 +166,32 @@ public class UserProfile {
 
     public void setNumberOfExpenseGroups(int numberOfExpenseGroups) {
         this.numberOfExpenseGroups = numberOfExpenseGroups;
+    }
+
+
+    public String getCurrentGcmId() {
+        return currentGcmId;
+    }
+
+    public void setCurrentGcmId(String currentGcmId) {
+        this.currentGcmId = currentGcmId;
+    }
+
+    public List<String> getGcmIds() {
+        return gcmIds;
+    }
+
+    public void setGcmIds(List<String> gcmIds) {
+        this.gcmIds = gcmIds;
+    }
+
+    public void addGcmId(String id) {
+        this.gcmIds.add(id);
+        numberOfGcmIds++;
+    }
+
+    public void removeGcmId(String id) {
+        this.gcmIds.remove(id);
+        numberOfGcmIds--;
     }
 }
