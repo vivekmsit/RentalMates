@@ -13,10 +13,10 @@
             To get one, follow this link, follow the directions and press "Create" at the end:
 
               https://console.developers.google.com/flows/enableapi?apiid=googlecloudmessaging&keyType=SERVER_SIDE&r=0.0.0.0/0
-
+              e.g. previous_key = AIzaSyBWI4QSiJ5pBa0XPY-7YqE3hgApB-Z-ifU
             Once you have your API key (which starts with â€œAIza...â€�), replace the "gcm.api.key" string in this file.
             -->
 
-        <property name="gcm.api.key" value="AIzaSyBWI4QSiJ5pBa0XPY-7YqE3hgApB-Z-ifU" />
+        <property name="gcm.api.key" value="AIzaSyBtoFNMu1mntmK5p8ZD6ZaAxGg0K0KtJo8" />
     </system-properties>
 </appengine-web-app>

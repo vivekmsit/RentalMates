@@ -196,8 +196,8 @@ public class ExpenseGroupEndpoint {
         logger.info("Created ExpenseData.");
         expenseGroup.addExpenseId(expenseData.getId());
         ofy().save().entity(expenseGroup).now();
-        //UserProfile userProfile = ofy().load().type(UserProfile.class).id(expenseGroup.getMemberIds().get(0)).now();
-        //sendMessage(userProfile.getCurrentGcmId(), "GCM: ExpenseData uploaded");
+        UserProfile userProfile = ofy().load().type(UserProfile.class).id(expenseGroup.getMemberIds().get(0)).now();
+        sendMessage(userProfile.getCurrentGcmId(), "GCM: ExpenseData uploaded");
         return ofy().load().entity(expenseData).now();
     }
 

@@ -18,12 +18,13 @@ import java.io.IOException;
 
 public class GcmRegistrationAsyncTask extends AsyncTask<Context, Void, String> {
 
-    private static final String TAG = "RentalMatesDebug";
+    private static final String TAG = "GcmRegisterTask_Debug";
 
     private static Registration regService = null;
     private Context context;
     private SharedPreferences prefs;
     private String regId;
+    private IOException exception;
     private OnGcmRegistrationReceiver receiver;
 
     public GcmRegistrationAsyncTask(Context context) {
@@ -54,6 +55,7 @@ public class GcmRegistrationAsyncTask extends AsyncTask<Context, Void, String> {
             msg = "SUCCESS";
         } catch (IOException ex) {
             ex.printStackTrace();
+            exception = ex;
             msg = "EXCEPTION";
         }
         return msg;
@@ -71,7 +73,8 @@ public class GcmRegistrationAsyncTask extends AsyncTask<Context, Void, String> {
                 }
                 break;
             case "EXCEPTION":
-                Toast.makeText(context, "IOException occurred: ", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "IOException occurred: " + exception.getMessage(), Toast.LENGTH_LONG).show();
+                Log.d(TAG, "IOException occurred: " + exception.getMessage());
                 if (receiver != null) {
                     receiver.onGcmRegisterFailed();
                 }
