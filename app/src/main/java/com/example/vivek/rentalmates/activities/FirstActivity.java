@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.others.AppConstants;
@@ -35,6 +36,13 @@ public class FirstActivity extends ActionBarActivity {
             activityClass = MyLoginActivity.class;
 
         Intent newActivity = new Intent(this, activityClass);
+        Intent pendingIntent = getIntent();
+
+        if (pendingIntent.getBooleanExtra("notification", false) && pendingIntent.getBooleanExtra("newExpenseAvailable", false)) {
+            newActivity.putExtra("notification", true);
+            newActivity.putExtra("newExpenseAvailable", true);
+            Log.d(TAG, "new expense available");
+        }
         newActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         this.startActivity(newActivity);
         finish();

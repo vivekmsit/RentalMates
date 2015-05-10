@@ -73,7 +73,11 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //startSwipeRefreshLayout();
+        Bundle bundle = getArguments();
+        if ((bundle != null) && (bundle.getInt("newExpenseAvailable", 0) == 1)) {
+            Log.d(TAG, "new expense available");
+            startSwipeRefreshLayout();
+        }
     }
 
 

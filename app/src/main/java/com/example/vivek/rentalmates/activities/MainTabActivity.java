@@ -43,6 +43,7 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
     private MyAdapter pageAdapter;
     private FloatingActionButton fab;
     private int currentPosition;
+    private boolean newExpenseAvailable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,7 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
         setContentView(R.layout.activity_main_tab);
 
         currentPosition = 0;
+        newExpenseAvailable = false;
 
         toolBar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolBar);
@@ -127,6 +129,10 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
         String finalTitle = toolBar.getTitle() + ": " + prefs.getString(AppConstants.PRIMARY_FLAT_NAME, "no_flat_name");
         getSupportActionBar().setTitle(finalTitle);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        Intent pendingIntent = getIntent();
+        if (pendingIntent.getBooleanExtra("notification", false) && pendingIntent.getBooleanExtra("newExpenseAvailable", false)) {
+            newExpenseAvailable = true;
+        }
     }
 
     @Override
@@ -192,6 +198,13 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
             Fragment fragment = null;
             if (position == 0) {
                 fragment = new ExpenseDataListFragment();
+                if (newExpenseAvailable) {
+                    Log.d(TAG, "new expense available");
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("newExpenseAvailable", 1);
+                    fragment.setArguments(bundle);
+                    newExpenseAvailable = false;
+                }
             } else if (position == 1) {
                 fragment = new NewsFeedFragment();
             } else if (position == 2) {
