@@ -14,6 +14,8 @@ public class LocalExpenseData implements Serializable {
     private int amount;
     private String description;
     private String ownerEmailId;
+    private Long submitterId;
+    private Long payerId;
     private String userName;
     private String expenseGroupName;
     private DateTime date;
@@ -48,6 +50,22 @@ public class LocalExpenseData implements Serializable {
 
     public void setOwnerEmailId(String emailId) {
         this.ownerEmailId = emailId;
+    }
+
+    public Long getSubmitterId() {
+        return submitterId;
+    }
+
+    public void setSubmitterId(Long submitterId) {
+        this.submitterId = submitterId;
+    }
+
+    public Long getPayerId() {
+        return payerId;
+    }
+
+    public void setPayerId(Long payerId) {
+        this.payerId = payerId;
     }
 
     public String getUserName() {
@@ -92,6 +110,8 @@ public class LocalExpenseData implements Serializable {
             data.setAmount(expenseData.getAmount());
             data.setDescription(expenseData.getDescription());
             data.setOwnerEmailId(expenseData.getOwnerEmailId());
+            data.setSubmitterId(expenseData.getSubmitterId());
+            data.setPayerId(expenseData.getPayerId());
             data.setExpenseGroupName(expenseData.getExpenseGroupName());
             data.setDate(expenseData.getDate());
             data.setUserName(expenseData.getUserName());
@@ -111,6 +131,8 @@ public class LocalExpenseData implements Serializable {
             data.setAmount(expenseData.getAmount());
             data.setDescription(expenseData.getDescription());
             data.setOwnerEmailId(expenseData.getOwnerEmailId());
+            data.setSubmitterId(expenseData.getSubmitterId());
+            data.setPayerId(expenseData.getPayerId());
             data.setExpenseGroupName(expenseData.getExpenseGroupName());
             data.setDate(expenseData.getDate());
             data.setUserName(expenseData.getUserName());

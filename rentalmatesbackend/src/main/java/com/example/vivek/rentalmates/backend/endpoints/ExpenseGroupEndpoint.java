@@ -155,7 +155,7 @@ public class ExpenseGroupEndpoint {
             query = query.startAt(Cursor.fromWebSafeString(cursor));
         }
         QueryResultIterator<ExpenseGroup> queryIterator = query.iterator();
-        List<ExpenseGroup> expenseGroupList = new ArrayList<ExpenseGroup>(limit);
+        List<ExpenseGroup> expenseGroupList = new ArrayList<>(limit);
         while (queryIterator.hasNext()) {
             expenseGroupList.add(queryIterator.next());
         }
@@ -196,8 +196,20 @@ public class ExpenseGroupEndpoint {
         logger.info("Created ExpenseData.");
         expenseGroup.addExpenseId(expenseData.getId());
         ofy().save().entity(expenseGroup).now();
-        UserProfile userProfile = ofy().load().type(UserProfile.class).id(expenseGroup.getMemberIds().get(0)).now();
-        sendMessage(userProfile.getCurrentGcmId(), "GCM: ExpenseData uploaded");
+
+        //Send notification to all group members except submitter using GCM.
+        List<String> gcmIds = new ArrayList<>();
+        UserProfile userProfile;
+        for (Long userId : expenseData.getMemberIds()) {
+            if (!userId.equals(expenseData.getSubmitterId())) {
+                userProfile = ofy().load().type(UserProfile.class).id(userId).now();
+                gcmIds.add(userProfile.getCurrentGcmId());
+            }
+        }
+        if (gcmIds.size() != 0) {
+            sendMessage(gcmIds, "GCM: ExpenseData uploaded");
+        }
+
         return ofy().load().entity(expenseData).now();
     }
 
@@ -277,17 +289,22 @@ public class ExpenseGroupEndpoint {
     }
 
 
-    //Function to send message to device having id gcmId using GCM
-    public void sendMessage(@Named("gcmId")String gcmId, @Named("message")String message) throws IOException {
+    //Function to send message to multiple devices using GCM
+    public void sendMessage(@Named("gcmIds") List<String> gcmIds, @Named("message") String message) throws IOException {
+        if (gcmIds.size() == 0) {
+            logger.info("gcmIds list empty");
+            return;
+        }
         String GCM_API_KEY = System.getProperty("gcm.api.key");
         Sender sender = new Sender(GCM_API_KEY);
         Message msg = new Message.Builder().addData("message", message).build();
-        Result result = sender.send(msg, gcmId, 3);
-        if (result.getMessageId() != null) {
-            logger.info("Message sent to " + gcmId);
-        } else {
-            logger.info("Error sending message");
+        for (String gcmId : gcmIds) {
+            Result result = sender.send(msg, gcmId, 3);
+            if (result.getMessageId() != null) {
+                logger.info("Message sent to " + gcmId);
+            } else {
+                logger.info("Error sending message");
+            }
         }
     }
-
 }

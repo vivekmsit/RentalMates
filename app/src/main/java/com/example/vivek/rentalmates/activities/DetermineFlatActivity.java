@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
+import com.example.vivek.rentalmates.interfaces.OnExpenseGroupListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnExpenseListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnRegisterWithOldFlatReceiver;
 import com.example.vivek.rentalmates.interfaces.OnUserProfileListReceiver;
@@ -24,6 +25,7 @@ import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.others.LocalFlatInfo;
 import com.example.vivek.rentalmates.services.BackendApiService;
 import com.example.vivek.rentalmates.tasks.GetAllExpenseListAsyncTask;
+import com.example.vivek.rentalmates.tasks.GetExpenseGroupListAsyncTask;
 import com.example.vivek.rentalmates.tasks.GetUserProfileListAsyncTask;
 import com.example.vivek.rentalmates.tasks.RegisterWithOldFlatAsyncTask;
 
@@ -113,7 +115,20 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
                 BackendApiService.storePrimaryFlatId(this, selectedFlatId);
                 BackendApiService.storePrimaryFlatName(this, selectedFlatName);
                 BackendApiService.storeFlatExpenseGroupId(this, selectedGroupExpenseId);
-                loadAllUserProfiles();
+
+                //Download ExpenseGroup List
+                GetExpenseGroupListAsyncTask expenseGroupTask = new GetExpenseGroupListAsyncTask(context);
+                expenseGroupTask.setOnExpenseGroupListReceiver(new OnExpenseGroupListReceiver() {
+                    @Override
+                    public void onExpenseGroupListLoadSuccessful() {
+                        loadAllUserProfiles();
+                    }
+
+                    @Override
+                    public void onExpenseGroupListLoadFailed() {
+                    }
+                });
+                expenseGroupTask.execute();
                 break;
 
             case R.id.registerWithOldFlatButton:

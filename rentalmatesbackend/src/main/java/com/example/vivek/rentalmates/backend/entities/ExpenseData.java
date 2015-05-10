@@ -18,6 +18,8 @@ public class ExpenseData implements Serializable {
     private Date date;
     private String description;
     private String ownerEmailId;
+    private Long submitterId;
+    private Long payerId;
     private String userName;
     private Long expenseGroupId;
     private String expenseGroupName;
@@ -63,6 +65,22 @@ public class ExpenseData implements Serializable {
 
     public void setOwnerEmailId(String emailId) {
         this.ownerEmailId = emailId;
+    }
+
+    public Long getSubmitterId() {
+        return submitterId;
+    }
+
+    public void setSubmitterId(Long submitterId) {
+        this.submitterId = submitterId;
+    }
+
+    public Long getPayerId() {
+        return payerId;
+    }
+
+    public void setPayerId(Long payerId) {
+        this.payerId = payerId;
     }
 
     public String getUserName() {
