@@ -191,7 +191,7 @@ public class UserProfileEndpoint {
     public List<UserProfile> queryUserProfiles(@Named("type") String type, @Named("value") String value) {
         Query query = ofy().load().type(UserProfile.class);
         query = query.filter(type + " = ", value);
-        return (List<UserProfile>)query.list();
+        return (List<UserProfile>) query.list();
     }
 
 

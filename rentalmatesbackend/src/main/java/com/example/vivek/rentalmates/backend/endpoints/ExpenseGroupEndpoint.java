@@ -2,7 +2,10 @@ package com.example.vivek.rentalmates.backend.endpoints;
 
 import com.example.vivek.rentalmates.backend.entities.ExpenseData;
 import com.example.vivek.rentalmates.backend.entities.ExpenseGroup;
+import com.example.vivek.rentalmates.backend.entities.RegistrationRecord;
 import com.example.vivek.rentalmates.backend.entities.UserProfile;
+import com.example.vivek.rentalmates.backend.ofy.OfyService;
+import com.google.android.gcm.server.Constants;
 import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.Result;
 import com.google.android.gcm.server.Sender;
@@ -198,16 +201,14 @@ public class ExpenseGroupEndpoint {
         ofy().save().entity(expenseGroup).now();
 
         //Send notification to all group members except submitter using GCM.
-        List<String> gcmIds = new ArrayList<>();
-        UserProfile userProfile;
+        List<Long> userIds = new ArrayList<>();
         for (Long userId : expenseData.getMemberIds()) {
             if (!userId.equals(expenseData.getSubmitterId())) {
-                userProfile = ofy().load().type(UserProfile.class).id(userId).now();
-                gcmIds.add(userProfile.getCurrentGcmId());
+                userIds.add(userId);
             }
         }
-        if (gcmIds.size() != 0) {
-            sendMessage(gcmIds, "GCM: ExpenseData uploaded");
+        if (userIds.size() != 0) {
+            sendMessage(userIds, "GCM: ExpenseData uploaded");
         }
 
         return ofy().load().entity(expenseData).now();
@@ -289,22 +290,63 @@ public class ExpenseGroupEndpoint {
     }
 
 
-    //Function to send message to multiple devices using GCM
-    public void sendMessage(@Named("gcmIds") List<String> gcmIds, @Named("message") String message) throws IOException {
-        if (gcmIds.size() == 0) {
-            logger.info("gcmIds list empty");
+    /**
+     * Function to send message to multiple devices using GCM
+     */
+    @ApiMethod(
+            name = "sendMessage",
+            path = "sendMessage",
+            httpMethod = ApiMethod.HttpMethod.GET)
+    public void sendMessage(@Named("userIds") List<Long> userIds, @Named("message") String message) throws IOException {
+        if (userIds.size() == 0) {
+            logger.info("userIds list empty");
             return;
         }
         String GCM_API_KEY = System.getProperty("gcm.api.key");
         Sender sender = new Sender(GCM_API_KEY);
         Message msg = new Message.Builder().addData("message", message).build();
-        for (String gcmId : gcmIds) {
-            Result result = sender.send(msg, gcmId, 3);
-            if (result.getMessageId() != null) {
-                logger.info("Message sent to " + gcmId);
-            } else {
-                logger.info("Error sending message");
+        for (Long userId : userIds) {
+            UserProfile userProfile = ofy().load().type(UserProfile.class).id(userId).now();
+            List<String> gcmIds = userProfile.getGcmIds();
+            for (String gcmId : gcmIds) {
+                Result result = sender.send(msg, gcmId, 3);
+                if (result.getMessageId() != null) {
+                    logger.info("Message sent to " + gcmId);
+                    String canonicalRegId = result.getCanonicalRegistrationId();
+                    if (canonicalRegId != null) {
+                        // regId changed for the device, update the DataStore
+                        logger.info("Gcm Id changed for " + gcmId + " updating to " + canonicalRegId);
+
+                        //Update gcmId inside UserProfile
+                        userProfile.removeGcmId(gcmId);
+                        userProfile.addGcmId(canonicalRegId);
+                        OfyService.ofy().save().entity(userProfile).now();
+
+                        //Update corresponding RegistrationRecord entity
+                        RegistrationRecord record = OfyService.ofy().load().type(RegistrationRecord.class).filter("regId", gcmId).first().now();
+                        record.setRegId(canonicalRegId);
+                        OfyService.ofy().save().entity(record).now();
+                    }
+                } else {
+                    String error = result.getErrorCodeName();
+                    if (error.equals(Constants.ERROR_NOT_REGISTERED)) {
+                        // Device is no longer registered with Gcm, remove it from the DataStore
+                        logger.warning("GCM Id " + gcmId + " no longer registered with GCM, removing from DataStore");
+
+                        //Remove gcmId from UserProfile
+                        userProfile.removeGcmId(gcmId);
+                        OfyService.ofy().save().entity(userProfile).now();
+
+                        //Delete corresponding RegistrationRecord entity
+                        RegistrationRecord record = OfyService.ofy().load().type(RegistrationRecord.class).filter("regId", gcmId).first().now();
+                        OfyService.ofy().delete().entity(record).now();
+                    } else {
+                        logger.warning("Error when sending message : " + error);
+                    }
+                }
             }
         }
     }
+
+
 }

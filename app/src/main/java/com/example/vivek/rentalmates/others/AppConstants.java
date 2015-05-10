@@ -1,8 +1,5 @@
 package com.example.vivek.rentalmates.others;
 
-/**
- * Created by vivek on 3/17/2015.
- */
 public class AppConstants {
     public static final String GCM_REG_ID = "registration_id";
     public static final String SENDER_ID = "56111997016";

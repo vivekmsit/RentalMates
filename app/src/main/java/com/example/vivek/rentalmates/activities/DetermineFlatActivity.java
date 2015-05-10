@@ -115,20 +115,7 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
                 BackendApiService.storePrimaryFlatId(this, selectedFlatId);
                 BackendApiService.storePrimaryFlatName(this, selectedFlatName);
                 BackendApiService.storeFlatExpenseGroupId(this, selectedGroupExpenseId);
-
-                //Download ExpenseGroup List
-                GetExpenseGroupListAsyncTask expenseGroupTask = new GetExpenseGroupListAsyncTask(context);
-                expenseGroupTask.setOnExpenseGroupListReceiver(new OnExpenseGroupListReceiver() {
-                    @Override
-                    public void onExpenseGroupListLoadSuccessful() {
-                        loadAllUserProfiles();
-                    }
-
-                    @Override
-                    public void onExpenseGroupListLoadFailed() {
-                    }
-                });
-                expenseGroupTask.execute();
+                loadAllExpenseGroups();
                 break;
 
             case R.id.registerWithOldFlatButton:
@@ -145,7 +132,9 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
                         if (message.equals("SUCCESS_FLAT_AVAILABLE")) {
                             Toast.makeText(getApplicationContext(), "Registered with old flat: " + flatInfo.getFlatName() + "\nretrieving ExpenseData info", Toast.LENGTH_SHORT).show();
                             BackendApiService.storePrimaryFlatId(getApplicationContext(), flatInfo.getFlatId());
-                            loadAllUserProfiles();
+                            BackendApiService.storePrimaryFlatName(getApplicationContext(), flatInfo.getFlatName());
+                            BackendApiService.storeFlatExpenseGroupId(getApplicationContext(), flatInfo.getExpenseGroupId());
+                            loadAllExpenseGroups();
                         } else {
                             Toast.makeText(getApplicationContext(), "Flat with given name doesn't exist.\nPlease enter different name", Toast.LENGTH_LONG).show();
                         }
@@ -167,6 +156,22 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
             default:
                 break;
         }
+    }
+
+    public void loadAllExpenseGroups() {
+        //Download ExpenseGroup List
+        GetExpenseGroupListAsyncTask expenseGroupTask = new GetExpenseGroupListAsyncTask(context);
+        expenseGroupTask.setOnExpenseGroupListReceiver(new OnExpenseGroupListReceiver() {
+            @Override
+            public void onExpenseGroupListLoadSuccessful() {
+                loadAllUserProfiles();
+            }
+
+            @Override
+            public void onExpenseGroupListLoadFailed() {
+            }
+        });
+        expenseGroupTask.execute();
     }
 
     public void loadAllUserProfiles() {
