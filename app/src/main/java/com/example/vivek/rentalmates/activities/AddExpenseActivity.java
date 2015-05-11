@@ -14,14 +14,19 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
+import com.example.vivek.rentalmates.dialogs.ChooseExpenseMembersDialog;
 import com.example.vivek.rentalmates.interfaces.OnAddExpenseReceiver;
+import com.example.vivek.rentalmates.interfaces.OnExpenseMembersSelectedReceiver;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.others.LocalExpenseGroup;
+import com.example.vivek.rentalmates.others.LocalUserProfile;
 import com.example.vivek.rentalmates.tasks.AddExpenseAsyncTask;
 import com.google.api.client.util.DateTime;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class AddExpenseActivity extends ActionBarActivity implements View.OnClickListener {
 
@@ -35,6 +40,7 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
     private Toolbar toolBar;
     private Context context;
     private SharedPreferences prefs;
+    private ExpenseData expenseData;
     private AppData appData;
 
     @Override
@@ -42,6 +48,7 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_expense);
 
+        expenseData = new ExpenseData();
         addExpenseButtonClicked = false;
 
         descriptionEditText = (EditText) findViewById(R.id.descriptionEditText);
@@ -60,6 +67,16 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
                 Context.MODE_PRIVATE);
         appData = AppData.getInstance();
         context = getApplication().getApplicationContext();
+        if (appData.getExpenseGroups().size() == 0) {
+            Toast.makeText(this, "No ExpenseGroups available", Toast.LENGTH_LONG).show();
+            return;
+        }
+        for (LocalExpenseGroup group : appData.getExpenseGroups()) {
+            if (group.getId() == prefs.getLong(AppConstants.FLAT_EXPENSE_GROUP_ID, 0)) {
+                expenseData.setMemberIds(group.getMemberIds());
+                expenseData.setNumberOfMembers(group.getNumberOfMembers());
+            }
+        }
     }
 
     @Override
@@ -69,7 +86,25 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
         switch (v.getId()) {
 
             case R.id.editUsersButton:
-                //To be implemented
+                ChooseExpenseMembersDialog dialog = new ChooseExpenseMembersDialog();
+                dialog.setOnExpenseMembersSelectedReceiver(new OnExpenseMembersSelectedReceiver() {
+                    @Override
+                    public void onOkay(List<Integer> arrayList) {
+                        List<LocalUserProfile> profiles = appData.getUserProfiles();
+                        List<Long> memberIds = new ArrayList<>();
+                        for (Integer integer : arrayList) {
+                            memberIds.add(profiles.get(integer).getUserProfileId());
+                        }
+                        expenseData.setMemberIds(memberIds);
+                        expenseData.setNumberOfMembers(memberIds.size());
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+                });
+                dialog.show(getSupportFragmentManager(), "ChooseExpenseMembers");
                 break;
 
             case R.id.addExpenseButton:
@@ -77,7 +112,6 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
                     return;
                 }
                 addExpenseButtonClicked = true;
-                ExpenseData expenseData = new ExpenseData();
                 expenseData.setDate(new DateTime(new Date()));
                 expenseData.setAmount(Integer.parseInt(amountEditText.getText().toString()));
                 expenseData.setDescription(descriptionEditText.getText().toString());
@@ -87,16 +121,6 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
                 expenseData.setExpenseGroupId(prefs.getLong(AppConstants.FLAT_EXPENSE_GROUP_ID, 0));
                 expenseData.setSubmitterId(prefs.getLong(AppConstants.USER_PROFILE_ID, 0));
                 expenseData.setPayerId(prefs.getLong(AppConstants.USER_PROFILE_ID, 0));
-                if (appData.getExpenseGroups().size() == 0) {
-                    Toast.makeText(this, "No ExpenseGroups available", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                for (LocalExpenseGroup group : appData.getExpenseGroups()) {
-                    if (group.getId() == prefs.getLong(AppConstants.FLAT_EXPENSE_GROUP_ID, 0)) {
-                        expenseData.setMemberIds(group.getMemberIds());
-                        expenseData.setNumberOfMembers(group.getNumberOfMembers());
-                    }
-                }
                 AddExpenseAsyncTask task = new AddExpenseAsyncTask(this, expenseData);
                 task.setOnAddExpenseReceiver(new OnAddExpenseReceiver() {
                     @Override

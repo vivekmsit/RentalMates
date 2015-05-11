@@ -14,6 +14,7 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.api.server.spi.response.NotFoundException;
+import com.google.appengine.api.ThreadManager;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.QueryResultIterator;
 import com.googlecode.objectify.ObjectifyService;
@@ -22,6 +23,7 @@ import com.googlecode.objectify.cmd.Query;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadFactory;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
@@ -208,9 +210,11 @@ public class ExpenseGroupEndpoint {
             }
         }
         if (userIds.size() != 0) {
-            sendMessage(userIds, "GCM: ExpenseData uploaded");
+            UserProfile userProfile = ofy().load().type(UserProfile.class).id(expenseData.getSubmitterId()).now();
+            String message = userProfile.getUserName() + " added a new expense of Rs. " +
+                    expenseData.getAmount() + " for " + expenseData.getDescription();
+            sendMessage(userIds, message);
         }
-
         return ofy().load().entity(expenseData).now();
     }
 
@@ -297,11 +301,26 @@ public class ExpenseGroupEndpoint {
             name = "sendMessage",
             path = "sendMessage",
             httpMethod = ApiMethod.HttpMethod.GET)
-    public void sendMessage(@Named("userIds") List<Long> userIds, @Named("message") String message) throws IOException {
+    public void sendMessage(@Named("userIds") final List<Long> userIds, @Named("message") final String message) throws IOException {
         if (userIds.size() == 0) {
             logger.info("userIds list empty");
             return;
         }
+        ThreadFactory f = ThreadManager.currentRequestThreadFactory();
+        f.newThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    sendMessageThread(userIds, message);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).run();
+    }
+
+    //Thread for sending message to multiple devices using GCM
+    public void sendMessageThread(@Named("userIds") List<Long> userIds, @Named("message") String message) throws IOException {
         String GCM_API_KEY = System.getProperty("gcm.api.key");
         Sender sender = new Sender(GCM_API_KEY);
         Message msg = new Message.Builder().addData("message", message).build();

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 
@@ -16,6 +17,7 @@ public class ExpenseMenuDialog extends DialogFragment {
     public ExpenseMenuDialog() {
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Long expenseId = getArguments().getLong("ExpenseId");

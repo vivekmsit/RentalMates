@@ -20,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
-import com.example.vivek.rentalmates.interfaces.OnExpenseGroupListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnFlatInfoListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnGcmRegistrationReceiver;
 import com.example.vivek.rentalmates.interfaces.OnUploadUserProfileReceiver;
@@ -30,7 +29,6 @@ import com.example.vivek.rentalmates.services.BackendApiService;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
 import com.example.vivek.rentalmates.tasks.GcmRegistrationAsyncTask;
-import com.example.vivek.rentalmates.tasks.GetExpenseGroupListAsyncTask;
 import com.example.vivek.rentalmates.tasks.GetFlatInfoListAsyncTask;
 import com.example.vivek.rentalmates.tasks.UploadUserProfileAsyncTask;
 import com.google.android.gms.common.ConnectionResult;
@@ -39,7 +37,6 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 
@@ -213,7 +210,6 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
     }
 
     public void uploadUserProfile(UserProfile userProfile) {
-        //upload user profile to backend
         UploadUserProfileAsyncTask task = new UploadUserProfileAsyncTask(this, this, userProfile);
         task.setOnUploadUserProfileReceiver(new OnUploadUserProfileReceiver() {
             @Override
@@ -226,7 +222,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     context.startActivity(intent);
                 } else if (message.equals("SUCCESS_FLAT_REGISTERED")) {
-                    getCompleteUserInformation();
+                    getFlatInfoList();
                 }
             }
 
@@ -237,8 +233,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         task.execute();
     }
 
-    public void getCompleteUserInformation() {
-        //Download FlatInfo List
+    public void getFlatInfoList() {
         GetFlatInfoListAsyncTask flatTask = new GetFlatInfoListAsyncTask(context);
         flatTask.setOnFlatInfoListReceiver(new OnFlatInfoListReceiver() {
             @Override
@@ -249,23 +244,10 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
                 }
                 appData.storeFlatInfoList(context, flats);
                 Toast.makeText(context, "FlatInfo List retrieved successfully", Toast.LENGTH_SHORT).show();
-
-                //Download ExpenseGroup List
-                GetExpenseGroupListAsyncTask expenseGroupTask = new GetExpenseGroupListAsyncTask(context);
-                expenseGroupTask.setOnExpenseGroupListReceiver(new OnExpenseGroupListReceiver() {
-                    @Override
-                    public void onExpenseGroupListLoadSuccessful() {
-                        Intent intent = new Intent(context, DetermineFlatActivity.class);
-                        intent.putExtra("FLAT_REGISTERED", true);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        context.startActivity(intent);
-                    }
-
-                    @Override
-                    public void onExpenseGroupListLoadFailed() {
-                    }
-                });
-                expenseGroupTask.execute();
+                Intent intent = new Intent(context, DetermineFlatActivity.class);
+                intent.putExtra("FLAT_REGISTERED", true);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                context.startActivity(intent);
             }
 
             @Override

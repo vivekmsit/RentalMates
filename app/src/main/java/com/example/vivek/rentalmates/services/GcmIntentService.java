@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.activities.FirstActivity;
@@ -27,6 +28,7 @@ public class GcmIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        Log.d(TAG, "inside onHandleIntent");
         Bundle extras = intent.getExtras();
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
         // The getMessageType() intent parameter must be the intent you received
@@ -62,14 +64,10 @@ public class GcmIntentService extends IntentService {
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
         // Build notification
-        // Actions are just fake
         Notification notification = new Notification.Builder(this)
                 .setContentTitle("RentalMates")
                 .setContentText(message).setSmallIcon(R.drawable.ic_launcher)
-                .setContentIntent(pIntent)
-                .addAction(R.drawable.ic_launcher, "Call", pIntent)
-                .addAction(R.drawable.ic_launcher, "More", pIntent)
-                .addAction(R.drawable.ic_launcher, "And more", pIntent).build();
+                .setContentIntent(pIntent).build();
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         // hide the notification after its selected
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
