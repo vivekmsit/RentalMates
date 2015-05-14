@@ -118,7 +118,6 @@ public class ExpenseGroupEndpoint {
             path = "expenseGroup/{id}",
             httpMethod = ApiMethod.HttpMethod.PUT)
     public ExpenseGroup update(@Named("id") Long id, ExpenseGroup expenseGroup) throws NotFoundException {
-        // TODO: You should validate your ID parameter against your resource's ID here.
         checkExpenseGroupExists(id);
         ofy().save().entity(expenseGroup).now();
         logger.info("Updated ExpenseGroup: " + expenseGroup);
@@ -261,8 +260,10 @@ public class ExpenseGroupEndpoint {
             for (Long expenseId : expenseGroup.getExpenseDataIds()) {
                 if (!tempIds.contains(expenseId)) {
                     ExpenseData expenseData = ofy().load().type(ExpenseData.class).id(expenseId).now();
-                    expenses.add(expenseData);
-                    tempIds.add(expenseId);
+                    if (expenseData.getMemberIds().contains(currentUserProfile.getId())) {
+                        expenses.add(expenseData);
+                        tempIds.add(expenseId);
+                    }
                 }
             }
         }

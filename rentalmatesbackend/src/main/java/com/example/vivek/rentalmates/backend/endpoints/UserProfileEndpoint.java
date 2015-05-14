@@ -15,6 +15,7 @@ import com.googlecode.objectify.cmd.Query;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
@@ -99,6 +100,8 @@ public class UserProfileEndpoint {
             finalUserProfile.setCreateProfileResult("NEW_USER_PROFILE");
         } else {
             finalUserProfile = profiles.get(0);
+            //Below statement will be removed later to support multiple devices
+            finalUserProfile.clearGcmIds();
             if (!finalUserProfile.getGcmIds().contains(currentGcmId)) {
                 finalUserProfile.setCurrentGcmId(currentGcmId);
                 finalUserProfile.addGcmId(currentGcmId);

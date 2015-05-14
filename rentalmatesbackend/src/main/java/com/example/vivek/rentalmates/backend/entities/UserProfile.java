@@ -194,4 +194,9 @@ public class UserProfile {
         this.gcmIds.remove(id);
         numberOfGcmIds--;
     }
+
+    public void clearGcmIds() {
+        this.gcmIds.clear();
+        numberOfGcmIds = 0;
+    }
 }
