@@ -78,7 +78,7 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
         circularImageView = (CircularImageView) getView().findViewById(R.id.drawerImageView);
         AppData appData = AppData.getInstance();
         String emailId = prefs.getString(AppConstants.EMAIL_ID, "no_email_id");
-        circularImageView.setImageBitmap(appData.getProfilePictureBitmap(getActivity(), emailId));
+        circularImageView.setImageBitmap(appData.getProfilePictureBitmap(emailId));
 
         //Initialize UserName TextView
         userNameTextView = (TextView) getView().findViewById(R.id.userNameTextView);

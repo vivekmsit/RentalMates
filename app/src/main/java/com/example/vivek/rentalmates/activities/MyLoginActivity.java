@@ -96,7 +96,6 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         }
 
         progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Signing In :) ");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.setIndeterminate(true);
 
@@ -116,7 +115,6 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
     @Override
     protected void onStart() {
         Log.d(TAG, "inside onStart");
-        progressDialog.show();
         super.onStart();
         mClient.connect();
         Intent intent = new Intent(this, BackendApiService.class);
@@ -158,7 +156,6 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
 
     @Override
     public void onConnected(Bundle bundle) {
-        progressDialog.cancel();
         Log.d(TAG, "inside onConnected");
 
         if (prefs.contains(AppConstants.FIRST_TIME_LOGIN) && prefs.getBoolean(AppConstants.FIRST_TIME_LOGIN, true)) {
@@ -197,16 +194,19 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         task.setOnGcmRegistrationReceiver(new OnGcmRegistrationReceiver() {
             @Override
             public void onGcmRegisterSuccessful(String regId) {
+                progressDialog.cancel();
                 userProfile.setCurrentGcmId(regId);
                 uploadUserProfile(userProfile);
             }
 
             @Override
             public void onGcmRegisterFailed() {
-
+                progressDialog.cancel();
             }
         });
         task.execute();
+        progressDialog.setMessage("Registering with GCM");
+        progressDialog.show();
     }
 
     public void uploadUserProfile(UserProfile userProfile) {
@@ -215,8 +215,8 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
             @Override
             public void onUploadUserProfileSuccessful(String message) {
                 setSignInClicked(false);
+                progressDialog.cancel();
                 if (message.equals("SUCCESS_NO_FLAT_REGISTERED")) {
-                    Toast.makeText(context, "UserProfile uploaded", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(context, DetermineFlatActivity.class);
                     intent.putExtra("FLAT_REGISTERED", false);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -228,9 +228,12 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
 
             @Override
             public void onUploadUserProfileFailed() {
+                progressDialog.cancel();
             }
         });
         task.execute();
+        progressDialog.setMessage("Uploading User Profile");
+        progressDialog.show();
     }
 
     public void getFlatInfoList() {
@@ -238,12 +241,12 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         flatTask.setOnFlatInfoListReceiver(new OnFlatInfoListReceiver() {
             @Override
             public void onFlatInfoListLoadSuccessful(List<FlatInfo> flats) {
+                progressDialog.cancel();
                 if (flats == null) {
                     Toast.makeText(context, "No flat registered for given user", Toast.LENGTH_LONG).show();
                     return;
                 }
                 appData.storeFlatInfoList(context, flats);
-                Toast.makeText(context, "FlatInfo List retrieved successfully", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(context, DetermineFlatActivity.class);
                 intent.putExtra("FLAT_REGISTERED", true);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -252,9 +255,12 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
 
             @Override
             public void onFlatInfoListLoadFailed() {
+                progressDialog.cancel();
             }
         });
         flatTask.execute();
+        progressDialog.setMessage("Retrieving Flat List");
+        progressDialog.show();
     }
 
     @Override
@@ -266,7 +272,6 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        progressDialog.cancel();
         Log.d(TAG, "inside onConnectionFailed");
         Log.d(TAG, "Failure Reason: " + connectionResult.toString());
         if (!connectionResult.hasResolution()) {
@@ -433,9 +438,8 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
      */
     public void setProfilePicture(UserProfile userProfile) {
         String emailId = userProfile.getEmailId();
-        Bitmap bm = appData.getProfilePictureBitmap(this, emailId);
+        Bitmap bm = appData.getProfilePictureBitmap(emailId);
         if (bm == null) {
-            Toast.makeText(this, "no profile picture found", Toast.LENGTH_LONG).show();
             Log.d(TAG, "no profile picture found");
             return;
         }

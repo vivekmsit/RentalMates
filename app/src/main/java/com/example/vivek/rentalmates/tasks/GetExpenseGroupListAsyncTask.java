@@ -76,7 +76,6 @@ public class GetExpenseGroupListAsyncTask extends AsyncTask<Context, Void, Strin
 
         switch (msg) {
             case "SUCCESS_EXPENSE_GROUPS":
-                Toast.makeText(context, "ExpenseGroup List retrieved successfully", Toast.LENGTH_SHORT).show();
                 if (receiver != null) {
                     receiver.onExpenseGroupListLoadSuccessful();
                 }

@@ -1,5 +1,6 @@
 package com.example.vivek.rentalmates.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -42,6 +43,7 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
     private SharedPreferences prefs;
     private ExpenseData expenseData;
     private AppData appData;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +79,9 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
                 expenseData.setNumberOfMembers(group.getNumberOfMembers());
             }
         }
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setIndeterminate(true);
     }
 
     @Override
@@ -124,9 +129,13 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
                 AddExpenseAsyncTask task = new AddExpenseAsyncTask(this, expenseData);
                 task.setOnAddExpenseReceiver(new OnAddExpenseReceiver() {
                     @Override
-                    public void onAddExpenseSuccessful() {
+                    public void onAddExpenseSuccessful(ExpenseData uploadedExpenseData) {
                         addExpenseButtonClicked = true;
+                        progressDialog.cancel();
                         Toast.makeText(context, "Expense uploaded", Toast.LENGTH_SHORT).show();
+                        if (uploadedExpenseData.getMemberIds().contains(uploadedExpenseData.getSubmitterId())) {
+                            appData.addLocalExpenseData(context, uploadedExpenseData);
+                        }
                         Intent intent = new Intent(context, MainTabActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         context.startActivity(intent);
@@ -135,9 +144,12 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
                     @Override
                     public void onAddExpenseFailed() {
                         addExpenseButtonClicked = true;
+                        progressDialog.cancel();
                     }
                 });
                 task.execute();
+                progressDialog.setMessage("Uploading Expense");
+                progressDialog.show();
                 break;
 
             default:

@@ -1,5 +1,6 @@
 package com.example.vivek.rentalmates.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
@@ -52,6 +53,7 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
     private Long selectedFlatId;
     private String selectedFlatName;
     private Long selectedGroupExpenseId;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +100,10 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
         chooseFlatSpinner.setOnItemSelectedListener(this);
 
         registerWithOldFlatButtonClicked = false;
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setIndeterminate(true);
     }
 
     @Override
@@ -111,7 +117,6 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
                     Toast.makeText(this, "No Flat registered yet", Toast.LENGTH_LONG).show();
                     return;
                 }
-                Toast.makeText(this, "retrieving ExpenseData list", Toast.LENGTH_SHORT).show();
                 BackendApiService.storePrimaryFlatId(this, selectedFlatId);
                 BackendApiService.storePrimaryFlatName(this, selectedFlatName);
                 BackendApiService.storeFlatExpenseGroupId(this, selectedGroupExpenseId);
@@ -123,14 +128,13 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
                     return;
                 }
                 registerWithOldFlatButtonClicked = true;
-                Toast.makeText(this, "registering with old flat", Toast.LENGTH_LONG).show();
                 RegisterWithOldFlatAsyncTask task = new RegisterWithOldFlatAsyncTask(this, alreadyRegisteredFlatEditText.getText().toString());
                 task.setOnRegisterWithOldFlatReceiver(new OnRegisterWithOldFlatReceiver() {
                     @Override
                     public void onRegisterWithOldFlatSuccessful(String message, FlatInfo flatInfo) {
                         registerWithOldFlatButtonClicked = false;
+                        progressDialog.cancel();
                         if (message.equals("SUCCESS_FLAT_AVAILABLE")) {
-                            Toast.makeText(getApplicationContext(), "Registered with old flat: " + flatInfo.getFlatName() + "\nretrieving ExpenseData info", Toast.LENGTH_SHORT).show();
                             BackendApiService.storePrimaryFlatId(getApplicationContext(), flatInfo.getFlatId());
                             BackendApiService.storePrimaryFlatName(getApplicationContext(), flatInfo.getFlatName());
                             BackendApiService.storeFlatExpenseGroupId(getApplicationContext(), flatInfo.getExpenseGroupId());
@@ -143,9 +147,12 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
                     @Override
                     public void onRegisterWithOldFlatFailed() {
                         registerWithOldFlatButtonClicked = false;
+                        progressDialog.cancel();
                     }
                 });
                 task.execute();
+                progressDialog.setMessage("Registering with flat " + alreadyRegisteredFlatEditText.getText().toString());
+                progressDialog.show();
                 break;
 
             case R.id.registerNewFlatButton:
@@ -180,20 +187,23 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
         task.setOnUserProfileListReceiver(new OnUserProfileListReceiver() {
             @Override
             public void onUserProfileListLoadSuccessful(List<UserProfile> userProfiles) {
+                progressDialog.cancel();
                 if (userProfiles == null) {
                     Toast.makeText(context, "No user profiles available", Toast.LENGTH_LONG);
                     return;
                 }
-                Toast.makeText(context, "UserProfile List retrieved successfully/Number of Users: " + userProfiles.size(), Toast.LENGTH_SHORT).show();
                 appData.updateProfilePictures(context, userProfiles);
                 loadAllExpenses();
             }
 
             @Override
             public void onUserProfileListLoadFailed() {
+                progressDialog.cancel();
             }
         });
         task.execute();
+        progressDialog.setMessage("Loading User Profiles");
+        progressDialog.show();
     }
 
     public void loadAllExpenses() {
@@ -201,7 +211,7 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
         task.setOnExpenseListReceiver(new OnExpenseListReceiver() {
             @Override
             public void onExpenseDataListLoadSuccessful() {
-                Toast.makeText(getApplicationContext(), "ExpenseData retrieved successfully", Toast.LENGTH_SHORT).show();
+                progressDialog.cancel();
                 Intent intent = new Intent(getApplicationContext(), MainTabActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 getApplicationContext().startActivity(intent);
@@ -209,9 +219,12 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
 
             @Override
             public void onExpenseDataListLoadFailed() {
+                progressDialog.cancel();
             }
         });
         task.execute();
+        progressDialog.setMessage("Loading Expense List");
+        progressDialog.show();
     }
 
     public boolean verifyFlatInfoData() {

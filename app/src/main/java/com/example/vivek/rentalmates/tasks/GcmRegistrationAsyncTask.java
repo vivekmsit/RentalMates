@@ -67,7 +67,6 @@ public class GcmRegistrationAsyncTask extends AsyncTask<Context, Void, String> {
         switch (msg) {
             case "SUCCESS":
                 Log.d(TAG, "Gcm Registration Successful");
-                Toast.makeText(context, "Gcm Registration Successful", Toast.LENGTH_SHORT).show();
                 if (receiver != null) {
                     receiver.onGcmRegisterSuccessful(regId);
                 }

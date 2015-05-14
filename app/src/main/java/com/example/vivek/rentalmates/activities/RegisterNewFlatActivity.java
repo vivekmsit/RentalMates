@@ -1,5 +1,6 @@
 package com.example.vivek.rentalmates.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -39,6 +40,7 @@ public class RegisterNewFlatActivity extends ActionBarActivity {
     private SharedPreferences prefs;
     private Context context;
     private AppData appData;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,9 @@ public class RegisterNewFlatActivity extends ActionBarActivity {
                 Context.MODE_PRIVATE);
         context = getApplicationContext();
         appData = AppData.getInstance();
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setIndeterminate(true);
     }
 
     void updateView(boolean isFlatAlreadyRegistered) {
@@ -91,11 +96,11 @@ public class RegisterNewFlatActivity extends ActionBarActivity {
             @Override
             public void onRegisterNewFlatSuccessful(FlatInfo flatInfo) {
                 registerButtonClicked = false;
+                progressDialog.cancel();
                 if (flatInfo == null) {
                     Toast.makeText(getApplicationContext(), "Flat with given name already registered. \n Please enter different name", Toast.LENGTH_LONG).show();
                     return;
                 }
-                Toast.makeText(getApplicationContext(), "FlatInfo uploaded", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "FlatInfo uploaded");
 
                 getCompleteUserInformation();
@@ -104,9 +109,12 @@ public class RegisterNewFlatActivity extends ActionBarActivity {
             @Override
             public void onRegisterNewFlatFailed() {
                 registerButtonClicked = false;
+                progressDialog.cancel();
             }
         });
         task.execute();
+        progressDialog.setMessage("Registering new flat");
+        progressDialog.show();
     }
 
     public boolean verifyFlatInfoData() {
@@ -124,18 +132,19 @@ public class RegisterNewFlatActivity extends ActionBarActivity {
         flatTask.setOnFlatInfoListReceiver(new OnFlatInfoListReceiver() {
             @Override
             public void onFlatInfoListLoadSuccessful(List<com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo> flats) {
+                progressDialog.cancel();
                 if (flats == null) {
                     Toast.makeText(context, "No flat registered for given user", Toast.LENGTH_LONG).show();
                     return;
                 }
                 appData.storeFlatInfoList(context, flats);
-                Toast.makeText(context, "FlatInfo List retrieved successfully", Toast.LENGTH_SHORT).show();
 
                 //Download ExpenseGroup List
                 GetExpenseGroupListAsyncTask expenseGroupTask = new GetExpenseGroupListAsyncTask(context);
                 expenseGroupTask.setOnExpenseGroupListReceiver(new OnExpenseGroupListReceiver() {
                     @Override
                     public void onExpenseGroupListLoadSuccessful() {
+                        progressDialog.cancel();
                         Intent intent = new Intent(getApplicationContext(), MainTabActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         getApplicationContext().startActivity(intent);
@@ -143,15 +152,21 @@ public class RegisterNewFlatActivity extends ActionBarActivity {
 
                     @Override
                     public void onExpenseGroupListLoadFailed() {
+                        progressDialog.cancel();
                     }
                 });
                 expenseGroupTask.execute();
+                progressDialog.setMessage("Loading Expense Groups");
+                progressDialog.show();
             }
 
             @Override
             public void onFlatInfoListLoadFailed() {
+                progressDialog.cancel();
             }
         });
         flatTask.execute();
+        progressDialog.setMessage("Loading Flat Information");
+        progressDialog.show();
     }
 }

@@ -59,7 +59,7 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
         Log.d(TAG, "inside onBindViewHolder");
         ExpenseListItem current = data.get(position);
         if (appData.getProfilePicturesPath().containsKey(current.ownerEmailId)) {
-            viewHolder.circularImageView.setImageBitmap(appData.getProfilePictureBitmap(context, current.ownerEmailId));
+            viewHolder.circularImageView.setImageBitmap(appData.getProfilePictureBitmap(current.ownerEmailId));
         } else {
             //show ic_launcher in place of profile picture if profile picture is not available
             Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);

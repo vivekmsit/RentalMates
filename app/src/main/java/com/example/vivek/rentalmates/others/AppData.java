@@ -205,12 +205,12 @@ public class AppData implements Serializable {
         return storeAppData(context);
     }
 
-    public Bitmap getProfilePictureBitmap(Context context, String emailId) {
+    public Bitmap getProfilePictureBitmap(String emailId) {
         Bitmap bitmap = null;
         if (this.profilePicturesPath.containsKey(emailId)) {
             bitmap = BitmapFactory.decodeFile(this.profilePicturesPath.get(emailId));
         } else {
-            Toast.makeText(context, "ProfilePicture not found for " + emailId, Toast.LENGTH_LONG).show();
+            Log.d(TAG, "ProfilePicture not found for " + emailId);
         }
         return bitmap;
     }

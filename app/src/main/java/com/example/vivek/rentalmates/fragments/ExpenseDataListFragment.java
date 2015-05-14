@@ -20,8 +20,10 @@ import com.example.vivek.rentalmates.interfaces.OnExpenseListReceiver;
 import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.tasks.GetAllExpenseListAsyncTask;
 import com.example.vivek.rentalmates.viewholders.ExpenseListItem;
+import com.google.api.client.util.DateTime;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -96,6 +98,7 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
             data.setAmount(0);
             data.setDescription("Description");
             data.setOwnerEmailId("vivekmsit@gmail.com");
+            data.setDate(new DateTime(new Date()));
             mItems.add(new ExpenseListItem(data));
         } else {
             for (ExpenseData expenseData : expenses) {

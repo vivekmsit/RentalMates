@@ -9,7 +9,6 @@ import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.ExpenseGro
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.interfaces.OnAddExpenseReceiver;
 import com.example.vivek.rentalmates.others.AppConstants;
-import com.example.vivek.rentalmates.others.AppData;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
@@ -20,15 +19,14 @@ public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
 
     private static ExpenseGroupApi expenseGroupService = null;
     private ExpenseData expenseData;
+    private ExpenseData uploadedExpenseData;
     private Context context;
     private IOException ioException;
-    private AppData appData;
     private OnAddExpenseReceiver receiver;
 
     public AddExpenseAsyncTask(Context context, final ExpenseData expenseData) {
         this.context = context;
         this.expenseData = expenseData;
-        appData = AppData.getInstance();
     }
 
     public void setOnAddExpenseReceiver(OnAddExpenseReceiver receiver) {
@@ -44,20 +42,14 @@ public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
             expenseGroupService = builder1.build();
         }
         try {
-            ExpenseData uploadedExpenseData = expenseGroupService.addExpenseData(expenseData).execute();
+            uploadedExpenseData = expenseGroupService.addExpenseData(expenseData).execute();
             if (uploadedExpenseData == null) {
                 Log.d(TAG, "expense is null");
+                msg = "FAILED";
             } else {
-                boolean status = appData.addLocalExpenseData(context, uploadedExpenseData);
-                if (status) {
-                    msg = "SUCCESS";
-                } else {
-                    msg = "EXCEPTION";
-                }
-                return msg;
+                Log.d(TAG, "expense successfully uploaded");
+                msg = "SUCCESS";
             }
-            msg = "SUCCESS";
-            Log.d(TAG, "inside addExpense");
         } catch (IOException e) {
             ioException = e;
             msg = "EXCEPTION";
@@ -73,7 +65,7 @@ public class AddExpenseAsyncTask extends AsyncTask<Context, Void, String> {
 
         switch (msg) {
             case "SUCCESS":
-                receiver.onAddExpenseSuccessful();
+                receiver.onAddExpenseSuccessful(uploadedExpenseData);
                 break;
             case "EXCEPTION":
                 receiver.onAddExpenseFailed();

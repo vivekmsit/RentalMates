@@ -3,6 +3,7 @@ package com.example.vivek.rentalmates.dialogs;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,6 +21,7 @@ public class UserConfirmationDeleteExpenseDialog extends DialogFragment {
 
     private static final String TAG = "UserConfirmDelete_Debug";
     private Activity mainTabActivity;
+    private ProgressDialog progressDialog;
 
     public UserConfirmationDeleteExpenseDialog() {
     }
@@ -28,6 +30,9 @@ public class UserConfirmationDeleteExpenseDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         mainTabActivity = getActivity();
+        progressDialog = new ProgressDialog(mainTabActivity);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setIndeterminate(true);
         final Long expenseId = getArguments().getLong("ExpenseId");
         final int currentPosition = getArguments().getInt("position");
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
@@ -40,6 +45,7 @@ public class UserConfirmationDeleteExpenseDialog extends DialogFragment {
                 task.setOnDeleteExpenseReceiver(new OnDeleteExpenseReceiver() {
                     @Override
                     public void onExpenseDeleteSuccessful(int position) {
+                        progressDialog.cancel();
                         ViewPager pager = (ViewPager) mainTabActivity.findViewById(R.id.pager);
                         MainTabActivity.MyAdapter adapter = (MainTabActivity.MyAdapter) pager.getAdapter();
                         ExpenseDataListFragment fragment = (ExpenseDataListFragment) adapter.getRegisteredFragment(0);
@@ -48,10 +54,13 @@ public class UserConfirmationDeleteExpenseDialog extends DialogFragment {
 
                     @Override
                     public void onExpenseDeleteFailed() {
+                        progressDialog.cancel();
                     }
                 });
                 task.setPosition(currentPosition);
                 task.execute();
+                progressDialog.setMessage("Deleting Expense");
+                progressDialog.show();
             }
         });
         alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
