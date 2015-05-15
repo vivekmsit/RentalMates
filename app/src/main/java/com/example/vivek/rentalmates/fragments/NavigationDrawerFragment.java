@@ -1,6 +1,5 @@
 package com.example.vivek.rentalmates.fragments;
 
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.vivek.rentalmates.R;
-import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.activities.MainTabActivity;
 import com.example.vivek.rentalmates.adapters.DrawerListViewAdapter;
 import com.example.vivek.rentalmates.others.AppConstants;
@@ -65,8 +63,7 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         Log.d(TAG, "inside onActivityCreated");
         super.onActivityCreated(savedInstanceState);
-        prefs = getActivity().getSharedPreferences(MainActivity.class.getSimpleName(),
-                Context.MODE_PRIVATE);
+        prefs = getActivity().getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mUserLearnedDrawer = prefs.getBoolean(KEY_USER_LEARNED_DRAWER, false);
         if (savedInstanceState != null) {
             mFromSavedInstanceState = true;
@@ -109,7 +106,7 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
         Log.d(TAG, "inside getData");
         List<DrawerListItem> data = new ArrayList<>();
         int[] icons = {R.drawable.ic_action_person_light, R.drawable.ic_action_person_light, R.drawable.ic_action_person_light, R.drawable.ic_action_settings_light, R.drawable.ic_action_person_light, R.drawable.ic_action_about_light};
-        String[] titles = {"Manage Profile", "Manage Flat Info", "Manage Services", "Account Settings", "Developer Mode", "About"};
+        String[] titles = {"Manage Profile", "Manage Flats", "Manage Expense Groups", "Account Settings", "Developer Mode", "About"};
         for (int i = 0; i < titles.length && i < icons.length; i++) {
             DrawerListItem current = new DrawerListItem();
             current.iconId = icons[i];

@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.backend.userProfileApi.UserProfileApi;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfoCollection;
@@ -31,8 +30,7 @@ public class GetFlatInfoListAsyncTask extends AsyncTask<Context, Void, String> {
 
     public GetFlatInfoListAsyncTask(Context context) {
         this.context = context;
-        prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
-                Context.MODE_PRIVATE);
+        prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
     }
 
     public void setOnFlatInfoListReceiver(OnFlatInfoListReceiver receiver) {

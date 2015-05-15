@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.activities.MyLoginActivity;
 import com.example.vivek.rentalmates.backend.userProfileApi.UserProfileApi;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
@@ -33,8 +32,7 @@ public class UploadUserProfileAsyncTask extends AsyncTask<Context, Void, String>
         this.context = context;
         this.uf = userProfile;
         activity = myLoginActivity;
-        prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
-                Context.MODE_PRIVATE);
+        prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
     }
 
     public void setOnUploadUserProfileReceiver(OnUploadUserProfileReceiver receiver) {

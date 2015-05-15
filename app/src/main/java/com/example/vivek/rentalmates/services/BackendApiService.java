@@ -4,28 +4,12 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.example.vivek.rentalmates.activities.MainActivity;
-import com.example.vivek.rentalmates.backend.flatInfoApi.FlatInfoApi;
-import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
-import com.example.vivek.rentalmates.backend.registration.Registration;
-import com.example.vivek.rentalmates.backend.userProfileApi.UserProfileApi;
-import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
-import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfileCollection;
 import com.example.vivek.rentalmates.others.AppConstants;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
-import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 public class BackendApiService extends Service {
@@ -63,9 +47,8 @@ public class BackendApiService extends Service {
 
 
     public static void storeUserProfileId(Context context, Long id) {
-        String msg = "";
-        SharedPreferences prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
-                Context.MODE_PRIVATE);
+        String msg;
+        SharedPreferences prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
         if (prefs.contains(AppConstants.USER_PROFILE_ID)) {
             msg = "userProfileId is already stored in shared preferences";
             Log.d(TAG, msg);
@@ -78,9 +61,7 @@ public class BackendApiService extends Service {
     }
 
     public static void storePrimaryFlatId(Context context, Long id) {
-        String msg = "";
-        SharedPreferences prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
-                Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
         Log.d(TAG, "Saving flatInfoId in shared preferences" + id);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putLong(AppConstants.PRIMARY_FLAT_ID, id);
@@ -88,9 +69,7 @@ public class BackendApiService extends Service {
     }
 
     public static void storeFlatExpenseGroupId(Context context, Long id) {
-        String msg = "";
-        SharedPreferences prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
-                Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
         Log.d(TAG, "Saving flatE in shared preferences" + id);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putLong(AppConstants.FLAT_EXPENSE_GROUP_ID, id);
@@ -98,9 +77,7 @@ public class BackendApiService extends Service {
     }
 
     public static void storePrimaryFlatName(Context context, String flatName) {
-        String msg = "";
-        SharedPreferences prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
-                Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
         Log.d(TAG, "Saving flatName in shared preferences" + flatName);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(AppConstants.PRIMARY_FLAT_NAME, flatName);

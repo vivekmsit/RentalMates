@@ -21,11 +21,9 @@ import com.example.vivek.rentalmates.interfaces.OnExpenseMembersSelectedReceiver
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.others.LocalExpenseGroup;
-import com.example.vivek.rentalmates.others.LocalUserProfile;
 import com.example.vivek.rentalmates.tasks.AddExpenseAsyncTask;
 import com.google.api.client.util.DateTime;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -65,8 +63,7 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
         setSupportActionBar(toolBar);
         setTitle("New Expense");
 
-        prefs = this.getSharedPreferences(MainActivity.class.getSimpleName(),
-                Context.MODE_PRIVATE);
+        prefs = this.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
         appData = AppData.getInstance();
         context = getApplication().getApplicationContext();
         if (appData.getExpenseGroups().size() == 0) {

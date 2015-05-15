@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.backend.registration.Registration;
 import com.example.vivek.rentalmates.interfaces.OnGcmRegistrationReceiver;
 import com.example.vivek.rentalmates.others.AppConstants;
@@ -29,8 +28,7 @@ public class GcmRegistrationAsyncTask extends AsyncTask<Context, Void, String> {
 
     public GcmRegistrationAsyncTask(Context context) {
         this.context = context;
-        prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
-                Context.MODE_PRIVATE);
+        prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
     }
 
     public void setOnGcmRegistrationReceiver(OnGcmRegistrationReceiver receiver) {

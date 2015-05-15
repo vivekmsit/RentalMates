@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.backend.flatInfoApi.FlatInfoApi;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
 import com.example.vivek.rentalmates.interfaces.OnRegisterWithOldFlatReceiver;
@@ -32,8 +31,7 @@ public class RegisterWithOldFlatAsyncTask extends AsyncTask<Context, Void, Strin
         this.context = context;
         this.flatName = flatName;
 
-        prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
-                Context.MODE_PRIVATE);
+        prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
     }
 
     public void setOnRegisterWithOldFlatReceiver(OnRegisterWithOldFlatReceiver receiver) {

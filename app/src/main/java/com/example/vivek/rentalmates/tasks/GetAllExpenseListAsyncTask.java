@@ -1,21 +1,17 @@
 package com.example.vivek.rentalmates.tasks;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.vivek.rentalmates.activities.MainActivity;
-import com.example.vivek.rentalmates.activities.MainTabActivity;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.ExpenseGroupApi;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseDataCollection;
 import com.example.vivek.rentalmates.interfaces.OnExpenseListReceiver;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
-import com.example.vivek.rentalmates.services.BackendApiService;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
@@ -37,8 +33,7 @@ public class GetAllExpenseListAsyncTask extends AsyncTask<Context, Void, String>
         this.context = context;
         this.appData = AppData.getInstance();
 
-        prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
-                Context.MODE_PRIVATE);
+        prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
     }
 
     public void setOnExpenseListReceiver(OnExpenseListReceiver receiver) {

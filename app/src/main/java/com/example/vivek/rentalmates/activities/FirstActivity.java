@@ -27,8 +27,7 @@ public class FirstActivity extends ActionBarActivity {
     protected void onStart() {
         super.onStart();
         final Class<? extends Activity> activityClass;
-        SharedPreferences prefs = this.getSharedPreferences(MainActivity.class.getSimpleName(),
-                Context.MODE_PRIVATE);
+        SharedPreferences prefs = this.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
         if (prefs.contains(AppConstants.SIGN_IN_COMPLETED) && prefs.getBoolean(AppConstants.SIGN_IN_COMPLETED, true)) {
             appData.restoreAppData(this);
             activityClass = MainTabActivity.class;

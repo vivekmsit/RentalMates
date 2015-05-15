@@ -72,13 +72,4 @@
         android:text="REVOKE ACCESS"
         android:visibility="gone" />
 
-    <Button
-        android:id="@+id/continue_button"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btn_revoke_access"
-        android:layout_marginBottom="10dp"
-        android:text="CONTINUE"
-        android:visibility="gone" />
-
 </RelativeLayout>

@@ -54,8 +54,7 @@ public class RegisterNewFlatActivity extends ActionBarActivity {
         button1 = (Button) findViewById(R.id.button2);
         registerButton = (Button) findViewById(R.id.button3);
         updateView(false);//need to be changed to true later
-        prefs = this.getSharedPreferences(MainActivity.class.getSimpleName(),
-                Context.MODE_PRIVATE);
+        prefs = this.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
         context = getApplicationContext();
         appData = AppData.getInstance();
         progressDialog = new ProgressDialog(this);

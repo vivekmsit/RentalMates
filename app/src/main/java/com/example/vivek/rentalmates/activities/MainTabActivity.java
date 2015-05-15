@@ -117,8 +117,7 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .build();
 
-        prefs = this.getSharedPreferences(MainActivity.class.getSimpleName(),
-                Context.MODE_PRIVATE);
+        prefs = this.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
         if (prefs.contains(AppConstants.SIGN_IN_COMPLETED)) {
             SharedPreferences.Editor editor = prefs.edit();
             editor.putBoolean(AppConstants.SIGN_IN_COMPLETED, true);

@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.backend.userProfileApi.UserProfileApi;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfileCollection;
@@ -35,8 +34,7 @@ public class GetUserProfileListAsyncTask extends AsyncTask<Context, Void, String
     public GetUserProfileListAsyncTask(Context context) {
         this.context = context;
         appData = AppData.getInstance();
-        prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
-                Context.MODE_PRIVATE);
+        prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
     }
 
     public void setOnUserProfileListReceiver(OnUserProfileListReceiver receiver) {

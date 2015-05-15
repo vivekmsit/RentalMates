@@ -16,6 +16,7 @@ public class AppConstants {
     public static final String EMAIL_ID = "email_id";
     public static final String USER_NAME = "user_name";
     public static final String FLAT_EXPENSE_GROUP_ID = "flat_expense_group_id";
+    public static final String APP_PREFERENCES = "app_preferences";
 
     AppConstants() {
     }

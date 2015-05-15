@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.vivek.rentalmates.activities.MainActivity;
 import com.example.vivek.rentalmates.backend.userProfileApi.UserProfileApi;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.ExpenseGroupCollection;
 import com.example.vivek.rentalmates.interfaces.OnExpenseGroupListReceiver;
@@ -32,8 +31,7 @@ public class GetExpenseGroupListAsyncTask extends AsyncTask<Context, Void, Strin
 
     public GetExpenseGroupListAsyncTask(Context context) {
         this.context = context;
-        prefs = context.getSharedPreferences(MainActivity.class.getSimpleName(),
-                Context.MODE_PRIVATE);
+        prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
         this.appData = AppData.getInstance();
     }
 

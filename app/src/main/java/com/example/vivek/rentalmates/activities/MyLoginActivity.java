@@ -56,7 +56,7 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
     public static GoogleApiClient mClient = null;
     private ConnectionResult mConnectionResult;
     private SignInButton btnSignIn;
-    private Button btnSignOut, btnRevokeAccess, continueButton;
+    private Button btnSignOut, btnRevokeAccess;
     private ImageView imgProfilePic;
     private TextView txtName, txtEmail;
     private LinearLayout llProfileLayout;
@@ -81,15 +81,13 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         btnSignIn = (SignInButton) findViewById(R.id.my_sign_in_button);
         btnSignOut = (Button) findViewById(R.id.btn_sign_out);
         btnRevokeAccess = (Button) findViewById(R.id.btn_revoke_access);
-        continueButton = (Button) findViewById(R.id.continue_button);
 
         imgProfilePic = (ImageView) findViewById(R.id.imgProfilePic);
         txtName = (TextView) findViewById(R.id.txtName);
         txtEmail = (TextView) findViewById(R.id.txtEmail);
         llProfileLayout = (LinearLayout) findViewById(R.id.llProfile);
 
-        prefs = this.getSharedPreferences(MainActivity.class.getSimpleName(),
-                Context.MODE_PRIVATE);
+        prefs = this.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
         if (prefs.contains(AppConstants.SIGN_IN_COMPLETED) && prefs.getBoolean(AppConstants.SIGN_IN_COMPLETED, true)) {
             btnSignIn.setVisibility(View.INVISIBLE);
             Log.d(TAG, "User is already sign in");
@@ -102,7 +100,6 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
         btnSignIn.setOnClickListener(this);
         btnSignOut.setOnClickListener(this);
         btnRevokeAccess.setOnClickListener(this);
-        continueButton.setOnClickListener(this);
 
         // Initializing google plus api client
         mClient = new GoogleApiClient.Builder(this)
@@ -302,13 +299,11 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
             btnSignOut.setVisibility(View.VISIBLE);
             btnRevokeAccess.setVisibility(View.VISIBLE);
             llProfileLayout.setVisibility(View.VISIBLE);
-            continueButton.setVisibility(View.VISIBLE);
         } else {
             btnSignIn.setVisibility(View.VISIBLE);
             btnSignOut.setVisibility(View.GONE);
             btnRevokeAccess.setVisibility(View.GONE);
             llProfileLayout.setVisibility(View.GONE);
-            continueButton.setVisibility(View.GONE);
         }
     }
 
@@ -328,10 +323,8 @@ public class MyLoginActivity extends ActionBarActivity implements View.OnClickLi
                 // Revoke access button clicked
                 revokeGplusAccess();
                 break;
-            case R.id.continue_button:
-                //Go to user profile page
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
+            default:
+                break;
         }
     }
 
