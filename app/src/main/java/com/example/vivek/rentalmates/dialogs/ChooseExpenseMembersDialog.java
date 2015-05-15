@@ -9,7 +9,9 @@ import android.support.v4.app.DialogFragment;
 import android.util.Log;
 
 import com.example.vivek.rentalmates.interfaces.OnExpenseMembersSelectedReceiver;
+import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
+import com.example.vivek.rentalmates.others.LocalExpenseGroup;
 import com.example.vivek.rentalmates.others.LocalUserProfile;
 
 import java.util.ArrayList;
@@ -20,7 +22,8 @@ public class ChooseExpenseMembersDialog extends DialogFragment {
     private static final String TAG = "EMembersDialog_Debug";
 
     private AppData appData;
-    private ArrayList<Integer> selectedItemsIndexList;
+    private Long[] expenseGroupMemberIds;
+    private ArrayList<Long> selectedItemsIndexList;
     private boolean[] isSelectedArray;
     private String[] memberNames;
     private OnExpenseMembersSelectedReceiver receiver;
@@ -38,26 +41,35 @@ public class ChooseExpenseMembersDialog extends DialogFragment {
         Log.d(TAG, "inside onCreateDialog");
         selectedItemsIndexList = new ArrayList<>();
         appData = AppData.getInstance();
-        List<LocalUserProfile> userProfiles = appData.getUserProfiles();
+        Bundle bundle = getArguments();
+        Long expenseGroupId = bundle.getLong("expenseGroupId");
         int count = 0;
-        memberNames = new String[userProfiles.size()];
-        isSelectedArray = new boolean[userProfiles.size()];
-        for (LocalUserProfile profile : userProfiles) {
-            memberNames[count] = profile.getUserName();
+        List<Long> expenseMemberIds = appData.getLocalExpenseGroup(expenseGroupId).getMemberIds();
+        int size = expenseMemberIds.size();
+
+        memberNames = new String[size];
+        isSelectedArray = new boolean[size];
+        expenseGroupMemberIds = new Long[size];
+
+        for (Long id : expenseMemberIds) {
+            memberNames[count] = appData.getLocalUserProfile(id).getUserName();
             isSelectedArray[count] = true;
-            selectedItemsIndexList.add(count);
+            selectedItemsIndexList.add(id);
+            expenseGroupMemberIds[count] = id;
             count++;
         }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Choose Expense Members")
                 .setMultiChoiceItems(memberNames, isSelectedArray,
                         new DialogInterface.OnMultiChoiceClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                                Long currentId = expenseGroupMemberIds[which];
                                 if (isChecked) {
-                                    selectedItemsIndexList.add(which);
-                                } else if (selectedItemsIndexList.contains(which)) {
-                                    selectedItemsIndexList.remove(Integer.valueOf(which));
+                                    selectedItemsIndexList.add(currentId);
+                                } else if (selectedItemsIndexList.contains(currentId)) {
+                                    selectedItemsIndexList.remove(currentId);
                                 }
                             }
                         }).setPositiveButton("OK", new DialogInterface.OnClickListener() {

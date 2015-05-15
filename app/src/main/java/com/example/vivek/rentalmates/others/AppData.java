@@ -21,6 +21,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,10 +33,10 @@ public class AppData implements Serializable {
     private static final String TAG = "AppData_Debug";
 
     private Map<String, String> profilePicturesPath = new HashMap<>();
-    private List<LocalUserProfile> userProfiles = new ArrayList<>();
-    private List<LocalFlatInfo> flats = new ArrayList<>();
     private List<LocalExpenseData> expenses = new ArrayList<>();
-    private List<LocalExpenseGroup> expenseGroups = new ArrayList<>();
+    private HashMap<Long, LocalFlatInfo> flats = new HashMap<>();
+    private HashMap<Long, LocalUserProfile> userProfiles = new HashMap<>();
+    private HashMap<Long, LocalExpenseGroup> expenseGroups = new HashMap<>();
 
     private static AppData appDataInstance = new AppData();
 
@@ -46,19 +48,19 @@ public class AppData implements Serializable {
     private AppData() {
     }
 
-    public List<LocalUserProfile> getUserProfiles() {
+    public HashMap<Long, LocalUserProfile> getUserProfiles() {
         return userProfiles;
     }
 
-    public void setUserProfiles(List<LocalUserProfile> userProfiles) {
+    public void setUserProfiles(HashMap<Long, LocalUserProfile> userProfiles) {
         this.userProfiles = userProfiles;
     }
 
-    public List<LocalFlatInfo> getFlats() {
+    public HashMap<Long, LocalFlatInfo> getFlats() {
         return flats;
     }
 
-    public void setFlats(List<LocalFlatInfo> flats) {
+    public void setFlats(HashMap<Long, LocalFlatInfo> flats) {
         this.flats = flats;
     }
 
@@ -70,11 +72,11 @@ public class AppData implements Serializable {
         this.expenses = expenses;
     }
 
-    public List<LocalExpenseGroup> getExpenseGroups() {
-        return expenseGroups;
+    public Collection<LocalExpenseGroup> getExpenseGroups() {
+        return expenseGroups.values();
     }
 
-    public void setExpenseGroups(List<LocalExpenseGroup> expenseGroups) {
+    public void setExpenseGroups(HashMap<Long, LocalExpenseGroup> expenseGroups) {
         this.expenseGroups = expenseGroups;
     }
 
@@ -87,17 +89,42 @@ public class AppData implements Serializable {
     }
 
     public boolean storeExpenseGroupList(Context context, List<ExpenseGroup> expenseGroups) {
-        this.expenseGroups = LocalExpenseGroup.convertEGroupToLocalEGroup(expenseGroups);
+        List<LocalExpenseGroup> localExpenseGroups = LocalExpenseGroup.convertEGroupToLocalEGroup(expenseGroups);
+        for (LocalExpenseGroup group : localExpenseGroups) {
+            this.expenseGroups.put(group.getId(), group);
+        }
         return storeAppData(context);
     }
 
+    public LocalExpenseGroup getLocalExpenseGroup(Long id) {
+        if (this.expenseGroups.containsKey(id)) {
+            return this.expenseGroups.get(id);
+        } else {
+            return null;
+        }
+    }
+
+    public LocalUserProfile getLocalUserProfile(Long id) {
+        if (this.userProfiles.containsKey(id)) {
+            return this.userProfiles.get(id);
+        } else {
+            return null;
+        }
+    }
+
     public boolean storeUserProfileList(Context context, List<UserProfile> profiles) {
-        this.userProfiles = LocalUserProfile.convertUserProfileToLocalUserProfile(profiles);
+        List<LocalUserProfile> userProfiles = LocalUserProfile.convertUserProfileToLocalUserProfile(profiles);
+        for (LocalUserProfile profile : userProfiles) {
+            this.userProfiles.put(profile.getUserProfileId(), profile);
+        }
         return storeAppData(context);
     }
 
     public boolean storeFlatInfoList(Context context, List<FlatInfo> flats) {
-        this.flats = LocalFlatInfo.convertFlatInfoToLocalFlatInfo(flats);
+        List<LocalFlatInfo> localFlats = LocalFlatInfo.convertFlatInfoToLocalFlatInfo(flats);
+        for (LocalFlatInfo flatInfo : localFlats) {
+            this.flats.put(flatInfo.getFlatId(), flatInfo);
+        }
         return storeAppData(context);
     }
 

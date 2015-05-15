@@ -94,21 +94,18 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
                 ChooseExpenseMembersDialog dialog = new ChooseExpenseMembersDialog();
                 dialog.setOnExpenseMembersSelectedReceiver(new OnExpenseMembersSelectedReceiver() {
                     @Override
-                    public void onOkay(List<Integer> arrayList) {
-                        List<LocalUserProfile> profiles = appData.getUserProfiles();
-                        List<Long> memberIds = new ArrayList<>();
-                        for (Integer integer : arrayList) {
-                            memberIds.add(profiles.get(integer).getUserProfileId());
-                        }
+                    public void onOkay(List<Long> memberIds) {
                         expenseData.setMemberIds(memberIds);
                         expenseData.setNumberOfMembers(memberIds.size());
                     }
 
                     @Override
                     public void onCancel() {
-
                     }
                 });
+                Bundle bundle = new Bundle();
+                bundle.putLong("expenseGroupId", prefs.getLong(AppConstants.FLAT_EXPENSE_GROUP_ID, 0));
+                dialog.setArguments(bundle);
                 dialog.show(getSupportFragmentManager(), "ChooseExpenseMembers");
                 break;
 

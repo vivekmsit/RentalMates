@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface OnExpenseMembersSelectedReceiver {
 
-    public void onOkay(List<Integer> arrayList);
+    public void onOkay(List<Long> arrayList);
 
     public void onCancel();
 }

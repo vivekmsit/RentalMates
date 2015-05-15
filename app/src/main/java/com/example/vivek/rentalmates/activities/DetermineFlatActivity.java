@@ -62,7 +62,9 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
 
         context = getApplicationContext();
         appData = AppData.getInstance();
-        localFlats = appData.getFlats();
+        for (LocalFlatInfo localFlatInfo : appData.getFlats().values()) {
+            localFlats.add(localFlatInfo);
+        }
         alreadyTextView = (TextView) findViewById(R.id.alreadyTextView);
         newRegisteredTextView = (TextView) findViewById(R.id.newRegisteredTextView);
         registerNewFlatTextView = (TextView) findViewById(R.id.registerNewFlatTextView);
@@ -189,7 +191,7 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
             public void onUserProfileListLoadSuccessful(List<UserProfile> userProfiles) {
                 progressDialog.cancel();
                 if (userProfiles == null) {
-                    Toast.makeText(context, "No user profiles available", Toast.LENGTH_LONG);
+                    Toast.makeText(context, "No user profiles available", Toast.LENGTH_LONG).show();
                     return;
                 }
                 appData.updateProfilePictures(context, userProfiles);
