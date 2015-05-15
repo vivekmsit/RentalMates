@@ -22,7 +22,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,8 +31,9 @@ public class AppData implements Serializable {
 
     private static final String TAG = "AppData_Debug";
 
-    private Map<String, String> profilePicturesPath = new HashMap<>();
     private List<LocalExpenseData> expenses = new ArrayList<>();
+
+    private HashMap<String, String> profilePicturesPath = new HashMap<>();
     private HashMap<Long, LocalFlatInfo> flats = new HashMap<>();
     private HashMap<Long, LocalUserProfile> userProfiles = new HashMap<>();
     private HashMap<Long, LocalExpenseGroup> expenseGroups = new HashMap<>();
@@ -84,7 +84,7 @@ public class AppData implements Serializable {
         return profilePicturesPath;
     }
 
-    public void setProfilePicturesPath(Map<String, String> profilePicturesPath) {
+    public void setProfilePicturesPath(HashMap<String, String> profilePicturesPath) {
         this.profilePicturesPath = profilePicturesPath;
     }
 
@@ -203,15 +203,20 @@ public class AppData implements Serializable {
     }
 
     public boolean clearAppData(Context context) {
+        //Delete file containing serialized App Data
         String path = context.getFilesDir().getPath() + "/" + "appData.tmp";
         File file = new File(path);
         if (!file.delete()) {
             Toast.makeText(context, "File " + path + "could not be deleted", Toast.LENGTH_LONG).show();
             return false;
         }
-        this.userProfiles = null;
-        this.flats = null;
-        this.expenses = null;
+
+        //Initialize all the variables
+        this.expenses = new ArrayList<>();
+        this.userProfiles = new HashMap<>();
+        this.flats = new HashMap<>();
+        this.expenseGroups = new HashMap<>();
+
         Toast.makeText(context, "AppData cleared", Toast.LENGTH_LONG).show();
         Log.d(TAG, "AppData cleared");
         return true;

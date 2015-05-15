@@ -23,11 +23,16 @@ public class DeveloperModeActivity extends ActionBarActivity {
     }
 
     public void onClearAppDataButtonClick(View view) {
+        //Clear SharedPreferences
         SharedPreferences prefs = this.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.clear();
         editor.apply();
+
+        //Reset AppData contents
         appData.clearAppData(getApplicationContext());
+
+        //Start FirstActivity
         Intent intent = new Intent(this, FirstActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);

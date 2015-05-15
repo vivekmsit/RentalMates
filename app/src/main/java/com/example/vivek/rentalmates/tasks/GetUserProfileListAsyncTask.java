@@ -62,7 +62,6 @@ public class GetUserProfileListAsyncTask extends AsyncTask<Context, Void, String
                 }
                 msg = "SUCCESS_PROFILES";
             }
-            Log.d(TAG, "inside addExpense");
         } catch (IOException e) {
             ioException = e;
             msg = "EXCEPTION";

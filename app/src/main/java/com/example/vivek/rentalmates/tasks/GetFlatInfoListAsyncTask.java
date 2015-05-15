@@ -55,7 +55,6 @@ public class GetFlatInfoListAsyncTask extends AsyncTask<Context, Void, String> {
                 flats = flatInfoCollection.getItems();
                 msg = "SUCCESS_FLATS";
             }
-            Log.d(TAG, "inside addExpense");
         } catch (IOException e) {
             ioException = e;
             msg = "EXCEPTION";
