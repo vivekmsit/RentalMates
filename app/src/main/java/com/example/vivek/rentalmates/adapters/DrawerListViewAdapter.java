@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.activities.DeveloperModeActivity;
+import com.example.vivek.rentalmates.activities.ManageExpenseGroupsActivity;
+import com.example.vivek.rentalmates.activities.ManageFlatsActivity;
 import com.example.vivek.rentalmates.activities.MyLoginActivity;
 import com.example.vivek.rentalmates.viewholders.DrawerListItem;
 
@@ -73,20 +75,25 @@ public class DrawerListViewAdapter extends RecyclerView.Adapter<DrawerListViewAd
         public void onClick(View v) {
             String currentItem = data.get(getPosition()).title;
             int currentPosition = getPosition();
+            Intent intent;
             switch (currentPosition) {
                 case 0:
                     break;
                 case 1:
+                    intent = new Intent(context, ManageFlatsActivity.class);
+                    context.startActivity(intent);
                     break;
                 case 2:
+                    intent = new Intent(context, ManageExpenseGroupsActivity.class);
+                    context.startActivity(intent);
                     break;
                 case 3:
-                    Intent intent1 = new Intent(context, MyLoginActivity.class);
-                    context.startActivity(intent1);
+                    intent = new Intent(context, MyLoginActivity.class);
+                    context.startActivity(intent);
                     break;
                 case 4:
-                    Intent intent2 = new Intent(context, DeveloperModeActivity.class);
-                    context.startActivity(intent2);
+                    intent = new Intent(context, DeveloperModeActivity.class);
+                    context.startActivity(intent);
                     break;
                 default:
                     break;

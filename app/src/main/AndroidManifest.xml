@@ -83,6 +83,14 @@
             android:name=".activities.RegisterNewFlatActivity"
             android:label="@string/title_activity_register_new_flat" >
         </activity>
+        <activity
+            android:name=".activities.ManageFlatsActivity"
+            android:label="@string/title_activity_manage_flats" >
+        </activity>
+        <activity
+            android:name=".activities.ManageExpenseGroupsActivity"
+            android:label="@string/title_activity_manage_expense_groups" >
+        </activity>
     </application>
 
 </manifest>
