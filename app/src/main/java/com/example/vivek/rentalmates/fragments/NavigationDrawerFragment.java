@@ -21,6 +21,7 @@ import com.example.vivek.rentalmates.activities.MainTabActivity;
 import com.example.vivek.rentalmates.adapters.DrawerListViewAdapter;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
+import com.example.vivek.rentalmates.others.DividerItemDecoration;
 import com.example.vivek.rentalmates.viewholders.DrawerListItem;
 import com.pkmmte.view.CircularImageView;
 
@@ -91,13 +92,8 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(TAG, "inside onCreateView");
-
         // Inflate the layout for this fragment
         View layout = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
-        recyclerView = (RecyclerView) layout.findViewById(R.id.listDrawer);
-        drawerListViewAdapter = new DrawerListViewAdapter(getActivity(), getData());
-        recyclerView.setAdapter(drawerListViewAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         return layout;
     }
 
@@ -105,8 +101,24 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
     public static List<DrawerListItem> getData() {
         Log.d(TAG, "inside getData");
         List<DrawerListItem> data = new ArrayList<>();
-        int[] icons = {R.drawable.ic_action_person_light, R.drawable.ic_action_person_light, R.drawable.ic_action_person_light, R.drawable.ic_action_settings_light, R.drawable.ic_action_person_light, R.drawable.ic_action_about_light};
-        String[] titles = {"Manage Profile", "Manage Flats", "Manage Expense Groups", "Account Settings", "Developer Mode", "About"};
+        int[] icons = {
+                R.drawable.ic_action_person_light,
+                R.drawable.ic_action_person_light,
+                R.drawable.ic_action_person_light,
+                R.drawable.ic_action_settings_light,
+                R.drawable.ic_action_person_light,
+                R.drawable.ic_action_about_light,
+                R.drawable.ic_action_about_light
+        };
+        String[] titles = {
+                "Profile",
+                "Flats",
+                "Expense Groups",
+                "Account Settings",
+                "Developer Mode",
+                "About",
+                "Help"
+        };
         for (int i = 0; i < titles.length && i < icons.length; i++) {
             DrawerListItem current = new DrawerListItem();
             current.iconId = icons[i];
@@ -121,6 +133,13 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
         Log.d(TAG, "inside setup");
         containerView = getActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
+
+        recyclerView = (RecyclerView) containerView.findViewById(R.id.listDrawer);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), null));
+        drawerListViewAdapter = new DrawerListViewAdapter(getActivity(), mDrawerLayout, getData());
+        recyclerView.setAdapter(drawerListViewAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         drawerToggle = new ActionBarDrawerToggle(getActivity(), drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
 
             @Override

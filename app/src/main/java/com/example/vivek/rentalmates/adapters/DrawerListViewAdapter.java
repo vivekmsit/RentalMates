@@ -2,6 +2,7 @@ package com.example.vivek.rentalmates.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.activities.DeveloperModeActivity;
@@ -21,20 +21,19 @@ import com.example.vivek.rentalmates.viewholders.DrawerListItem;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Created by vivek on 4/8/2015.
- */
 public class DrawerListViewAdapter extends RecyclerView.Adapter<DrawerListViewAdapter.DrawerViewHolder> {
     private static final String TAG = "DrawerListAdapter_Debug";
 
     private List<DrawerListItem> data = Collections.emptyList();
     private LayoutInflater inflater;
     private Context context;
+    private DrawerLayout drawerLayout;
 
-    public DrawerListViewAdapter(Context context, List<DrawerListItem> data) {
+    public DrawerListViewAdapter(Context context, DrawerLayout drawerLayout, List<DrawerListItem> data) {
         Log.d(TAG, "inside Constructor");
         inflater = LayoutInflater.from(context);
         this.context = context;
+        this.drawerLayout = drawerLayout;
         this.data = data;
     }
 
@@ -42,8 +41,7 @@ public class DrawerListViewAdapter extends RecyclerView.Adapter<DrawerListViewAd
     public DrawerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.d(TAG, "inside onCreateViewHolder");
         View view = inflater.inflate(R.layout.drawer_list_item, parent, false);
-        DrawerViewHolder holder = new DrawerViewHolder(view);
-        return holder;
+        return new DrawerViewHolder(view);
     }
 
     @Override
@@ -73,7 +71,7 @@ public class DrawerListViewAdapter extends RecyclerView.Adapter<DrawerListViewAd
 
         @Override
         public void onClick(View v) {
-            String currentItem = data.get(getPosition()).title;
+            //String currentItem = data.get(getPosition()).title;
             int currentPosition = getPosition();
             Intent intent;
             switch (currentPosition) {
@@ -98,6 +96,7 @@ public class DrawerListViewAdapter extends RecyclerView.Adapter<DrawerListViewAd
                 default:
                     break;
             }
+            drawerLayout.closeDrawers();
         }
     }
 }
