@@ -40,9 +40,11 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
     private GoogleApiClient mGoogleApiClient;
     private SharedPreferences prefs;
     private NavigationDrawerFragment drawerFragment;
+    private FragmentManager fragmentManager;
     private MyAdapter pageAdapter;
     private FloatingActionButton fab;
     private int currentPosition;
+    private int backStackCount;
     private boolean newExpenseAvailable;
 
     @Override
@@ -58,16 +60,24 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
         setSupportActionBar(toolBar);
         toolBar.setTitleTextColor(getResources().getColor(R.color.white));
 
+        //Initialize FragmentManager
+        fragmentManager = getSupportFragmentManager();
+        fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                backStackCount = fragmentManager.getBackStackEntryCount();
+            }
+        });
+
         //Initialize ViewPager
         viewPager = (ViewPager) findViewById(R.id.pager);
-        pageAdapter = new MyAdapter(getSupportFragmentManager());
+        pageAdapter = new MyAdapter(fragmentManager);
         viewPager.setAdapter(pageAdapter);
 
         //Initialize FloatingActionButton
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setType(FloatingActionButton.TYPE_NORMAL);
         fab.setShadow(true);
-        //fab.attachToRecyclerView(recyclerView);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -175,7 +185,7 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
     }
 
     public void showFab() {
-        if (currentPosition == 0) {
+        if (currentPosition == 0 && backStackCount == 0) {
             fab.show();
         }
     }
