@@ -2,6 +2,8 @@ package com.example.vivek.rentalmates.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,6 +18,7 @@ import com.example.vivek.rentalmates.activities.DeveloperModeActivity;
 import com.example.vivek.rentalmates.activities.ManageExpenseGroupsActivity;
 import com.example.vivek.rentalmates.activities.ManageFlatsActivity;
 import com.example.vivek.rentalmates.activities.MyLoginActivity;
+import com.example.vivek.rentalmates.fragments.NewsFeedFragment;
 import com.example.vivek.rentalmates.viewholders.DrawerListItem;
 
 import java.util.Collections;
@@ -28,13 +31,21 @@ public class DrawerListViewAdapter extends RecyclerView.Adapter<DrawerListViewAd
     private LayoutInflater inflater;
     private Context context;
     private DrawerLayout drawerLayout;
+    private FragmentManager fragmentManager;
+    private int currentPosition;
 
-    public DrawerListViewAdapter(Context context, DrawerLayout drawerLayout, List<DrawerListItem> data) {
+    public DrawerListViewAdapter(Context context, DrawerLayout drawerLayout, FragmentManager fragmentManager, List<DrawerListItem> data) {
         Log.d(TAG, "inside Constructor");
         inflater = LayoutInflater.from(context);
         this.context = context;
         this.drawerLayout = drawerLayout;
+        this.fragmentManager = fragmentManager;
         this.data = data;
+        currentPosition = -1;
+    }
+
+    public int getCurrentPosition() {
+        return currentPosition;
     }
 
     @Override
@@ -57,6 +68,43 @@ public class DrawerListViewAdapter extends RecyclerView.Adapter<DrawerListViewAd
         return data.size();
     }
 
+    public void updateDrawerLayoutMainFragment() {
+        Log.d(TAG, "inside startFragment" + currentPosition);
+        if (currentPosition == -1) {
+            return;
+        }
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        Intent intent;
+        switch (currentPosition) {
+            case 0:
+                break;
+            case 1:
+                intent = new Intent(context, ManageFlatsActivity.class);
+                context.startActivity(intent);
+                break;
+            case 2:
+                intent = new Intent(context, ManageExpenseGroupsActivity.class);
+                context.startActivity(intent);
+                break;
+            case 3:
+                intent = new Intent(context, MyLoginActivity.class);
+                context.startActivity(intent);
+                break;
+            case 4:
+                intent = new Intent(context, DeveloperModeActivity.class);
+                context.startActivity(intent);
+                break;
+            case 5:
+                ft.replace(R.id.mainDrawerView, new NewsFeedFragment());
+                ft.addToBackStack("NewsFeedFragment");
+                ft.commit();
+                break;
+            default:
+                break;
+        }
+        currentPosition = -1;
+    }
+
     class DrawerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView title;
@@ -72,30 +120,7 @@ public class DrawerListViewAdapter extends RecyclerView.Adapter<DrawerListViewAd
         @Override
         public void onClick(View v) {
             //String currentItem = data.get(getPosition()).title;
-            int currentPosition = getPosition();
-            Intent intent;
-            switch (currentPosition) {
-                case 0:
-                    break;
-                case 1:
-                    intent = new Intent(context, ManageFlatsActivity.class);
-                    context.startActivity(intent);
-                    break;
-                case 2:
-                    intent = new Intent(context, ManageExpenseGroupsActivity.class);
-                    context.startActivity(intent);
-                    break;
-                case 3:
-                    intent = new Intent(context, MyLoginActivity.class);
-                    context.startActivity(intent);
-                    break;
-                case 4:
-                    intent = new Intent(context, DeveloperModeActivity.class);
-                    context.startActivity(intent);
-                    break;
-                default:
-                    break;
-            }
+            currentPosition = getPosition();
             drawerLayout.closeDrawers();
         }
     }

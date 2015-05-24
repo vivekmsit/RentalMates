@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -48,6 +49,7 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
     private DrawerListViewAdapter drawerListViewAdapter;
     private CircularImageView circularImageView;
     private MainTabActivity mainTabActivity;
+    private FragmentManager fragmentManager;
 
     public NavigationDrawerFragment() {
         mUserLearnedDrawer = false;
@@ -86,6 +88,8 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
         //Initialize UserEmailId TextView
         emailTextView = (TextView) getView().findViewById(R.id.userEmailTextView);
         emailTextView.setText(emailId);
+
+        fragmentManager = getFragmentManager();
     }
 
     @Override
@@ -136,7 +140,7 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
 
         recyclerView = (RecyclerView) containerView.findViewById(R.id.listDrawer);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), null));
-        drawerListViewAdapter = new DrawerListViewAdapter(getActivity(), mDrawerLayout, getData());
+        drawerListViewAdapter = new DrawerListViewAdapter(getActivity(), mDrawerLayout, fragmentManager, getData());
         recyclerView.setAdapter(drawerListViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -153,7 +157,11 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
                 getActivity().invalidateOptionsMenu();
-                mainTabActivity.showFab();
+                if (drawerListViewAdapter.getCurrentPosition() == -1) {
+                    mainTabActivity.showFab();
+                } else {
+                    drawerListViewAdapter.updateDrawerLayoutMainFragment();
+                }
             }
 
             @Override

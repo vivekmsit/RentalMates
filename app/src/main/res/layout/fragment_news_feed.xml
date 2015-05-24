@@ -3,13 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#9FD1FF"
+    android:clickable="true"
     tools:context="com.example.vivek.rentalmates.fragments.NewsFeedFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="16dp"
-        android:text="This is NewsFeed Fragment" />
+        android:layout_height="match_parent">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="16dp"
+            android:text="This is NewsFeed Fragment" />
+
+    </RelativeLayout>
 </FrameLayout>
