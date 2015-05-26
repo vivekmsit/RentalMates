@@ -1,11 +1,15 @@
 package com.example.vivek.rentalmates.others;
 
 import com.example.vivek.rentalmates.backend.userProfileApi.model.ExpenseGroup;
+import com.example.vivek.rentalmates.backend.userProfileApi.model.JsonMap;
 import com.google.api.client.util.DateTime;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class LocalExpenseGroup implements Serializable {
 
@@ -20,7 +24,7 @@ public class LocalExpenseGroup implements Serializable {
     private int numberOfMembers;
     private String operationResult;
     private List<Long> expenseDataIds = new ArrayList<>();
-    private List<Long> memberIds = new ArrayList<>();
+    private Map<Long, Long> membersData = new HashMap<>();
 
     public LocalExpenseGroup() {
     }
@@ -97,12 +101,23 @@ public class LocalExpenseGroup implements Serializable {
         this.expenseDataIds = expenseDataIds;
     }
 
-    public List<Long> getMemberIds() {
-        return memberIds;
+
+    public Map<Long, Long> getMembersData() {
+        return membersData;
     }
 
-    public void setMemberIds(List<Long> memberIds) {
-        this.memberIds = memberIds;
+    public void setMembersData(Map<Long, Long> membersData) {
+        this.membersData = membersData;
+    }
+
+    public void addMemberData(Long memberId, Long share) {
+        membersData.put(memberId, share);
+        numberOfMembers++;
+    }
+
+    public void deleteMemberData(Long memberId) {
+        membersData.remove(memberId);
+        numberOfMembers--;
     }
 
     public static List<ExpenseGroup> convertLocalEGroupToEGroup(List<LocalExpenseGroup> localExpenseGroups) {
@@ -122,8 +137,12 @@ public class LocalExpenseGroup implements Serializable {
             data.setNumberOfMembers(localExpenseGroup.getNumberOfMembers());
             data.setOperationResult(localExpenseGroup.getOperationResult());
             data.setExpenseDataIds(localExpenseGroup.getExpenseDataIds());
-            data.setMemberIds(localExpenseGroup.getMemberIds());
-
+            JsonMap membersData = new JsonMap();
+            Set<Long> memberIds = localExpenseGroup.getMembersData().keySet();
+            for (Long memberId : memberIds) {
+                membersData.put(memberId.toString(), 1);
+            }
+            data.setMembersData(membersData);
             expenseGroups.add(data);
         }
         return expenseGroups;
@@ -146,7 +165,13 @@ public class LocalExpenseGroup implements Serializable {
             data.setNumberOfMembers(expenseGroup.getNumberOfMembers());
             data.setOperationResult(expenseGroup.getOperationResult());
             data.setExpenseDataIds(expenseGroup.getExpenseDataIds());
-            data.setMemberIds(expenseGroup.getMemberIds());
+            Map<Long, Long> membersData = new HashMap<>();
+            Set<String> memberIds = expenseGroup.getMembersData().keySet();
+            Long l = new Long(1);//need to be changed later
+            for (String memberId : memberIds) {
+                membersData.put(Long.parseLong(memberId), l);
+            }
+            data.setMembersData(membersData);
 
             localExpenseGroups.add(data);
         }

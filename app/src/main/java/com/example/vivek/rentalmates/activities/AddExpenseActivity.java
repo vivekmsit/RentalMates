@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
+import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.JsonMap;
 import com.example.vivek.rentalmates.dialogs.ChooseExpenseMembersDialog;
 import com.example.vivek.rentalmates.interfaces.OnAddExpenseReceiver;
 import com.example.vivek.rentalmates.interfaces.OnExpenseMembersSelectedReceiver;
@@ -26,6 +27,7 @@ import com.google.api.client.util.DateTime;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 public class AddExpenseActivity extends ActionBarActivity implements View.OnClickListener {
 
@@ -72,7 +74,12 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
         }
         for (LocalExpenseGroup group : appData.getExpenseGroups()) {
             if (group.getId() == prefs.getLong(AppConstants.FLAT_EXPENSE_GROUP_ID, 0)) {
-                expenseData.setMemberIds(group.getMemberIds());
+                JsonMap membersData = new JsonMap();
+                Set<Long> memberIds = group.getMembersData().keySet();
+                for (Long memberId : memberIds) {
+                    membersData.put(memberId.toString(), 1);
+                }
+                expenseData.setMembersData(membersData);
                 expenseData.setNumberOfMembers(group.getNumberOfMembers());
             }
         }
@@ -92,7 +99,11 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
                 dialog.setOnExpenseMembersSelectedReceiver(new OnExpenseMembersSelectedReceiver() {
                     @Override
                     public void onOkay(List<Long> memberIds) {
-                        expenseData.setMemberIds(memberIds);
+                        JsonMap membersData = new JsonMap();
+                        for (Long memberId : memberIds) {
+                            membersData.put(memberId.toString(), 1);
+                        }
+                        expenseData.setMembersData(membersData);
                         expenseData.setNumberOfMembers(memberIds.size());
                     }
 
@@ -127,7 +138,7 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
                         addExpenseButtonClicked = true;
                         progressDialog.cancel();
                         Toast.makeText(context, "Expense uploaded", Toast.LENGTH_SHORT).show();
-                        if (uploadedExpenseData.getMemberIds().contains(uploadedExpenseData.getSubmitterId())) {
+                        if (uploadedExpenseData.getMembersData().keySet().contains(uploadedExpenseData.getSubmitterId().toString())) {
                             appData.addLocalExpenseData(context, uploadedExpenseData);
                         }
                         Intent intent = new Intent(context, MainTabActivity.class);

@@ -203,7 +203,7 @@ public class ExpenseGroupEndpoint {
 
         //Send notification to all group members except submitter using GCM.
         List<Long> userIds = new ArrayList<>();
-        for (Long userId : expenseData.getMemberIds()) {
+        for (Long userId : expenseData.getMembersData().keySet()) {
             if (!userId.equals(expenseData.getSubmitterId())) {
                 userIds.add(userId);
             }
@@ -260,7 +260,7 @@ public class ExpenseGroupEndpoint {
             for (Long expenseId : expenseGroup.getExpenseDataIds()) {
                 if (!tempIds.contains(expenseId)) {
                     ExpenseData expenseData = ofy().load().type(ExpenseData.class).id(expenseId).now();
-                    if (expenseData.getMemberIds().contains(currentUserProfile.getId())) {
+                    if (expenseData.getMembersData().keySet().contains(currentUserProfile.getId())) {
                         expenses.add(expenseData);
                         tempIds.add(expenseId);
                     }

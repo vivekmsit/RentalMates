@@ -13,6 +13,7 @@ import com.example.vivek.rentalmates.others.AppData;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class ChooseExpenseMembersDialog extends DialogFragment {
 
@@ -41,7 +42,7 @@ public class ChooseExpenseMembersDialog extends DialogFragment {
         Bundle bundle = getArguments();
         Long expenseGroupId = bundle.getLong("expenseGroupId");
         int count = 0;
-        List<Long> expenseMemberIds = appData.getLocalExpenseGroup(expenseGroupId).getMemberIds();
+        Set<Long> expenseMemberIds = appData.getLocalExpenseGroup(expenseGroupId).getMembersData().keySet();
         int size = expenseMemberIds.size();
 
         memberNames = new String[size];

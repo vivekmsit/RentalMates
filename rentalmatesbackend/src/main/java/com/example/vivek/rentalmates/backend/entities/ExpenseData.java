@@ -1,12 +1,15 @@
 package com.example.vivek.rentalmates.backend.entities;
 
+import com.example.vivek.rentalmates.backend.others.LongStringifier;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Serialize;
+import com.googlecode.objectify.annotation.Stringify;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 public class ExpenseData implements Serializable {
@@ -25,7 +28,10 @@ public class ExpenseData implements Serializable {
     private String expenseGroupName;
     private int currencyType;
     private int numberOfMembers;
-    private List<Long> memberIds = new ArrayList<>();
+
+    @Serialize
+    @Stringify(LongStringifier.class)
+    private Map<Long, Long> membersData = new HashMap<>();
 
     ExpenseData() {
         date = new Date();
@@ -127,21 +133,22 @@ public class ExpenseData implements Serializable {
         this.numberOfMembers = numberOfMembers;
     }
 
-    public List<Long> getMemberIds() {
-        return memberIds;
+
+    public Map<Long, Long> getMembersData() {
+        return membersData;
     }
 
-    public void setMemberIds(List<Long> memberIds) {
-        this.memberIds = memberIds;
+    public void setMembersData(Map<Long, Long> membersData) {
+        this.membersData = membersData;
     }
 
-    public void addMemberId(Long memberId) {
-        memberIds.add(memberId);
+    public void addMemberData(Long memberId, Long share) {
+        membersData.put(memberId, share);
         numberOfMembers++;
     }
 
-    public void deleteMemberId(Long memberId) {
-        memberIds.remove(memberId);
+    public void deleteMemberData(Long memberId) {
+        membersData.remove(memberId);
         numberOfMembers--;
     }
 

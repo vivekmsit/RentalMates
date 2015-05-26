@@ -48,7 +48,7 @@ public class UserProfile {
         date = new Date();
     }
 
-    public Long getId(){
+    public Long getId() {
         return this.id;
     }
 
@@ -126,12 +126,12 @@ public class UserProfile {
         numberOfExpenseGroups--;
     }
 
-    public void addFlatId(Long flatId){
+    public void addFlatId(Long flatId) {
         flatIds.add(flatId);
         numberOfFlats++;
     }
 
-    public void removeFlatId(Long flatId){
+    public void removeFlatId(Long flatId) {
         flatIds.remove(flatId);
         numberOfFlats--;
     }
