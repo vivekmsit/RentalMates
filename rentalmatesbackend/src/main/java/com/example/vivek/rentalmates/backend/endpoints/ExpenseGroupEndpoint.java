@@ -23,6 +23,7 @@ import com.googlecode.objectify.cmd.Query;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Logger;
 
@@ -199,20 +200,38 @@ public class ExpenseGroupEndpoint {
         ofy().save().entity(expenseData).now();
         logger.info("Created ExpenseData.");
         expenseGroup.addExpenseId(expenseData.getId());
-        ofy().save().entity(expenseGroup).now();
 
-        //Send notification to all group members except submitter using GCM.
-        List<Long> userIds = new ArrayList<>();
-        for (Long userId : expenseData.getMembersData().keySet()) {
-            if (!userId.equals(expenseData.getSubmitterId())) {
-                userIds.add(userId);
+        UserProfile memberUserProfile;
+        List<Long> gcmMemberIds = new ArrayList<>();
+        for (Long memberId : expenseData.getMembersData().keySet()) {
+            memberUserProfile = ofy().load().type(UserProfile.class).id(memberId).now();
+            Long totalProfileShare = memberUserProfile.getPayback();
+            Long currentShare = expenseGroup.getMembersData().get(memberId);
+            Long share = (expenseData.getAmount() * expenseData.getMembersData().get(memberId)) / expenseData.getTotalShare();
+
+            //Update user share of expense data inside expense group as well as in user profile
+            if (memberId.equals(expenseData.getPayerId())) {
+                expenseGroup.updateMemberData(memberId, currentShare + (expenseData.getAmount() - share));
+                memberUserProfile.setPayback(totalProfileShare + (expenseData.getAmount() - share));
+            } else {
+                expenseGroup.updateMemberData(memberId, currentShare - share);
+                memberUserProfile.setPayback(totalProfileShare - share);
+            }
+            ofy().save().entity(memberUserProfile).now();
+            ofy().save().entity(expenseGroup).now();
+
+            //Add memberIds to which notification is to be sent
+            if (!memberId.equals(expenseData.getSubmitterId())) {
+                gcmMemberIds.add(memberId);
             }
         }
-        if (userIds.size() != 0) {
+
+        //Send notification to all group members except submitter using GCM.
+        if (gcmMemberIds.size() != 0) {
             UserProfile userProfile = ofy().load().type(UserProfile.class).id(expenseData.getSubmitterId()).now();
             String message = userProfile.getUserName() + " added a new expense of Rs. " +
                     expenseData.getAmount() + " for " + expenseData.getDescription();
-            sendMessage(userIds, message);
+            sendMessage(gcmMemberIds, message);
         }
         return ofy().load().entity(expenseData).now();
     }

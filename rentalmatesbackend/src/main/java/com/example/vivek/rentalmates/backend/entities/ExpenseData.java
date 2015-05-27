@@ -28,6 +28,7 @@ public class ExpenseData implements Serializable {
     private String expenseGroupName;
     private int currencyType;
     private int numberOfMembers;
+    private int totalShare;
 
     @Serialize
     @Stringify(LongStringifier.class)
@@ -133,6 +134,13 @@ public class ExpenseData implements Serializable {
         this.numberOfMembers = numberOfMembers;
     }
 
+    public int getTotalShare() {
+        return totalShare;
+    }
+
+    public void setTotalShare(int totalShare) {
+        this.totalShare = totalShare;
+    }
 
     public Map<Long, Long> getMembersData() {
         return membersData;

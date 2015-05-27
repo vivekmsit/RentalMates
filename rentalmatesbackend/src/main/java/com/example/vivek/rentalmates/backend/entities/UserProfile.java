@@ -34,6 +34,7 @@ public class UserProfile {
     private String createProfileResult;
     private Long primaryFlatId;
     private Long flatExpenseGroupId;
+    private Long payback;
     private int numberOfFlats;
     private int numberOfExpenseGroups;
     private String currentGcmId;
@@ -43,6 +44,7 @@ public class UserProfile {
     private List<String> gcmIds = new ArrayList<>();
 
     public UserProfile() {
+        payback = new Long(0);
         numberOfFlats = 0;
         numberOfExpenseGroups = 0;
         date = new Date();
@@ -150,6 +152,14 @@ public class UserProfile {
 
     public void setFlatExpenseGroupId(Long flatExpenseGroupId) {
         this.flatExpenseGroupId = flatExpenseGroupId;
+    }
+
+    public Long getPayback() {
+        return payback;
+    }
+
+    public void setPayback(Long payback) {
+        this.payback = payback;
     }
 
     public int getNumberOfFlats() {

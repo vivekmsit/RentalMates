@@ -81,6 +81,7 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
                 }
                 expenseData.setMembersData(membersData);
                 expenseData.setNumberOfMembers(group.getNumberOfMembers());
+                expenseData.setTotalShare(group.getNumberOfMembers());
             }
         }
         progressDialog = new ProgressDialog(this);
@@ -105,6 +106,7 @@ public class AddExpenseActivity extends ActionBarActivity implements View.OnClic
                         }
                         expenseData.setMembersData(membersData);
                         expenseData.setNumberOfMembers(memberIds.size());
+                        expenseData.setTotalShare(memberIds.size());
                     }
 
                     @Override
