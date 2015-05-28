@@ -4,17 +4,43 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipeListExpenses"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/listExpenses"
+        <LinearLayout
+            android:id="@+id/paybackButtonLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/facebookBackground" />
+            android:layout_marginBottom="3dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="3dp">
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+            <Button
+                android:id="@+id/paybackButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/orange"
+                android:elevation="2dp"
+                android:text="Payback Amount"
+                android:textColor="@color/white" />
 
+        </LinearLayout>
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeListExpenses"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/paybackButtonLayout">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/listExpenses"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/facebookBackground" />
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+    </RelativeLayout>
 </FrameLayout>

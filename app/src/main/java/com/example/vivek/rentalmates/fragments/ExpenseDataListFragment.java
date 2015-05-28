@@ -1,6 +1,7 @@
 package com.example.vivek.rentalmates.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,12 +13,15 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.adapters.ExpenseListViewAdapter;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.interfaces.OnExpenseListReceiver;
+import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
+import com.example.vivek.rentalmates.others.LocalUserProfile;
 import com.example.vivek.rentalmates.tasks.GetAllExpenseListAsyncTask;
 import com.example.vivek.rentalmates.viewholders.ExpenseListItem;
 import com.google.api.client.util.DateTime;
@@ -35,6 +39,8 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
     private RecyclerView recyclerView;
     private ExpenseListViewAdapter expenseListViewAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private Button payBackButton;
+    private SharedPreferences prefs;
 
     public ExpenseDataListFragment() {
         Log.d(TAG, "inside constructor");
@@ -46,6 +52,7 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
         super.onCreate(savedInstanceState);
         appData = AppData.getInstance();
         context = getActivity().getApplicationContext();
+        prefs = getActivity().getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -54,6 +61,11 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
 
         // Inflate the layout for this fragment
         View layout = inflater.inflate(R.layout.fragment_expenses, container, false);
+
+        //Initialize Payback Button
+        payBackButton = (Button) layout.findViewById(R.id.paybackButton);
+        LocalUserProfile userProfile = appData.getLocalUserProfile(prefs.getLong(AppConstants.USER_PROFILE_ID, 0));
+        payBackButton.setText("Payback Amount: Rs. " + userProfile.getPayback());
 
         //Initialize RecyclerView
         recyclerView = (RecyclerView) layout.findViewById(R.id.listExpenses);

@@ -6,32 +6,21 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by vivek on 3/19/2015.
- */
 public class LocalUserProfile implements Serializable {
 
     private static final String TAG = "LocalUserProfile_Debug";
 
     private Long userProfileId;
-
     private String userName;
-
     private String profileURL;
-
     private String profilePhotoURL;
-
     private String currentPlace;
-
     private String emailId;
-
     private String createProfileResult;
-
-    private List<Long> flatIds = new ArrayList<>();
-
     private Long primaryFlatId;
-
     private int numberOfFlats;
+    private Long payback;
+    private List<Long> flatIds = new ArrayList<>();
 
     //Default Constructor
     public LocalUserProfile() {
@@ -118,6 +107,14 @@ public class LocalUserProfile implements Serializable {
         this.numberOfFlats = numberOfFlats;
     }
 
+    public Long getPayback() {
+        return payback;
+    }
+
+    public void setPayback(Long payback) {
+        this.payback = payback;
+    }
+
     public static List<UserProfile> convertLocalUserProfileToUserProfile(List<LocalUserProfile> profiles) {
         if (profiles == null) {
             return null;
@@ -131,6 +128,7 @@ public class LocalUserProfile implements Serializable {
             data.setUserName(profile.getUserName());
             data.setCurrentPlace(profile.getCurrentPlace());
             data.setNumberOfFlats(profile.getNumberOfFlats());
+            data.setPayback(profile.getPayback());
 
             localUserProfiles.add(data);
         }
@@ -150,6 +148,7 @@ public class LocalUserProfile implements Serializable {
             data.setUserName(profile.getUserName());
             data.setCurrentPlace(profile.getCurrentPlace());
             data.setNumberOfFlats(profile.getNumberOfFlats());
+            data.setPayback(profile.getPayback());
 
             localUserProfiles.add(data);
         }
