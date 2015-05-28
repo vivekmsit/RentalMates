@@ -205,6 +205,7 @@ public class ExpenseGroupEndpoint {
         List<Long> gcmMemberIds = new ArrayList<>();
         for (Long memberId : expenseData.getMembersData().keySet()) {
             memberUserProfile = ofy().load().type(UserProfile.class).id(memberId).now();
+
             Long totalProfileShare = memberUserProfile.getPayback();
             Long currentShare = expenseGroup.getMembersData().get(memberId);
             Long share = (expenseData.getAmount() * expenseData.getMembersData().get(memberId)) / expenseData.getTotalShare();
@@ -307,6 +308,26 @@ public class ExpenseGroupEndpoint {
         checkExpenseExists(id);
         ExpenseData expenseData = ofy().load().type(ExpenseData.class).id(id).now();
         ExpenseGroup expenseGroup = ofy().load().type(ExpenseGroup.class).id(expenseData.getExpenseGroupId()).now();
+
+        UserProfile memberUserProfile;
+        for (Long memberId : expenseData.getMembersData().keySet()) {
+            memberUserProfile = ofy().load().type(UserProfile.class).id(memberId).now();
+
+            Long totalProfileShare = memberUserProfile.getPayback();
+            Long currentShare = expenseGroup.getMembersData().get(memberId);
+            Long share = (expenseData.getAmount() * expenseData.getMembersData().get(memberId)) / expenseData.getTotalShare();
+
+            //Update user share of expense data inside expense group as well as in user profile
+            if (memberId.equals(expenseData.getPayerId())) {
+                expenseGroup.updateMemberData(memberId, currentShare - (expenseData.getAmount() - share));
+                memberUserProfile.setPayback(totalProfileShare - (expenseData.getAmount() - share));
+            } else {
+                expenseGroup.updateMemberData(memberId, currentShare + share);
+                memberUserProfile.setPayback(totalProfileShare + share);
+            }
+            ofy().save().entity(memberUserProfile).now();
+        }
+
         expenseGroup.deleteExpenseId(expenseData.getId());
         ofy().save().entity(expenseGroup).now();
         ofy().delete().type(ExpenseData.class).id(id).now();
