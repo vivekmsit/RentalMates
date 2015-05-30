@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.adapters.ExpenseListViewAdapter;
@@ -39,7 +40,8 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
     private RecyclerView recyclerView;
     private ExpenseListViewAdapter expenseListViewAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private Button payBackButton;
+    private TextView payBackAmountView;
+    private TextView expenseGroupNameView;
     private SharedPreferences prefs;
 
     public ExpenseDataListFragment() {
@@ -62,10 +64,14 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
         // Inflate the layout for this fragment
         View layout = inflater.inflate(R.layout.fragment_expenses, container, false);
 
-        //Initialize Payback Button
-        payBackButton = (Button) layout.findViewById(R.id.paybackButton);
+        //Initialize Payback TextView
+        payBackAmountView = (TextView) layout.findViewById(R.id.paybackTextView);
         LocalUserProfile userProfile = appData.getLocalUserProfile(prefs.getLong(AppConstants.USER_PROFILE_ID, 0));
-        payBackButton.setText("Payback Amount: Rs. " + userProfile.getPayback());
+        payBackAmountView.setText("Payback Amount: Rs. " + userProfile.getPayback());
+
+        //Initialize expense Group Text View
+        expenseGroupNameView = (TextView) layout.findViewById(R.id.expenseGroupName);
+        expenseGroupNameView.setText(prefs.getString(AppConstants.PRIMARY_FLAT_NAME, "no_expense_group"));
 
         //Initialize RecyclerView
         recyclerView = (RecyclerView) layout.findViewById(R.id.listExpenses);
