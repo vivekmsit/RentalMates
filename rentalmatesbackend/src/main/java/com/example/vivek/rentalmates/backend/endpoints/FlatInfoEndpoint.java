@@ -83,25 +83,16 @@ public class FlatInfoEndpoint {
             httpMethod = ApiMethod.HttpMethod.POST)
     public FlatInfo registerNewFlat(FlatInfo flatInfo) {
         String flatName = flatInfo.getFlatName();
-        Query query = ofy().load().type(FlatInfo.class);
-        query = query.filter("flatName" + " = ", flatName);
-        List<FlatInfo> flats = query.list();
-        FlatInfo finalFlatInfo;
-        if (flats.size() == 0) {
+        FlatInfo finalFlatInfo = ofy().load().type(FlatInfo.class).filter("flatName", flatName).first().now();
+        if (finalFlatInfo == null) {
             //create a new ExpenseGroup for given flat
             ExpenseGroup expenseGroup = new ExpenseGroup();
             expenseGroup.setName(flatName);
-            Query query1 = ofy().load().type(ExpenseGroup.class);
-            query1 = query1.filter("name" + " = ", expenseGroup.getName());
-            List<ExpenseGroup> groups = query1.list();
-            ExpenseGroup finalExpenseGroup;
-            if (groups.size() == 0) {
+            ExpenseGroup finalExpenseGroup = ofy().load().type(ExpenseGroup.class).filter("name", expenseGroup.getName()).first().now();
+            if (finalExpenseGroup == null) {
                 ofy().save().entity(expenseGroup).now();
                 finalExpenseGroup = ofy().load().entity(expenseGroup).now();
-            } else {
-                finalExpenseGroup = groups.get(0);
             }
-
             //update flatInfo here
             flatInfo.setExpenseGroupId(finalExpenseGroup.getId());
             flatInfo.addUserId(flatInfo.getUserProfileId());
@@ -125,7 +116,6 @@ public class FlatInfoEndpoint {
 
             finalFlatInfo.setCreateFlatResult("NEW_FLAT_INFO");
         } else {
-            finalFlatInfo = flats.get(0);
             finalFlatInfo.setCreateFlatResult("OLD_FLAT_INFO");
         }
         logger.info("Created FlatInfo.");
@@ -140,16 +130,12 @@ public class FlatInfoEndpoint {
             path = "registerWithOldFlat",
             httpMethod = ApiMethod.HttpMethod.POST)
     public FlatInfo registerWithOldFlat(@Named("flatName") String flatName, @Named("userProfileId") Long userProfileId) throws IOException {
-        Query query = ofy().load().type(FlatInfo.class);
-        query = query.filter("flatName" + " = ", flatName);
-        List<FlatInfo> flats = query.list();
-        FlatInfo finalFlatInfo;
+        FlatInfo finalFlatInfo = ofy().load().type(FlatInfo.class).filter("flatName", flatName).first().now();
         UserProfile userProfile;
-        if (flats.size() == 0) {
+        if (finalFlatInfo == null) {
             logger.info("Created FlatInfo.");
             return null;
         } else {
-            finalFlatInfo = flats.get(0);
             //Add flatId of flat to UserProfile flatIds List
             userProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
             ExpenseGroup flatExpenseGroup = ofy().load().type(ExpenseGroup.class).id(finalFlatInfo.getExpenseGroupId()).now();

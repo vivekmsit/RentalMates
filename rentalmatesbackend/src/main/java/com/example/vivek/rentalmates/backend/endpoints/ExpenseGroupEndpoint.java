@@ -23,7 +23,6 @@ import com.googlecode.objectify.cmd.Query;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Logger;
 
@@ -88,17 +87,12 @@ public class ExpenseGroupEndpoint {
             path = "expenseGroup",
             httpMethod = ApiMethod.HttpMethod.POST)
     public ExpenseGroup createExpenseGroup(ExpenseGroup expenseGroup) {
-        String name = expenseGroup.getName();
-        Query query = ofy().load().type(ExpenseGroup.class);
-        query = query.filter("name" + " = ", name);
-        List<ExpenseGroup> groups = query.list();
-        ExpenseGroup finalExpenseGroup;
-        if (groups.size() == 0) {
+        ExpenseGroup finalExpenseGroup = ofy().load().type(ExpenseGroup.class).filter("name", expenseGroup.getName()).first().now();
+        if (finalExpenseGroup == null) {
             ofy().save().entity(expenseGroup).now();
             finalExpenseGroup = ofy().load().entity(expenseGroup).now();
             finalExpenseGroup.setOperationResult("NEW_EXPENSE_GROUP");
         } else {
-            finalExpenseGroup = groups.get(0);
             finalExpenseGroup.setOperationResult("OLD_EXPENSE_GROUP");
         }
         logger.info("Created ExpenseGroup.");

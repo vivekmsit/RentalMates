@@ -39,6 +39,7 @@ public class UserProfile {
     private int numberOfExpenseGroups;
     private String currentGcmId;
     private int numberOfGcmIds;
+    private List<Long> requestIds = new ArrayList<>();
     private List<Long> flatIds = new ArrayList<>();
     private List<Long> expenseGroupIds = new ArrayList<>();
     private List<String> gcmIds = new ArrayList<>();
@@ -178,13 +179,20 @@ public class UserProfile {
         this.numberOfExpenseGroups = numberOfExpenseGroups;
     }
 
-
     public String getCurrentGcmId() {
         return currentGcmId;
     }
 
     public void setCurrentGcmId(String currentGcmId) {
         this.currentGcmId = currentGcmId;
+    }
+
+    public List<Long> getRequestIds() {
+        return requestIds;
+    }
+
+    public void setRequestIds(List<Long> requestIds) {
+        this.requestIds = requestIds;
     }
 
     public List<String> getGcmIds() {

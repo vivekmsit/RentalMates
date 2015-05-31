@@ -66,7 +66,7 @@ public class FlatInfo {
         numberOfUsers = 0;
     }
 
-    public Long getFlatId(){
+    public Long getFlatId() {
         return this.id;
     }
 

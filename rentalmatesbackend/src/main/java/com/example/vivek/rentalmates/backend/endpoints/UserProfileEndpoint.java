@@ -2,7 +2,9 @@ package com.example.vivek.rentalmates.backend.endpoints;
 
 import com.example.vivek.rentalmates.backend.entities.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.entities.FlatInfo;
+import com.example.vivek.rentalmates.backend.entities.RegistrationRecord;
 import com.example.vivek.rentalmates.backend.entities.UserProfile;
+import com.example.vivek.rentalmates.backend.ofy.OfyService;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
@@ -86,11 +88,11 @@ public class UserProfileEndpoint {
         // If your client provides the ID then you should probably use PUT instead.
         String emailId = userProfile.getEmailId();
         String currentGcmId = userProfile.getCurrentGcmId();
-        Query query = ofy().load().type(UserProfile.class);
-        query = query.filter("emailId" + " = ", emailId);
-        List<UserProfile> profiles = query.list();
+
         UserProfile finalUserProfile;
-        if (profiles.size() == 0) {
+        finalUserProfile = ofy().load().type(UserProfile.class).filter("emailId", emailId).first().now();
+
+        if (finalUserProfile == null) {
             logger.info("Created UserProfile.");
             userProfile.setCurrentGcmId(currentGcmId);
             userProfile.addGcmId(currentGcmId);
@@ -98,7 +100,6 @@ public class UserProfileEndpoint {
             finalUserProfile = ofy().load().entity(userProfile).now();
             finalUserProfile.setCreateProfileResult("NEW_USER_PROFILE");
         } else {
-            finalUserProfile = profiles.get(0);
             //Below statement will be removed later to support multiple devices
             finalUserProfile.clearGcmIds();
             if (!finalUserProfile.getGcmIds().contains(currentGcmId)) {
