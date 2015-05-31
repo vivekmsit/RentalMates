@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
+import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
 import com.example.vivek.rentalmates.interfaces.OnExpenseGroupListReceiver;
@@ -212,7 +213,7 @@ public class DetermineFlatActivity extends ActionBarActivity implements View.OnC
         GetAllExpenseListAsyncTask task = new GetAllExpenseListAsyncTask(getApplicationContext());
         task.setOnExpenseListReceiver(new OnExpenseListReceiver() {
             @Override
-            public void onExpenseDataListLoadSuccessful() {
+            public void onExpenseDataListLoadSuccessful(List<ExpenseData> expenses) {
                 progressDialog.cancel();
                 Intent intent = new Intent(getApplicationContext(), MainTabActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

@@ -27,6 +27,7 @@ public class GetAllExpenseListAsyncTask extends AsyncTask<Context, Void, String>
     private SharedPreferences prefs;
     private IOException ioException;
     private AppData appData;
+    private List<ExpenseData> expenses;
     private OnExpenseListReceiver receiver;
 
     public GetAllExpenseListAsyncTask(Context context) {
@@ -55,7 +56,7 @@ public class GetAllExpenseListAsyncTask extends AsyncTask<Context, Void, String>
             if (expensesCollection == null) {
                 Log.d(TAG, "expenses is null");
             } else {
-                List<ExpenseData> expenses = expensesCollection.getItems();
+                expenses = expensesCollection.getItems();
                 if (expenses != null) {
                     //Store in Sorted order by Date
                     Collections.reverse(expenses);
@@ -78,7 +79,7 @@ public class GetAllExpenseListAsyncTask extends AsyncTask<Context, Void, String>
         switch (msg) {
             case "SUCCESS":
                 if (receiver != null) {
-                    receiver.onExpenseDataListLoadSuccessful();
+                    receiver.onExpenseDataListLoadSuccessful(expenses);
                 }
                 break;
             case "EXCEPTION":

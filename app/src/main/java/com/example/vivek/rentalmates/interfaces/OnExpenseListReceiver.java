@@ -1,7 +1,11 @@
 package com.example.vivek.rentalmates.interfaces;
 
-public interface OnExpenseListReceiver {
-    public void onExpenseDataListLoadSuccessful();
+import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 
-    public void onExpenseDataListLoadFailed();
+import java.util.List;
+
+public interface OnExpenseListReceiver {
+    void onExpenseDataListLoadSuccessful(List<ExpenseData> expenses);
+
+    void onExpenseDataListLoadFailed();
 }

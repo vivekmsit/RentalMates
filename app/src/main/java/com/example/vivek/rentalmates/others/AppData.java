@@ -12,6 +12,7 @@ import com.example.vivek.rentalmates.backend.userProfileApi.model.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
 import com.example.vivek.rentalmates.tasks.LoadProfileImageAsyncTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -142,6 +143,7 @@ public class AppData implements Serializable {
 
     public boolean addLocalExpenseData(Context context, ExpenseData expense) {
         LocalExpenseData data = new LocalExpenseData();
+        data.setExpenseId(expense.getId());
         data.setAmount(expense.getAmount());
         data.setDescription(expense.getDescription());
         data.setOwnerEmailId(expense.getOwnerEmailId());
@@ -245,5 +247,17 @@ public class AppData implements Serializable {
             Log.d(TAG, "ProfilePicture not found for " + emailId);
         }
         return bitmap;
+    }
+
+    public boolean isSerializable(Object e) {
+        boolean result;
+        try {
+            new ObjectOutputStream(new ByteArrayOutputStream()).writeObject(e);
+            result = true;
+        } catch (IOException e1) {
+            e1.printStackTrace();
+            result = false;
+        }
+        return result;
     }
 }

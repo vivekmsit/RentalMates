@@ -1,7 +1,7 @@
 package com.example.vivek.rentalmates.interfaces;
 
 public interface OnExpenseGroupListReceiver {
-    public void onExpenseGroupListLoadSuccessful();
+    void onExpenseGroupListLoadSuccessful();
 
-    public void onExpenseGroupListLoadFailed();
+    void onExpenseGroupListLoadFailed();
 }
