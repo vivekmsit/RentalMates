@@ -3,8 +3,8 @@ package com.example.vivek.rentalmates.activities;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -34,7 +34,7 @@ import com.example.vivek.rentalmates.tasks.RegisterWithOldFlatAsyncTask;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DetermineFlatActivity extends ActionBarActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class DetermineFlatActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "DetermineFlat_Debug";
 

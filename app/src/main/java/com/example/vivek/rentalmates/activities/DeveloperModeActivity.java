@@ -3,8 +3,8 @@ package com.example.vivek.rentalmates.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
@@ -12,7 +12,7 @@ import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
 
-public class DeveloperModeActivity extends ActionBarActivity {
+public class DeveloperModeActivity extends AppCompatActivity {
     private AppData appData;
 
     @Override

@@ -2,8 +2,8 @@ package com.example.vivek.rentalmates.activities;
 
 import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,7 +20,7 @@ import com.example.vivek.rentalmates.viewholders.FlatListItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ManageFlatsActivity extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class ManageFlatsActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "ManageFlats_Debug";
 
@@ -40,7 +40,7 @@ public class ManageFlatsActivity extends ActionBarActivity implements SwipeRefre
 
         //Initialize RecyclerView
         recyclerView = (RecyclerView) findViewById(R.id.listFlats);
-        flatListViewAdapter = new FlatListViewAdapter(this, getData(), getSupportFragmentManager());
+        flatListViewAdapter = new FlatListViewAdapter(this, getData());
         recyclerView.setAdapter(flatListViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 

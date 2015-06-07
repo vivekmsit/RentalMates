@@ -3,7 +3,7 @@ package com.example.vivek.rentalmates.activities;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,7 +19,7 @@ import com.example.vivek.rentalmates.viewholders.ExpenseGroupListItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ManageExpenseGroupsActivity extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class ManageExpenseGroupsActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "ManageEGroups_Debug";
 
@@ -39,7 +39,7 @@ public class ManageExpenseGroupsActivity extends ActionBarActivity implements Sw
 
         //Initialize RecyclerView
         recyclerView = (RecyclerView) findViewById(R.id.listExpenseGroups);
-        expenseGroupListViewAdapter = new ExpenseGroupListViewAdapter(this, getData(), getSupportFragmentManager());
+        expenseGroupListViewAdapter = new ExpenseGroupListViewAdapter(this, getData());
         recyclerView.setAdapter(expenseGroupListViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 

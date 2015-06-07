@@ -105,17 +105,17 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
         @Override
         public void onClick(View v) {
             Log.d(TAG, "inside onClick");
-            ExpenseListItem currentItem = data.get(getPosition());
+            ExpenseListItem currentItem = data.get(getAdapterPosition());
             Toast.makeText(context, currentItem.description, Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public boolean onLongClick(View v) {
             DialogFragment newFragment = new ExpenseMenuDialog();
-            ExpenseData expenseData = appData.getExpenses().get(getPosition());
+            ExpenseData expenseData = appData.getExpenses().get(getAdapterPosition());
             Bundle bundle = new Bundle();
             bundle.putLong("ExpenseId", expenseData.getId());
-            bundle.putInt("position", getPosition());
+            bundle.putInt("position", getAdapterPosition());
             newFragment.setArguments(bundle);
             newFragment.show(manager, "menus");
             return false;

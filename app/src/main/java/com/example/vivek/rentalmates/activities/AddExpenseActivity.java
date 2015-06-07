@@ -4,8 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-public class AddExpenseActivity extends ActionBarActivity implements View.OnClickListener {
+public class AddExpenseActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "AdExpenseActivity_Debug";
 

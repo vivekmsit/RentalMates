@@ -4,13 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
@@ -28,9 +29,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
-import com.melnykov.fab.FloatingActionButton;
 
-public class MainTabActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MainTabActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "MainTabActivity_Debug";
 
@@ -42,7 +42,7 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
     private NavigationDrawerFragment drawerFragment;
     private FragmentManager fragmentManager;
     private MyAdapter pageAdapter;
-    private FloatingActionButton fab;
+    private android.support.design.widget.FloatingActionButton fab;
     private int currentPosition;
     private int backStackCount;
     private boolean newExpenseAvailable;
@@ -76,8 +76,7 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
 
         //Initialize FloatingActionButton
         fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setType(FloatingActionButton.TYPE_NORMAL);
-        fab.setShadow(true);
+        fab.setRippleColor(getResources().getColor(R.color.primaryColor));
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,9 +106,9 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
             public void onPageSelected(int newPosition) {
                 Log.d(TAG, "onPageSelected " + newPosition);
                 if (newPosition == 0) {
-                    fab.show();
+                    fab.setVisibility(View.VISIBLE);
                 } else {
-                    fab.hide();
+                    fab.setVisibility(View.GONE);
                 }
                 currentPosition = newPosition;
             }
@@ -136,7 +135,7 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
         }
 
         String finalTitle = toolBar.getTitle() + ": " + prefs.getString(AppConstants.PRIMARY_FLAT_NAME, "no_flat_name");
-        getSupportActionBar().setTitle(finalTitle);
+        //getSupportActionBar().setTitle(finalTitle);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         Intent pendingIntent = getIntent();
         if (pendingIntent.getBooleanExtra("notification", false) && pendingIntent.getBooleanExtra("newExpenseAvailable", false)) {
@@ -186,12 +185,12 @@ public class MainTabActivity extends ActionBarActivity implements GoogleApiClien
 
     public void showFab() {
         if (currentPosition == 0 && backStackCount == 0) {
-            fab.show();
+            fab.setVisibility(View.VISIBLE);
         }
     }
 
     public void hideFab() {
-        fab.hide();
+        fab.setVisibility(View.GONE);
     }
 
     public class MyAdapter extends FragmentStatePagerAdapter {

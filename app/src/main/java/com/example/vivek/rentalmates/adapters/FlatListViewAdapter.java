@@ -1,7 +1,6 @@
 package com.example.vivek.rentalmates.adapters;
 
 import android.content.Context;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
-import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.viewholders.FlatListItem;
 
 import java.util.List;
@@ -21,18 +19,14 @@ public class FlatListViewAdapter extends RecyclerView.Adapter<FlatListViewAdapte
     private static final String TAG = "ExpenseAdapter_Debug";
 
     private List<FlatListItem> data;
-    private AppData appData;
     private LayoutInflater inflater;
     private Context context;
-    private FragmentManager manager;
 
-    public FlatListViewAdapter(Context context, List<FlatListItem> data, FragmentManager manager) {
+    public FlatListViewAdapter(Context context, List<FlatListItem> data) {
         Log.d(TAG, "inside Constructor");
-        appData = AppData.getInstance();
         inflater = LayoutInflater.from(context);
         this.context = context;
         this.data = data;
-        this.manager = manager;
     }
 
     public void setData(List<FlatListItem> data) {
@@ -88,7 +82,7 @@ public class FlatListViewAdapter extends RecyclerView.Adapter<FlatListViewAdapte
         @Override
         public void onClick(View v) {
             Log.d(TAG, "inside onClick");
-            FlatListItem currentItem = data.get(getPosition());
+            FlatListItem currentItem = data.get(getAdapterPosition());
             Toast.makeText(context, currentItem.flatName, Toast.LENGTH_SHORT).show();
         }
 

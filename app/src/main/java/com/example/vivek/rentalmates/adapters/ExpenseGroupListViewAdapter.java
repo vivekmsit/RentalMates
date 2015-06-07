@@ -1,7 +1,6 @@
 package com.example.vivek.rentalmates.adapters;
 
 import android.content.Context;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
-import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.viewholders.ExpenseGroupListItem;
 
 import java.util.List;
@@ -21,18 +19,14 @@ public class ExpenseGroupListViewAdapter extends RecyclerView.Adapter<ExpenseGro
     private static final String TAG = "ExpenseAdapter_Debug";
 
     private List<ExpenseGroupListItem> data;
-    private AppData appData;
     private LayoutInflater inflater;
     private Context context;
-    private FragmentManager manager;
 
-    public ExpenseGroupListViewAdapter(Context context, List<ExpenseGroupListItem> data, FragmentManager manager) {
+    public ExpenseGroupListViewAdapter(Context context, List<ExpenseGroupListItem> data) {
         Log.d(TAG, "inside Constructor");
-        appData = AppData.getInstance();
         inflater = LayoutInflater.from(context);
         this.context = context;
         this.data = data;
-        this.manager = manager;
     }
 
     public void setData(List<ExpenseGroupListItem> data) {
@@ -88,7 +82,7 @@ public class ExpenseGroupListViewAdapter extends RecyclerView.Adapter<ExpenseGro
         @Override
         public void onClick(View v) {
             Log.d(TAG, "inside onClick");
-            ExpenseGroupListItem currentItem = data.get(getPosition());
+            ExpenseGroupListItem currentItem = data.get(getAdapterPosition());
             Toast.makeText(context, currentItem.flatName, Toast.LENGTH_SHORT).show();
         }
 

@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.adapters.ExpenseListViewAdapter;

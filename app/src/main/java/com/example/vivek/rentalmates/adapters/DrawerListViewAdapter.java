@@ -120,7 +120,7 @@ public class DrawerListViewAdapter extends RecyclerView.Adapter<DrawerListViewAd
         @Override
         public void onClick(View v) {
             //String currentItem = data.get(getPosition()).title;
-            currentPosition = getPosition();
+            currentPosition = getAdapterPosition();
             drawerLayout.closeDrawers();
         }
     }

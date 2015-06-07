@@ -4,15 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
 
-public class FirstActivity extends ActionBarActivity {
+public class FirstActivity extends AppCompatActivity {
     private static final String TAG = "FirstActivity_Debug";
     AppData appData;
 
