@@ -3,8 +3,8 @@ package com.example.vivek.rentalmates.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -24,7 +24,6 @@ import com.example.vivek.rentalmates.fragments.NavigationDrawerFragment;
 import com.example.vivek.rentalmates.fragments.NewsFeedFragment;
 import com.example.vivek.rentalmates.fragments.SearchFragment;
 import com.example.vivek.rentalmates.others.AppConstants;
-import com.example.vivek.rentalmates.tabs.SlidingTabLayout;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -35,7 +34,7 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
     private static final String TAG = "MainTabActivity_Debug";
 
     private ViewPager viewPager;
-    private SlidingTabLayout mTabs;
+    private TabLayout tabLayout;
     private Toolbar toolBar;
     private GoogleApiClient mGoogleApiClient;
     private SharedPreferences prefs;
@@ -73,6 +72,28 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
         viewPager = (ViewPager) findViewById(R.id.pager);
         pageAdapter = new MyAdapter(fragmentManager);
         viewPager.setAdapter(pageAdapter);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Log.d(TAG, "onPageSelected " + position);
+                if (position == 0) {
+                    fab.setVisibility(View.VISIBLE);
+                } else {
+                    fab.setVisibility(View.GONE);
+                }
+                currentPosition = position;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         //Initialize FloatingActionButton
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -86,37 +107,12 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
             }
         });
 
-        //Initialize SlidingTabLayout
-        mTabs = (SlidingTabLayout) findViewById(R.id.tabs);
-        mTabs.setBackgroundColor(getResources().getColor(R.color.primaryColor));
-        mTabs.setDistributeEvenly(true);
-        mTabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
-            @Override
-            public int getIndicatorColor(int position) {
-                return Color.WHITE;
-            }
-        });
-        mTabs.setViewPager(viewPager);
-        mTabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int newPosition, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int newPosition) {
-                Log.d(TAG, "onPageSelected " + newPosition);
-                if (newPosition == 0) {
-                    fab.setVisibility(View.VISIBLE);
-                } else {
-                    fab.setVisibility(View.GONE);
-                }
-                currentPosition = newPosition;
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
+        //Initialize TabLayout
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setBackgroundColor(getResources().getColor(R.color.primaryColor));
+        tabLayout.setTabTextColors(getResources().getColor(R.color.white), getResources().getColor(R.color.white));
+        tabLayout.setTabsFromPagerAdapter(pageAdapter);
+        tabLayout.setupWithViewPager(viewPager);
 
         // Initializing google plus api client
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -134,9 +130,6 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
             editor.apply();
         }
 
-        String finalTitle = toolBar.getTitle() + ": " + prefs.getString(AppConstants.PRIMARY_FLAT_NAME, "no_flat_name");
-        //getSupportActionBar().setTitle(finalTitle);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         Intent pendingIntent = getIntent();
         if (pendingIntent.getBooleanExtra("notification", false) && pendingIntent.getBooleanExtra("newExpenseAvailable", false)) {
             newExpenseAvailable = true;

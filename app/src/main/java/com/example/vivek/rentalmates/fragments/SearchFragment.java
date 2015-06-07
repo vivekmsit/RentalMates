@@ -1,7 +1,7 @@
 package com.example.vivek.rentalmates.fragments;
 
-import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -13,13 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.vivek.rentalmates.R;
-import com.example.vivek.rentalmates.tabs.SlidingTabLayout;
 
 public class SearchFragment extends Fragment {
 
     private static final String TAG = "SearchFragment_Debug";
 
-    private SlidingTabLayout mTabs;
+    private TabLayout tabLayout;
     private ViewPager viewPager;
     private MySearchAdapter adapter;
 
@@ -34,17 +33,13 @@ public class SearchFragment extends Fragment {
         adapter = new MySearchAdapter(getChildFragmentManager());
         viewPager.setAdapter(adapter);
 
-        //Initialize SlidingTabLayout
-        mTabs = (SlidingTabLayout) layout.findViewById(R.id.roommateTabs);
-        mTabs.setBackgroundColor(getResources().getColor(R.color.primaryColor));
-        //mTabs.setDistributeEvenly(true);
-        mTabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
-            @Override
-            public int getIndicatorColor(int position) {
-                return Color.WHITE;
-            }
-        });
-        mTabs.setViewPager(viewPager);
+        //Initialize TabLayout
+        tabLayout = (TabLayout) layout.findViewById(R.id.roommateTabs);
+        tabLayout.setBackgroundColor(getResources().getColor(R.color.primaryColor));
+        tabLayout.setTabTextColors(getResources().getColor(R.color.white), getResources().getColor(R.color.white));
+        tabLayout.setTabsFromPagerAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
+
         return layout;
     }
 

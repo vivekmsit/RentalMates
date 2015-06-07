@@ -2,11 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FCC98B"
     android:orientation="vertical"
     tools:context="com.example.vivek.rentalmates.fragments.SearchFragment">
 
-    <com.example.vivek.rentalmates.tabs.SlidingTabLayout
+    <android.support.design.widget.TabLayout
         android:id="@+id/roommateTabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -15,6 +14,6 @@
         android:id="@+id/roommatePager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
 </LinearLayout>
