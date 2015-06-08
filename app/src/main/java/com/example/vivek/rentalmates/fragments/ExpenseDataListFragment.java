@@ -81,8 +81,8 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
         //Initialize SwipeRefreshLayout
         swipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeListExpenses);
         swipeRefreshLayout.setOnRefreshListener(this);
-        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.white));
-        swipeRefreshLayout.setColorSchemeColors(R.color.primaryColor, R.color.purple, R.color.green, R.color.orange);
+        swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.white);
+        swipeRefreshLayout.setColorSchemeResources(R.color.orange, R.color.green, R.color.blue, R.color.purple);
         swipeRefreshLayout.setProgressViewOffset(false, 0,
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
         return layout;
