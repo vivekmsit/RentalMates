@@ -1,10 +1,9 @@
 package com.example.vivek.rentalmates.backend.entities;
 
-import com.google.appengine.api.blobstore.BlobstoreService;
-import com.google.appengine.api.blobstore.BlobstoreServicePb;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.OnSave;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,13 +31,19 @@ public class UserProfile {
     private String profileURL;
     private String profilePhotoURL;
     private String createProfileResult;
+
+    private String currentGcmId;
     private Long primaryFlatId;
     private Long flatExpenseGroupId;
     private Long payback;
+
     private int numberOfFlats;
     private int numberOfExpenseGroups;
-    private String currentGcmId;
     private int numberOfGcmIds;
+    private int numberOfRequests;
+
+    private int updateCount;
+
     private List<Long> requestIds = new ArrayList<>();
     private List<Long> flatIds = new ArrayList<>();
     private List<Long> expenseGroupIds = new ArrayList<>();
@@ -48,6 +53,7 @@ public class UserProfile {
         payback = new Long(0);
         numberOfFlats = 0;
         numberOfExpenseGroups = 0;
+        updateCount = -1;
         date = new Date();
     }
 
@@ -187,6 +193,14 @@ public class UserProfile {
         this.currentGcmId = currentGcmId;
     }
 
+    public int getNumberOfRequests() {
+        return numberOfRequests;
+    }
+
+    public void setNumberOfRequests(int numberOfRequests) {
+        this.numberOfRequests = numberOfRequests;
+    }
+
     public List<Long> getRequestIds() {
         return requestIds;
     }
@@ -216,5 +230,18 @@ public class UserProfile {
     public void clearGcmIds() {
         this.gcmIds.clear();
         numberOfGcmIds = 0;
+    }
+
+    public int getUpdateCount() {
+        return updateCount;
+    }
+
+    @OnSave
+    public void incrementUpdateCount() {
+        updateCount++;
+    }
+
+    public void resetUpdateCount() {
+        updateCount = -1;
     }
 }

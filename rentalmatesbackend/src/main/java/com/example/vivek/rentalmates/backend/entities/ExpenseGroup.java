@@ -4,6 +4,7 @@ import com.example.vivek.rentalmates.backend.others.LongStringifier;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.OnSave;
 import com.googlecode.objectify.annotation.Serialize;
 import com.googlecode.objectify.annotation.Stringify;
 
@@ -28,6 +29,7 @@ public class ExpenseGroup implements Serializable {
     private String ownerEmailId;
     private int numberOfExpenses;
     private int numberOfMembers;
+    private int updateCount;
     private String operationResult;
     private List<Long> expenseDataIds = new ArrayList<>();
 
@@ -41,6 +43,7 @@ public class ExpenseGroup implements Serializable {
         ownerEmailId = "EmailId";
         numberOfExpenses = 0;
         numberOfMembers = 0;
+        updateCount = -1;
     }
 
     public Long getId() {
@@ -142,5 +145,18 @@ public class ExpenseGroup implements Serializable {
     public void updateMemberData(Long memberId, Long payback) {
         membersData.remove(memberId);
         membersData.put(memberId, payback);
+    }
+
+    public int getUpdateCount() {
+        return updateCount;
+    }
+
+    @OnSave
+    public void incrementUpdateCount() {
+        updateCount++;
+    }
+
+    public void resetUpdateCount() {
+        updateCount = -1;
     }
 }

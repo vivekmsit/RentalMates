@@ -1,6 +1,5 @@
 package com.example.vivek.rentalmates.backend.endpoints;
 
-import com.example.vivek.rentalmates.backend.entities.ExpenseData;
 import com.example.vivek.rentalmates.backend.entities.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.entities.FlatInfo;
 import com.example.vivek.rentalmates.backend.entities.UserProfile;
@@ -11,7 +10,6 @@ import com.google.api.server.spi.response.CollectionResponse;
 import com.google.api.server.spi.response.NotFoundException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.QueryResultIterator;
-import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.cmd.Query;
 
 import java.io.IOException;
@@ -46,13 +44,6 @@ public class FlatInfoEndpoint {
     private static final Logger logger = Logger.getLogger(FlatInfoEndpoint.class.getName());
 
     private static final int DEFAULT_LIST_LIMIT = 20;
-
-    static {
-        // Typically you would register this inside an OfyServive wrapper. See: https://code.google.com/p/objectify-appengine/wiki/BestPractices
-        ObjectifyService.register(FlatInfo.class);
-        ObjectifyService.register(ExpenseData.class);
-        ObjectifyService.register(ExpenseGroup.class);
-    }
 
     /**
      * Returns the {@link FlatInfo} with the corresponding ID.

@@ -17,7 +17,6 @@ import com.google.api.server.spi.response.NotFoundException;
 import com.google.appengine.api.ThreadManager;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.QueryResultIterator;
-import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.cmd.Query;
 
 import java.io.IOException;
@@ -53,11 +52,6 @@ public class ExpenseGroupEndpoint {
     private static final Logger logger = Logger.getLogger(ExpenseGroupEndpoint.class.getName());
 
     private static final int DEFAULT_LIST_LIMIT = 20;
-
-    static {
-        // Typically you would register this inside an OfyServive wrapper. See: https://code.google.com/p/objectify-appengine/wiki/BestPractices
-        ObjectifyService.register(ExpenseGroup.class);
-    }
 
     /**
      * Returns the {@link ExpenseGroup} with the corresponding ID.

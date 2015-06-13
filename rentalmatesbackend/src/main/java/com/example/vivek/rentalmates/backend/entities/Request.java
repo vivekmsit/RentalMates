@@ -2,6 +2,7 @@ package com.example.vivek.rentalmates.backend.entities;
 
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.OnSave;
 
 import java.io.Serializable;
 
@@ -24,6 +25,7 @@ public class Request implements Serializable {
     @Id
     Long id;
 
+    private int updateCount;
     private RequestType type;
     private RequestStatus status;
     private String data;
@@ -33,6 +35,7 @@ public class Request implements Serializable {
     Request() {
         type = RequestType.NONE;
         status = RequestStatus.NONE;
+        updateCount = -1;
     }
 
     public Long getId() {
@@ -81,5 +84,18 @@ public class Request implements Serializable {
 
     public void setRequestProviderId(Long requestProviderId) {
         this.requestProviderId = requestProviderId;
+    }
+
+    public int getUpdateCount() {
+        return updateCount;
+    }
+
+    @OnSave
+    public void incrementUpdateCount() {
+        updateCount++;
+    }
+
+    public void resetUpdateCount() {
+        updateCount = -1;
     }
 }

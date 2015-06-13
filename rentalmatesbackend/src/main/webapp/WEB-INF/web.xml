@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee">
     <filter>
         <filter-name>ObjectifyFilter</filter-name>
         <filter-class>com.googlecode.objectify.ObjectifyFilter</filter-class>
@@ -13,11 +13,14 @@
         <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
         <init-param>
             <param-name>services</param-name>
-            <param-value>com.example.vivek.rentalmates.backend.endpoints.RegistrationEndpoint,
+            <param-value>
+                com.example.vivek.rentalmates.backend.endpoints.RegistrationEndpoint,
+                com.example.vivek.rentalmates.backend.endpoints.MainEndpoint,
                 com.example.vivek.rentalmates.backend.endpoints.MessagingEndpoint,
                 com.example.vivek.rentalmates.backend.endpoints.UserProfileEndpoint,
                 com.example.vivek.rentalmates.backend.endpoints.FlatInfoEndpoint,
-                com.example.vivek.rentalmates.backend.endpoints.ExpenseGroupEndpoint</param-value>
+                com.example.vivek.rentalmates.backend.endpoints.ExpenseGroupEndpoint
+            </param-value>
         </init-param>
     </servlet>
     <servlet-mapping>

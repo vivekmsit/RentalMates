@@ -4,6 +4,7 @@ import com.google.appengine.api.blobstore.BlobKey;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.OnSave;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,8 +27,6 @@ public class FlatInfo {
     @Id
     Long id;
 
-    private String adminName;
-
     @Index
     private String flatName; //Should be unique
 
@@ -40,30 +39,24 @@ public class FlatInfo {
     @Index
     private String city;
 
-    private Date date;
-
-    private double[][] vertices;
-
     @Index
     private String ownerEmailId;
 
+    private Date date;
+    private double[][] vertices;
     private Long userProfileId;
-
     private String createFlatResult;
-
+    private String adminName;
     private List<Long> userIds = new ArrayList<>();
-
     private List<BlobKey> flatPicturesBlobKeys;
-
     private Long expenseGroupId;
-
     private int numberOfUsers;
-
-    // you can add more fields...
+    private int updateCount;
 
     public FlatInfo() {
         date = new Date();
         numberOfUsers = 0;
+        updateCount = -1;
     }
 
     public Long getFlatId() {
@@ -152,4 +145,16 @@ public class FlatInfo {
         this.numberOfUsers = numberOfUsers;
     }
 
+    public int getUpdateCount() {
+        return updateCount;
+    }
+
+    @OnSave
+    public void incrementUpdateCount() {
+        updateCount++;
+    }
+
+    public void resetUpdateCount() {
+        updateCount = -1;
+    }
 }
