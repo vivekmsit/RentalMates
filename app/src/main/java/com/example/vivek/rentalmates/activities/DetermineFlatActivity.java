@@ -174,14 +174,18 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
         expenseGroupTask.setOnExpenseGroupListReceiver(new OnExpenseGroupListReceiver() {
             @Override
             public void onExpenseGroupListLoadSuccessful() {
+                progressDialog.cancel();
                 loadAllUserProfiles();
             }
 
             @Override
             public void onExpenseGroupListLoadFailed() {
+                progressDialog.cancel();
             }
         });
         expenseGroupTask.execute();
+        progressDialog.setMessage("Loading Expense Groups");
+        progressDialog.show();
     }
 
     public void loadAllUserProfiles() {

@@ -22,6 +22,7 @@ import com.example.vivek.rentalmates.interfaces.OnExpenseMembersSelectedReceiver
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.others.LocalExpenseGroup;
+import com.example.vivek.rentalmates.others.LocalUserProfile;
 import com.example.vivek.rentalmates.tasks.AddExpenseAsyncTask;
 import com.google.api.client.util.DateTime;
 
@@ -142,6 +143,21 @@ public class AddExpenseActivity extends AppCompatActivity implements View.OnClic
                         Toast.makeText(context, "Expense uploaded", Toast.LENGTH_SHORT).show();
                         if (uploadedExpenseData.getMembersData().keySet().contains(uploadedExpenseData.getSubmitterId().toString())) {
                             appData.addLocalExpenseData(context, uploadedExpenseData);
+
+                            // Update user share of expense data inside expense group as well as in user profile
+                            Long memberId = prefs.getLong(AppConstants.USER_PROFILE_ID, 0);
+                            LocalUserProfile userProfile = appData.getLocalUserProfile(prefs.getLong(AppConstants.USER_PROFILE_ID, 0));
+                            LocalExpenseGroup expenseGroup = appData.getLocalExpenseGroup(prefs.getLong(AppConstants.FLAT_EXPENSE_GROUP_ID, 0));
+                            Long totalProfileShare = userProfile.getPayback();
+                            Long currentShare = expenseGroup.getMembersData().get(memberId);
+                            int share = (uploadedExpenseData.getAmount() * Integer.parseInt(uploadedExpenseData.getMembersData().get(memberId.toString()).toString())) / expenseData.getTotalShare();
+                            if (memberId.equals(uploadedExpenseData.getPayerId())) {
+                                expenseGroup.updateMemberData(memberId, currentShare + (uploadedExpenseData.getAmount() - share));
+                                userProfile.setPayback(totalProfileShare + (uploadedExpenseData.getAmount() - share));
+                            } else {
+                                expenseGroup.updateMemberData(memberId, currentShare - share);
+                                userProfile.setPayback(totalProfileShare - share);
+                            } //end of code for updating of user share
                         }
                         Intent intent = new Intent(context, MainTabActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

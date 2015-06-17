@@ -143,7 +143,6 @@ public class ExpenseGroup implements Serializable {
     }
 
     public void updateMemberData(Long memberId, Long payback) {
-        membersData.remove(memberId);
         membersData.put(memberId, payback);
     }
 

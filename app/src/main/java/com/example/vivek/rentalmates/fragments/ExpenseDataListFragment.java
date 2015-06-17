@@ -21,7 +21,7 @@ import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.Expe
 import com.example.vivek.rentalmates.interfaces.OnExpenseListReceiver;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.example.vivek.rentalmates.others.AppData;
-import com.example.vivek.rentalmates.others.LocalUserProfile;
+import com.example.vivek.rentalmates.others.LocalExpenseGroup;
 import com.example.vivek.rentalmates.tasks.GetAllExpenseListAsyncTask;
 import com.example.vivek.rentalmates.viewholders.ExpenseListItem;
 import com.google.api.client.util.DateTime;
@@ -65,8 +65,8 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
 
         //Initialize Payback TextView
         payBackAmountView = (TextView) layout.findViewById(R.id.paybackTextView);
-        LocalUserProfile userProfile = appData.getLocalUserProfile(prefs.getLong(AppConstants.USER_PROFILE_ID, 0));
-        payBackAmountView.setText("Payback Amount: Rs. " + userProfile.getPayback());
+        LocalExpenseGroup expenseGroup = appData.getLocalExpenseGroup(prefs.getLong(AppConstants.FLAT_EXPENSE_GROUP_ID, 0));
+        payBackAmountView.setText("Payback Amount: Rs. " + expenseGroup.getMembersData().get(prefs.getLong(AppConstants.USER_PROFILE_ID, 0)));
 
         //Initialize expense Group Text View
         expenseGroupNameView = (TextView) layout.findViewById(R.id.expenseGroupName);

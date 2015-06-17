@@ -101,7 +101,6 @@ public class LocalExpenseGroup implements Serializable {
         this.expenseDataIds = expenseDataIds;
     }
 
-
     public Map<Long, Long> getMembersData() {
         return membersData;
     }
@@ -118,6 +117,10 @@ public class LocalExpenseGroup implements Serializable {
     public void deleteMemberData(Long memberId) {
         membersData.remove(memberId);
         numberOfMembers--;
+    }
+
+    public void updateMemberData(Long memberId, Long payback) {
+        membersData.put(memberId, payback);
     }
 
     public static List<ExpenseGroup> convertLocalEGroupToEGroup(List<LocalExpenseGroup> localExpenseGroups) {
@@ -140,7 +143,7 @@ public class LocalExpenseGroup implements Serializable {
             JsonMap membersData = new JsonMap();
             Set<Long> memberIds = localExpenseGroup.getMembersData().keySet();
             for (Long memberId : memberIds) {
-                membersData.put(memberId.toString(), 1);
+                membersData.put(memberId.toString(), localExpenseGroup.getMembersData().get(memberId));
             }
             data.setMembersData(membersData);
             expenseGroups.add(data);
@@ -167,9 +170,8 @@ public class LocalExpenseGroup implements Serializable {
             data.setExpenseDataIds(expenseGroup.getExpenseDataIds());
             Map<Long, Long> membersData = new HashMap<>();
             Set<String> memberIds = expenseGroup.getMembersData().keySet();
-            Long l = new Long(1);//need to be changed later
             for (String memberId : memberIds) {
-                membersData.put(Long.parseLong(memberId), l);
+                membersData.put(Long.parseLong(memberId), Long.parseLong(expenseGroup.getMembersData().get(memberId).toString()));
             }
             data.setMembersData(membersData);
 
