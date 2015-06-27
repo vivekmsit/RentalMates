@@ -16,6 +16,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
+import android.view.animation.OvershootInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
@@ -41,7 +43,7 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
     private NavigationDrawerFragment drawerFragment;
     private FragmentManager fragmentManager;
     private MyAdapter pageAdapter;
-    private android.support.design.widget.FloatingActionButton fab;
+    private FloatingActionButton fab;
     private int currentPosition;
     private int backStackCount;
     private boolean newExpenseAvailable;
@@ -84,6 +86,7 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
                 if (position == 0) {
                     fab.setVisibility(View.VISIBLE);
                 } else {
+                    fab.clearAnimation();
                     fab.setVisibility(View.GONE);
                 }
                 currentPosition = position;
@@ -106,6 +109,13 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
                 getApplicationContext().startActivity(intent);
             }
         });
+        ScaleAnimation anim = new ScaleAnimation(0, 1, 0, 1);
+        anim.setFillBefore(true);
+        anim.setFillAfter(true);
+        anim.setFillEnabled(true);
+        anim.setDuration(300);
+        anim.setInterpolator(new OvershootInterpolator());
+        fab.setAnimation(anim);
 
         //Initialize TabLayout
         tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -183,6 +193,7 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
     }
 
     public void hideFab() {
+        fab.clearAnimation();
         fab.setVisibility(View.GONE);
     }
 
