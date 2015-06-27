@@ -248,7 +248,7 @@ public class UserProfileEndpoint {
         for (Long flatId : currentUserProfile.getFlatIds()) {
             FlatInfo flatInfo = ofy().load().type(FlatInfo.class).id(flatId).now();
 
-            for (Long userId : flatInfo.getUserIds()) {
+            for (Long userId : flatInfo.getMemberIds()) {
                 if (!tempIds.contains(userId)) {
                     UserProfile userProfile = ofy().load().type(UserProfile.class).id(userId).now();
                     profiles.add(userProfile);

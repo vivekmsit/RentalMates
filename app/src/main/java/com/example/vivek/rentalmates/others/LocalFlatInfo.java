@@ -173,7 +173,7 @@ public class LocalFlatInfo implements Serializable {
             data.setFlatName(localFlat.getFlatName());
             data.setOwnerEmailId(localFlat.getOwnerEmailId());
             data.setNumberOfUsers(localFlat.getNumberOfUsers());
-            data.setUserIds(localFlat.getUserIds());
+            data.setMemberIds(localFlat.getUserIds());
             data.setExpenseGroupId(localFlat.getFlatExpenseGroupId());
 
             flats.add(data);
@@ -202,7 +202,7 @@ public class LocalFlatInfo implements Serializable {
             data.setFlatName(flat.getFlatName());
             data.setOwnerEmailId(flat.getOwnerEmailId());
             data.setNumberOfUsers(flat.getNumberOfUsers());
-            data.setUserIds(flat.getUserIds());
+            data.setUserIds(flat.getMemberIds());
             data.setFlatExpenseGroupId(flat.getExpenseGroupId());
 
             localFlats.add(data);

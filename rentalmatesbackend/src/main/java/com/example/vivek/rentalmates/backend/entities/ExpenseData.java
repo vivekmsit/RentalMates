@@ -10,6 +10,7 @@ import com.googlecode.objectify.annotation.Stringify;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Entity
@@ -31,10 +32,15 @@ public class ExpenseData implements Serializable {
     private int numberOfMembers;
     private int totalShare;
     private int updateCount;
+    List<Long> memberIds;
 
     @Serialize
     @Stringify(LongStringifier.class)
-    private Map<Long, Long> membersData = new HashMap<>();
+    private Map<Long, Long> expenseRatios = new HashMap<>();
+
+    @Serialize
+    @Stringify(LongStringifier.class)
+    private Map<Long, Long> expenseValues = new HashMap<>();
 
     ExpenseData() {
         date = new Date();
@@ -145,21 +151,40 @@ public class ExpenseData implements Serializable {
         this.totalShare = totalShare;
     }
 
-    public Map<Long, Long> getMembersData() {
-        return membersData;
+    public List<Long> getMemberIds() {
+        return memberIds;
     }
 
-    public void setMembersData(Map<Long, Long> membersData) {
-        this.membersData = membersData;
+    public void setMemberIds(List<Long> memberIds) {
+        this.memberIds = memberIds;
     }
 
-    public void addMemberData(Long memberId, Long share) {
-        membersData.put(memberId, share);
+
+    public Map<Long, Long> getExpenseRatios() {
+        return expenseRatios;
+    }
+
+    public void setExpenseRatios(Map<Long, Long> expenseRatios) {
+        this.expenseRatios = expenseRatios;
+    }
+
+    public Map<Long, Long> getExpenseValues() {
+        return expenseValues;
+    }
+
+    public void setExpenseValues(Map<Long, Long> expenseValues) {
+        this.expenseValues = expenseValues;
+    }
+
+    public void addExpenseMember(Long memberId, Long share, Long amount) {
+        expenseRatios.put(memberId, share);
+        expenseValues.put(memberId, amount);
         numberOfMembers++;
     }
 
-    public void deleteMemberData(Long memberId) {
-        membersData.remove(memberId);
+    public void deleteExpenseMember(Long memberId) {
+        expenseRatios.remove(memberId);
+        expenseValues.remove(memberId);
         numberOfMembers--;
     }
 

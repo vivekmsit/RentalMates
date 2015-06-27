@@ -26,6 +26,7 @@ import com.example.vivek.rentalmates.others.LocalUserProfile;
 import com.example.vivek.rentalmates.tasks.AddExpenseAsyncTask;
 import com.google.api.client.util.DateTime;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -75,12 +76,15 @@ public class AddExpenseActivity extends AppCompatActivity implements View.OnClic
         }
         for (LocalExpenseGroup group : appData.getExpenseGroups()) {
             if (group.getId() == prefs.getLong(AppConstants.FLAT_EXPENSE_GROUP_ID, 0)) {
-                JsonMap membersData = new JsonMap();
+                JsonMap expenseRatios = new JsonMap();
+                List<Long> listMemberIds = new ArrayList<>();
                 Set<Long> memberIds = group.getMembersData().keySet();
                 for (Long memberId : memberIds) {
-                    membersData.put(memberId.toString(), 1);
+                    expenseRatios.put(memberId.toString(), 1);
+                    listMemberIds.add(memberId);
                 }
-                expenseData.setMembersData(membersData);
+                expenseData.setMemberIds(listMemberIds);
+                expenseData.setExpenseRatios(expenseRatios);
                 expenseData.setNumberOfMembers(group.getNumberOfMembers());
                 expenseData.setTotalShare(group.getNumberOfMembers());
             }
@@ -101,11 +105,11 @@ public class AddExpenseActivity extends AppCompatActivity implements View.OnClic
                 dialog.setOnExpenseMembersSelectedReceiver(new OnExpenseMembersSelectedReceiver() {
                     @Override
                     public void onOkay(List<Long> memberIds) {
-                        JsonMap membersData = new JsonMap();
+                        JsonMap expenseRatios = new JsonMap();
                         for (Long memberId : memberIds) {
-                            membersData.put(memberId.toString(), 1);
+                            expenseRatios.put(memberId.toString(), 1);
                         }
-                        expenseData.setMembersData(membersData);
+                        expenseData.setExpenseRatios(expenseRatios);
                         expenseData.setNumberOfMembers(memberIds.size());
                         expenseData.setTotalShare(memberIds.size());
                     }
@@ -125,6 +129,7 @@ public class AddExpenseActivity extends AppCompatActivity implements View.OnClic
                     return;
                 }
                 addExpenseButtonClicked = true;
+
                 expenseData.setDate(new DateTime(new Date()));
                 expenseData.setAmount(Integer.parseInt(amountEditText.getText().toString()));
                 expenseData.setDescription(descriptionEditText.getText().toString());
@@ -134,6 +139,13 @@ public class AddExpenseActivity extends AppCompatActivity implements View.OnClic
                 expenseData.setExpenseGroupId(prefs.getLong(AppConstants.FLAT_EXPENSE_GROUP_ID, 0));
                 expenseData.setSubmitterId(prefs.getLong(AppConstants.USER_PROFILE_ID, 0));
                 expenseData.setPayerId(prefs.getLong(AppConstants.USER_PROFILE_ID, 0));
+                JsonMap expenseValues = new JsonMap();
+                for (Long memberId : expenseData.getMemberIds()) {
+                    int expenseDataShare = (expenseData.getAmount() * Integer.parseInt(expenseData.getExpenseRatios().get(memberId.toString()).toString())) / expenseData.getTotalShare();
+                    expenseValues.put(memberId.toString(), expenseDataShare);
+                }
+                expenseData.setExpenseValues(expenseValues);
+
                 AddExpenseAsyncTask task = new AddExpenseAsyncTask(this, expenseData);
                 task.setOnAddExpenseReceiver(new OnAddExpenseReceiver() {
                     @Override
@@ -141,7 +153,7 @@ public class AddExpenseActivity extends AppCompatActivity implements View.OnClic
                         addExpenseButtonClicked = true;
                         progressDialog.cancel();
                         Toast.makeText(context, "Expense uploaded", Toast.LENGTH_SHORT).show();
-                        if (uploadedExpenseData.getMembersData().keySet().contains(uploadedExpenseData.getSubmitterId().toString())) {
+                        if (uploadedExpenseData.getMemberIds().contains(uploadedExpenseData.getSubmitterId())) {
                             appData.addLocalExpenseData(context, uploadedExpenseData);
 
                             // Update user share of expense data inside expense group as well as in user profile
@@ -150,7 +162,7 @@ public class AddExpenseActivity extends AppCompatActivity implements View.OnClic
                             LocalExpenseGroup expenseGroup = appData.getLocalExpenseGroup(prefs.getLong(AppConstants.FLAT_EXPENSE_GROUP_ID, 0));
                             Long totalProfileShare = userProfile.getPayback();
                             Long currentShare = expenseGroup.getMembersData().get(memberId);
-                            int share = (uploadedExpenseData.getAmount() * Integer.parseInt(uploadedExpenseData.getMembersData().get(memberId.toString()).toString())) / expenseData.getTotalShare();
+                            int share = (uploadedExpenseData.getAmount() * Integer.parseInt(uploadedExpenseData.getExpenseRatios().get(memberId.toString()).toString())) / expenseData.getTotalShare();
                             if (memberId.equals(uploadedExpenseData.getPayerId())) {
                                 expenseGroup.updateMemberData(memberId, currentShare + (uploadedExpenseData.getAmount() - share));
                                 userProfile.setPayback(totalProfileShare + (uploadedExpenseData.getAmount() - share));

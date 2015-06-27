@@ -191,20 +191,20 @@ public class ExpenseGroupEndpoint {
 
         UserProfile memberUserProfile;
         List<Long> gcmMemberIds = new ArrayList<>();
-        for (Long memberId : expenseData.getMembersData().keySet()) {
+        for (Long memberId : expenseData.getMemberIds()) {
             memberUserProfile = ofy().load().type(UserProfile.class).id(memberId).now();
 
             Long totalProfileShare = memberUserProfile.getPayback();
-            Long currentShare = expenseGroup.getMembersData().get(memberId);
-            Long share = (expenseData.getAmount() * expenseData.getMembersData().get(memberId)) / expenseData.getTotalShare();
+            Long expenseGroupShare = expenseGroup.getMembersData().get(memberId);
+            Long expenseDataShare = expenseData.getExpenseValues().get(memberId);
 
             //Update user share of expense data inside expense group as well as in user profile
             if (memberId.equals(expenseData.getPayerId())) {
-                expenseGroup.updateMemberData(memberId, currentShare + (expenseData.getAmount() - share));
-                memberUserProfile.setPayback(totalProfileShare + (expenseData.getAmount() - share));
+                expenseGroup.updateMemberData(memberId, expenseGroupShare + (expenseData.getAmount() - expenseDataShare));
+                memberUserProfile.setPayback(totalProfileShare + (expenseData.getAmount() - expenseDataShare));
             } else {
-                expenseGroup.updateMemberData(memberId, currentShare - share);
-                memberUserProfile.setPayback(totalProfileShare - share);
+                expenseGroup.updateMemberData(memberId, expenseGroupShare - expenseDataShare);
+                memberUserProfile.setPayback(totalProfileShare - expenseDataShare);
             }
             ofy().save().entity(memberUserProfile).now();
             ofy().save().entity(expenseGroup).now();
@@ -268,7 +268,7 @@ public class ExpenseGroupEndpoint {
             for (Long expenseId : expenseGroup.getExpenseDataIds()) {
                 if (!tempIds.contains(expenseId)) {
                     ExpenseData expenseData = ofy().load().type(ExpenseData.class).id(expenseId).now();
-                    if (expenseData.getMembersData().keySet().contains(currentUserProfile.getId())) {
+                    if (expenseData.getMemberIds().contains(currentUserProfile.getId())) {
                         expenses.add(expenseData);
                         tempIds.add(expenseId);
                     }
@@ -298,20 +298,20 @@ public class ExpenseGroupEndpoint {
         ExpenseGroup expenseGroup = ofy().load().type(ExpenseGroup.class).id(expenseData.getExpenseGroupId()).now();
 
         UserProfile memberUserProfile;
-        for (Long memberId : expenseData.getMembersData().keySet()) {
+        for (Long memberId : expenseData.getMemberIds()) {
             memberUserProfile = ofy().load().type(UserProfile.class).id(memberId).now();
 
             Long totalProfileShare = memberUserProfile.getPayback();
-            Long currentShare = expenseGroup.getMembersData().get(memberId);
-            Long share = (expenseData.getAmount() * expenseData.getMembersData().get(memberId)) / expenseData.getTotalShare();
+            Long expenseGroupShare = expenseGroup.getMembersData().get(memberId);
+            Long expenseDataShare = expenseData.getExpenseValues().get(memberId);
 
             //Update user share of expense data inside expense group as well as in user profile
             if (memberId.equals(expenseData.getPayerId())) {
-                expenseGroup.updateMemberData(memberId, currentShare - (expenseData.getAmount() - share));
-                memberUserProfile.setPayback(totalProfileShare - (expenseData.getAmount() - share));
+                expenseGroup.updateMemberData(memberId, expenseGroupShare - (expenseData.getAmount() - expenseDataShare));
+                memberUserProfile.setPayback(totalProfileShare - (expenseData.getAmount() - expenseDataShare));
             } else {
-                expenseGroup.updateMemberData(memberId, currentShare + share);
-                memberUserProfile.setPayback(totalProfileShare + share);
+                expenseGroup.updateMemberData(memberId, expenseGroupShare + expenseDataShare);
+                memberUserProfile.setPayback(totalProfileShare + expenseDataShare);
             }
             ofy().save().entity(memberUserProfile).now();
         }

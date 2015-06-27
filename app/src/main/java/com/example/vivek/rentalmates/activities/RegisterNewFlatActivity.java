@@ -86,10 +86,13 @@ public class RegisterNewFlatActivity extends AppCompatActivity {
             return;
         }
         registerButtonClicked = true;
+
         FlatInfo flatInfo = new FlatInfo();
         flatInfo.setFlatName(editText1.getText().toString());
         flatInfo.setOwnerEmailId(prefs.getString(AppConstants.EMAIL_ID, "no_email_id"));
         flatInfo.setUserProfileId(prefs.getLong(AppConstants.USER_PROFILE_ID, 0));
+        flatInfo.setFlatAddress("B902, SJR Apartments, ECity, Bangalore");
+
         RegisterNewFlatAsyncTask task = new RegisterNewFlatAsyncTask(this, flatInfo);
         task.setOnRegisterNewFlatReceiver(new OnRegisterNewFlatReceiver() {
             @Override

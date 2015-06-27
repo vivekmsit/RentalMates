@@ -160,12 +160,12 @@ public class LocalExpenseData implements Serializable {
             data.setCurrencyType(expenseData.getCurrencyType());
             data.setNumberOfMembers(expenseData.getNumberOfMembers());
 
-            JsonMap membersData = new JsonMap();
+            JsonMap expenseRatios = new JsonMap();
             Set<Long> memberIds = expenseData.getMembersData().keySet();
             for (Long memberId : memberIds) {
-                membersData.put(memberId.toString(), 1);
+                expenseRatios.put(memberId.toString(), 1);
             }
-            data.setMembersData(membersData);
+            data.setExpenseRatios(expenseRatios);
 
             localExpenses.add(data);
         }
@@ -191,13 +191,11 @@ public class LocalExpenseData implements Serializable {
             data.setCurrencyType(expenseData.getCurrencyType());
             data.setNumberOfMembers(expenseData.getNumberOfMembers());
 
-            Map<Long, Long> membersData = new HashMap<>();
-            Set<String> memberIds = expenseData.getMembersData().keySet();
-            Long l = new Long(1);//need to be changed later
-            for (String memberId : memberIds) {
-                membersData.put(Long.parseLong(memberId), l);
+            Map<Long, Long> expenseRatios = new HashMap<>();
+            for (Long memberId : expenseData.getMemberIds()) {
+                expenseRatios.put(memberId, new Long(1));
             }
-            data.setMembersData(membersData);
+            data.setMembersData(expenseRatios);
 
             localExpenses.add(data);
         }

@@ -1,14 +1,19 @@
 package com.example.vivek.rentalmates.backend.entities;
 
+import com.example.vivek.rentalmates.backend.others.LongStringifier;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.OnSave;
+import com.googlecode.objectify.annotation.Serialize;
+import com.googlecode.objectify.annotation.Stringify;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The Objectify object model for device registrations we are persisting
@@ -43,15 +48,25 @@ public class FlatInfo {
     private String ownerEmailId;
 
     private Date date;
-    private double[][] vertices;
     private Long userProfileId;
-    private String createFlatResult;
-    private String adminName;
-    private List<Long> userIds = new ArrayList<>();
-    private List<BlobKey> flatPicturesBlobKeys;
     private Long expenseGroupId;
     private int numberOfUsers;
     private int updateCount;
+    private int securityAmount;
+    private int rentAmount;
+    private String createFlatResult;
+    private String flatAddress;
+    private double[][] vertices;
+    private List<Long> memberIds = new ArrayList<>();
+    private List<BlobKey> flatPicturesBlobKeys;
+
+    @Serialize
+    @Stringify(LongStringifier.class)
+    private Map<Long, Long> securityAmountValues = new HashMap<>();
+
+    @Serialize
+    @Stringify(LongStringifier.class)
+    private Map<Long, Long> rentAmountValues = new HashMap<>();
 
     public FlatInfo() {
         date = new Date();
@@ -115,25 +130,25 @@ public class FlatInfo {
         this.createFlatResult = createFlatResult;
     }
 
-    public List<Long> getUserIds() {
-        return userIds;
+    public List<Long> getMemberIds() {
+        return memberIds;
     }
 
-    public void setUserIds(List<Long> userIds) {
-        this.userIds = userIds;
+    public void setMemberIds(List<Long> memberIds) {
+        this.memberIds = memberIds;
     }
 
     public void setUserProfileId(Long userProfileId) {
         this.userProfileId = userProfileId;
     }
 
-    public void addUserId(Long id) {
-        userIds.add(id);
+    public void addMemberId(Long id) {
+        memberIds.add(id);
         numberOfUsers++;
     }
 
-    public void removeUserId(Long id) {
-        userIds.remove(id);
+    public void removeMemberId(Long id) {
+        memberIds.remove(id);
         numberOfUsers--;
     }
 
@@ -156,5 +171,82 @@ public class FlatInfo {
 
     public void resetUpdateCount() {
         updateCount = -1;
+    }
+
+
+    public List<BlobKey> getFlatPicturesBlobKeys() {
+        return flatPicturesBlobKeys;
+    }
+
+    public void setFlatPicturesBlobKeys(List<BlobKey> flatPicturesBlobKeys) {
+        this.flatPicturesBlobKeys = flatPicturesBlobKeys;
+    }
+
+    public Map<Long, Long> getSecurityAmountValues() {
+        return securityAmountValues;
+    }
+
+    public void setSecurityAmountValues(Map<Long, Long> securityAmountValues) {
+        this.securityAmountValues = securityAmountValues;
+    }
+
+    public Map<Long, Long> getRentAmountValues() {
+        return rentAmountValues;
+    }
+
+    public void setRentAmountValues(Map<Long, Long> rentAmountValues) {
+        this.rentAmountValues = rentAmountValues;
+    }
+
+    public int getRentAmount() {
+        return rentAmount;
+    }
+
+    public void setRentAmount(int rentAmount) {
+        this.rentAmount = rentAmount;
+    }
+
+    public int getSecurityAmount() {
+        return securityAmount;
+    }
+
+    public void setSecurityAmount(int securityAmount) {
+        this.securityAmount = securityAmount;
+    }
+
+    public String getFlatAddress() {
+        return flatAddress;
+    }
+
+    public void setFlatAddress(String flatAddress) {
+        this.flatAddress = flatAddress;
+    }
+
+    public FlatType getType() {
+        return type;
+    }
+
+    public void setType(FlatType type) {
+        this.type = type;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public void setUpdateCount(int updateCount) {
+        this.updateCount = updateCount;
+    }
+
+    public double[][] getVertices() {
+        return vertices;
+    }
+
+    public void setVertices(double[][] vertices) {
+        this.vertices = vertices;
     }
 }

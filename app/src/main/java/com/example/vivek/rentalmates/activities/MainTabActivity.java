@@ -100,7 +100,6 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
 
         //Initialize FloatingActionButton
         fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setRippleColor(getResources().getColor(R.color.primaryColor));
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

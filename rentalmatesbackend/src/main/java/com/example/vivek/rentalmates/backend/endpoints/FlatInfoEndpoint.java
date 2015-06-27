@@ -86,7 +86,7 @@ public class FlatInfoEndpoint {
             }
             //update flatInfo here
             flatInfo.setExpenseGroupId(finalExpenseGroup.getId());
-            flatInfo.addUserId(flatInfo.getUserProfileId());
+            flatInfo.addMemberId(flatInfo.getUserProfileId());
             ofy().save().entity(flatInfo).now();
 
             //Add created FlatInfo flatId to corresponding UserProfile flatIds list
@@ -141,8 +141,8 @@ public class FlatInfoEndpoint {
             ofy().save().entity(userProfile).now();
 
             //Add userProfileId to FlatInfo userIds List
-            if (!finalFlatInfo.getUserIds().contains(userProfileId)) {
-                finalFlatInfo.addUserId(userProfileId);
+            if (!finalFlatInfo.getMemberIds().contains(userProfileId)) {
+                finalFlatInfo.addMemberId(userProfileId);
                 ofy().save().entity(finalFlatInfo).now();
             }
             Long l = new Long(0);//need to be changed later
