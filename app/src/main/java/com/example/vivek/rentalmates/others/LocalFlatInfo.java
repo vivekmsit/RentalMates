@@ -33,7 +33,9 @@ public class LocalFlatInfo implements Serializable {
     private int numberOfExpenses;
     private int numberOfUsers;
     private Long flatExpenseGroupId;
-
+    private String address;
+    private int rentAmount;
+    private int securityAmount;
 
     public Long getFlatId() {
         return flatId;
@@ -155,6 +157,30 @@ public class LocalFlatInfo implements Serializable {
         this.flatExpenseGroupId = flatExpenseGroupId;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public int getSecurityAmount() {
+        return securityAmount;
+    }
+
+    public void setSecurityAmount(int securityAmount) {
+        this.securityAmount = securityAmount;
+    }
+
+    public int getRentAmount() {
+        return rentAmount;
+    }
+
+    public void setRentAmount(int rentAmount) {
+        this.rentAmount = rentAmount;
+    }
+
     public LocalFlatInfo() {
 
     }
@@ -175,6 +201,9 @@ public class LocalFlatInfo implements Serializable {
             data.setNumberOfUsers(localFlat.getNumberOfUsers());
             data.setMemberIds(localFlat.getUserIds());
             data.setExpenseGroupId(localFlat.getFlatExpenseGroupId());
+            data.setFlatAddress(localFlat.getAddress());
+            data.setRentAmount(localFlat.getRentAmount());
+            data.setSecurityAmount(localFlat.getSecurityAmount());
 
             flats.add(data);
         }
@@ -195,7 +224,6 @@ public class LocalFlatInfo implements Serializable {
             data.setFlatId(flat.getFlatId());
             data.setFlatName(flat.getFlatName());
             data.setFlatExpenseGroupId(flat.getExpenseGroupId());
-
             data.setUserProfileId(flat.getUserProfileId());
             data.setFlatId(flat.getFlatId());
             data.setOwnerEmailId(flat.getOwnerEmailId());
@@ -204,6 +232,9 @@ public class LocalFlatInfo implements Serializable {
             data.setNumberOfUsers(flat.getNumberOfUsers());
             data.setUserIds(flat.getMemberIds());
             data.setFlatExpenseGroupId(flat.getExpenseGroupId());
+            data.setAddress(flat.getFlatAddress());
+            data.setRentAmount(flat.getRentAmount());
+            data.setSecurityAmount(flat.getSecurityAmount());
 
             localFlats.add(data);
         }

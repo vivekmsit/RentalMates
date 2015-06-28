@@ -2,12 +2,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FCC98B"
     tools:context="com.example.vivek.rentalmates.fragments.SearchFlatFragment">
 
-    <TextView
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeAvailableFlats"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Search Flat Fragment" />
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/listAvailableFlats"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/facebookBackground" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </FrameLayout>

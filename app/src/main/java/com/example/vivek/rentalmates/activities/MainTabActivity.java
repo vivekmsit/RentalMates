@@ -24,7 +24,8 @@ import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.fragments.ExpenseDataListFragment;
 import com.example.vivek.rentalmates.fragments.NavigationDrawerFragment;
 import com.example.vivek.rentalmates.fragments.NewsFeedFragment;
-import com.example.vivek.rentalmates.fragments.SearchFragment;
+import com.example.vivek.rentalmates.fragments.SearchFlatFragment;
+import com.example.vivek.rentalmates.fragments.SearchRoomMateFragment;
 import com.example.vivek.rentalmates.others.AppConstants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -217,9 +218,11 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
                     newExpenseAvailable = false;
                 }
             } else if (position == 1) {
-                fragment = new NewsFeedFragment();
+                fragment = new SearchFlatFragment();
             } else if (position == 2) {
-                fragment = new SearchFragment();
+                fragment = new SearchRoomMateFragment();
+            } else if (position == 3) {
+                fragment = new NewsFeedFragment();
             }
             registeredFragments.put(position, fragment);
             return fragment;
@@ -227,7 +230,7 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
 
         @Override
@@ -235,9 +238,11 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
             if (position == 0) {
                 return "Expenses";
             } else if (position == 1) {
-                return "Activities";
+                return "Search Flats";
             } else if (position == 2) {
-                return "Search";
+                return "Search RoomMates";
+            } else if (position == 3) {
+                return "Activities";
             } else {
                 return null;
             }

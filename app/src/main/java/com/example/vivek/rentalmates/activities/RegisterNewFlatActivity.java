@@ -91,7 +91,11 @@ public class RegisterNewFlatActivity extends AppCompatActivity {
         flatInfo.setFlatName(editText1.getText().toString());
         flatInfo.setOwnerEmailId(prefs.getString(AppConstants.EMAIL_ID, "no_email_id"));
         flatInfo.setUserProfileId(prefs.getLong(AppConstants.USER_PROFILE_ID, 0));
+
+        //below logic will be changed later
         flatInfo.setFlatAddress("B902, SJR Apartments, ECity, Bangalore");
+        flatInfo.setRentAmount(25000);
+        flatInfo.setSecurityAmount(100000);
 
         RegisterNewFlatAsyncTask task = new RegisterNewFlatAsyncTask(this, flatInfo);
         task.setOnRegisterNewFlatReceiver(new OnRegisterNewFlatReceiver() {
