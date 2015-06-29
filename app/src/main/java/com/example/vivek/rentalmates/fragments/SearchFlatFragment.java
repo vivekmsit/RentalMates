@@ -12,8 +12,11 @@ import android.view.ViewGroup;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.adapters.AvailableFlatListViewAdapter;
+import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
+import com.example.vivek.rentalmates.interfaces.OnAvailableFlatInfoListReceiver;
 import com.example.vivek.rentalmates.others.AppData;
 import com.example.vivek.rentalmates.others.LocalFlatInfo;
+import com.example.vivek.rentalmates.tasks.GetAvailableFlatInfoListAsyncTask;
 import com.example.vivek.rentalmates.viewholders.AvailableFlatListItem;
 
 import java.util.ArrayList;
@@ -63,7 +66,7 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment {
     public List<AvailableFlatListItem> getData() {
         Log.d(TAG, "inside getData");
         List<AvailableFlatListItem> mItems = new ArrayList<>();
-        if (appData.getFlats() == null) {
+        if (appData.getAvailableFlats().size() == 0) {
             LocalFlatInfo data = new LocalFlatInfo();
             data.setFlatName("Flat Name");
             data.setAddress("Unknown Address");
@@ -71,7 +74,7 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment {
             data.setRentAmount(1);
             mItems.add(new AvailableFlatListItem(data));
         } else {
-            for (LocalFlatInfo flatInfo : appData.getFlats().values()) {
+            for (LocalFlatInfo flatInfo : appData.getAvailableFlats().values()) {
                 mItems.add(new AvailableFlatListItem(flatInfo));
             }
         }
@@ -79,6 +82,27 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment {
     }
 
     public void onSwipeRefresh() {
+        GetAvailableFlatInfoListAsyncTask task = new GetAvailableFlatInfoListAsyncTask(getActivity());
+        task.setOnAvailableFlatInfoListReceiver(new OnAvailableFlatInfoListReceiver() {
+            @Override
+            public void onAvailableFlatInfoListLoadSuccessful(List<FlatInfo> flats) {
+                if (swipeRefreshLayout.isRefreshing()) {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+                if (flats != null) {
+                    appData.storeAvailableFlatInfoList(getActivity(), flats);
+                    availableFlatListViewAdapter.setData(getData());
+                    availableFlatListViewAdapter.notifyDataSetChanged();
+                }
+            }
 
+            @Override
+            public void onAvailableFlatInfoListLoadFailed() {
+                if (swipeRefreshLayout.isRefreshing()) {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
+        task.execute();
     }
 }

@@ -223,6 +223,22 @@ public class UserProfileEndpoint {
 
 
     /**
+     * Get available FlatInfo list.
+     *
+     * @throws NotFoundException if the {@code id} does not correspond to an existing
+     *                           {@code FlatInfo}
+     */
+    @ApiMethod(
+            name = "getAvailableFlatInfoList",
+            path = "getAvailableFlatInfo",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public List<FlatInfo> getAvailableFlatInfoList() {
+        List<FlatInfo> flats = ofy().load().type(FlatInfo.class).filter("available", false).limit(10).list();
+        return flats;
+    }
+
+
+    /**
      * Returns the {@link UserProfile} with the corresponding ID.
      *
      * @param id the ID of the entity to be retrieved

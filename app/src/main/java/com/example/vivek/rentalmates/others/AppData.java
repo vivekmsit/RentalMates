@@ -36,6 +36,7 @@ public class AppData implements Serializable {
 
     private HashMap<String, String> profilePicturesPath = new HashMap<>();
     private HashMap<Long, LocalFlatInfo> flats = new HashMap<>();
+    private HashMap<Long, LocalFlatInfo> availableFlats = new HashMap<>();
     private HashMap<Long, LocalUserProfile> userProfiles = new HashMap<>();
     private HashMap<Long, LocalExpenseGroup> expenseGroups = new HashMap<>();
 
@@ -63,6 +64,14 @@ public class AppData implements Serializable {
 
     public void setFlats(HashMap<Long, LocalFlatInfo> flats) {
         this.flats = flats;
+    }
+
+    public HashMap<Long, LocalFlatInfo> getAvailableFlats() {
+        return availableFlats;
+    }
+
+    public void setAvailableFlats(HashMap<Long, LocalFlatInfo> availableFlats) {
+        this.availableFlats = availableFlats;
     }
 
     public List<ExpenseData> getExpenses() {
@@ -117,6 +126,14 @@ public class AppData implements Serializable {
         List<LocalUserProfile> userProfiles = LocalUserProfile.convertUserProfileToLocalUserProfile(profiles);
         for (LocalUserProfile profile : userProfiles) {
             this.userProfiles.put(profile.getUserProfileId(), profile);
+        }
+        return storeAppData(context);
+    }
+
+    public boolean storeAvailableFlatInfoList(Context context, List<FlatInfo> flats) {
+        List<LocalFlatInfo> localFlats = LocalFlatInfo.convertFlatInfoToLocalFlatInfo(flats);
+        for (LocalFlatInfo flatInfo : localFlats) {
+            this.availableFlats.put(flatInfo.getFlatId(), flatInfo);
         }
         return storeAppData(context);
     }
@@ -217,6 +234,7 @@ public class AppData implements Serializable {
         this.expenses = new ArrayList<>();
         this.userProfiles = new HashMap<>();
         this.flats = new HashMap<>();
+        this.availableFlats = new HashMap<>();
         this.expenseGroups = new HashMap<>();
 
         Toast.makeText(context, "AppData cleared", Toast.LENGTH_LONG).show();

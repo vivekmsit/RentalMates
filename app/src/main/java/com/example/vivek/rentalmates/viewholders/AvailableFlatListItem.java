@@ -13,7 +13,12 @@ public class AvailableFlatListItem {
         this.flatName = flatInfo.getFlatName();
         this.location = flatInfo.getCity();
         this.address = flatInfo.getAddress();
-        this.rentAmount = String.valueOf(flatInfo.getRentAmount() / flatInfo.getNumberOfUsers());
-        this.securityAmount = String.valueOf(flatInfo.getSecurityAmount() / flatInfo.getNumberOfUsers());
+        if (flatInfo.getNumberOfUsers() == 0) {
+            this.rentAmount = "0";
+            this.securityAmount = "0";
+        } else {
+            this.rentAmount = String.valueOf(flatInfo.getRentAmount() / flatInfo.getNumberOfUsers());
+            this.securityAmount = String.valueOf(flatInfo.getSecurityAmount() / flatInfo.getNumberOfUsers());
+        }
     }
 }

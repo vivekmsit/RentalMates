@@ -9,7 +9,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        card_view:cardCornerRadius="4dp">
+        android:layout_margin="10dp"
+        card_view:cardBackgroundColor="@color/facebookBackground"
+        card_view:cardCornerRadius="6dp"
+        card_view:cardElevation="4dp">
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -30,7 +33,7 @@
                 android:layout_centerHorizontal="true"
                 android:padding="4dp"
                 android:text="B902, SJR Apartments"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
                 android:id="@+id/rentAmountTextView"
@@ -40,7 +43,7 @@
                 android:layout_centerHorizontal="true"
                 android:padding="4dp"
                 android:text="Rent Amount: 5000"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
                 android:id="@+id/securityAmountTextView"
@@ -50,7 +53,7 @@
                 android:layout_centerHorizontal="true"
                 android:padding="4dp"
                 android:text="Security Amount: 25000"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
         </RelativeLayout>
 
