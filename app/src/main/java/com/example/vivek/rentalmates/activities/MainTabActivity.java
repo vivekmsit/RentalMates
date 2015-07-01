@@ -38,7 +38,7 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
 
     private ViewPager viewPager;
     private TabLayout tabLayout;
-    private Toolbar toolBar;
+    private Toolbar toolbar;
     private GoogleApiClient mGoogleApiClient;
     private SharedPreferences prefs;
     private NavigationDrawerFragment drawerFragment;
@@ -58,9 +58,9 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
         currentPosition = 0;
         newExpenseAvailable = false;
 
-        toolBar = (Toolbar) findViewById(R.id.app_bar);
-        setSupportActionBar(toolBar);
-        toolBar.setTitleTextColor(getResources().getColor(R.color.white));
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        //toolBar.setTitleTextColor(getResources().getColor(R.color.white));
 
         //Initialize FragmentManager
         fragmentManager = getSupportFragmentManager();
@@ -120,7 +120,6 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
         //Initialize TabLayout
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setBackgroundColor(getResources().getColor(R.color.primaryColor));
-        tabLayout.setTabTextColors(getResources().getColor(R.color.white), getResources().getColor(R.color.white));
         tabLayout.setTabsFromPagerAdapter(pageAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
@@ -151,7 +150,7 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
         super.onStart();
         Log.d(TAG, "inside onStart");
         drawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
-        drawerFragment.setup(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolBar);
+        drawerFragment.setup(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
         mGoogleApiClient.connect();
     }
 

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primaryColor">#8BC34A</color>
-    <color name="primaryColorDark">#689F38</color>
+    <color name="primaryColor">#03A9F4</color>
+    <color name="primaryColorDark">#0288D1</color>
     <color name="accentColor">#F44336</color>
 
+    <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
     <color name="blue">#0099CC</color>
     <color name="purple">#9933CC</color>
@@ -12,6 +13,7 @@
     <color name="grey">#808080</color>
     <color name="lightGrey">#e5e5e5</color>
     <color name="yellow">#ffff00</color>
+    <color name="light_yellow">#FFFF99</color>
 
     <color name="facebookBackground">#f7f7f7</color>
     <color name="fb_feed_bg">#d3d6db</color>

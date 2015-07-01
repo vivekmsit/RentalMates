@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="5dp"
-            android:background="@color/primaryColor">
+            android:background="@color/green">
 
             <TextView
                 android:id="@+id/groupNameTextView"
