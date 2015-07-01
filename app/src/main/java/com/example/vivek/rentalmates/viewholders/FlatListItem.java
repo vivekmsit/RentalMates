@@ -1,6 +1,6 @@
 package com.example.vivek.rentalmates.viewholders;
 
-import com.example.vivek.rentalmates.others.LocalFlatInfo;
+import com.example.vivek.rentalmates.data.LocalFlatInfo;
 
 public class FlatListItem {
     public final String flatName;

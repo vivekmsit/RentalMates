@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.dialogs.ExpenseMenuDialog;
-import com.example.vivek.rentalmates.others.AppData;
+import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.viewholders.ExpenseListItem;
 import com.pkmmte.view.CircularImageView;
 

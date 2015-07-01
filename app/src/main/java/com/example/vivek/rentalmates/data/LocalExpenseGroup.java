@@ -1,4 +1,4 @@
-package com.example.vivek.rentalmates.others;
+package com.example.vivek.rentalmates.data;
 
 import com.example.vivek.rentalmates.backend.userProfileApi.model.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.JsonMap;

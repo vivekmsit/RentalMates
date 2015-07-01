@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
-import com.example.vivek.rentalmates.others.AppConstants;
-import com.example.vivek.rentalmates.others.AppData;
+import com.example.vivek.rentalmates.data.AppConstants;
+import com.example.vivek.rentalmates.data.AppData;
 
 public class DeveloperModeActivity extends AppCompatActivity {
     private AppData appData;

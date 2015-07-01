@@ -9,10 +9,9 @@ import android.support.v4.app.DialogFragment;
 import android.util.Log;
 
 import com.example.vivek.rentalmates.interfaces.OnExpenseMembersSelectedReceiver;
-import com.example.vivek.rentalmates.others.AppData;
+import com.example.vivek.rentalmates.data.AppData;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 public class ChooseExpenseMembersDialog extends DialogFragment {

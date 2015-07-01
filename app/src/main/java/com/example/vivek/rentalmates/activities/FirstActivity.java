@@ -9,8 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.example.vivek.rentalmates.R;
-import com.example.vivek.rentalmates.others.AppConstants;
-import com.example.vivek.rentalmates.others.AppData;
+import com.example.vivek.rentalmates.data.AppConstants;
+import com.example.vivek.rentalmates.data.AppData;
 
 public class FirstActivity extends AppCompatActivity {
     private static final String TAG = "FirstActivity_Debug";

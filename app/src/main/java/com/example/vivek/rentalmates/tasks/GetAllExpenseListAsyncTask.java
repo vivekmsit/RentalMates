@@ -10,8 +10,8 @@ import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.ExpenseGro
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseDataCollection;
 import com.example.vivek.rentalmates.interfaces.OnExpenseListReceiver;
-import com.example.vivek.rentalmates.others.AppConstants;
-import com.example.vivek.rentalmates.others.AppData;
+import com.example.vivek.rentalmates.data.AppConstants;
+import com.example.vivek.rentalmates.data.AppData;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 

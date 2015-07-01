@@ -11,8 +11,8 @@ import android.util.Log;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.adapters.ExpenseGroupListViewAdapter;
 import com.example.vivek.rentalmates.interfaces.OnExpenseGroupListReceiver;
-import com.example.vivek.rentalmates.others.AppData;
-import com.example.vivek.rentalmates.others.LocalExpenseGroup;
+import com.example.vivek.rentalmates.data.AppData;
+import com.example.vivek.rentalmates.data.LocalExpenseGroup;
 import com.example.vivek.rentalmates.tasks.GetExpenseGroupListAsyncTask;
 import com.example.vivek.rentalmates.viewholders.ExpenseGroupListItem;
 

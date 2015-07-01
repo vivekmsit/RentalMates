@@ -14,8 +14,8 @@ import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.adapters.AvailableFlatListViewAdapter;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
 import com.example.vivek.rentalmates.interfaces.OnAvailableFlatInfoListReceiver;
-import com.example.vivek.rentalmates.others.AppData;
-import com.example.vivek.rentalmates.others.LocalFlatInfo;
+import com.example.vivek.rentalmates.data.AppData;
+import com.example.vivek.rentalmates.data.LocalFlatInfo;
 import com.example.vivek.rentalmates.tasks.GetAvailableFlatInfoListAsyncTask;
 import com.example.vivek.rentalmates.viewholders.AvailableFlatListItem;
 

@@ -9,7 +9,7 @@ import android.widget.Toast;
 import com.example.vivek.rentalmates.backend.flatInfoApi.FlatInfoApi;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
 import com.example.vivek.rentalmates.interfaces.OnRegisterWithOldFlatReceiver;
-import com.example.vivek.rentalmates.others.AppConstants;
+import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.services.BackendApiService;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;

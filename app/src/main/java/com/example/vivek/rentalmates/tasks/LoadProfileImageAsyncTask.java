@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.vivek.rentalmates.others.AppData;
+import com.example.vivek.rentalmates.data.AppData;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

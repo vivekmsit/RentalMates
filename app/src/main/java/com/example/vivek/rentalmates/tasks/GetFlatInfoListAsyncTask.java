@@ -10,7 +10,7 @@ import com.example.vivek.rentalmates.backend.userProfileApi.UserProfileApi;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfoCollection;
 import com.example.vivek.rentalmates.interfaces.OnFlatInfoListReceiver;
-import com.example.vivek.rentalmates.others.AppConstants;
+import com.example.vivek.rentalmates.data.AppConstants;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 

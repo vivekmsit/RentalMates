@@ -1,6 +1,6 @@
 package com.example.vivek.rentalmates.viewholders;
 
-import com.example.vivek.rentalmates.others.LocalExpenseGroup;
+import com.example.vivek.rentalmates.data.LocalExpenseGroup;
 
 public class ExpenseGroupListItem {
     public final String flatName;

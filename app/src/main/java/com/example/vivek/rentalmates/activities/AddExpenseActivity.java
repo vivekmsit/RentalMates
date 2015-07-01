@@ -19,10 +19,10 @@ import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.Json
 import com.example.vivek.rentalmates.dialogs.ChooseExpenseMembersDialog;
 import com.example.vivek.rentalmates.interfaces.OnAddExpenseReceiver;
 import com.example.vivek.rentalmates.interfaces.OnExpenseMembersSelectedReceiver;
-import com.example.vivek.rentalmates.others.AppConstants;
-import com.example.vivek.rentalmates.others.AppData;
-import com.example.vivek.rentalmates.others.LocalExpenseGroup;
-import com.example.vivek.rentalmates.others.LocalUserProfile;
+import com.example.vivek.rentalmates.data.AppConstants;
+import com.example.vivek.rentalmates.data.AppData;
+import com.example.vivek.rentalmates.data.LocalExpenseGroup;
+import com.example.vivek.rentalmates.data.LocalUserProfile;
 import com.example.vivek.rentalmates.tasks.AddExpenseAsyncTask;
 import com.google.api.client.util.DateTime;
 

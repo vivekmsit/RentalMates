@@ -20,9 +20,9 @@ import android.widget.TextView;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.activities.MainTabActivity;
 import com.example.vivek.rentalmates.adapters.DrawerListViewAdapter;
-import com.example.vivek.rentalmates.others.AppConstants;
-import com.example.vivek.rentalmates.others.AppData;
-import com.example.vivek.rentalmates.others.DividerItemDecoration;
+import com.example.vivek.rentalmates.data.AppConstants;
+import com.example.vivek.rentalmates.data.AppData;
+import com.example.vivek.rentalmates.data.DividerItemDecoration;
 import com.example.vivek.rentalmates.viewholders.DrawerListItem;
 import com.pkmmte.view.CircularImageView;
 

@@ -8,7 +8,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.example.vivek.rentalmates.others.AppConstants;
+import com.example.vivek.rentalmates.data.AppConstants;
 
 import java.util.Map;
 

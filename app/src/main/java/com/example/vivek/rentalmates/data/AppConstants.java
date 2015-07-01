@@ -1,4 +1,4 @@
-package com.example.vivek.rentalmates.others;
+package com.example.vivek.rentalmates.data;
 
 public class AppConstants {
     public static final String GCM_REG_ID = "registration_id";

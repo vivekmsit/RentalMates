@@ -1,4 +1,4 @@
-package com.example.vivek.rentalmates.others;
+package com.example.vivek.rentalmates.data;
 
 import android.content.Context;
 import android.graphics.Bitmap;
