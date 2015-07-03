@@ -34,5 +34,7 @@
     <string name="title_activity_register_new_flat">RegisterNewFlatActivity</string>
     <string name="title_activity_manage_flats">ManageFlatsActivity</string>
     <string name="title_activity_manage_expense_groups">ManageExpenseGroupsActivity</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
 
 </resources>

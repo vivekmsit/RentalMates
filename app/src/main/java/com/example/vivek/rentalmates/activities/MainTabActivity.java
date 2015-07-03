@@ -3,26 +3,34 @@ package com.example.vivek.rentalmates.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
+import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.fragments.ExpenseDataListFragment;
-import com.example.vivek.rentalmates.fragments.NavigationDrawerFragment;
 import com.example.vivek.rentalmates.fragments.NewsFeedFragment;
 import com.example.vivek.rentalmates.fragments.SearchFlatFragment;
 import com.example.vivek.rentalmates.fragments.SearchRoomMateFragment;
@@ -31,23 +39,34 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
+import com.pkmmte.view.CircularImageView;
 
 public class MainTabActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "MainTabActivity_Debug";
+    private static final long DRAWER_CLOSE_DELAY_MS = 250;
+    private static final String NAV_ITEM_ID = "navItemId";
 
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private Toolbar toolbar;
     private GoogleApiClient mGoogleApiClient;
     private SharedPreferences prefs;
-    private NavigationDrawerFragment drawerFragment;
+    private DrawerLayout drawerLayout;
     private FragmentManager fragmentManager;
     private MyAdapter pageAdapter;
     private FloatingActionButton fab;
+    private NavigationView navigationView;
+    private CircularImageView circularImageView;
+    private TextView userNameTextView;
+    private TextView emailTextView;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private AppData appData;
+    private final Handler mDrawerActionHandler = new Handler();
     private int currentPosition;
     private int backStackCount;
     private boolean newExpenseAvailable;
+    private int mNavItemId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +76,20 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
 
         currentPosition = 0;
         newExpenseAvailable = false;
+        appData = AppData.getInstance();
+        prefs = this.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
+
+        // load saved navigation state if present
+        if (null == savedInstanceState) {
+            mNavItemId = R.id.drawer_item_profile;
+        } else {
+            mNavItemId = savedInstanceState.getInt(NAV_ITEM_ID);
+        }
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //toolBar.setTitleTextColor(getResources().getColor(R.color.white));
 
         //Initialize FragmentManager
         fragmentManager = getSupportFragmentManager();
@@ -119,9 +148,67 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
 
         //Initialize TabLayout
         tabLayout = (TabLayout) findViewById(R.id.tabs);
+        //To be moved to xml file later when issue will be fixed
         tabLayout.setBackgroundColor(getResources().getColor(R.color.primaryColor));
         tabLayout.setTabsFromPagerAdapter(pageAdapter);
         tabLayout.setupWithViewPager(viewPager);
+
+        // Initialize NavigationView
+        navigationView = (NavigationView) findViewById(R.id.navigation);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(final MenuItem menuItem) {
+                // update highlighted item in the navigation menu
+                menuItem.setChecked(true);
+                mNavItemId = menuItem.getItemId();
+
+                // allow some time after closing the drawer before performing real navigation
+                // so the user can see what is happening
+                drawerLayout.closeDrawer(GravityCompat.START);
+                mDrawerActionHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        navigate(menuItem.getItemId());
+                    }
+                }, DRAWER_CLOSE_DELAY_MS);
+                return true;
+            }
+        });
+        // select the correct nav menu item
+        navigationView.getMenu().findItem(mNavItemId).setChecked(true);
+
+        //Initialize HeaderView
+        View headerView = navigationView.inflateHeaderView(R.layout.drawer_header);
+        circularImageView = (CircularImageView) headerView.findViewById(R.id.drawerImageView);
+        String emailId = prefs.getString(AppConstants.EMAIL_ID, "no_email_id");
+        circularImageView.setImageBitmap(appData.getProfilePictureBitmap(emailId));
+        //Initialize UserName TextView
+        userNameTextView = (TextView) headerView.findViewById(R.id.userNameTextView);
+        String userName = prefs.getString(AppConstants.USER_NAME, "no_user_name");
+        userNameTextView.setText(userName);
+        //Initialize UserEmailId TextView
+        emailTextView = (TextView) headerView.findViewById(R.id.userEmailTextView);
+        emailTextView.setText(emailId);
+//        navigationView.addHeaderView(headerView);
+
+        // Initialize DrawerToggle
+        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                hideFab();
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                showFab();
+            }
+        };
+        drawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
+
+        navigate(mNavItemId);
 
         // Initializing google plus api client
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -131,7 +218,6 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .build();
 
-        prefs = this.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
         if (prefs.contains(AppConstants.SIGN_IN_COMPLETED)) {
             SharedPreferences.Editor editor = prefs.edit();
             editor.putBoolean(AppConstants.SIGN_IN_COMPLETED, true);
@@ -149,8 +235,6 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
     protected void onStart() {
         super.onStart();
         Log.d(TAG, "inside onStart");
-        drawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
-        drawerFragment.setup(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
         mGoogleApiClient.connect();
     }
 
@@ -160,6 +244,70 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
         Log.d(TAG, "inside onStop");
         if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(final Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        if (item.getItemId() == android.support.v7.appcompat.R.id.home) {
+            return mDrawerToggle.onOptionsItemSelected(item);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(NAV_ITEM_ID, mNavItemId);
+    }
+
+    private void navigate(final int itemId) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        Intent intent;
+        switch (itemId) {
+            case R.id.drawer_item_profile:
+                break;
+            case R.id.drawer_item_flats:
+                intent = new Intent(this, ManageFlatsActivity.class);
+                this.startActivity(intent);
+                break;
+            case R.id.drawer_item_expense_groups:
+                intent = new Intent(this, ManageExpenseGroupsActivity.class);
+                this.startActivity(intent);
+                break;
+            case R.id.drawer_item_account_settings:
+                intent = new Intent(this, MyLoginActivity.class);
+                this.startActivity(intent);
+                break;
+            case R.id.drawer_item_developer_mode:
+                intent = new Intent(this, DeveloperModeActivity.class);
+                this.startActivity(intent);
+                break;
+            case R.id.drawer_item_requests:
+                break;
+            case R.id.drawer_item_about:
+                ft.replace(R.id.mainDrawerView, new NewsFeedFragment());
+                ft.addToBackStack("NewsFeedFragment");
+                ft.commit();
+                break;
+            case R.id.drawer_item_help:
+                break;
         }
     }
 

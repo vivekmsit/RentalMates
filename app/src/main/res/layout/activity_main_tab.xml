@@ -52,15 +52,16 @@
 
         </android.support.design.widget.CoordinatorLayout>
 
-
-        <fragment
-            android:id="@+id/fragment_navigation_drawer"
-            android:name="com.example.vivek.rentalmates.fragments.NavigationDrawerFragment"
-            android:layout_width="280dp"
+        <!-- The navigation drawer -->
+        <android.support.design.widget.NavigationView
+            android:id="@+id/navigation"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            app:layout="@layout/fragment_navigation_drawer"
-            tools:layout="@layout/fragment_navigation_drawer" />
+            android:background="@color/white"
+            app:itemIconTint="@color/blue"
+            app:itemTextColor="@color/orange"
+            app:menu="@menu/menu_drawer" />
 
     </android.support.v4.widget.DrawerLayout>
 
