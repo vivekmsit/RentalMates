@@ -22,6 +22,7 @@
                 android:id="@+id/flatMainPic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="flat pictures"
                 android:padding="4dp"
                 android:src="@drawable/flatview2" />
 
@@ -35,25 +36,61 @@
                 android:text="B902, SJR Apartments"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
-            <TextView
-                android:id="@+id/rentAmountTextView"
+            <RelativeLayout
+                android:id="@+id/rentAmountMainTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/addressTextView">
+
+                <TextView
+                    android:id="@+id/rentAmountTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:padding="4dp"
+                    android:text="Rent"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <TextView
+                    android:id="@+id/rentAmountValueTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/rentAmountTextView"
+                    android:layout_centerHorizontal="true"
+                    android:padding="4dp"
+                    android:text="5000"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/securityAmountMainTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/addressTextView"
-                android:layout_centerHorizontal="true"
-                android:padding="4dp"
-                android:text="Rent Amount: 5000"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:layout_toEndOf="@+id/rentAmountMainTextView">
 
-            <TextView
-                android:id="@+id/securityAmountTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/rentAmountTextView"
-                android:layout_centerHorizontal="true"
-                android:padding="4dp"
-                android:text="Security Amount: 25000"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <TextView
+                    android:id="@+id/securityAmountTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:padding="4dp"
+                    android:text="Security"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <TextView
+                    android:id="@+id/securityAmountValueTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/securityAmountTextView"
+                    android:layout_centerHorizontal="true"
+                    android:padding="4dp"
+                    android:text="25000"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            </RelativeLayout>
 
         </RelativeLayout>
 

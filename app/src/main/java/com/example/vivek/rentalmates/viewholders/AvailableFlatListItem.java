@@ -1,5 +1,6 @@
 package com.example.vivek.rentalmates.viewholders;
 
+import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.data.LocalFlatInfo;
 
 public class AvailableFlatListItem {
@@ -8,8 +9,10 @@ public class AvailableFlatListItem {
     public final String address;
     public final String rentAmount;
     public final String securityAmount;
+    public final int flatPictureResourceId;
 
     public AvailableFlatListItem(LocalFlatInfo flatInfo) {
+        this.flatPictureResourceId = R.drawable.flatview2;
         this.flatName = flatInfo.getFlatName();
         this.location = flatInfo.getCity();
         this.address = flatInfo.getAddress();

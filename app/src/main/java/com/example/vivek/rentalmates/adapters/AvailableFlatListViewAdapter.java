@@ -1,11 +1,14 @@
 package com.example.vivek.rentalmates.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,8 +50,11 @@ public class AvailableFlatListViewAdapter extends RecyclerView.Adapter<Available
         AvailableFlatListItem current = data.get(position);
 
         viewHolder.address.setText("Address: " + current.address);
-        viewHolder.rentAmount.setText("Rent Amount: " + current.rentAmount);
-        viewHolder.securityAmount.setText("Security Amount: " + current.securityAmount);
+        viewHolder.rentAmount.setText(current.rentAmount);
+        viewHolder.securityAmount.setText(current.securityAmount);
+        Bitmap bm = BitmapFactory.decodeResource(context.getResources(), current.flatPictureResourceId);
+        Bitmap newBitmap = Bitmap.createScaledBitmap(bm, 600, 400, true);
+        viewHolder.flatPicture.setImageBitmap(newBitmap);
     }
 
     @Override
@@ -61,6 +67,7 @@ public class AvailableFlatListViewAdapter extends RecyclerView.Adapter<Available
      * repeatedly in the getView() method of the adapter.
      */
     class AvailableFlatViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+        ImageView flatPicture;
         TextView address;
         TextView rentAmount;
         TextView securityAmount;
@@ -68,9 +75,10 @@ public class AvailableFlatListViewAdapter extends RecyclerView.Adapter<Available
         public AvailableFlatViewHolder(View itemView) {
             super(itemView);
 
+            flatPicture = (ImageView) itemView.findViewById(R.id.flatMainPic);
             address = (TextView) itemView.findViewById(R.id.addressTextView);
-            rentAmount = (TextView) itemView.findViewById(R.id.rentAmountTextView);
-            securityAmount = (TextView) itemView.findViewById(R.id.securityAmountTextView);
+            rentAmount = (TextView) itemView.findViewById(R.id.rentAmountValueTextView);
+            securityAmount = (TextView) itemView.findViewById(R.id.securityAmountValueTextView);
 
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
