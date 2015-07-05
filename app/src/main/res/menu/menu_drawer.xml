@@ -2,6 +2,10 @@
     <!-- group with single selected item so only one item is highlighted in the nav menu -->
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/drawer_item_home"
+            android:icon="@drawable/ic_action_person_light"
+            android:title="Home" />
+        <item
             android:id="@+id/drawer_item_profile"
             android:icon="@drawable/ic_action_person_light"
             android:title="Profile" />

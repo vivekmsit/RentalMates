@@ -81,7 +81,7 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
 
         // load saved navigation state if present
         if (null == savedInstanceState) {
-            mNavItemId = R.id.drawer_item_profile;
+            mNavItemId = R.id.drawer_item_home;
         } else {
             mNavItemId = savedInstanceState.getInt(NAV_ITEM_ID);
         }
@@ -281,6 +281,8 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
         FragmentTransaction ft = fragmentManager.beginTransaction();
         Intent intent;
         switch (itemId) {
+            case R.id.drawer_item_home:
+                break;
             case R.id.drawer_item_profile:
                 break;
             case R.id.drawer_item_flats:

@@ -3,5 +3,5 @@
     android:color="?android:attr/colorControlHighlight">
     <item
         android:id="@+id/mask"
-        android:drawable="@drawable/round_shape_yellow" />
+        android:drawable="@drawable/round_shape_primary_color" />
 </ripple>
