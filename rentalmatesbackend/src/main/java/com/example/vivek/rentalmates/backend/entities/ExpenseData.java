@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @Entity
-public class ExpenseData implements Serializable {
+public class ExpenseData implements Serializable, Comparable<ExpenseData> {
 
     @Id
     Long id;
@@ -201,4 +201,8 @@ public class ExpenseData implements Serializable {
         updateCount = -1;
     }
 
+    @Override
+    public int compareTo(ExpenseData otherExpenseData) {
+        return date.compareTo(otherExpenseData.date);
+    }
 }

@@ -58,8 +58,6 @@ public class GetAllExpenseListAsyncTask extends AsyncTask<Context, Void, String>
             } else {
                 expenses = expensesCollection.getItems();
                 if (expenses != null) {
-                    //Store in Sorted order by Date
-                    Collections.reverse(expenses);
                     this.appData.storeExpenseDataList(context, expenses);
                 }
             }

@@ -21,6 +21,7 @@ import com.googlecode.objectify.cmd.Query;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Logger;
@@ -278,6 +279,8 @@ public class ExpenseGroupEndpoint {
         if (expenses.size() == 0) {
             return null;
         }
+        Collections.sort(expenses); //sort by date
+        Collections.reverse(expenses); //first expense should be latest one
         return expenses;
     }
 
