@@ -8,33 +8,16 @@ import java.io.Serializable;
 
 @Entity
 public class Request implements Serializable {
-
-    enum RequestType {
-        NONE,
-        ADD_NEW_MEMBER_TO_FLAT,
-        ADD_NEW_MEMBER_TO_EXPENSE_GROUP
-    }
-
-    enum RequestStatus {
-        NONE,
-        ACCEPTED,
-        REJECTED,
-        PENDING
-    }
-
     @Id
     Long id;
 
     private int updateCount;
-    private RequestType type;
-    private RequestStatus status;
-    private String data;
     private Long requesterId;
     private Long requestProviderId;
+    private Long requestedEntity;
+    private String entityType;
 
     Request() {
-        type = RequestType.NONE;
-        status = RequestStatus.NONE;
         updateCount = -1;
     }
 
@@ -44,30 +27,6 @@ public class Request implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public RequestType getType() {
-        return type;
-    }
-
-    public void setType(RequestType type) {
-        this.type = type;
-    }
-
-    public RequestStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(RequestStatus status) {
-        this.status = status;
-    }
-
-    public String getData() {
-        return data;
-    }
-
-    public void setData(String data) {
-        this.data = data;
     }
 
     public Long getRequesterId() {
@@ -84,6 +43,22 @@ public class Request implements Serializable {
 
     public void setRequestProviderId(Long requestProviderId) {
         this.requestProviderId = requestProviderId;
+    }
+
+    public Long getRequestedEntity() {
+        return requestedEntity;
+    }
+
+    public void setRequestedEntity(Long requestedEntity) {
+        this.requestedEntity = requestedEntity;
+    }
+
+    public String getEntityType() {
+        return entityType;
+    }
+
+    public void setEntityType(String entityType) {
+        this.entityType = entityType;
     }
 
     public int getUpdateCount() {

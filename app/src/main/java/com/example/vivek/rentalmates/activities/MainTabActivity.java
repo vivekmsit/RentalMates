@@ -31,6 +31,8 @@ import android.widget.Toast;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.fragments.ExpenseDataListFragment;
+import com.example.vivek.rentalmates.fragments.ManageExpenseGroupsFragment;
+import com.example.vivek.rentalmates.fragments.ManageFlatsFragment;
 import com.example.vivek.rentalmates.fragments.NewsFeedFragment;
 import com.example.vivek.rentalmates.fragments.SearchFlatFragment;
 import com.example.vivek.rentalmates.fragments.SearchRoomMateFragment;
@@ -145,6 +147,7 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
         anim.setDuration(300);
         anim.setInterpolator(new OvershootInterpolator());
         fab.setAnimation(anim);
+        fab.animate();
 
         //Initialize TabLayout
         tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -182,14 +185,11 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
         circularImageView = (CircularImageView) headerView.findViewById(R.id.drawerImageView);
         String emailId = prefs.getString(AppConstants.EMAIL_ID, "no_email_id");
         circularImageView.setImageBitmap(appData.getProfilePictureBitmap(emailId));
-        //Initialize UserName TextView
         userNameTextView = (TextView) headerView.findViewById(R.id.userNameTextView);
         String userName = prefs.getString(AppConstants.USER_NAME, "no_user_name");
         userNameTextView.setText(userName);
-        //Initialize UserEmailId TextView
         emailTextView = (TextView) headerView.findViewById(R.id.userEmailTextView);
         emailTextView.setText(emailId);
-//        navigationView.addHeaderView(headerView);
 
         // Initialize DrawerToggle
         mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close) {
@@ -286,12 +286,14 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
             case R.id.drawer_item_profile:
                 break;
             case R.id.drawer_item_flats:
-                intent = new Intent(this, ManageFlatsActivity.class);
-                this.startActivity(intent);
+                ft.replace(R.id.drawer_layout, new ManageFlatsFragment());
+                ft.addToBackStack("ManageFlatsFragment");
+                ft.commit();
                 break;
             case R.id.drawer_item_expense_groups:
-                intent = new Intent(this, ManageExpenseGroupsActivity.class);
-                this.startActivity(intent);
+                ft.replace(R.id.drawer_layout, new ManageExpenseGroupsFragment());
+                ft.addToBackStack("ManageExpenseGroupsFragment");
+                ft.commit();
                 break;
             case R.id.drawer_item_account_settings:
                 intent = new Intent(this, MyLoginActivity.class);
@@ -304,7 +306,7 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
             case R.id.drawer_item_requests:
                 break;
             case R.id.drawer_item_about:
-                ft.replace(R.id.mainDrawerView, new NewsFeedFragment());
+                ft.replace(R.id.drawer_layout, new NewsFeedFragment());
                 ft.addToBackStack("NewsFeedFragment");
                 ft.commit();
                 break;
