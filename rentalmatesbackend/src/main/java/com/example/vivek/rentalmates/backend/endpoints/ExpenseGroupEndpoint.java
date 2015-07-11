@@ -333,7 +333,7 @@ public class ExpenseGroupEndpoint {
             name = "sendMessage",
             path = "sendMessage",
             httpMethod = ApiMethod.HttpMethod.GET)
-    public void sendMessage(@Named("userIds") final List<Long> userIds, @Named("message") final String message) throws IOException {
+    public static void sendMessage(@Named("userIds") final List<Long> userIds, @Named("message") final String message) throws IOException {
         if (userIds.size() == 0) {
             logger.info("userIds list empty");
             return;
@@ -352,7 +352,7 @@ public class ExpenseGroupEndpoint {
     }
 
     //Thread for sending message to multiple devices using GCM
-    public void sendMessageThread(@Named("userIds") List<Long> userIds, @Named("message") String message) throws IOException {
+    public static void sendMessageThread(@Named("userIds") List<Long> userIds, @Named("message") String message) throws IOException {
         String GCM_API_KEY = System.getProperty("gcm.api.key");
         Sender sender = new Sender(GCM_API_KEY);
         Message msg = new Message.Builder().addData("message", message).build();

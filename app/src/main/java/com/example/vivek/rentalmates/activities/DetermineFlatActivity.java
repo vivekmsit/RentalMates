@@ -17,11 +17,11 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
-import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
+import com.example.vivek.rentalmates.backend.flatInfoApi.model.Request;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
 import com.example.vivek.rentalmates.interfaces.OnExpenseGroupListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnExpenseListReceiver;
-import com.example.vivek.rentalmates.interfaces.OnRegisterWithOldFlatReceiver;
+import com.example.vivek.rentalmates.interfaces.OnRequestRegisterWithOtherFlatReceiver;
 import com.example.vivek.rentalmates.interfaces.OnUserProfileListReceiver;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.data.LocalFlatInfo;
@@ -29,7 +29,7 @@ import com.example.vivek.rentalmates.services.BackendApiService;
 import com.example.vivek.rentalmates.tasks.GetAllExpenseListAsyncTask;
 import com.example.vivek.rentalmates.tasks.GetExpenseGroupListAsyncTask;
 import com.example.vivek.rentalmates.tasks.GetUserProfileListAsyncTask;
-import com.example.vivek.rentalmates.tasks.RegisterWithOldFlatAsyncTask;
+import com.example.vivek.rentalmates.tasks.RequestRegisterWithOtherFlatAsyncTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,11 +44,11 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
     private Spinner chooseFlatSpinner;
     private EditText alreadyRegisteredFlatEditText;
     private Button continueWithOldFlatButton;
-    private Button registerWithOldFlatButton;
+    private Button requestRegisterWithOtherFlatButton;
     private Button registerNewFlatButton;
     private Context context;
     private AppData appData;
-    private boolean registerWithOldFlatButtonClicked;
+    private boolean registerWithAlreadyRegisteredFlatButtonClicked;
     private boolean alreadyRegisteredFlat;
     private List<LocalFlatInfo> localFlats = new ArrayList<>();
     private Long selectedFlatId;
@@ -72,11 +72,11 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
         alreadyRegisteredFlatEditText = (EditText) findViewById(R.id.alreadyRegisteredFlatEditText);
         chooseFlatSpinner = (Spinner) findViewById(R.id.chooseFlatSpinner);
         continueWithOldFlatButton = (Button) findViewById(R.id.continueWithOldFlatButton);
-        registerWithOldFlatButton = (Button) findViewById(R.id.registerWithOldFlatButton);
+        requestRegisterWithOtherFlatButton = (Button) findViewById(R.id.requestRegisterWithOtherFlatButton);
         registerNewFlatButton = (Button) findViewById(R.id.registerNewFlatButton);
 
         continueWithOldFlatButton.setOnClickListener(this);
-        registerWithOldFlatButton.setOnClickListener(this);
+        requestRegisterWithOtherFlatButton.setOnClickListener(this);
         registerNewFlatButton.setOnClickListener(this);
 
         Intent intent = getIntent();
@@ -102,7 +102,7 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
         chooseFlatSpinner.setAdapter(stringArrayAdapter);
         chooseFlatSpinner.setOnItemSelectedListener(this);
 
-        registerWithOldFlatButtonClicked = false;
+        registerWithAlreadyRegisteredFlatButtonClicked = false;
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -126,21 +126,19 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
                 loadAllExpenseGroups();
                 break;
 
-            case R.id.registerWithOldFlatButton:
-                if (registerWithOldFlatButtonClicked || !verifyFlatInfoData()) {
+            case R.id.requestRegisterWithOtherFlatButton:
+                if (registerWithAlreadyRegisteredFlatButtonClicked || !verifyFlatInfoData()) {
                     return;
                 }
-                registerWithOldFlatButtonClicked = true;
-                RegisterWithOldFlatAsyncTask task = new RegisterWithOldFlatAsyncTask(this, alreadyRegisteredFlatEditText.getText().toString());
-                task.setOnRegisterWithOldFlatReceiver(new OnRegisterWithOldFlatReceiver() {
+                registerWithAlreadyRegisteredFlatButtonClicked = true;
+                RequestRegisterWithOtherFlatAsyncTask task = new RequestRegisterWithOtherFlatAsyncTask(this, alreadyRegisteredFlatEditText.getText().toString());
+                task.setOnRegisterWithOldFlatReceiver(new OnRequestRegisterWithOtherFlatReceiver() {
                     @Override
-                    public void onRegisterWithOldFlatSuccessful(String message, FlatInfo flatInfo) {
-                        registerWithOldFlatButtonClicked = false;
+                    public void onRequestRegisterWithOtherFlatSuccessful(Request request) {
+                        registerWithAlreadyRegisteredFlatButtonClicked = false;
                         progressDialog.cancel();
-                        if (message.equals("SUCCESS_FLAT_AVAILABLE")) {
-                            BackendApiService.storePrimaryFlatId(getApplicationContext(), flatInfo.getFlatId());
-                            BackendApiService.storePrimaryFlatName(getApplicationContext(), flatInfo.getFlatName());
-                            BackendApiService.storeFlatExpenseGroupId(getApplicationContext(), flatInfo.getExpenseGroupId());
+                        if (request.getStatus().equals("PENDING")) {
+                            Toast.makeText(getApplicationContext(), "Request sent to owner of the Flat", Toast.LENGTH_LONG).show();
                             loadAllExpenseGroups();
                         } else {
                             Toast.makeText(getApplicationContext(), "Flat with given name doesn't exist.\nPlease enter different name", Toast.LENGTH_LONG).show();
@@ -148,13 +146,13 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
                     }
 
                     @Override
-                    public void onRegisterWithOldFlatFailed() {
-                        registerWithOldFlatButtonClicked = false;
+                    public void onRequestRegisterWithOtherFlatFailed() {
+                        registerWithAlreadyRegisteredFlatButtonClicked = false;
                         progressDialog.cancel();
                     }
                 });
                 task.execute();
-                progressDialog.setMessage("Registering with flat " + alreadyRegisteredFlatEditText.getText().toString());
+                progressDialog.setMessage("Requesting for Register with flat " + alreadyRegisteredFlatEditText.getText().toString());
                 progressDialog.show();
                 break;
 

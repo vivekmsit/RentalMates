@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.ExpenseGroup;
+import com.example.vivek.rentalmates.backend.userProfileApi.model.Request;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
 import com.example.vivek.rentalmates.tasks.LoadProfileImageAsyncTask;
 
@@ -33,6 +34,7 @@ public class AppData implements Serializable {
     private static final String TAG = "AppData_Debug";
 
     private List<LocalExpenseData> expenses = new ArrayList<>();
+    private List<LocalRequest> requests = new ArrayList<>();
 
     private HashMap<String, String> profilePicturesPath = new HashMap<>();
     private HashMap<Long, LocalFlatInfo> flats = new HashMap<>();
@@ -48,6 +50,14 @@ public class AppData implements Serializable {
 
     /* private Constructor of singleton class*/
     private AppData() {
+    }
+
+    public List<Request> getRequests() {
+        return LocalRequest.convertLocalRequestToRequest(this.requests);
+    }
+
+    public void setRequests(List<LocalRequest> requests) {
+        this.requests = requests;
     }
 
     public HashMap<Long, LocalUserProfile> getUserProfiles() {
@@ -151,6 +161,11 @@ public class AppData implements Serializable {
         return storeAppData(context);
     }
 
+    public boolean storeRequestList(Context context, List<Request> requests) {
+        this.requests = LocalRequest.convertRequestToLocalRequest(requests);
+        return storeAppData(context);
+    }
+
     public boolean deleteExpenseData(Context context, int position) {
         if (this.expenses != null) {
             this.expenses.remove(position);
@@ -232,6 +247,7 @@ public class AppData implements Serializable {
 
         //Initialize all the variables
         this.expenses = new ArrayList<>();
+        this.requests = new ArrayList<>();
         this.userProfiles = new HashMap<>();
         this.flats = new HashMap<>();
         this.availableFlats = new HashMap<>();

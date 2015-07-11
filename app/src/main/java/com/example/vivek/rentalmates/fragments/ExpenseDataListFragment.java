@@ -65,8 +65,13 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
 
         //Initialize Payback TextView
         payBackAmountView = (TextView) layout.findViewById(R.id.paybackTextView);
-        LocalExpenseGroup expenseGroup = appData.getLocalExpenseGroup(prefs.getLong(AppConstants.FLAT_EXPENSE_GROUP_ID, 0));
-        payBackAmountView.setText("Payback Amount: Rs. " + expenseGroup.getMembersData().get(prefs.getLong(AppConstants.USER_PROFILE_ID, 0)));
+        Long expenseGroupId = prefs.getLong(AppConstants.FLAT_EXPENSE_GROUP_ID, 0);
+        if (expenseGroupId != 0) {
+            LocalExpenseGroup expenseGroup = appData.getLocalExpenseGroup(expenseGroupId);
+            payBackAmountView.setText("Payback Amount: Rs. " + expenseGroup.getMembersData().get(prefs.getLong(AppConstants.USER_PROFILE_ID, 0)));
+        } else {
+            payBackAmountView.setText("Payback Amount: NA");
+        }
 
         //Initialize expense Group Text View
         expenseGroupNameView = (TextView) layout.findViewById(R.id.expenseGroupName);

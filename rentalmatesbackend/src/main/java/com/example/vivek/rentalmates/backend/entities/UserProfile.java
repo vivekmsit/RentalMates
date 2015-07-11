@@ -53,6 +53,8 @@ public class UserProfile {
         payback = new Long(0);
         numberOfFlats = 0;
         numberOfExpenseGroups = 0;
+        numberOfRequests = 0;
+        numberOfGcmIds = 0;
         updateCount = -1;
         date = new Date();
     }
@@ -207,6 +209,16 @@ public class UserProfile {
 
     public void setRequestIds(List<Long> requestIds) {
         this.requestIds = requestIds;
+    }
+
+    public void addRequestId(Long id) {
+        this.requestIds.add(id);
+        numberOfRequests++;
+    }
+
+    public void removeRequestId(Long id) {
+        this.requestIds.remove(id);
+        numberOfRequests--;
     }
 
     public List<String> getGcmIds() {

@@ -16,8 +16,12 @@ public class Request implements Serializable {
     private Long requestProviderId;
     private Long requestedEntity;
     private String entityType;
+    private String status;
+    private String requesterName;
+    private String requestedEntityName;
+    private String requesterProfilePicLink;
 
-    Request() {
+    public Request() {
         updateCount = -1;
     }
 
@@ -61,6 +65,14 @@ public class Request implements Serializable {
         this.entityType = entityType;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public int getUpdateCount() {
         return updateCount;
     }
@@ -72,5 +84,30 @@ public class Request implements Serializable {
 
     public void resetUpdateCount() {
         updateCount = -1;
+    }
+
+
+    public String getRequesterName() {
+        return requesterName;
+    }
+
+    public void setRequesterName(String requesterName) {
+        this.requesterName = requesterName;
+    }
+
+    public String getRequestedEntityName() {
+        return requestedEntityName;
+    }
+
+    public void setRequestedEntityName(String requestedEntityName) {
+        this.requestedEntityName = requestedEntityName;
+    }
+
+    public String getRequesterProfilePicLink() {
+        return requesterProfilePicLink;
+    }
+
+    public void setRequesterProfilePicLink(String requesterProfilePic) {
+        this.requesterProfilePicLink = requesterProfilePicLink;
     }
 }

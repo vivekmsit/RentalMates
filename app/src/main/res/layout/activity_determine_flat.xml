@@ -41,12 +41,12 @@
         android:text="If you want to be a member of already registered flat, enter Details and press Register" />
 
     <Button
-        android:id="@+id/registerWithOldFlatButton"
+        android:id="@+id/requestRegisterWithOtherFlatButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/alreadyRegisteredFlatEditText"
-        android:text="Register With OLD FLAT" />
+        android:text="Request Register With Other FLAT" />
 
     <EditText
         android:id="@+id/alreadyRegisteredFlatEditText"

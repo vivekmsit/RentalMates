@@ -2,6 +2,7 @@ package com.example.vivek.rentalmates.backend.endpoints;
 
 import com.example.vivek.rentalmates.backend.entities.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.entities.FlatInfo;
+import com.example.vivek.rentalmates.backend.entities.Request;
 import com.example.vivek.rentalmates.backend.entities.UserProfile;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -292,5 +293,23 @@ public class UserProfileEndpoint {
             expenseGroups.add(group);
         }
         return expenseGroups;
+    }
+
+    /**
+     * Returns List of {@code Request} for a given {@code UserProfile}.
+     */
+    @ApiMethod(
+            name = "getRequestList",
+            path = "getRequestList",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public List<Request> getRequestList(@Named("id") Long userProfileId) throws NotFoundException {
+        checkExists(userProfileId);
+        UserProfile userProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
+        List<Request> requests = new ArrayList<>();
+        for (Long requestId : userProfile.getRequestIds()) {
+            Request request = ofy().load().type(Request.class).id(requestId).now();
+            requests.add(request);
+        }
+        return requests;
     }
 }

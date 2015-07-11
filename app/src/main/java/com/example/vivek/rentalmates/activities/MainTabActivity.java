@@ -34,6 +34,7 @@ import com.example.vivek.rentalmates.fragments.ExpenseDataListFragment;
 import com.example.vivek.rentalmates.fragments.ManageExpenseGroupsFragment;
 import com.example.vivek.rentalmates.fragments.ManageFlatsFragment;
 import com.example.vivek.rentalmates.fragments.NewsFeedFragment;
+import com.example.vivek.rentalmates.fragments.RequestsFragment;
 import com.example.vivek.rentalmates.fragments.SearchFlatFragment;
 import com.example.vivek.rentalmates.fragments.SearchRoomMateFragment;
 import com.example.vivek.rentalmates.data.AppConstants;
@@ -304,6 +305,9 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
                 this.startActivity(intent);
                 break;
             case R.id.drawer_item_requests:
+                ft.replace(R.id.drawer_layout, new RequestsFragment());
+                ft.addToBackStack("RequestsFragment");
+                ft.commit();
                 break;
             case R.id.drawer_item_about:
                 ft.replace(R.id.drawer_layout, new NewsFeedFragment());

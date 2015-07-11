@@ -7,34 +7,33 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.backend.flatInfoApi.FlatInfoApi;
-import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
-import com.example.vivek.rentalmates.interfaces.OnRegisterWithOldFlatReceiver;
 import com.example.vivek.rentalmates.data.AppConstants;
-import com.example.vivek.rentalmates.services.BackendApiService;
+import com.example.vivek.rentalmates.backend.flatInfoApi.model.Request;
+import com.example.vivek.rentalmates.interfaces.OnRequestRegisterWithOtherFlatReceiver;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
 import java.io.IOException;
 
-public class RegisterWithOldFlatAsyncTask extends AsyncTask<Context, Void, String> {
+public class RequestRegisterWithOtherFlatAsyncTask extends AsyncTask<Context, Void, String> {
     private static final String TAG = "RegisterWithOld_Debug";
 
     private static FlatInfoApi flatService = null;
     private String flatName;
     private Context context;
-    private FlatInfo oldFlatInfo;
+    private Request request;
     private SharedPreferences prefs;
     private IOException ioException;
-    private OnRegisterWithOldFlatReceiver receiver;
+    private OnRequestRegisterWithOtherFlatReceiver receiver;
 
-    public RegisterWithOldFlatAsyncTask(Context context, final String flatName) {
+    public RequestRegisterWithOtherFlatAsyncTask(Context context, final String flatName) {
         this.context = context;
         this.flatName = flatName;
 
         prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
     }
 
-    public void setOnRegisterWithOldFlatReceiver(OnRegisterWithOldFlatReceiver receiver) {
+    public void setOnRegisterWithOldFlatReceiver(OnRequestRegisterWithOtherFlatReceiver receiver) {
         this.receiver = receiver;
     }
 
@@ -49,14 +48,11 @@ public class RegisterWithOldFlatAsyncTask extends AsyncTask<Context, Void, Strin
         try {
             Long userProfileId = prefs.getLong(AppConstants.USER_PROFILE_ID, 0);
             Log.d(TAG, "userprofileid is: " + userProfileId);
-            oldFlatInfo = flatService.registerWithOldFlat(this.flatName, userProfileId).execute();
-            if (oldFlatInfo == null) {
+            request = flatService.requestRegisterWithOtherFlat(this.flatName, userProfileId).execute();
+            if (request == null) {
                 msg = "SUCCESS_NO_FLAT_AVAILABLE";
             } else {
                 msg = "SUCCESS_FLAT_AVAILABLE";
-                BackendApiService.storePrimaryFlatId(this.context, oldFlatInfo.getFlatId());
-                BackendApiService.storePrimaryFlatName(this.context, oldFlatInfo.getFlatName());
-                BackendApiService.storeFlatExpenseGroupId(this.context, oldFlatInfo.getExpenseGroupId());
             }
             Log.d(TAG, "inside insert");
         } catch (IOException e) {
@@ -75,19 +71,19 @@ public class RegisterWithOldFlatAsyncTask extends AsyncTask<Context, Void, Strin
         switch (msg) {
             case "SUCCESS_FLAT_AVAILABLE":
                 if (receiver != null) {
-                    receiver.onRegisterWithOldFlatSuccessful(msg, oldFlatInfo);
+                    receiver.onRequestRegisterWithOtherFlatSuccessful(request);
                 }
                 break;
             case "SUCCESS_NO_FLAT_AVAILABLE":
                 if (receiver != null) {
-                    receiver.onRegisterWithOldFlatSuccessful(msg, null);
+                    receiver.onRequestRegisterWithOtherFlatSuccessful(request);
                 }
                 break;
             case "EXCEPTION":
                 Log.d(TAG, "IOException: " + ioException.getMessage());
                 Toast.makeText(context, "IOException: " + ioException.getMessage(), Toast.LENGTH_LONG).show();
                 if (receiver != null) {
-                    receiver.onRegisterWithOldFlatFailed();
+                    receiver.onRequestRegisterWithOtherFlatFailed();
                 }
                 break;
             default:

@@ -2,6 +2,7 @@ package com.example.vivek.rentalmates.backend.endpoints;
 
 import com.example.vivek.rentalmates.backend.entities.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.entities.FlatInfo;
+import com.example.vivek.rentalmates.backend.entities.Request;
 import com.example.vivek.rentalmates.backend.entities.UserProfile;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -117,11 +118,47 @@ public class FlatInfoEndpoint {
      * Inserts a new {@code FlatInfo}.
      */
     @ApiMethod(
-            name = "registerWithOldFlat",
-            path = "registerWithOldFlat",
+            name = "requestRegisterWithOtherFlat",
+            path = "requestRegisterWithOtherFlat",
             httpMethod = ApiMethod.HttpMethod.POST)
-    public FlatInfo registerWithOldFlat(@Named("flatName") String flatName, @Named("userProfileId") Long userProfileId) throws IOException {
-        FlatInfo finalFlatInfo = ofy().load().type(FlatInfo.class).filter("flatName", flatName).first().now();
+    public Request requestRegisterWithOtherFlat(@Named("flatName") String flatName, @Named("userProfileId") Long userProfileId) throws IOException {
+        FlatInfo flatInfo = ofy().load().type(FlatInfo.class).filter("flatName", flatName).first().now();
+        UserProfile requesterUserProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
+        Request request = new Request();
+        request.setRequesterId(userProfileId);
+        request.setRequestedEntity(flatInfo.getFlatId());
+        request.setRequestProviderId(flatInfo.getUserProfileId());
+        request.setStatus("PENDING");
+        request.setEntityType("FlatInfo");
+        request.setRequestedEntityName(flatName);
+        request.setRequesterName(requesterUserProfile.getUserName());
+        ofy().save().entity(request).now();
+
+        //Add request Id to requestProvider's requestIds list
+        UserProfile userProfile = ofy().load().type(UserProfile.class).id(request.getRequestProviderId()).now();
+        userProfile.addRequestId(request.getId());
+        ofy().save().entity(userProfile).now();
+
+        //send notification to requestProvider
+        List<Long> userIds = new ArrayList<>();
+        userIds.add(request.getRequestProviderId());
+        String message = "NEW_REQUEST";
+        ExpenseGroupEndpoint.sendMessage(userIds, message);
+
+        return request;
+    }
+
+    /**
+     * Inserts a new {@code FlatInfo}.
+     */
+    @ApiMethod(
+            name = "acceptRequestRegisterWithOtherFlat",
+            path = "acceptRequestRegisterWithOtherFlat",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public Request acceptRequestRegisterWithOtherFlat(@Named("requestId") Long requestId) throws IOException {
+        Request request = ofy().load().type(Request.class).id(requestId).now();
+        FlatInfo finalFlatInfo = ofy().load().type(FlatInfo.class).id(request.getRequestedEntity()).now();
+        Long userProfileId = request.getRequesterId();
         UserProfile userProfile;
         if (finalFlatInfo == null) {
             logger.info("Created FlatInfo.");
@@ -152,7 +189,17 @@ public class FlatInfoEndpoint {
             }
             finalFlatInfo.setCreateFlatResult("OLD_FLAT_INFO");
         }
-        return finalFlatInfo;
+
+        request.setStatus("APPROVED");
+        ofy().save().entity(request).now();
+        request = ofy().load().entity(request).now();
+
+        //send notification to requester
+        List<Long> userIds = new ArrayList<>();
+        userIds.add(request.getRequesterId());
+        String message = "Your request to join flat " + finalFlatInfo.getFlatName() + " has been approved";
+        ExpenseGroupEndpoint.sendMessage(userIds, message);
+        return request;
     }
 
     /**

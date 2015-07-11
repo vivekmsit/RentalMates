@@ -38,6 +38,7 @@ public class MainEndpoint {
         ObjectifyService.register(ExpenseData.class);
         ObjectifyService.register(ExpenseGroup.class);
         ObjectifyService.register(UserProfile.class);
+        ObjectifyService.register(Request.class);
     }
 
     /**
