@@ -308,7 +308,9 @@ public class UserProfileEndpoint {
         List<Request> requests = new ArrayList<>();
         for (Long requestId : userProfile.getRequestIds()) {
             Request request = ofy().load().type(Request.class).id(requestId).now();
-            requests.add(request);
+            if (request.getStatus().equals("PENDING")) {
+                requests.add(request);
+            }
         }
         return requests;
     }

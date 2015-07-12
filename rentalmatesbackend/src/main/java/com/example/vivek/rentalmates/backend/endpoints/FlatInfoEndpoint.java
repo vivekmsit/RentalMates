@@ -152,6 +152,35 @@ public class FlatInfoEndpoint {
      * Inserts a new {@code FlatInfo}.
      */
     @ApiMethod(
+            name = "rejectRequestRegisterWithOtherFlat",
+            path = "rejectRequestRegisterWithOtherFlat",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public Request rejectRequestRegisterWithOtherFlat(@Named("requestId") Long requestId) throws IOException {
+        Request request = ofy().load().type(Request.class).id(requestId).now();
+        FlatInfo finalFlatInfo = ofy().load().type(FlatInfo.class).id(request.getRequestedEntity()).now();
+
+        //update request status
+        request.setStatus("REJECTED");
+        ofy().save().entity(request).now();
+        request = ofy().load().entity(request).now();
+
+        //Remove request Id from requestProvider's requestIds list
+        UserProfile userProfile = ofy().load().type(UserProfile.class).id(request.getRequestProviderId()).now();
+        userProfile.removeRequestId(request.getId());
+        ofy().save().entity(userProfile).now();
+
+        //send notification to requester
+        List<Long> userIds = new ArrayList<>();
+        userIds.add(request.getRequesterId());
+        String message = "Your request to join flat " + finalFlatInfo.getFlatName() + " has been rejected";
+        ExpenseGroupEndpoint.sendMessage(userIds, message);
+        return request;
+    }
+
+    /**
+     * Inserts a new {@code FlatInfo}.
+     */
+    @ApiMethod(
             name = "acceptRequestRegisterWithOtherFlat",
             path = "acceptRequestRegisterWithOtherFlat",
             httpMethod = ApiMethod.HttpMethod.POST)
@@ -190,9 +219,15 @@ public class FlatInfoEndpoint {
             finalFlatInfo.setCreateFlatResult("OLD_FLAT_INFO");
         }
 
+        //update request status
         request.setStatus("APPROVED");
         ofy().save().entity(request).now();
         request = ofy().load().entity(request).now();
+
+        //Remove request Id from requestProvider's requestIds list
+        UserProfile requestProviderUserProfile = ofy().load().type(UserProfile.class).id(request.getRequestProviderId()).now();
+        requestProviderUserProfile.removeRequestId(request.getId());
+        ofy().save().entity(requestProviderUserProfile).now();
 
         //send notification to requester
         List<Long> userIds = new ArrayList<>();

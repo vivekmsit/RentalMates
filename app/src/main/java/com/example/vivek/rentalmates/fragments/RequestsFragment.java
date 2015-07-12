@@ -39,7 +39,7 @@ public class RequestsFragment extends android.support.v4.app.Fragment implements
 
         //Initialize RecyclerView
         recyclerView = (RecyclerView) layout.findViewById(R.id.listRequests);
-        requestListViewAdapter = new RequestListViewAdapter(context, getData());
+        requestListViewAdapter = new RequestListViewAdapter(context, getData(), getFragmentManager());
         recyclerView.setAdapter(requestListViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 

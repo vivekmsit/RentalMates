@@ -100,6 +100,9 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
             @Override
             public void onBackStackChanged() {
                 backStackCount = fragmentManager.getBackStackEntryCount();
+                if (backStackCount == 0) {
+                    navigationView.getMenu().findItem(R.id.drawer_item_home).setChecked(true);
+                }
             }
         });
 

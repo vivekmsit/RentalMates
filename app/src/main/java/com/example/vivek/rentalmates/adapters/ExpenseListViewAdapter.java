@@ -1,11 +1,18 @@
 package com.example.vivek.rentalmates.adapters;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,9 +22,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
-import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
-import com.example.vivek.rentalmates.dialogs.ExpenseMenuDialog;
+import com.example.vivek.rentalmates.activities.MainTabActivity;
 import com.example.vivek.rentalmates.data.AppData;
+import com.example.vivek.rentalmates.fragments.ExpenseDataListFragment;
+import com.example.vivek.rentalmates.interfaces.OnDeleteExpenseReceiver;
+import com.example.vivek.rentalmates.tasks.DeleteExpenseAsyncTask;
 import com.example.vivek.rentalmates.viewholders.ExpenseListItem;
 import com.pkmmte.view.CircularImageView;
 
@@ -111,12 +120,83 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
 
         @Override
         public boolean onLongClick(View v) {
-            DialogFragment newFragment = new ExpenseMenuDialog();
-            ExpenseData expenseData = appData.getExpenses().get(getAdapterPosition());
-            Bundle bundle = new Bundle();
-            bundle.putLong("ExpenseId", expenseData.getId());
-            bundle.putInt("position", getAdapterPosition());
-            newFragment.setArguments(bundle);
+            final int currentPosition = getAdapterPosition();
+            DialogFragment newFragment = new DialogFragment() {
+                @NonNull
+                @Override
+                public Dialog onCreateDialog(Bundle savedInstanceState) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setItems(R.array.expenseMenuOptions, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case 0:
+                                    break;
+                                case 1:
+                                    DialogFragment expenseDialog = new DialogFragment() {
+                                        private Activity mainTabActivity;
+                                        private ProgressDialog progressDialog;
+
+                                        @NonNull
+                                        @Override
+                                        public Dialog onCreateDialog(Bundle savedInstanceState) {
+                                            mainTabActivity = getActivity();
+                                            progressDialog = new ProgressDialog(mainTabActivity);
+                                            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                            progressDialog.setIndeterminate(true);
+                                            final Long expenseId = appData.getExpenses().get(currentPosition).getId();
+                                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                                            alertDialogBuilder.setTitle("Confirm");
+                                            alertDialogBuilder.setMessage("Do you really want to delete selected expense?");
+                                            alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    DeleteExpenseAsyncTask task = new DeleteExpenseAsyncTask(getActivity(), expenseId);
+                                                    task.setOnDeleteExpenseReceiver(new OnDeleteExpenseReceiver() {
+                                                        @Override
+                                                        public void onExpenseDeleteSuccessful(int position) {
+                                                            progressDialog.cancel();
+                                                            ViewPager pager = (ViewPager) mainTabActivity.findViewById(R.id.pager);
+                                                            MainTabActivity.MyAdapter adapter = (MainTabActivity.MyAdapter) pager.getAdapter();
+                                                            ExpenseDataListFragment fragment = (ExpenseDataListFragment) adapter.getRegisteredFragment(0);
+                                                            fragment.onExpenseDeleteSuccessful(position);
+                                                        }
+
+                                                        @Override
+                                                        public void onExpenseDeleteFailed() {
+                                                            progressDialog.cancel();
+                                                        }
+                                                    });
+                                                    task.setPosition(currentPosition);
+                                                    task.execute();
+                                                    progressDialog.setMessage("Deleting Expense");
+                                                    progressDialog.show();
+                                                }
+                                            });
+                                            alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    Log.d(TAG, "Cancel: onClick");
+                                                    dialog.dismiss();
+                                                }
+                                            });
+                                            return alertDialogBuilder.create();
+                                        }
+                                    };
+                                    expenseDialog.show(getFragmentManager(), "MyDialog");
+                                    break;
+                                case 2:
+                                    break;
+                                default:
+                                    dialog.dismiss();
+                                    break;
+                            }
+                            Log.d(TAG, "inside onClick");
+                        }
+                    });
+                    return builder.create();
+                }
+            };
             newFragment.show(manager, "menus");
             return false;
         }
