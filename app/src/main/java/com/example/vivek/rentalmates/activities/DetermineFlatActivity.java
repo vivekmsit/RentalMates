@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.Request;
+import com.example.vivek.rentalmates.backend.userProfileApi.model.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
 import com.example.vivek.rentalmates.interfaces.OnExpenseGroupListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnExpenseListReceiver;
@@ -171,7 +172,8 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
         GetExpenseGroupListAsyncTask expenseGroupTask = new GetExpenseGroupListAsyncTask(context);
         expenseGroupTask.setOnExpenseGroupListReceiver(new OnExpenseGroupListReceiver() {
             @Override
-            public void onExpenseGroupListLoadSuccessful() {
+            public void onExpenseGroupListLoadSuccessful(List<ExpenseGroup> expenseGroups) {
+                appData.storeExpenseGroupList(context, expenseGroups);
                 progressDialog.cancel();
                 loadAllUserProfiles();
             }

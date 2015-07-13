@@ -81,6 +81,7 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
+                appData.storeFlatInfoList(context, flats);
                 flatListViewAdapter.setData(getData());
                 flatListViewAdapter.notifyDataSetChanged();
             }

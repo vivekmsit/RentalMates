@@ -55,7 +55,6 @@ public class GetExpenseGroupListAsyncTask extends AsyncTask<Context, Void, Strin
                 msg = "SUCCESS_NO_EXPENSE_GROUPS";
             } else {
                 this.expenseGroups = expenseGroupCollection.getItems();
-                this.appData.storeExpenseGroupList(context, this.expenseGroups);
                 msg = "SUCCESS_EXPENSE_GROUPS";
             }
             Log.d(TAG, "inside getExpenseGroupList");
@@ -75,7 +74,7 @@ public class GetExpenseGroupListAsyncTask extends AsyncTask<Context, Void, Strin
         switch (msg) {
             case "SUCCESS_EXPENSE_GROUPS":
                 if (receiver != null) {
-                    receiver.onExpenseGroupListLoadSuccessful();
+                    receiver.onExpenseGroupListLoadSuccessful(expenseGroups);
                 }
                 break;
             case "EXCEPTION":

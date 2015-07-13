@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
+import com.example.vivek.rentalmates.backend.userProfileApi.model.ExpenseGroup;
 import com.example.vivek.rentalmates.interfaces.OnExpenseGroupListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnFlatInfoListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnRegisterNewFlatReceiver;
@@ -149,8 +150,9 @@ public class RegisterNewFlatActivity extends AppCompatActivity {
                 GetExpenseGroupListAsyncTask expenseGroupTask = new GetExpenseGroupListAsyncTask(context);
                 expenseGroupTask.setOnExpenseGroupListReceiver(new OnExpenseGroupListReceiver() {
                     @Override
-                    public void onExpenseGroupListLoadSuccessful() {
+                    public void onExpenseGroupListLoadSuccessful(List<ExpenseGroup> expenseGroups) {
                         progressDialog.cancel();
+                        appData.storeExpenseGroupList(context, expenseGroups);
                         Intent intent = new Intent(getApplicationContext(), MainTabActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         getApplicationContext().startActivity(intent);

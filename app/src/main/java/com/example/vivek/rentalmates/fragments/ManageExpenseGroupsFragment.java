@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.adapters.ExpenseGroupListViewAdapter;
+import com.example.vivek.rentalmates.backend.userProfileApi.model.ExpenseGroup;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.data.LocalExpenseGroup;
 import com.example.vivek.rentalmates.interfaces.OnExpenseGroupListReceiver;
@@ -75,11 +76,12 @@ public class ManageExpenseGroupsFragment extends android.support.v4.app.Fragment
         GetExpenseGroupListAsyncTask task = new GetExpenseGroupListAsyncTask(context);
         task.setOnExpenseGroupListReceiver(new OnExpenseGroupListReceiver() {
             @Override
-            public void onExpenseGroupListLoadSuccessful() {
+            public void onExpenseGroupListLoadSuccessful(List<ExpenseGroup> expenseGroups) {
                 Log.d(TAG, "inside onFlatInfoListLoaded");
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
+                appData.storeExpenseGroupList(context, expenseGroups);
                 expenseGroupListViewAdapter.setData(getData());
                 expenseGroupListViewAdapter.notifyDataSetChanged();
             }
