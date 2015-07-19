@@ -18,6 +18,7 @@ import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.interfaces.OnRequestListReceiver;
 import com.example.vivek.rentalmates.tasks.GetRequestListAsyncTask;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RequestsFragment extends android.support.v4.app.Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -55,7 +56,7 @@ public class RequestsFragment extends android.support.v4.app.Fragment implements
     }
 
     void updateView() {
-        if (appData.getRequests() == null) {
+        if (appData.getRequests().size() == 0) {
             requestTextView.setVisibility(View.VISIBLE);
         } else {
             requestTextView.setVisibility(View.GONE);
@@ -74,7 +75,11 @@ public class RequestsFragment extends android.support.v4.app.Fragment implements
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
-                appData.storeRequestList(context, requests);
+                if (requests == null) {
+                    appData.storeRequestList(context, new ArrayList<Request>());
+                } else {
+                    appData.storeRequestList(context, requests);
+                }
                 requestListViewAdapter.updateRequestData();
                 requestListViewAdapter.notifyDataSetChanged();
                 updateView();

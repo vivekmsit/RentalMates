@@ -18,6 +18,7 @@ import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.interfaces.OnFlatInfoListReceiver;
 import com.example.vivek.rentalmates.tasks.GetFlatInfoListAsyncTask;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ManageFlatsFragment extends android.support.v4.app.Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -58,7 +59,7 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
     }
 
     public void updateView() {
-        if (appData.getFlats() == null) {
+        if (appData.getFlats().size() == 0) {
             manageFlatsTextView.setVisibility(View.VISIBLE);
         } else {
             manageFlatsTextView.setVisibility(View.GONE);
@@ -76,7 +77,11 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
-                appData.storeFlatInfoList(context, flats);
+                if (flats == null) {
+                    appData.storeFlatInfoList(context, new ArrayList<FlatInfo>());
+                } else {
+                    appData.storeFlatInfoList(context, flats);
+                }
                 flatListViewAdapter.updateFlatData();
                 flatListViewAdapter.notifyDataSetChanged();
                 updateView();

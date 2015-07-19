@@ -24,6 +24,7 @@ import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.data.LocalExpenseGroup;
 import com.example.vivek.rentalmates.tasks.GetAllExpenseListAsyncTask;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -94,7 +95,7 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
     }
 
     void updateView() {
-        if (appData.getExpenses() == null) {
+        if (appData.getExpenses().size() == 0) {
             expensesTextView.setVisibility(View.VISIBLE);
         } else {
             expensesTextView.setVisibility(View.GONE);
@@ -128,7 +129,11 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
-                appData.storeExpenseDataList(context, expenses);
+                if (expenses == null) {
+                    appData.storeExpenseDataList(context, new ArrayList<ExpenseData>());
+                } else {
+                    appData.storeExpenseDataList(context, expenses);
+                }
                 expenseListViewAdapter.updateExpenseData();
                 expenseListViewAdapter.notifyDataSetChanged();
                 updateView();

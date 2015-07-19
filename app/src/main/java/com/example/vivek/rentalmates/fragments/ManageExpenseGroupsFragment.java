@@ -18,6 +18,7 @@ import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.interfaces.OnExpenseGroupListReceiver;
 import com.example.vivek.rentalmates.tasks.GetExpenseGroupListAsyncTask;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ManageExpenseGroupsFragment extends android.support.v4.app.Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -59,7 +60,7 @@ public class ManageExpenseGroupsFragment extends android.support.v4.app.Fragment
     }
 
     public void updateView() {
-        if (appData.getExpenseGroups() == null) {
+        if (appData.getExpenseGroups().size() == 0) {
             manageExpenseGroupsTextView.setVisibility(View.VISIBLE);
         } else {
             manageExpenseGroupsTextView.setVisibility(View.GONE);
@@ -77,7 +78,11 @@ public class ManageExpenseGroupsFragment extends android.support.v4.app.Fragment
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
-                appData.storeExpenseGroupList(context, expenseGroups);
+                if (expenseGroups == null) {
+                    appData.storeExpenseGroupList(context, new ArrayList<ExpenseGroup>());
+                } else {
+                    appData.storeExpenseGroupList(context, expenseGroups);
+                }
                 expenseGroupListViewAdapter.updateExpenseGroupsData();
                 expenseGroupListViewAdapter.notifyDataSetChanged();
                 updateView();

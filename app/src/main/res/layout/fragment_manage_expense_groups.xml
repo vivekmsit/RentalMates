@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/backrepeat"
     tools:context="com.example.vivek.rentalmates.fragments.ManageExpenseGroupsFragment">
 
     <RelativeLayout
@@ -22,8 +23,7 @@
             android:id="@+id/swipeListExpenseGroups"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/manageExpenseGroupsText"
-            android:background="@drawable/backrepeat">
+            android:layout_below="@+id/manageExpenseGroupsText">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/listExpenseGroups"

@@ -33,14 +33,13 @@ public class AppData implements Serializable {
 
     private static final String TAG = "AppData_Debug";
 
-    private List<LocalExpenseData> expenses = new ArrayList<>();
-    private List<LocalRequest> requests = new ArrayList<>();
-
-    private HashMap<String, String> profilePicturesPath = new HashMap<>();
-    private HashMap<Long, LocalFlatInfo> flats = new HashMap<>();
-    private HashMap<Long, LocalFlatInfo> availableFlats = new HashMap<>();
-    private HashMap<Long, LocalUserProfile> userProfiles = new HashMap<>();
-    private HashMap<Long, LocalExpenseGroup> expenseGroups = new HashMap<>();
+    private List<LocalExpenseData> expenses;
+    private List<LocalRequest> requests;
+    private HashMap<String, String> profilePicturesPath;
+    private HashMap<Long, LocalFlatInfo> flats;
+    private HashMap<Long, LocalFlatInfo> availableFlats;
+    private HashMap<Long, LocalUserProfile> userProfiles;
+    private HashMap<Long, LocalExpenseGroup> expenseGroups;
 
     private static AppData appDataInstance = new AppData();
 
@@ -48,8 +47,14 @@ public class AppData implements Serializable {
         return appDataInstance;
     }
 
-    /* private Constructor of singleton class*/
     private AppData() {
+        expenses = new ArrayList<>();
+        requests = new ArrayList<>();
+        profilePicturesPath = new HashMap<>();
+        flats = new HashMap<>();
+        availableFlats = new HashMap<>();
+        userProfiles = new HashMap<>();
+        expenseGroups = new HashMap<>();
     }
 
     public List<Request> getRequests() {
@@ -167,14 +172,14 @@ public class AppData implements Serializable {
     }
 
     public boolean deleteExpenseData(Context context, int position) {
-        if (this.expenses != null) {
+        if (this.expenses.size() != 0) {
             this.expenses.remove(position);
         }
         return storeAppData(context);
     }
 
     public boolean deleteRequest(Context context, int position) {
-        if (this.requests != null) {
+        if (this.requests.size() != 0) {
             this.requests.remove(position);
         }
         return storeAppData(context);

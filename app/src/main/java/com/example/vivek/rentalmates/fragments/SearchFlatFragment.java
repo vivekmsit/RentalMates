@@ -17,6 +17,7 @@ import com.example.vivek.rentalmates.interfaces.OnAvailableFlatInfoListReceiver;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.tasks.GetAvailableFlatInfoListAsyncTask;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchFlatFragment extends android.support.v4.app.Fragment {
@@ -67,7 +68,7 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment {
     }
 
     public void updateView() {
-        if (appData.getAvailableFlats() == null) {
+        if (appData.getAvailableFlats().size() == 0) {
             availableFlatsTextView.setVisibility(View.VISIBLE);
         } else {
             availableFlatsTextView.setVisibility(View.GONE);
@@ -82,11 +83,13 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment {
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
-                if (flats != null) {
+                if (flats == null) {
+                    appData.storeAvailableFlatInfoList(getActivity(), new ArrayList<FlatInfo>());
+                } else {
                     appData.storeAvailableFlatInfoList(getActivity(), flats);
-                    availableFlatListViewAdapter.updateAvailableFlatsData();
-                    availableFlatListViewAdapter.notifyDataSetChanged();
                 }
+                availableFlatListViewAdapter.updateAvailableFlatsData();
+                availableFlatListViewAdapter.notifyDataSetChanged();
                 updateView();
             }
 
