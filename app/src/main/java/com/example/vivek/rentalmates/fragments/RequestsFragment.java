@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.adapters.RequestListViewAdapter;
@@ -16,9 +17,7 @@ import com.example.vivek.rentalmates.backend.userProfileApi.model.Request;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.interfaces.OnRequestListReceiver;
 import com.example.vivek.rentalmates.tasks.GetRequestListAsyncTask;
-import com.example.vivek.rentalmates.viewholders.RequestListItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RequestsFragment extends android.support.v4.app.Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -27,6 +26,7 @@ public class RequestsFragment extends android.support.v4.app.Fragment implements
     private AppData appData;
     private Context context;
     private RecyclerView recyclerView;
+    private TextView requestTextView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private RequestListViewAdapter requestListViewAdapter;
 
@@ -39,7 +39,7 @@ public class RequestsFragment extends android.support.v4.app.Fragment implements
 
         //Initialize RecyclerView
         recyclerView = (RecyclerView) layout.findViewById(R.id.listRequests);
-        requestListViewAdapter = new RequestListViewAdapter(context, getData(), getFragmentManager());
+        requestListViewAdapter = new RequestListViewAdapter(context, getFragmentManager());
         recyclerView.setAdapter(requestListViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
@@ -48,23 +48,18 @@ public class RequestsFragment extends android.support.v4.app.Fragment implements
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.white));
         swipeRefreshLayout.setColorSchemeColors(R.color.primaryColor, R.color.purple, R.color.green, R.color.orange);
+
+        requestTextView = (TextView) layout.findViewById(R.id.requestsText);
+        updateView();
         return layout;
     }
 
-
-    public List<RequestListItem> getData() {
-        Log.d(TAG, "inside getData");
-        List<RequestListItem> mItems = new ArrayList<>();
+    void updateView() {
         if (appData.getRequests() == null) {
-            Request data = new Request();
-            data.setRequestedEntityName("ss");
-            mItems.add(new RequestListItem(data));
+            requestTextView.setVisibility(View.VISIBLE);
         } else {
-            for (Request request : appData.getRequests()) {
-                mItems.add(new RequestListItem(request));
-            }
+            requestTextView.setVisibility(View.GONE);
         }
-        return mItems;
     }
 
 
@@ -80,8 +75,9 @@ public class RequestsFragment extends android.support.v4.app.Fragment implements
                     swipeRefreshLayout.setRefreshing(false);
                 }
                 appData.storeRequestList(context, requests);
-                requestListViewAdapter.setData(getData());
+                requestListViewAdapter.updateRequestData();
                 requestListViewAdapter.notifyDataSetChanged();
+                updateView();
             }
 
             @Override

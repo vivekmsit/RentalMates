@@ -11,12 +11,10 @@ import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.Expe
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseDataCollection;
 import com.example.vivek.rentalmates.interfaces.OnExpenseListReceiver;
 import com.example.vivek.rentalmates.data.AppConstants;
-import com.example.vivek.rentalmates.data.AppData;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 public class GetAllExpenseListAsyncTask extends AsyncTask<Context, Void, String> {
@@ -26,13 +24,11 @@ public class GetAllExpenseListAsyncTask extends AsyncTask<Context, Void, String>
     private Context context;
     private SharedPreferences prefs;
     private IOException ioException;
-    private AppData appData;
     private List<ExpenseData> expenses;
     private OnExpenseListReceiver receiver;
 
     public GetAllExpenseListAsyncTask(Context context) {
         this.context = context;
-        this.appData = AppData.getInstance();
 
         prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
     }
@@ -57,9 +53,6 @@ public class GetAllExpenseListAsyncTask extends AsyncTask<Context, Void, String>
                 Log.d(TAG, "expenses is null");
             } else {
                 expenses = expensesCollection.getItems();
-                if (expenses != null) {
-                    this.appData.storeExpenseDataList(context, expenses);
-                }
             }
         } catch (IOException e) {
             ioException = e;

@@ -173,6 +173,13 @@ public class AppData implements Serializable {
         return storeAppData(context);
     }
 
+    public boolean deleteRequest(Context context, int position) {
+        if (this.requests != null) {
+            this.requests.remove(position);
+        }
+        return storeAppData(context);
+    }
+
     public boolean addLocalExpenseData(Context context, ExpenseData expense) {
         LocalExpenseData data = new LocalExpenseData();
         data.setExpenseId(expense.getId());

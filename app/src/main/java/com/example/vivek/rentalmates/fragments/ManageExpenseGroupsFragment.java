@@ -9,17 +9,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.adapters.ExpenseGroupListViewAdapter;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.ExpenseGroup;
 import com.example.vivek.rentalmates.data.AppData;
-import com.example.vivek.rentalmates.data.LocalExpenseGroup;
 import com.example.vivek.rentalmates.interfaces.OnExpenseGroupListReceiver;
 import com.example.vivek.rentalmates.tasks.GetExpenseGroupListAsyncTask;
-import com.example.vivek.rentalmates.viewholders.ExpenseGroupListItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ManageExpenseGroupsFragment extends android.support.v4.app.Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -29,6 +27,7 @@ public class ManageExpenseGroupsFragment extends android.support.v4.app.Fragment
     private AppData appData;
     private Context context;
     private RecyclerView recyclerView;
+    private TextView manageExpenseGroupsTextView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ExpenseGroupListViewAdapter expenseGroupListViewAdapter;
 
@@ -41,9 +40,11 @@ public class ManageExpenseGroupsFragment extends android.support.v4.app.Fragment
         appData = AppData.getInstance();
         context = getActivity().getApplicationContext();
 
+        manageExpenseGroupsTextView = (TextView) layout.findViewById(R.id.manageExpenseGroupsText);
+
         //Initialize RecyclerView
         recyclerView = (RecyclerView) layout.findViewById(R.id.listExpenseGroups);
-        expenseGroupListViewAdapter = new ExpenseGroupListViewAdapter(context, getData());
+        expenseGroupListViewAdapter = new ExpenseGroupListViewAdapter(context);
         recyclerView.setAdapter(expenseGroupListViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
@@ -52,22 +53,17 @@ public class ManageExpenseGroupsFragment extends android.support.v4.app.Fragment
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.white));
         swipeRefreshLayout.setColorSchemeColors(R.color.primaryColor, R.color.purple, R.color.green, R.color.orange);
+
+        updateView();
         return layout;
     }
 
-    public List<ExpenseGroupListItem> getData() {
-        Log.d(TAG, "inside getData");
-        List<ExpenseGroupListItem> mItems = new ArrayList<>();
+    public void updateView() {
         if (appData.getExpenseGroups() == null) {
-            LocalExpenseGroup data = new LocalExpenseGroup();
-            data.setName("name");
-            mItems.add(new ExpenseGroupListItem(data));
+            manageExpenseGroupsTextView.setVisibility(View.VISIBLE);
         } else {
-            for (LocalExpenseGroup localExpenseGroup : appData.getExpenseGroups()) {
-                mItems.add(new ExpenseGroupListItem(localExpenseGroup));
-            }
+            manageExpenseGroupsTextView.setVisibility(View.GONE);
         }
-        return mItems;
     }
 
     @Override
@@ -82,8 +78,9 @@ public class ManageExpenseGroupsFragment extends android.support.v4.app.Fragment
                     swipeRefreshLayout.setRefreshing(false);
                 }
                 appData.storeExpenseGroupList(context, expenseGroups);
-                expenseGroupListViewAdapter.setData(getData());
+                expenseGroupListViewAdapter.updateExpenseGroupsData();
                 expenseGroupListViewAdapter.notifyDataSetChanged();
+                updateView();
             }
 
             @Override

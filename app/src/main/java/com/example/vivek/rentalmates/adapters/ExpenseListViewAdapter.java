@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,14 +21,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
-import com.example.vivek.rentalmates.activities.MainTabActivity;
+import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.data.AppData;
-import com.example.vivek.rentalmates.fragments.ExpenseDataListFragment;
 import com.example.vivek.rentalmates.interfaces.OnDeleteExpenseReceiver;
 import com.example.vivek.rentalmates.tasks.DeleteExpenseAsyncTask;
 import com.example.vivek.rentalmates.viewholders.ExpenseListItem;
 import com.pkmmte.view.CircularImageView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListViewAdapter.ExpenseViewHolder> {
@@ -42,18 +41,24 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
     private Context context;
     private FragmentManager manager;
 
-    public ExpenseListViewAdapter(Context context, List<ExpenseListItem> data, FragmentManager manager) {
+    public ExpenseListViewAdapter(Context context, FragmentManager manager) {
         Log.d(TAG, "inside Constructor");
         appData = AppData.getInstance();
         inflater = LayoutInflater.from(context);
         this.context = context;
-        this.data = data;
         this.manager = manager;
+        this.data = new ArrayList<>();
+        updateExpenseData();
     }
 
-    public void setData(List<ExpenseListItem> data) {
+    public void updateExpenseData() {
         this.data.clear();
-        this.data.addAll(data);
+        List<ExpenseData> expenses = appData.getExpenses();
+        if (expenses != null) {
+            for (ExpenseData expenseData : expenses) {
+                this.data.add(new ExpenseListItem(expenseData));
+            }
+        }
     }
 
     @Override
@@ -155,10 +160,9 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
                                                         @Override
                                                         public void onExpenseDeleteSuccessful(int position) {
                                                             progressDialog.cancel();
-                                                            ViewPager pager = (ViewPager) mainTabActivity.findViewById(R.id.pager);
-                                                            MainTabActivity.MyAdapter adapter = (MainTabActivity.MyAdapter) pager.getAdapter();
-                                                            ExpenseDataListFragment fragment = (ExpenseDataListFragment) adapter.getRegisteredFragment(0);
-                                                            fragment.onExpenseDeleteSuccessful(position);
+                                                            notifyItemRemoved(position);
+                                                            appData.deleteExpenseData(context, position);
+                                                            updateExpenseData();
                                                         }
 
                                                         @Override

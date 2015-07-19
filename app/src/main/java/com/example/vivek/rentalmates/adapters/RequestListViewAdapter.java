@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
+import com.example.vivek.rentalmates.backend.userProfileApi.model.Request;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.interfaces.OnAcceptRequestRegisterWithOtherFlatReceiver;
 import com.example.vivek.rentalmates.interfaces.OnRejectRequestRegisterWithOtherFlatReceiver;
@@ -27,6 +28,7 @@ import com.example.vivek.rentalmates.tasks.RejectRequestRegisterWithOtherFlatAsy
 import com.example.vivek.rentalmates.viewholders.RequestListItem;
 import com.pkmmte.view.CircularImageView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RequestListViewAdapter extends RecyclerView.Adapter<RequestListViewAdapter.RequestViewHolder> {
@@ -39,18 +41,23 @@ public class RequestListViewAdapter extends RecyclerView.Adapter<RequestListView
     private AppData appData;
     private FragmentManager manager;
 
-    public RequestListViewAdapter(Context context, List<RequestListItem> data, FragmentManager manager) {
+    public RequestListViewAdapter(Context context, FragmentManager manager) {
         Log.d(TAG, "inside Constructor");
         inflater = LayoutInflater.from(context);
         this.context = context;
-        this.data = data;
         this.manager = manager;
+        this.data = new ArrayList<>();
         appData = AppData.getInstance();
+        updateRequestData();
     }
 
-    public void setData(List<RequestListItem> data) {
+    public void updateRequestData() {
         this.data.clear();
-        this.data.addAll(data);
+        if (appData.getRequests() != null) {
+            for (Request request : appData.getRequests()) {
+                this.data.add(new RequestListItem(request));
+            }
+        }
     }
 
     @Override
@@ -138,6 +145,8 @@ public class RequestListViewAdapter extends RecyclerView.Adapter<RequestListView
                                                         public void onAcceptRequestRegisterWithOtherFlatSuccessful(int position) {
                                                             progressDialog.cancel();
                                                             notifyItemRemoved(position);
+                                                            appData.deleteRequest(context, position);
+                                                            updateRequestData();
                                                         }
 
                                                         @Override
@@ -189,6 +198,8 @@ public class RequestListViewAdapter extends RecyclerView.Adapter<RequestListView
                                                         public void onRejectRequestRegisterWithOtherFlatSuccessful(int position) {
                                                             progressDialog.cancel();
                                                             notifyItemRemoved(position);
+                                                            appData.deleteRequest(context, position);
+                                                            updateRequestData();
                                                         }
 
                                                         @Override

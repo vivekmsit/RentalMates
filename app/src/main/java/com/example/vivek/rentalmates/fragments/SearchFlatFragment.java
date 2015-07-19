@@ -3,24 +3,20 @@ package com.example.vivek.rentalmates.fragments;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.adapters.AvailableFlatListViewAdapter;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
 import com.example.vivek.rentalmates.interfaces.OnAvailableFlatInfoListReceiver;
 import com.example.vivek.rentalmates.data.AppData;
-import com.example.vivek.rentalmates.data.LocalFlatInfo;
 import com.example.vivek.rentalmates.tasks.GetAvailableFlatInfoListAsyncTask;
-import com.example.vivek.rentalmates.viewholders.AvailableFlatListItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SearchFlatFragment extends android.support.v4.app.Fragment {
@@ -29,6 +25,7 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment {
 
     private AppData appData;
     private RecyclerView recyclerView;
+    private TextView availableFlatsTextView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private AvailableFlatListViewAdapter availableFlatListViewAdapter;
 
@@ -43,9 +40,11 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_search_flat, container, false);
 
+        availableFlatsTextView = (TextView) layout.findViewById(R.id.availableFlatsText);
+
         //Initialize RecyclerView
         recyclerView = (RecyclerView) layout.findViewById(R.id.listAvailableFlats);
-        availableFlatListViewAdapter = new AvailableFlatListViewAdapter(getActivity(), getData());
+        availableFlatListViewAdapter = new AvailableFlatListViewAdapter(getActivity());
         recyclerView.setAdapter(availableFlatListViewAdapter);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         //recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -62,25 +61,17 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment {
         swipeRefreshLayout.setColorSchemeResources(R.color.orange, R.color.green, R.color.blue, R.color.purple);
         swipeRefreshLayout.setProgressViewOffset(false, 0,
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
+
+        updateView();
         return layout;
     }
 
-    public List<AvailableFlatListItem> getData() {
-        Log.d(TAG, "inside getData");
-        List<AvailableFlatListItem> mItems = new ArrayList<>();
-        if (appData.getAvailableFlats().size() == 0) {
-            LocalFlatInfo data = new LocalFlatInfo();
-            data.setFlatName("Flat Name");
-            data.setAddress("Unknown Address");
-            data.setSecurityAmount(1);
-            data.setRentAmount(1);
-            mItems.add(new AvailableFlatListItem(data));
+    public void updateView() {
+        if (appData.getAvailableFlats() == null) {
+            availableFlatsTextView.setVisibility(View.VISIBLE);
         } else {
-            for (LocalFlatInfo flatInfo : appData.getAvailableFlats().values()) {
-                mItems.add(new AvailableFlatListItem(flatInfo));
-            }
+            availableFlatsTextView.setVisibility(View.GONE);
         }
-        return mItems;
     }
 
     public void onSwipeRefresh() {
@@ -93,9 +84,10 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment {
                 }
                 if (flats != null) {
                     appData.storeAvailableFlatInfoList(getActivity(), flats);
-                    availableFlatListViewAdapter.setData(getData());
+                    availableFlatListViewAdapter.updateAvailableFlatsData();
                     availableFlatListViewAdapter.notifyDataSetChanged();
                 }
+                updateView();
             }
 
             @Override

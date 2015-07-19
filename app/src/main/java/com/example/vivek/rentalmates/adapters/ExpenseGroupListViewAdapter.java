@@ -10,8 +10,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
+import com.example.vivek.rentalmates.data.AppData;
+import com.example.vivek.rentalmates.data.LocalExpenseGroup;
 import com.example.vivek.rentalmates.viewholders.ExpenseGroupListItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ExpenseGroupListViewAdapter extends RecyclerView.Adapter<ExpenseGroupListViewAdapter.ExpenseGroupViewHolder> {
@@ -21,17 +24,22 @@ public class ExpenseGroupListViewAdapter extends RecyclerView.Adapter<ExpenseGro
     private List<ExpenseGroupListItem> data;
     private LayoutInflater inflater;
     private Context context;
+    private AppData appData;
 
-    public ExpenseGroupListViewAdapter(Context context, List<ExpenseGroupListItem> data) {
+    public ExpenseGroupListViewAdapter(Context context) {
         Log.d(TAG, "inside Constructor");
         inflater = LayoutInflater.from(context);
         this.context = context;
-        this.data = data;
+        this.appData = AppData.getInstance();
+        this.data = new ArrayList<>();
+        updateExpenseGroupsData();
     }
 
-    public void setData(List<ExpenseGroupListItem> data) {
+    public void updateExpenseGroupsData() {
         this.data.clear();
-        this.data.addAll(data);
+        for (LocalExpenseGroup localExpenseGroup : appData.getExpenseGroups()) {
+            this.data.add(new ExpenseGroupListItem(localExpenseGroup));
+        }
     }
 
     @Override

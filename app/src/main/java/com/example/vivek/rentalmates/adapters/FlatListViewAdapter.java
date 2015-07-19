@@ -10,8 +10,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
+import com.example.vivek.rentalmates.data.AppData;
+import com.example.vivek.rentalmates.data.LocalFlatInfo;
 import com.example.vivek.rentalmates.viewholders.FlatListItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FlatListViewAdapter extends RecyclerView.Adapter<FlatListViewAdapter.FlatViewHolder> {
@@ -21,17 +24,22 @@ public class FlatListViewAdapter extends RecyclerView.Adapter<FlatListViewAdapte
     private List<FlatListItem> data;
     private LayoutInflater inflater;
     private Context context;
+    private AppData appData;
 
-    public FlatListViewAdapter(Context context, List<FlatListItem> data) {
+    public FlatListViewAdapter(Context context) {
         Log.d(TAG, "inside Constructor");
         inflater = LayoutInflater.from(context);
         this.context = context;
-        this.data = data;
+        appData = AppData.getInstance();
+        this.data = new ArrayList<>();
+        updateFlatData();
     }
 
-    public void setData(List<FlatListItem> data) {
+    public void updateFlatData() {
         this.data.clear();
-        this.data.addAll(data);
+        for (LocalFlatInfo localFlatInfo : appData.getFlats().values()) {
+            this.data.add(new FlatListItem(localFlatInfo));
+        }
     }
 
     @Override

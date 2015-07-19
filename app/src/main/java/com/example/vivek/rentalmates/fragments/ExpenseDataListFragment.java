@@ -23,11 +23,7 @@ import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.data.LocalExpenseGroup;
 import com.example.vivek.rentalmates.tasks.GetAllExpenseListAsyncTask;
-import com.example.vivek.rentalmates.viewholders.ExpenseListItem;
-import com.google.api.client.util.DateTime;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -40,6 +36,7 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
     private ExpenseListViewAdapter expenseListViewAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private TextView payBackAmountView;
+    private TextView expensesTextView;
     private TextView expenseGroupNameView;
     private SharedPreferences prefs;
 
@@ -79,7 +76,7 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
 
         //Initialize RecyclerView
         recyclerView = (RecyclerView) layout.findViewById(R.id.listExpenses);
-        expenseListViewAdapter = new ExpenseListViewAdapter(getActivity(), getData(), getFragmentManager());
+        expenseListViewAdapter = new ExpenseListViewAdapter(getActivity(), getFragmentManager());
         recyclerView.setAdapter(expenseListViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -90,9 +87,19 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
         swipeRefreshLayout.setColorSchemeResources(R.color.orange, R.color.green, R.color.blue, R.color.purple);
         swipeRefreshLayout.setProgressViewOffset(false, 0,
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
+
+        expensesTextView = (TextView) layout.findViewById(R.id.expensesText);
+        updateView();
         return layout;
     }
 
+    void updateView() {
+        if (appData.getExpenses() == null) {
+            expensesTextView.setVisibility(View.VISIBLE);
+        } else {
+            expensesTextView.setVisibility(View.GONE);
+        }
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -110,26 +117,6 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
         onRefresh();
     }
 
-
-    public List<ExpenseListItem> getData() {
-        Log.d(TAG, "inside getData");
-        List<ExpenseListItem> mItems = new ArrayList<>();
-        List<ExpenseData> expenses = appData.getExpenses();
-        if (expenses == null) {
-            ExpenseData data = new ExpenseData();
-            data.setAmount(0);
-            data.setDescription("Description");
-            data.setOwnerEmailId("vivekmsit@gmail.com");
-            data.setDate(new DateTime(new Date()));
-            mItems.add(new ExpenseListItem(data));
-        } else {
-            for (ExpenseData expenseData : expenses) {
-                mItems.add(new ExpenseListItem(expenseData));
-            }
-        }
-        return mItems;
-    }
-
     @Override
     public void onRefresh() {
         Log.d(TAG, "inside onRefresh");
@@ -141,8 +128,10 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
-                expenseListViewAdapter.setData(getData());
+                appData.storeExpenseDataList(context, expenses);
+                expenseListViewAdapter.updateExpenseData();
                 expenseListViewAdapter.notifyDataSetChanged();
+                updateView();
             }
 
             @Override
@@ -154,11 +143,5 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
             }
         });
         task.execute();
-    }
-
-    public void onExpenseDeleteSuccessful(int position) {
-        expenseListViewAdapter.notifyItemRemoved(position);
-        appData.deleteExpenseData(context, position);
-        expenseListViewAdapter.setData(getData());
     }
 }
