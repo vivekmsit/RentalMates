@@ -1,37 +1,20 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.vivek.rentalmates.fragments.RequestsFragment">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appBarLayout"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeListRequests"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@drawable/backrepeat">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/listRequests"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:background="?attr/colorPrimary"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            android:layout_height="wrap_content" />
 
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swipeListRequests"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/backrepeat">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/listRequests"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </android.support.v4.widget.SwipeRefreshLayout>
-
-    </android.support.design.widget.AppBarLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </FrameLayout>

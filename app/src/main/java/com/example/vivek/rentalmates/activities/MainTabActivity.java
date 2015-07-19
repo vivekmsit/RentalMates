@@ -102,6 +102,7 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
                 backStackCount = fragmentManager.getBackStackEntryCount();
                 if (backStackCount == 0) {
                     navigationView.getMenu().findItem(R.id.drawer_item_home).setChecked(true);
+                    toolbar.setTitle("RentalMates");
                 }
             }
         });
@@ -286,16 +287,21 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
         Intent intent;
         switch (itemId) {
             case R.id.drawer_item_home:
+                for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
+                    fragmentManager.popBackStack();
+                }
                 break;
             case R.id.drawer_item_profile:
                 break;
             case R.id.drawer_item_flats:
-                ft.replace(R.id.drawer_layout, new ManageFlatsFragment());
+                toolbar.setTitle("Flats");
+                ft.replace(R.id.fragmentFrameLayout, new ManageFlatsFragment());
                 ft.addToBackStack("ManageFlatsFragment");
                 ft.commit();
                 break;
             case R.id.drawer_item_expense_groups:
-                ft.replace(R.id.drawer_layout, new ManageExpenseGroupsFragment());
+                toolbar.setTitle("Expense Groups");
+                ft.replace(R.id.fragmentFrameLayout, new ManageExpenseGroupsFragment());
                 ft.addToBackStack("ManageExpenseGroupsFragment");
                 ft.commit();
                 break;
@@ -308,14 +314,12 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
                 this.startActivity(intent);
                 break;
             case R.id.drawer_item_requests:
-                ft.replace(R.id.drawer_layout, new RequestsFragment());
+                toolbar.setTitle("Requests");
+                ft.replace(R.id.fragmentFrameLayout, new RequestsFragment());
                 ft.addToBackStack("RequestsFragment");
                 ft.commit();
                 break;
             case R.id.drawer_item_about:
-                ft.replace(R.id.drawer_layout, new NewsFeedFragment());
-                ft.addToBackStack("NewsFeedFragment");
-                ft.commit();
                 break;
             case R.id.drawer_item_help:
                 break;
