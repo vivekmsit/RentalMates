@@ -76,10 +76,6 @@
             android:label="@string/title_activity_determine_flat" >
         </activity>
         <activity
-            android:name=".activities.DeveloperModeActivity"
-            android:label="@string/title_activity_developer_mode" >
-        </activity>
-        <activity
             android:name=".activities.RegisterNewFlatActivity"
             android:label="@string/title_activity_register_new_flat" >
         </activity>

@@ -41,10 +41,6 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
     private TextView expenseGroupNameView;
     private SharedPreferences prefs;
 
-    public ExpenseDataListFragment() {
-        Log.d(TAG, "inside constructor");
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "inside onCreate");

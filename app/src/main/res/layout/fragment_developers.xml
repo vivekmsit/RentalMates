@@ -1,0 +1,34 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/backrepeat"
+    android:clickable="true"
+    tools:context="com.example.vivek.rentalmates.fragments.DevelopersFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/deleteLocalDataButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@color/orange"
+            android:text="Delete Local Data"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/deleteRemoteDataButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/deleteLocalDataButton"
+            android:layout_centerHorizontal="true"
+            android:background="@color/primaryColor"
+            android:text="Delete Remote Data"
+            android:textColor="@color/white" />
+
+    </RelativeLayout>
+
+</FrameLayout>

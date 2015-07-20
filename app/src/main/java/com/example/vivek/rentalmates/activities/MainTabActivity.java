@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.data.AppData;
+import com.example.vivek.rentalmates.fragments.DevelopersFragment;
 import com.example.vivek.rentalmates.fragments.ExpenseDataListFragment;
 import com.example.vivek.rentalmates.fragments.ManageExpenseGroupsFragment;
 import com.example.vivek.rentalmates.fragments.ManageFlatsFragment;
@@ -310,8 +311,10 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
                 this.startActivity(intent);
                 break;
             case R.id.drawer_item_developer_mode:
-                intent = new Intent(this, DeveloperModeActivity.class);
-                this.startActivity(intent);
+                toolbar.setTitle("Developers Fragment");
+                ft.replace(R.id.fragmentFrameLayout, new DevelopersFragment());
+                ft.addToBackStack("DevelopersFragment");
+                ft.commit();
                 break;
             case R.id.drawer_item_requests:
                 toolbar.setTitle("Requests");
