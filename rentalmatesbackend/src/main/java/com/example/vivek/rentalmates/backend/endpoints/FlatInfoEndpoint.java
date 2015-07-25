@@ -87,12 +87,12 @@ public class FlatInfoEndpoint {
             }
             //update flatInfo here
             flatInfo.setExpenseGroupId(finalExpenseGroup.getId());
-            flatInfo.addMemberId(flatInfo.getUserProfileId());
+            flatInfo.addMemberId(flatInfo.getOwnerId());
             ofy().save().entity(flatInfo).now();
 
             //Add created FlatInfo flatId to corresponding UserProfile flatIds list
             finalFlatInfo = ofy().load().entity(flatInfo).now();
-            Long userProfileId = finalFlatInfo.getUserProfileId();
+            Long userProfileId = finalFlatInfo.getOwnerId();
             UserProfile relatedUserProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
             relatedUserProfile.addFlatId(finalFlatInfo.getFlatId());
             relatedUserProfile.setPrimaryFlatId(finalFlatInfo.getFlatId());
@@ -123,11 +123,18 @@ public class FlatInfoEndpoint {
             httpMethod = ApiMethod.HttpMethod.POST)
     public Request requestRegisterWithOtherFlat(@Named("flatName") String flatName, @Named("userProfileId") Long userProfileId) throws IOException {
         FlatInfo flatInfo = ofy().load().type(FlatInfo.class).filter("flatName", flatName).first().now();
+
+        if (flatInfo == null) {
+            Request request = new Request();
+            request.setRequestResult("ENTITY_NOT_AVAILABLE");
+            return request;
+        }
+
         UserProfile requesterUserProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
         Request request = new Request();
         request.setRequesterId(userProfileId);
         request.setRequestedEntity(flatInfo.getFlatId());
-        request.setRequestProviderId(flatInfo.getUserProfileId());
+        request.setRequestProviderId(flatInfo.getOwnerId());
         request.setStatus("PENDING");
         request.setEntityType("FlatInfo");
         request.setRequestedEntityName(flatName);

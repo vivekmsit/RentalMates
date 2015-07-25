@@ -19,6 +19,7 @@ public class LocalFlatInfo implements Serializable {
     }
 
     Long flatId;
+    Long ownerId;
     private String adminName;
     private String flatName; //Should be unique
     private boolean available;
@@ -26,7 +27,6 @@ public class LocalFlatInfo implements Serializable {
     private String city;
     private Date date;
     private String ownerEmailId;
-    private Long userProfileId;
     private String createFlatResult;
     private List<Long> userIds = new ArrayList<>();
     private List<ExpenseData> expenses = new ArrayList<ExpenseData>();
@@ -43,6 +43,14 @@ public class LocalFlatInfo implements Serializable {
 
     public void setFlatId(Long flatId) {
         this.flatId = flatId;
+    }
+
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
     public String getAdminName() {
@@ -99,14 +107,6 @@ public class LocalFlatInfo implements Serializable {
 
     public void setOwnerEmailId(String ownerEmailId) {
         this.ownerEmailId = ownerEmailId;
-    }
-
-    public Long getUserProfileId() {
-        return userProfileId;
-    }
-
-    public void setUserProfileId(Long userProfileId) {
-        this.userProfileId = userProfileId;
     }
 
     public String getCreateFlatResult() {
@@ -193,7 +193,7 @@ public class LocalFlatInfo implements Serializable {
         for (LocalFlatInfo localFlat : localFlats) {
             FlatInfo data = new FlatInfo();
 
-            data.setUserProfileId(localFlat.getUserProfileId());
+            data.setOwnerId(localFlat.getOwnerId());
             data.setFlatId(localFlat.getFlatId());
             data.setOwnerEmailId(localFlat.getOwnerEmailId());
             data.setFlatName(localFlat.getFlatName());
@@ -218,13 +218,13 @@ public class LocalFlatInfo implements Serializable {
         for (FlatInfo flat : flats) {
             LocalFlatInfo data = new LocalFlatInfo();
 
-            data.setUserProfileId(flat.getUserProfileId());
+            data.setOwnerId(flat.getOwnerId());
             data.setAvailable(flat.getAvailable());
             data.setCity(flat.getCity());
             data.setFlatId(flat.getFlatId());
             data.setFlatName(flat.getFlatName());
             data.setFlatExpenseGroupId(flat.getExpenseGroupId());
-            data.setUserProfileId(flat.getUserProfileId());
+            data.setOwnerId(flat.getOwnerId());
             data.setFlatId(flat.getFlatId());
             data.setOwnerEmailId(flat.getOwnerEmailId());
             data.setFlatName(flat.getFlatName());

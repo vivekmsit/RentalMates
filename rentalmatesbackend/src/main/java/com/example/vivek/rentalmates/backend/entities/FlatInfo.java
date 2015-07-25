@@ -48,7 +48,7 @@ public class FlatInfo {
     private String ownerEmailId;
 
     private Date date;
-    private Long userProfileId;
+    private Long ownerId;
     private Long expenseGroupId;
     private int numberOfUsers;
     private int updateCount;
@@ -72,6 +72,14 @@ public class FlatInfo {
         date = new Date();
         numberOfUsers = 0;
         updateCount = -1;
+    }
+
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
     public Long getFlatId() {
@@ -118,10 +126,6 @@ public class FlatInfo {
         this.expenseGroupId = expenseGroupId;
     }
 
-    public Long getUserProfileId() {
-        return userProfileId;
-    }
-
     public String getCreateFlatResult() {
         return createFlatResult;
     }
@@ -136,10 +140,6 @@ public class FlatInfo {
 
     public void setMemberIds(List<Long> memberIds) {
         this.memberIds = memberIds;
-    }
-
-    public void setUserProfileId(Long userProfileId) {
-        this.userProfileId = userProfileId;
     }
 
     public void addMemberId(Long id) {

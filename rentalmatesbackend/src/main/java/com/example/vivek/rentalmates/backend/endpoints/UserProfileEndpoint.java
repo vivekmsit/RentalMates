@@ -1,20 +1,24 @@
 package com.example.vivek.rentalmates.backend.endpoints;
 
+import com.example.vivek.rentalmates.backend.entities.ExpenseData;
 import com.example.vivek.rentalmates.backend.entities.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.entities.FlatInfo;
 import com.example.vivek.rentalmates.backend.entities.Request;
 import com.example.vivek.rentalmates.backend.entities.UserProfile;
+import com.example.vivek.rentalmates.backend.entities.RegistrationRecord;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.api.server.spi.response.NotFoundException;
+import com.google.appengine.api.ThreadManager;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.QueryResultIterator;
 import com.googlecode.objectify.cmd.Query;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadFactory;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
@@ -190,6 +194,52 @@ public class UserProfileEndpoint {
     }
 
 
+    public void removeAllDataStoreData() {
+        for (RegistrationRecord registrationRecord : ofy().load().type(RegistrationRecord.class).list()) {
+            ofy().delete().entity(registrationRecord);
+        }
+        for (ExpenseData expenseData : ofy().load().type(ExpenseData.class).list()) {
+            ofy().delete().entity(expenseData);
+        }
+        for (ExpenseGroup expenseGroup : ofy().load().type(ExpenseGroup.class).list()) {
+            ofy().delete().entity(expenseGroup);
+        }
+        for (Request request : ofy().load().type(Request.class).list()) {
+            ofy().delete().entity(request);
+        }
+        for (FlatInfo flatInfo : ofy().load().type(FlatInfo.class).list()) {
+            ofy().delete().entity(flatInfo);
+        }
+        for (UserProfile userProfile1 : ofy().load().type(UserProfile.class).list()) {
+            ofy().delete().entity(userProfile1);
+        }
+    }
+
+    /**
+     * Removes all DataStore data
+     */
+    @ApiMethod(
+            name = "removeDataStoreData",
+            path = "removeDataStoreData",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public void removeDataStoreData(@Named("requesterId") Long requesterId) {
+        UserProfile userProfile = ofy().load().type(UserProfile.class).id(requesterId).now();
+        if (userProfile == null) {
+            return;
+        }
+
+        if (userProfile.getEmailId().equals("vivekmsit@gmail.com")) {
+            ThreadFactory f = ThreadManager.currentRequestThreadFactory();
+            f.newThread(new Runnable() {
+                @Override
+                public void run() {
+                    removeAllDataStoreData();
+                }
+            }).run();
+        }
+    }
+
+
     /**
      * Get ExpenseData list from specified {@code FlatInfo}.
      *
@@ -225,17 +275,13 @@ public class UserProfileEndpoint {
 
     /**
      * Get available FlatInfo list.
-     *
-     * @throws NotFoundException if the {@code id} does not correspond to an existing
-     *                           {@code FlatInfo}
      */
     @ApiMethod(
             name = "getAvailableFlatInfoList",
             path = "getAvailableFlatInfo",
             httpMethod = ApiMethod.HttpMethod.POST)
     public List<FlatInfo> getAvailableFlatInfoList() {
-        List<FlatInfo> flats = ofy().load().type(FlatInfo.class).filter("available", false).limit(10).list();
-        return flats;
+        return ofy().load().type(FlatInfo.class).filter("available", false).limit(10).list();
     }
 
 

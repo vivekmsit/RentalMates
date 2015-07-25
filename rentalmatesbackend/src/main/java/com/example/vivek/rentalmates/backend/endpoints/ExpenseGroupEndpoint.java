@@ -3,6 +3,7 @@ package com.example.vivek.rentalmates.backend.endpoints;
 import com.example.vivek.rentalmates.backend.entities.ExpenseData;
 import com.example.vivek.rentalmates.backend.entities.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.entities.RegistrationRecord;
+import com.example.vivek.rentalmates.backend.entities.Request;
 import com.example.vivek.rentalmates.backend.entities.UserProfile;
 import com.example.vivek.rentalmates.backend.ofy.OfyService;
 import com.google.android.gcm.server.Constants;
@@ -162,6 +163,49 @@ public class ExpenseGroupEndpoint {
         } catch (com.googlecode.objectify.NotFoundException e) {
             throw new NotFoundException("Could not find ExpenseGroup with ID: " + id);
         }
+    }
+
+
+    /**
+     * Inserts a new {@code ExpenseData} into {@code ExpenseGroup}.
+     */
+    @ApiMethod(
+            name = "requestJoinExistingExpenseGroup",
+            path = "requestJoinExistingExpenseGroup",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public Request requestJoinExistingExpenseGroup(@Named("expenseGroupName") String expenseGroupName, @Named("userProfileId") Long userProfileId) throws NotFoundException, IOException {
+        ExpenseGroup expenseGroup = ofy().load().type(ExpenseGroup.class).filter("expenseGroupName", expenseGroupName).first().now();
+
+        if (expenseGroup == null) {
+            Request request = new Request();
+            request.setRequestResult("ENTITY_NOT_AVAILABLE");
+            return request;
+        }
+        UserProfile requesterUserProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
+
+        //create Request
+        Request request = new Request();
+        request.setRequesterId(userProfileId);
+        request.setRequestedEntity(expenseGroup.getId());
+        request.setRequestProviderId(expenseGroup.getOwnerId());
+        request.setStatus("PENDING");
+        request.setEntityType("FlatInfo");
+        request.setRequestedEntityName(expenseGroupName);
+        request.setRequesterName(requesterUserProfile.getUserName());
+        ofy().save().entity(request).now();
+
+        //Add request Id to requestProvider's requestIds list
+        UserProfile userProfile = ofy().load().type(UserProfile.class).id(request.getRequestProviderId()).now();
+        userProfile.addRequestId(request.getId());
+        ofy().save().entity(userProfile).now();
+
+        //send notification to requestProvider
+        List<Long> userIds = new ArrayList<>();
+        userIds.add(request.getRequestProviderId());
+        String message = "NEW_REQUEST";
+        ExpenseGroupEndpoint.sendMessage(userIds, message);
+
+        return request;
     }
 
 

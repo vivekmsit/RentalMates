@@ -27,6 +27,7 @@ public class ExpenseGroup implements Serializable {
     private Date date;
     private String description;
     private String ownerEmailId;
+    private Long ownerId;
     private int numberOfExpenses;
     private int numberOfMembers;
     private int updateCount;
@@ -76,6 +77,14 @@ public class ExpenseGroup implements Serializable {
 
     public void setOwnerEmailId(String emailId) {
         this.ownerEmailId = emailId;
+    }
+
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
     public void setDescription(String description) {

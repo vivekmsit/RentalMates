@@ -9,7 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.adapters.ExpenseGroupListViewAdapter;
@@ -29,6 +31,8 @@ public class ManageExpenseGroupsFragment extends android.support.v4.app.Fragment
     private Context context;
     private RecyclerView recyclerView;
     private TextView manageExpenseGroupsTextView;
+    private Button joinExistingEGroupButton;
+    private Button registerNewEGroupButton;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ExpenseGroupListViewAdapter expenseGroupListViewAdapter;
 
@@ -55,6 +59,24 @@ public class ManageExpenseGroupsFragment extends android.support.v4.app.Fragment
         swipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.white));
         swipeRefreshLayout.setColorSchemeColors(R.color.primaryColor, R.color.purple, R.color.green, R.color.orange);
 
+        //Initialize buttons
+        joinExistingEGroupButton = (Button) layout.findViewById(R.id.joinExistingEGroupButton);
+        registerNewEGroupButton = (Button) layout.findViewById(R.id.registerNewEGroupButton);
+
+        joinExistingEGroupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                joinExistingExpenseGroup();
+            }
+        });
+
+        registerNewEGroupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registerNewExpenseGroup();
+            }
+        });
+
         updateView();
         return layout;
     }
@@ -65,6 +87,14 @@ public class ManageExpenseGroupsFragment extends android.support.v4.app.Fragment
         } else {
             manageExpenseGroupsTextView.setVisibility(View.GONE);
         }
+    }
+
+    public void joinExistingExpenseGroup() {
+        Toast.makeText(context, "To be implemented", Toast.LENGTH_SHORT).show();
+    }
+
+    public void registerNewExpenseGroup() {
+        Toast.makeText(context, "To be implemented", Toast.LENGTH_SHORT).show();
     }
 
     @Override

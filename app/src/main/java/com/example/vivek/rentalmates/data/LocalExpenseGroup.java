@@ -16,6 +16,7 @@ public class LocalExpenseGroup implements Serializable {
     private static final String TAG = "LocalExpenseData_Debug";
 
     private Long id;
+    private Long ownerId;
     private DateTime date;
     private String name;
     private String description;
@@ -35,6 +36,14 @@ public class LocalExpenseGroup implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
     public DateTime getDate() {

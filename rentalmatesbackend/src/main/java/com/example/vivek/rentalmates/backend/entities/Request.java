@@ -20,6 +20,7 @@ public class Request implements Serializable {
     private String requesterName;
     private String requestedEntityName;
     private String requesterProfilePicLink;
+    private String requestResult;
 
     public Request() {
         updateCount = -1;
@@ -86,7 +87,6 @@ public class Request implements Serializable {
         updateCount = -1;
     }
 
-
     public String getRequesterName() {
         return requesterName;
     }
@@ -110,4 +110,13 @@ public class Request implements Serializable {
     public void setRequesterProfilePicLink(String requesterProfilePic) {
         this.requesterProfilePicLink = requesterProfilePicLink;
     }
+
+    public String getRequestResult() {
+        return requestResult;
+    }
+
+    public void setRequestResult(String requestResult) {
+        this.requestResult = requestResult;
+    }
+
 }
