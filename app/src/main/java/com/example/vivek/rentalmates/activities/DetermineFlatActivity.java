@@ -17,12 +17,12 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
-import com.example.vivek.rentalmates.backend.flatInfoApi.model.Request;
+import com.example.vivek.rentalmates.backend.mainApi.model.Request;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
 import com.example.vivek.rentalmates.interfaces.OnExpenseGroupListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnExpenseListReceiver;
-import com.example.vivek.rentalmates.interfaces.OnRequestRegisterWithOtherFlatReceiver;
+import com.example.vivek.rentalmates.interfaces.OnRequestJoinExistingEntityReceiver;
 import com.example.vivek.rentalmates.interfaces.OnUserProfileListReceiver;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.data.LocalFlatInfo;
@@ -30,7 +30,7 @@ import com.example.vivek.rentalmates.services.BackendApiService;
 import com.example.vivek.rentalmates.tasks.GetAllExpenseListAsyncTask;
 import com.example.vivek.rentalmates.tasks.GetExpenseGroupListAsyncTask;
 import com.example.vivek.rentalmates.tasks.GetUserProfileListAsyncTask;
-import com.example.vivek.rentalmates.tasks.RequestRegisterWithOtherFlatAsyncTask;
+import com.example.vivek.rentalmates.tasks.RequestAsyncTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -132,10 +132,10 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
                     return;
                 }
                 registerWithAlreadyRegisteredFlatButtonClicked = true;
-                RequestRegisterWithOtherFlatAsyncTask task = new RequestRegisterWithOtherFlatAsyncTask(this, alreadyRegisteredFlatEditText.getText().toString());
-                task.setOnRegisterWithOldFlatReceiver(new OnRequestRegisterWithOtherFlatReceiver() {
+                RequestAsyncTask task = new RequestAsyncTask(this, "FlatInfo", alreadyRegisteredFlatEditText.getText().toString());
+                task.setOnRequestJoinExistingEntityReceiver(new OnRequestJoinExistingEntityReceiver() {
                     @Override
-                    public void onRequestRegisterWithOtherFlatSuccessful(Request request) {
+                    public void onRequestJoinExistingEntitySuccessful(Request request) {
                         registerWithAlreadyRegisteredFlatButtonClicked = false;
                         progressDialog.cancel();
                         if (request.getStatus().equals("PENDING")) {
@@ -147,7 +147,7 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
                     }
 
                     @Override
-                    public void onRequestRegisterWithOtherFlatFailed() {
+                    public void onRequestJoinExistingEntityFailed() {
                         registerWithAlreadyRegisteredFlatButtonClicked = false;
                         progressDialog.cancel();
                     }

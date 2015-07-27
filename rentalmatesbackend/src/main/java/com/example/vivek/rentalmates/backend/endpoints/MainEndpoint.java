@@ -12,6 +12,9 @@ import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.response.NotFoundException;
 import com.googlecode.objectify.ObjectifyService;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.inject.Named;
@@ -95,5 +98,236 @@ public class MainEndpoint {
         }
 
         return data;
+    }
+
+    /**
+     * Request to join a given entity.
+     */
+    @ApiMethod(
+            name = "requestJoinExistingEntity",
+            path = "requestJoinExistingEntity",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public Request requestJoinExistingEntity(@Named("entityType") String entityType, @Named("entityName") String entityName, @Named("userProfileId") Long userProfileId) throws IOException, NotFoundException {
+        Request request = new Request();
+        switch (entityType) {
+            case "FlatInfo":
+                request = requestRegisterWithOtherFlat(entityName, userProfileId);
+                break;
+            case "ExpenseGroup":
+                request = requestJoinExistingExpenseGroup(entityName, userProfileId);
+                break;
+            default:
+                break;
+        }
+        return request;
+    }
+
+    public Request requestRegisterWithOtherFlat(@Named("flatName") String flatName, @Named("userProfileId") Long userProfileId) throws IOException {
+        FlatInfo flatInfo = ofy().load().type(FlatInfo.class).filter("flatName", flatName).first().now();
+
+        if (flatInfo == null) {
+            Request request = new Request();
+            request.setRequestResult("ENTITY_NOT_AVAILABLE");
+            return request;
+        }
+
+        UserProfile requesterUserProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
+        Request request = new Request();
+        request.setRequesterId(userProfileId);
+        request.setRequestedEntity(flatInfo.getFlatId());
+        request.setRequestProviderId(flatInfo.getOwnerId());
+        request.setStatus("PENDING");
+        request.setEntityType("FlatInfo");
+        request.setRequestedEntityName(flatName);
+        request.setRequesterName(requesterUserProfile.getUserName());
+        ofy().save().entity(request).now();
+
+        //Add request Id to requestProvider's requestIds list
+        UserProfile userProfile = ofy().load().type(UserProfile.class).id(request.getRequestProviderId()).now();
+        userProfile.addRequestId(request.getId());
+        ofy().save().entity(userProfile).now();
+
+        //send notification to requestProvider
+        List<Long> userIds = new ArrayList<>();
+        userIds.add(request.getRequestProviderId());
+        String message = "NEW_REQUEST";
+        ExpenseGroupEndpoint.sendMessage(userIds, message);
+
+        return request;
+    }
+
+    /**
+     * Request to join existing {@code ExpenseGroup}.
+     */
+    @ApiMethod(
+            name = "requestJoinExistingExpenseGroup",
+            path = "requestJoinExistingExpenseGroup",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public Request requestJoinExistingExpenseGroup(@Named("expenseGroupName") String expenseGroupName, @Named("userProfileId") Long userProfileId) throws NotFoundException, IOException {
+        ExpenseGroup expenseGroup = ofy().load().type(ExpenseGroup.class).filter("expenseGroupName", expenseGroupName).first().now();
+
+        if (expenseGroup == null) {
+            Request request = new Request();
+            request.setRequestResult("ENTITY_NOT_AVAILABLE");
+            return request;
+        }
+        UserProfile requesterUserProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
+
+        //create Request
+        Request request = new Request();
+        request.setRequesterId(userProfileId);
+        request.setRequestedEntity(expenseGroup.getId());
+        request.setRequestProviderId(expenseGroup.getOwnerId());
+        request.setStatus("PENDING");
+        request.setEntityType("FlatInfo");
+        request.setRequestedEntityName(expenseGroupName);
+        request.setRequesterName(requesterUserProfile.getUserName());
+        ofy().save().entity(request).now();
+
+        //Add request Id to requestProvider's requestIds list
+        UserProfile userProfile = ofy().load().type(UserProfile.class).id(request.getRequestProviderId()).now();
+        userProfile.addRequestId(request.getId());
+        ofy().save().entity(userProfile).now();
+
+        //send notification to requestProvider
+        List<Long> userIds = new ArrayList<>();
+        userIds.add(request.getRequestProviderId());
+        String message = "NEW_REQUEST";
+        ExpenseGroupEndpoint.sendMessage(userIds, message);
+
+        return request;
+    }
+
+    /**
+     * Reject request to join a given entity.
+     */
+    @ApiMethod(
+            name = "rejectRequest",
+            path = "rejectRequest",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public Request rejectRequest(@Named("requestId") Long requestId) throws IOException {
+        Request request = ofy().load().type(Request.class).id(requestId).now();
+
+        //update request status
+        request.setStatus("REJECTED");
+        ofy().save().entity(request).now();
+        request = ofy().load().entity(request).now();
+
+        //Remove request Id from requestProvider's requestIds list
+        UserProfile userProfile = ofy().load().type(UserProfile.class).id(request.getRequestProviderId()).now();
+        userProfile.removeRequestId(request.getId());
+        ofy().save().entity(userProfile).now();
+
+        //send notification to requester
+        List<Long> userIds = new ArrayList<>();
+        userIds.add(request.getRequesterId());
+        String message = "Your request to join " + request.getEntityType() + " " + request.getRequestedEntityName() + " has been rejected";
+        ExpenseGroupEndpoint.sendMessage(userIds, message);
+        return request;
+    }
+
+    /**
+     * Accept request to join a given entity.
+     */
+    @ApiMethod(
+            name = "acceptRequest",
+            path = "acceptRequest",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public Request acceptRequest(@Named("requestId") Long requestId) throws IOException {
+        Request request = ofy().load().type(Request.class).id(requestId).now();
+        switch (request.getEntityType()) {
+            case "FlatInfo":
+                acceptRequestRegisterWithOtherFlat(request.getRequestedEntity(), request.getRequesterId());
+                break;
+            case "ExpenseGroup":
+                break;
+            default:
+                break;
+        }
+        //update request status
+        request.setStatus("APPROVED");
+        ofy().save().entity(request).now();
+        request = ofy().load().entity(request).now();
+
+        //Remove request Id from requestProvider's requestIds list
+        UserProfile requestProviderUserProfile = ofy().load().type(UserProfile.class).id(request.getRequestProviderId()).now();
+        requestProviderUserProfile.removeRequestId(request.getId());
+        ofy().save().entity(requestProviderUserProfile).now();
+
+        //send notification to requester
+        List<Long> userIds = new ArrayList<>();
+        userIds.add(request.getRequesterId());
+        String message = "Your request to join " + request.getEntityType() + " " + request.getRequestedEntityName() + " has been approved";
+        ExpenseGroupEndpoint.sendMessage(userIds, message);
+        return request;
+    }
+
+    /**
+     * Accept request to join a given entity.
+     */
+    @ApiMethod(
+            name = "acceptRequestRegisterWithOtherFlat",
+            path = "acceptRequestRegisterWithOtherFlat",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public void acceptRequestRegisterWithOtherFlat(@Named("requestedEntityId") Long requestedEntityId, @Named("requesterId") Long requesterId) throws IOException {
+        FlatInfo finalFlatInfo = ofy().load().type(FlatInfo.class).id(requestedEntityId).now();
+        UserProfile userProfile;
+        if (finalFlatInfo == null) {
+            logger.info("Created FlatInfo.");
+        } else {
+            //Add flatId of flat to UserProfile flatIds List
+            userProfile = ofy().load().type(UserProfile.class).id(requesterId).now();
+            ExpenseGroup flatExpenseGroup = ofy().load().type(ExpenseGroup.class).id(finalFlatInfo.getExpenseGroupId()).now();
+            if (!userProfile.getFlatIds().contains(finalFlatInfo.getFlatId())) {
+                userProfile.addFlatId(finalFlatInfo.getFlatId());
+            }
+            userProfile.setPrimaryFlatId(finalFlatInfo.getFlatId());
+            if (!userProfile.getExpenseGroupIds().contains(flatExpenseGroup.getId())) {
+                userProfile.addExpenseGroupId(flatExpenseGroup.getId());
+            }
+            userProfile.setFlatExpenseGroupId(flatExpenseGroup.getId());
+            ofy().save().entity(userProfile).now();
+
+            //Add userProfileId to FlatInfo userIds List
+            if (!finalFlatInfo.getMemberIds().contains(requesterId)) {
+                finalFlatInfo.addMemberId(requesterId);
+                ofy().save().entity(finalFlatInfo).now();
+            }
+            Long l = new Long(0);//need to be changed later
+            if (!flatExpenseGroup.getMembersData().keySet().contains(requesterId)) {
+                flatExpenseGroup.addMemberData(requesterId, l);
+                ofy().save().entity(flatExpenseGroup).now();
+            }
+            finalFlatInfo.setCreateFlatResult("OLD_FLAT_INFO");
+        }
+    }
+
+    /**
+     * Accept request to join existing {@code ExpenseGroup}.
+     */
+    @ApiMethod(
+            name = "acceptRequestJoinExistingExpenseGroup",
+            path = "acceptRequestJoinExistingExpenseGroup",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public void acceptRequestJoinExistingExpenseGroup(@Named("requestedEntityId") Long requestedEntityId, @Named("requesterId") Long requesterId) throws IOException {
+        ExpenseGroup finalExpenseGroup = ofy().load().type(ExpenseGroup.class).id(requestedEntityId).now();
+        UserProfile userProfile;
+        if (finalExpenseGroup == null) {
+            logger.info("Created ExpenseGroup.");
+        } else {
+            //Add expenseGroupId of expense group to UserProfile expenseGroupIds List
+            userProfile = ofy().load().type(UserProfile.class).id(requesterId).now();
+            if (!userProfile.getExpenseGroupIds().contains(requestedEntityId)) {
+                userProfile.addExpenseGroupId(requestedEntityId);
+            }
+            ofy().save().entity(userProfile).now();
+
+            //Add userProfileId to ExpenseGroup userIds List
+            Long l = new Long(0);//need to be changed later
+            if (!finalExpenseGroup.getMembersData().keySet().contains(requesterId)) {
+                finalExpenseGroup.addMemberData(requesterId, l);
+                ofy().save().entity(finalExpenseGroup).now();
+            }
+        }
     }
 }

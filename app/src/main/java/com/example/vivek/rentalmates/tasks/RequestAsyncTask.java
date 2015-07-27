@@ -6,49 +6,50 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.vivek.rentalmates.backend.flatInfoApi.FlatInfoApi;
+import com.example.vivek.rentalmates.backend.mainApi.MainApi;
+import com.example.vivek.rentalmates.backend.mainApi.model.Request;
 import com.example.vivek.rentalmates.data.AppConstants;
-import com.example.vivek.rentalmates.backend.flatInfoApi.model.Request;
-import com.example.vivek.rentalmates.interfaces.OnRequestRegisterWithOtherFlatReceiver;
+import com.example.vivek.rentalmates.interfaces.OnRequestJoinExistingEntityReceiver;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
 import java.io.IOException;
 
-public class RequestRegisterWithOtherFlatAsyncTask extends AsyncTask<Context, Void, String> {
+public class RequestAsyncTask extends AsyncTask<Context, Void, String> {
     private static final String TAG = "RegisterWithOld_Debug";
 
-    private static FlatInfoApi flatService = null;
-    private String flatName;
+    private static MainApi mainApi = null;
+    private String entityType;
+    private String entityName;
     private Context context;
     private Request request;
     private SharedPreferences prefs;
     private IOException ioException;
-    private OnRequestRegisterWithOtherFlatReceiver receiver;
+    private OnRequestJoinExistingEntityReceiver receiver;
 
-    public RequestRegisterWithOtherFlatAsyncTask(Context context, final String flatName) {
+    public RequestAsyncTask(Context context, final String entityType, final String entityName) {
         this.context = context;
-        this.flatName = flatName;
+        this.entityType = entityType;
+        this.entityName = entityName;
 
         prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
     }
 
-    public void setOnRegisterWithOldFlatReceiver(OnRequestRegisterWithOtherFlatReceiver receiver) {
+    public void setOnRequestJoinExistingEntityReceiver(OnRequestJoinExistingEntityReceiver receiver) {
         this.receiver = receiver;
     }
 
     @Override
     protected String doInBackground(Context... params) {
         String msg;
-        if (flatService == null) {
-            FlatInfoApi.Builder builder1 = new FlatInfoApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
+        if (mainApi == null) {
+            MainApi.Builder builder1 = new MainApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
                     .setRootUrl(AppConstants.BACKEND_ROOT_URL);
-            flatService = builder1.build();
+            mainApi = builder1.build();
         }
         try {
             Long userProfileId = prefs.getLong(AppConstants.USER_PROFILE_ID, 0);
-            Log.d(TAG, "userprofileid is: " + userProfileId);
-            request = flatService.requestRegisterWithOtherFlat(this.flatName, userProfileId).execute();
+            request = mainApi.requestJoinExistingEntity(this.entityType, this.entityName, userProfileId).execute();
             if (request == null) {
                 msg = "SUCCESS_NO_FLAT_AVAILABLE";
             } else {
@@ -71,19 +72,19 @@ public class RequestRegisterWithOtherFlatAsyncTask extends AsyncTask<Context, Vo
         switch (msg) {
             case "SUCCESS_FLAT_AVAILABLE":
                 if (receiver != null) {
-                    receiver.onRequestRegisterWithOtherFlatSuccessful(request);
+                    receiver.onRequestJoinExistingEntitySuccessful(request);
                 }
                 break;
             case "SUCCESS_NO_FLAT_AVAILABLE":
                 if (receiver != null) {
-                    receiver.onRequestRegisterWithOtherFlatSuccessful(request);
+                    receiver.onRequestJoinExistingEntitySuccessful(request);
                 }
                 break;
             case "EXCEPTION":
                 Log.d(TAG, "IOException: " + ioException.getMessage());
                 Toast.makeText(context, "IOException: " + ioException.getMessage(), Toast.LENGTH_LONG).show();
                 if (receiver != null) {
-                    receiver.onRequestRegisterWithOtherFlatFailed();
+                    receiver.onRequestJoinExistingEntityFailed();
                 }
                 break;
             default:

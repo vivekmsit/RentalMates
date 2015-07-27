@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,13 +22,13 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.adapters.FlatListViewAdapter;
-import com.example.vivek.rentalmates.backend.flatInfoApi.model.Request;
+import com.example.vivek.rentalmates.backend.mainApi.model.Request;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.interfaces.OnFlatInfoListReceiver;
-import com.example.vivek.rentalmates.interfaces.OnRequestRegisterWithOtherFlatReceiver;
+import com.example.vivek.rentalmates.interfaces.OnRequestJoinExistingEntityReceiver;
 import com.example.vivek.rentalmates.tasks.GetFlatInfoListAsyncTask;
-import com.example.vivek.rentalmates.tasks.RequestRegisterWithOtherFlatAsyncTask;
+import com.example.vivek.rentalmates.tasks.RequestAsyncTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +98,7 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
     }
 
     public void joinExistingFlat() {
-        android.support.v4.app.DialogFragment joinExistingFlatDialog = new android.support.v4.app.DialogFragment() {
+        DialogFragment joinExistingFlatDialog = new android.support.v4.app.DialogFragment() {
             private ProgressDialog progressDialog;
             private EditText flatNameEditText;
 
@@ -118,10 +119,10 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
                 alertDialogBuilder.setPositiveButton("Join Flat", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        RequestRegisterWithOtherFlatAsyncTask task = new RequestRegisterWithOtherFlatAsyncTask(context, flatNameEditText.getText().toString());
-                        task.setOnRegisterWithOldFlatReceiver(new OnRequestRegisterWithOtherFlatReceiver() {
+                        RequestAsyncTask task = new RequestAsyncTask(context, "FlatInfo", flatNameEditText.getText().toString());
+                        task.setOnRequestJoinExistingEntityReceiver(new OnRequestJoinExistingEntityReceiver() {
                             @Override
-                            public void onRequestRegisterWithOtherFlatSuccessful(Request request) {
+                            public void onRequestJoinExistingEntitySuccessful(Request request) {
                                 progressDialog.cancel();
                                 if (request.getStatus().equals("PENDING")) {
                                     Toast.makeText(context, "Request sent to owner of the Flat", Toast.LENGTH_LONG).show();
@@ -131,7 +132,7 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
                             }
 
                             @Override
-                            public void onRequestRegisterWithOtherFlatFailed() {
+                            public void onRequestJoinExistingEntityFailed() {
                                 progressDialog.cancel();
                             }
                         });

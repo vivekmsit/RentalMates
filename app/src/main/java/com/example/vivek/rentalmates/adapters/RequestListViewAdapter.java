@@ -21,10 +21,10 @@ import android.widget.Toast;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.Request;
 import com.example.vivek.rentalmates.data.AppData;
-import com.example.vivek.rentalmates.interfaces.OnAcceptRequestRegisterWithOtherFlatReceiver;
-import com.example.vivek.rentalmates.interfaces.OnRejectRequestRegisterWithOtherFlatReceiver;
-import com.example.vivek.rentalmates.tasks.AcceptRequestRegisterWithOtherFlatAsyncTask;
-import com.example.vivek.rentalmates.tasks.RejectRequestRegisterWithOtherFlatAsyncTask;
+import com.example.vivek.rentalmates.interfaces.OnAcceptRequestReceiver;
+import com.example.vivek.rentalmates.interfaces.OnRejectRequestReceiver;
+import com.example.vivek.rentalmates.tasks.AcceptRequestAsyncTask;
+import com.example.vivek.rentalmates.tasks.RejectRequestAsyncTask;
 import com.example.vivek.rentalmates.viewholders.RequestListItem;
 import com.pkmmte.view.CircularImageView;
 
@@ -133,16 +133,16 @@ public class RequestListViewAdapter extends RecyclerView.Adapter<RequestListView
                                             final Long requestId = appData.getRequests().get(currentPosition).getId();
                                             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
                                             alertDialogBuilder.setTitle("Confirm");
-                                            alertDialogBuilder.setMessage("Do you really want to accept flat join request?");
+                                            alertDialogBuilder.setMessage("Do you really want to accept request?");
                                             alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
-                                                    progressDialog.setMessage("Accepting Flat Join Request");
+                                                    progressDialog.setMessage("Accepting Request");
                                                     progressDialog.show();
-                                                    AcceptRequestRegisterWithOtherFlatAsyncTask task = new AcceptRequestRegisterWithOtherFlatAsyncTask(context, requestId, currentPosition);
-                                                    task.setOnAcceptRegisterWithOldFlatReceiver(new OnAcceptRequestRegisterWithOtherFlatReceiver() {
+                                                    AcceptRequestAsyncTask task = new AcceptRequestAsyncTask(context, requestId, currentPosition);
+                                                    task.setOnAcceptRequestReceiver(new OnAcceptRequestReceiver() {
                                                         @Override
-                                                        public void onAcceptRequestRegisterWithOtherFlatSuccessful(int position) {
+                                                        public void onAcceptRequestSuccessful(int position) {
                                                             progressDialog.cancel();
                                                             notifyItemRemoved(position);
                                                             appData.deleteRequest(context, position);
@@ -150,7 +150,7 @@ public class RequestListViewAdapter extends RecyclerView.Adapter<RequestListView
                                                         }
 
                                                         @Override
-                                                        public void onAcceptRequestRegisterWithOtherFlatFailed() {
+                                                        public void onAcceptRequestFailed() {
                                                             progressDialog.cancel();
                                                             Toast.makeText(mainTabActivity, "Unable to accept request", Toast.LENGTH_LONG).show();
                                                         }
@@ -186,16 +186,16 @@ public class RequestListViewAdapter extends RecyclerView.Adapter<RequestListView
                                             final Long requestId = appData.getRequests().get(currentPosition).getId();
                                             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
                                             alertDialogBuilder.setTitle("Confirm");
-                                            alertDialogBuilder.setMessage("Do you really want to reject flat join request?");
+                                            alertDialogBuilder.setMessage("Do you really want to reject request?");
                                             alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
-                                                    progressDialog.setMessage("Rejecting Flat Join Request");
+                                                    progressDialog.setMessage("Rejecting Request");
                                                     progressDialog.show();
-                                                    RejectRequestRegisterWithOtherFlatAsyncTask task = new RejectRequestRegisterWithOtherFlatAsyncTask(context, requestId, currentPosition);
-                                                    task.setOnRejectRegisterWithOldFlatReceiver(new OnRejectRequestRegisterWithOtherFlatReceiver() {
+                                                    RejectRequestAsyncTask task = new RejectRequestAsyncTask(context, requestId, currentPosition);
+                                                    task.setOnRejectRequestReceiver(new OnRejectRequestReceiver() {
                                                         @Override
-                                                        public void onRejectRequestRegisterWithOtherFlatSuccessful(int position) {
+                                                        public void onRejectRequestSuccessful(int position) {
                                                             progressDialog.cancel();
                                                             notifyItemRemoved(position);
                                                             appData.deleteRequest(context, position);
@@ -203,7 +203,7 @@ public class RequestListViewAdapter extends RecyclerView.Adapter<RequestListView
                                                         }
 
                                                         @Override
-                                                        public void onRejectRequestRegisterWithOtherFlatFailed() {
+                                                        public void onRejectRequestFailed() {
                                                             progressDialog.cancel();
                                                             Toast.makeText(mainTabActivity, "Unable to reject request", Toast.LENGTH_LONG).show();
                                                         }

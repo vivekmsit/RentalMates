@@ -2,7 +2,6 @@ package com.example.vivek.rentalmates.backend.endpoints;
 
 import com.example.vivek.rentalmates.backend.entities.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.entities.FlatInfo;
-import com.example.vivek.rentalmates.backend.entities.Request;
 import com.example.vivek.rentalmates.backend.entities.UserProfile;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -13,7 +12,6 @@ import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.QueryResultIterator;
 import com.googlecode.objectify.cmd.Query;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -112,136 +110,6 @@ public class FlatInfoEndpoint {
         }
         logger.info("Created FlatInfo.");
         return finalFlatInfo;
-    }
-
-    /**
-     * Inserts a new {@code FlatInfo}.
-     */
-    @ApiMethod(
-            name = "requestRegisterWithOtherFlat",
-            path = "requestRegisterWithOtherFlat",
-            httpMethod = ApiMethod.HttpMethod.POST)
-    public Request requestRegisterWithOtherFlat(@Named("flatName") String flatName, @Named("userProfileId") Long userProfileId) throws IOException {
-        FlatInfo flatInfo = ofy().load().type(FlatInfo.class).filter("flatName", flatName).first().now();
-
-        if (flatInfo == null) {
-            Request request = new Request();
-            request.setRequestResult("ENTITY_NOT_AVAILABLE");
-            return request;
-        }
-
-        UserProfile requesterUserProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
-        Request request = new Request();
-        request.setRequesterId(userProfileId);
-        request.setRequestedEntity(flatInfo.getFlatId());
-        request.setRequestProviderId(flatInfo.getOwnerId());
-        request.setStatus("PENDING");
-        request.setEntityType("FlatInfo");
-        request.setRequestedEntityName(flatName);
-        request.setRequesterName(requesterUserProfile.getUserName());
-        ofy().save().entity(request).now();
-
-        //Add request Id to requestProvider's requestIds list
-        UserProfile userProfile = ofy().load().type(UserProfile.class).id(request.getRequestProviderId()).now();
-        userProfile.addRequestId(request.getId());
-        ofy().save().entity(userProfile).now();
-
-        //send notification to requestProvider
-        List<Long> userIds = new ArrayList<>();
-        userIds.add(request.getRequestProviderId());
-        String message = "NEW_REQUEST";
-        ExpenseGroupEndpoint.sendMessage(userIds, message);
-
-        return request;
-    }
-
-    /**
-     * Inserts a new {@code FlatInfo}.
-     */
-    @ApiMethod(
-            name = "rejectRequestRegisterWithOtherFlat",
-            path = "rejectRequestRegisterWithOtherFlat",
-            httpMethod = ApiMethod.HttpMethod.POST)
-    public Request rejectRequestRegisterWithOtherFlat(@Named("requestId") Long requestId) throws IOException {
-        Request request = ofy().load().type(Request.class).id(requestId).now();
-        FlatInfo finalFlatInfo = ofy().load().type(FlatInfo.class).id(request.getRequestedEntity()).now();
-
-        //update request status
-        request.setStatus("REJECTED");
-        ofy().save().entity(request).now();
-        request = ofy().load().entity(request).now();
-
-        //Remove request Id from requestProvider's requestIds list
-        UserProfile userProfile = ofy().load().type(UserProfile.class).id(request.getRequestProviderId()).now();
-        userProfile.removeRequestId(request.getId());
-        ofy().save().entity(userProfile).now();
-
-        //send notification to requester
-        List<Long> userIds = new ArrayList<>();
-        userIds.add(request.getRequesterId());
-        String message = "Your request to join flat " + finalFlatInfo.getFlatName() + " has been rejected";
-        ExpenseGroupEndpoint.sendMessage(userIds, message);
-        return request;
-    }
-
-    /**
-     * Inserts a new {@code FlatInfo}.
-     */
-    @ApiMethod(
-            name = "acceptRequestRegisterWithOtherFlat",
-            path = "acceptRequestRegisterWithOtherFlat",
-            httpMethod = ApiMethod.HttpMethod.POST)
-    public Request acceptRequestRegisterWithOtherFlat(@Named("requestId") Long requestId) throws IOException {
-        Request request = ofy().load().type(Request.class).id(requestId).now();
-        FlatInfo finalFlatInfo = ofy().load().type(FlatInfo.class).id(request.getRequestedEntity()).now();
-        Long userProfileId = request.getRequesterId();
-        UserProfile userProfile;
-        if (finalFlatInfo == null) {
-            logger.info("Created FlatInfo.");
-            return null;
-        } else {
-            //Add flatId of flat to UserProfile flatIds List
-            userProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
-            ExpenseGroup flatExpenseGroup = ofy().load().type(ExpenseGroup.class).id(finalFlatInfo.getExpenseGroupId()).now();
-            if (!userProfile.getFlatIds().contains(finalFlatInfo.getFlatId())) {
-                userProfile.addFlatId(finalFlatInfo.getFlatId());
-            }
-            userProfile.setPrimaryFlatId(finalFlatInfo.getFlatId());
-            if (!userProfile.getExpenseGroupIds().contains(flatExpenseGroup.getId())) {
-                userProfile.addExpenseGroupId(flatExpenseGroup.getId());
-            }
-            userProfile.setFlatExpenseGroupId(flatExpenseGroup.getId());
-            ofy().save().entity(userProfile).now();
-
-            //Add userProfileId to FlatInfo userIds List
-            if (!finalFlatInfo.getMemberIds().contains(userProfileId)) {
-                finalFlatInfo.addMemberId(userProfileId);
-                ofy().save().entity(finalFlatInfo).now();
-            }
-            Long l = new Long(0);//need to be changed later
-            if (!flatExpenseGroup.getMembersData().keySet().contains(userProfileId)) {
-                flatExpenseGroup.addMemberData(userProfileId, l);
-                ofy().save().entity(flatExpenseGroup).now();
-            }
-            finalFlatInfo.setCreateFlatResult("OLD_FLAT_INFO");
-        }
-
-        //update request status
-        request.setStatus("APPROVED");
-        ofy().save().entity(request).now();
-        request = ofy().load().entity(request).now();
-
-        //Remove request Id from requestProvider's requestIds list
-        UserProfile requestProviderUserProfile = ofy().load().type(UserProfile.class).id(request.getRequestProviderId()).now();
-        requestProviderUserProfile.removeRequestId(request.getId());
-        ofy().save().entity(requestProviderUserProfile).now();
-
-        //send notification to requester
-        List<Long> userIds = new ArrayList<>();
-        userIds.add(request.getRequesterId());
-        String message = "Your request to join flat " + finalFlatInfo.getFlatName() + " has been approved";
-        ExpenseGroupEndpoint.sendMessage(userIds, message);
-        return request;
     }
 
     /**

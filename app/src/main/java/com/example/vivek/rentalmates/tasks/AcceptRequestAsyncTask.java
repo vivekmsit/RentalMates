@@ -1,56 +1,50 @@
 package com.example.vivek.rentalmates.tasks;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.vivek.rentalmates.backend.flatInfoApi.FlatInfoApi;
-import com.example.vivek.rentalmates.backend.flatInfoApi.model.Request;
+import com.example.vivek.rentalmates.backend.mainApi.MainApi;
+import com.example.vivek.rentalmates.backend.mainApi.model.Request;
 import com.example.vivek.rentalmates.data.AppConstants;
-import com.example.vivek.rentalmates.interfaces.OnAcceptRequestRegisterWithOtherFlatReceiver;
+import com.example.vivek.rentalmates.interfaces.OnAcceptRequestReceiver;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
 import java.io.IOException;
 
-public class AcceptRequestRegisterWithOtherFlatAsyncTask extends AsyncTask<Context, Void, String> {
-    private static final String TAG = "RegisterWithOld_Debug";
+public class AcceptRequestAsyncTask extends AsyncTask<Context, Void, String> {
+    private static final String TAG = "AcceptRequest_Debug";
 
-    private static FlatInfoApi flatService = null;
+    private static MainApi mainApi;
     private Long requestId;
     private int position;
     private Context context;
     private Request request;
-    private SharedPreferences prefs;
     private IOException ioException;
-    private OnAcceptRequestRegisterWithOtherFlatReceiver receiver;
+    private OnAcceptRequestReceiver receiver;
 
-    public AcceptRequestRegisterWithOtherFlatAsyncTask(Context context, final Long requestId, int position) {
+    public AcceptRequestAsyncTask(Context context, final Long requestId, int position) {
         this.context = context;
         this.requestId = requestId;
         this.position = position;
-
-        prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
     }
 
-    public void setOnAcceptRegisterWithOldFlatReceiver(OnAcceptRequestRegisterWithOtherFlatReceiver receiver) {
+    public void setOnAcceptRequestReceiver(OnAcceptRequestReceiver receiver) {
         this.receiver = receiver;
     }
 
     @Override
     protected String doInBackground(Context... params) {
         String msg;
-        if (flatService == null) {
-            FlatInfoApi.Builder builder1 = new FlatInfoApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
+        if (mainApi == null) {
+            MainApi.Builder builder1 = new MainApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
                     .setRootUrl(AppConstants.BACKEND_ROOT_URL);
-            flatService = builder1.build();
+            mainApi = builder1.build();
         }
         try {
-            Long userProfileId = prefs.getLong(AppConstants.USER_PROFILE_ID, 0);
-            Log.d(TAG, "userprofileid is: " + userProfileId);
-            request = flatService.acceptRequestRegisterWithOtherFlat(requestId).execute();
+            request = mainApi.acceptRequest(requestId).execute();
             if (request == null) {
                 msg = "SUCCESS_NO_REQUEST_ACCEPTED";
             } else {
@@ -73,19 +67,19 @@ public class AcceptRequestRegisterWithOtherFlatAsyncTask extends AsyncTask<Conte
         switch (msg) {
             case "SUCCESS_REQUEST_ACCEPTED":
                 if (receiver != null) {
-                    receiver.onAcceptRequestRegisterWithOtherFlatSuccessful(position);
+                    receiver.onAcceptRequestSuccessful(position);
                 }
                 break;
             case "SUCCESS_NO_REQUEST_ACCEPTED":
                 if (receiver != null) {
-                    receiver.onAcceptRequestRegisterWithOtherFlatSuccessful(position);
+                    receiver.onAcceptRequestSuccessful(position);
                 }
                 break;
             case "EXCEPTION":
                 Log.d(TAG, "IOException: " + ioException.getMessage());
                 Toast.makeText(context, "IOException: " + ioException.getMessage(), Toast.LENGTH_LONG).show();
                 if (receiver != null) {
-                    receiver.onAcceptRequestRegisterWithOtherFlatFailed();
+                    receiver.onAcceptRequestFailed();
                 }
                 break;
             default:

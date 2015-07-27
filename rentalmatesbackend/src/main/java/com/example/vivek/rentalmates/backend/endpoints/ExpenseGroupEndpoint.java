@@ -3,7 +3,6 @@ package com.example.vivek.rentalmates.backend.endpoints;
 import com.example.vivek.rentalmates.backend.entities.ExpenseData;
 import com.example.vivek.rentalmates.backend.entities.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.entities.RegistrationRecord;
-import com.example.vivek.rentalmates.backend.entities.Request;
 import com.example.vivek.rentalmates.backend.entities.UserProfile;
 import com.example.vivek.rentalmates.backend.ofy.OfyService;
 import com.google.android.gcm.server.Constants;
@@ -165,129 +164,6 @@ public class ExpenseGroupEndpoint {
         }
     }
 
-
-    /**
-     * Request to join existing {@code ExpenseGroup}.
-     */
-    @ApiMethod(
-            name = "requestJoinExistingExpenseGroup",
-            path = "requestJoinExistingExpenseGroup",
-            httpMethod = ApiMethod.HttpMethod.POST)
-    public Request requestJoinExistingExpenseGroup(@Named("expenseGroupName") String expenseGroupName, @Named("userProfileId") Long userProfileId) throws NotFoundException, IOException {
-        ExpenseGroup expenseGroup = ofy().load().type(ExpenseGroup.class).filter("expenseGroupName", expenseGroupName).first().now();
-
-        if (expenseGroup == null) {
-            Request request = new Request();
-            request.setRequestResult("ENTITY_NOT_AVAILABLE");
-            return request;
-        }
-        UserProfile requesterUserProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
-
-        //create Request
-        Request request = new Request();
-        request.setRequesterId(userProfileId);
-        request.setRequestedEntity(expenseGroup.getId());
-        request.setRequestProviderId(expenseGroup.getOwnerId());
-        request.setStatus("PENDING");
-        request.setEntityType("FlatInfo");
-        request.setRequestedEntityName(expenseGroupName);
-        request.setRequesterName(requesterUserProfile.getUserName());
-        ofy().save().entity(request).now();
-
-        //Add request Id to requestProvider's requestIds list
-        UserProfile userProfile = ofy().load().type(UserProfile.class).id(request.getRequestProviderId()).now();
-        userProfile.addRequestId(request.getId());
-        ofy().save().entity(userProfile).now();
-
-        //send notification to requestProvider
-        List<Long> userIds = new ArrayList<>();
-        userIds.add(request.getRequestProviderId());
-        String message = "NEW_REQUEST";
-        ExpenseGroupEndpoint.sendMessage(userIds, message);
-
-        return request;
-    }
-
-
-    /**
-     * Reject request to join existing {@code ExpenseGroup}.
-     */
-    @ApiMethod(
-            name = "rejectRequestJoinExistingExpenseGroup",
-            path = "rejectRequestJoinExistingExpenseGroup",
-            httpMethod = ApiMethod.HttpMethod.POST)
-    public Request rejectRequestJoinExistingExpenseGroup(@Named("requestId") Long requestId) throws IOException {
-        Request request = ofy().load().type(Request.class).id(requestId).now();
-        ExpenseGroup finalExpenseGroup = ofy().load().type(ExpenseGroup.class).id(request.getRequestedEntity()).now();
-
-        //update request status
-        request.setStatus("REJECTED");
-        ofy().save().entity(request).now();
-        request = ofy().load().entity(request).now();
-
-        //Remove request Id from requestProvider's requestIds list
-        UserProfile userProfile = ofy().load().type(UserProfile.class).id(request.getRequestProviderId()).now();
-        userProfile.removeRequestId(request.getId());
-        ofy().save().entity(userProfile).now();
-
-        //send notification to requester
-        List<Long> userIds = new ArrayList<>();
-        userIds.add(request.getRequesterId());
-        String message = "Your request to join Expense Group " + finalExpenseGroup.getName() + " has been rejected";
-        sendMessage(userIds, message);
-        return request;
-    }
-
-    /**
-     * Accept request to join existing {@code ExpenseGroup}.
-     */
-    @ApiMethod(
-            name = "acceptRequestJoinExistingExpenseGroup",
-            path = "acceptRequestJoinExistingExpenseGroup",
-            httpMethod = ApiMethod.HttpMethod.POST)
-    public Request acceptRequestJoinExistingExpenseGroup(@Named("requestId") Long requestId) throws IOException {
-        Request request = ofy().load().type(Request.class).id(requestId).now();
-        ExpenseGroup finalExpenseGroup = ofy().load().type(ExpenseGroup.class).id(request.getRequestedEntity()).now();
-        Long userProfileId = request.getRequesterId();
-        UserProfile userProfile;
-        if (finalExpenseGroup == null) {
-            logger.info("Created ExpenseGroup.");
-            return null;
-        } else {
-            //Add expenseGroupId of expense group to UserProfile expenseGroupIds List
-            userProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
-            if (!userProfile.getExpenseGroupIds().contains(request.getRequestedEntity())) {
-                userProfile.addExpenseGroupId(request.getRequestedEntity());
-            }
-            ofy().save().entity(userProfile).now();
-
-            //Add userProfileId to ExpenseGroup userIds List
-            Long l = new Long(0);//need to be changed later
-            if (!finalExpenseGroup.getMembersData().keySet().contains(userProfileId)) {
-                finalExpenseGroup.addMemberData(userProfileId, l);
-                ofy().save().entity(finalExpenseGroup).now();
-            }
-        }
-
-        //update request status
-        request.setStatus("APPROVED");
-        ofy().save().entity(request).now();
-        request = ofy().load().entity(request).now();
-
-        //Remove request Id from requestProvider's requestIds list
-        UserProfile requestProviderUserProfile = ofy().load().type(UserProfile.class).id(request.getRequestProviderId()).now();
-        requestProviderUserProfile.removeRequestId(request.getId());
-        ofy().save().entity(requestProviderUserProfile).now();
-
-        //send notification to requester
-        List<Long> userIds = new ArrayList<>();
-        userIds.add(request.getRequesterId());
-        String message = "Your request to join ExpenseGroup " + finalExpenseGroup.getName() + " has been approved";
-        ExpenseGroupEndpoint.sendMessage(userIds, message);
-        return request;
-    }
-
-
     private void checkExpenseExists(Long id) throws NotFoundException {
         try {
             ofy().load().type(ExpenseData.class).id(id).safe();
@@ -295,7 +171,6 @@ public class ExpenseGroupEndpoint {
             throw new NotFoundException("Could not find ExpenseData with ID: " + id);
         }
     }
-
 
     /**
      * Inserts a new {@code ExpenseData} into {@code ExpenseGroup}.
