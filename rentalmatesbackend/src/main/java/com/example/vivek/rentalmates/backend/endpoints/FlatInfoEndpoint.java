@@ -99,6 +99,7 @@ public class FlatInfoEndpoint {
             ofy().save().entity(relatedUserProfile).now();
 
             Long l = new Long(0);//need to be changed later
+            finalExpenseGroup.setOwnerId(finalFlatInfo.getOwnerId());
             if (!finalExpenseGroup.getMembersData().keySet().contains(userProfileId)) {
                 finalExpenseGroup.addMemberData(userProfileId, l);
                 ofy().save().entity(finalExpenseGroup).now();

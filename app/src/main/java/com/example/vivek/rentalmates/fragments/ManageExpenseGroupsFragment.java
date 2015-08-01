@@ -127,9 +127,13 @@ public class ManageExpenseGroupsFragment extends android.support.v4.app.Fragment
                             public void onRequestJoinExistingEntitySuccessful(Request request) {
                                 progressDialog.cancel();
                                 if (request.getStatus().equals("PENDING")) {
-                                    Toast.makeText(context, "Request sent to owner of the Expense Group", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(context, "Request sent to owner of the ExpenseGroup", Toast.LENGTH_LONG).show();
+                                } else if (request.getStatus().equals("ENTITY_NOT_AVAILABLE")) {
+                                    Toast.makeText(context, "ExpenseGroup with given name doesn't exist.\nPlease enter different name", Toast.LENGTH_LONG).show();
+                                } else if (request.getStatus().equals("ALREADY_MEMBER")) {
+                                    Toast.makeText(context, "You are already member of " + expenseGroupNameEditText.getText().toString(), Toast.LENGTH_LONG).show();
                                 } else {
-                                    Toast.makeText(context, "Expense Group with given name doesn't exist.\nPlease enter different name", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(context, "Failed request due to Unknown Reason", Toast.LENGTH_LONG).show();
                                 }
                             }
 

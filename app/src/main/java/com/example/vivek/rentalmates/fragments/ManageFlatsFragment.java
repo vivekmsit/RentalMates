@@ -126,8 +126,12 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
                                 progressDialog.cancel();
                                 if (request.getStatus().equals("PENDING")) {
                                     Toast.makeText(context, "Request sent to owner of the Flat", Toast.LENGTH_LONG).show();
-                                } else {
+                                } else if (request.getStatus().equals("ENTITY_NOT_AVAILABLE")) {
                                     Toast.makeText(context, "Flat with given name doesn't exist.\nPlease enter different name", Toast.LENGTH_LONG).show();
+                                } else if (request.getStatus().equals("ALREADY_MEMBER")) {
+                                    Toast.makeText(context, "You are already member of " + flatNameEditText.getText().toString(), Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(context, "Failed Request due to Unknown Reason", Toast.LENGTH_LONG).show();
                                 }
                             }
 

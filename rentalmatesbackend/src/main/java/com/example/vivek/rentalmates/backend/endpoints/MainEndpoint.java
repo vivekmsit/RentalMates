@@ -4,6 +4,7 @@ import com.example.vivek.rentalmates.backend.entities.AggregateData;
 import com.example.vivek.rentalmates.backend.entities.ExpenseData;
 import com.example.vivek.rentalmates.backend.entities.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.entities.FlatInfo;
+import com.example.vivek.rentalmates.backend.entities.RegistrationRecord;
 import com.example.vivek.rentalmates.backend.entities.Request;
 import com.example.vivek.rentalmates.backend.entities.UserProfile;
 import com.google.api.server.spi.config.Api;
@@ -42,6 +43,7 @@ public class MainEndpoint {
         ObjectifyService.register(ExpenseGroup.class);
         ObjectifyService.register(UserProfile.class);
         ObjectifyService.register(Request.class);
+        ObjectifyService.register(RegistrationRecord.class);
     }
 
     /**
@@ -100,6 +102,7 @@ public class MainEndpoint {
         return data;
     }
 
+
     /**
      * Request to join a given entity.
      */
@@ -107,38 +110,48 @@ public class MainEndpoint {
             name = "requestJoinExistingEntity",
             path = "requestJoinExistingEntity",
             httpMethod = ApiMethod.HttpMethod.POST)
-    public Request requestJoinExistingEntity(@Named("entityType") String entityType, @Named("entityName") String entityName, @Named("userProfileId") Long userProfileId) throws IOException, NotFoundException {
+    public Request requestJoinExistingEntity(@Named("entityType") String entityName, @Named("entityName") String entityType, @Named("userProfileId") Long userProfileId) throws IOException, NotFoundException {
         Request request = new Request();
+        UserProfile requesterUserProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
+        if (requesterUserProfile == null) {
+            request.setStatus("INVALID_USER");
+            return request;
+        }
         switch (entityType) {
             case "FlatInfo":
-                request = requestRegisterWithOtherFlat(entityName, userProfileId);
+                FlatInfo flatInfo = ofy().load().type(FlatInfo.class).filter("flatName", entityName).first().now();
+                if (flatInfo == null) {
+                    request.setStatus("ENTITY_NOT_AVAILABLE");
+                    return request;
+                }
+                if (requesterUserProfile.getFlatIds().contains(flatInfo.getFlatId())) {
+                    request.setStatus("ALREADY_MEMBER");
+                    return request;
+                }
+                request.setRequestedEntity(flatInfo.getFlatId());
+                request.setRequestProviderId(flatInfo.getOwnerId());
                 break;
             case "ExpenseGroup":
-                request = requestJoinExistingExpenseGroup(entityName, userProfileId);
+                ExpenseGroup expenseGroup = ofy().load().type(ExpenseGroup.class).filter("name", entityName).first().now();
+                if (expenseGroup == null) {
+                    request.setStatus("ENTITY_NOT_AVAILABLE");
+                    return request;
+                }
+                if (requesterUserProfile.getExpenseGroupIds().contains(expenseGroup.getId())) {
+                    request.setStatus("ALREADY_MEMBER");
+                    return request;
+                }
+                request.setRequestedEntity(expenseGroup.getId());
+                request.setRequestProviderId(expenseGroup.getOwnerId());
                 break;
             default:
-                break;
+                request.setStatus("UNKNOWN_ENTITY");
+                return request;
         }
-        return request;
-    }
-
-    public Request requestRegisterWithOtherFlat(@Named("flatName") String flatName, @Named("userProfileId") Long userProfileId) throws IOException {
-        FlatInfo flatInfo = ofy().load().type(FlatInfo.class).filter("flatName", flatName).first().now();
-
-        if (flatInfo == null) {
-            Request request = new Request();
-            request.setRequestResult("ENTITY_NOT_AVAILABLE");
-            return request;
-        }
-
-        UserProfile requesterUserProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
-        Request request = new Request();
         request.setRequesterId(userProfileId);
-        request.setRequestedEntity(flatInfo.getFlatId());
-        request.setRequestProviderId(flatInfo.getOwnerId());
         request.setStatus("PENDING");
-        request.setEntityType("FlatInfo");
-        request.setRequestedEntityName(flatName);
+        request.setEntityType(entityType);
+        request.setRequestedEntityName(entityName);
         request.setRequesterName(requesterUserProfile.getUserName());
         ofy().save().entity(request).now();
 
@@ -150,52 +163,9 @@ public class MainEndpoint {
         //send notification to requestProvider
         List<Long> userIds = new ArrayList<>();
         userIds.add(request.getRequestProviderId());
-        String message = "NEW_REQUEST";
+        String message = requesterUserProfile.getUserName() + " has requested to join " + entityType + ": " + entityName;
         ExpenseGroupEndpoint.sendMessage(userIds, message);
-
-        return request;
-    }
-
-    /**
-     * Request to join existing {@code ExpenseGroup}.
-     */
-    @ApiMethod(
-            name = "requestJoinExistingExpenseGroup",
-            path = "requestJoinExistingExpenseGroup",
-            httpMethod = ApiMethod.HttpMethod.POST)
-    public Request requestJoinExistingExpenseGroup(@Named("expenseGroupName") String expenseGroupName, @Named("userProfileId") Long userProfileId) throws NotFoundException, IOException {
-        ExpenseGroup expenseGroup = ofy().load().type(ExpenseGroup.class).filter("expenseGroupName", expenseGroupName).first().now();
-
-        if (expenseGroup == null) {
-            Request request = new Request();
-            request.setRequestResult("ENTITY_NOT_AVAILABLE");
-            return request;
-        }
-        UserProfile requesterUserProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
-
-        //create Request
-        Request request = new Request();
-        request.setRequesterId(userProfileId);
-        request.setRequestedEntity(expenseGroup.getId());
-        request.setRequestProviderId(expenseGroup.getOwnerId());
-        request.setStatus("PENDING");
-        request.setEntityType("FlatInfo");
-        request.setRequestedEntityName(expenseGroupName);
-        request.setRequesterName(requesterUserProfile.getUserName());
-        ofy().save().entity(request).now();
-
-        //Add request Id to requestProvider's requestIds list
-        UserProfile userProfile = ofy().load().type(UserProfile.class).id(request.getRequestProviderId()).now();
-        userProfile.addRequestId(request.getId());
-        ofy().save().entity(userProfile).now();
-
-        //send notification to requestProvider
-        List<Long> userIds = new ArrayList<>();
-        userIds.add(request.getRequestProviderId());
-        String message = "NEW_REQUEST";
-        ExpenseGroupEndpoint.sendMessage(userIds, message);
-
-        return request;
+        return ofy().load().entity(request).now();
     }
 
     /**
@@ -240,6 +210,7 @@ public class MainEndpoint {
                 acceptRequestRegisterWithOtherFlat(request.getRequestedEntity(), request.getRequesterId());
                 break;
             case "ExpenseGroup":
+                acceptRequestJoinExistingExpenseGroup(request.getRequestedEntity(), request.getRequesterId());
                 break;
             default:
                 break;
