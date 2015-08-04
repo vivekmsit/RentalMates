@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -24,10 +25,13 @@ import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.adapters.FlatListViewAdapter;
 import com.example.vivek.rentalmates.backend.mainApi.model.Request;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
+import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.interfaces.OnFlatInfoListReceiver;
+import com.example.vivek.rentalmates.interfaces.OnRegisterNewFlatReceiver;
 import com.example.vivek.rentalmates.interfaces.OnRequestJoinExistingEntityReceiver;
 import com.example.vivek.rentalmates.tasks.GetFlatInfoListAsyncTask;
+import com.example.vivek.rentalmates.tasks.RegisterNewFlatAsyncTask;
 import com.example.vivek.rentalmates.tasks.RequestAsyncTask;
 
 import java.util.ArrayList;
@@ -43,6 +47,7 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
     private TextView manageFlatsTextView;
     private Button joinExistingFlatButton;
     private Button registerNewFlatButton;
+    private SharedPreferences prefs;
     private SwipeRefreshLayout swipeRefreshLayout;
     private FlatListViewAdapter flatListViewAdapter;
 
@@ -84,6 +89,8 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
                 registerNewFlat();
             }
         });
+
+        prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
 
         updateView();
         return layout;
@@ -160,7 +167,85 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
     }
 
     public void registerNewFlat() {
+        DialogFragment registerNewFlatDialog = new android.support.v4.app.DialogFragment() {
+            private ProgressDialog progressDialog;
+            private EditText flatNameEditText;
+            private EditText addressEditText;
+            private EditText cityEditText;
+            private EditText totalSecurityAmount;
+            private EditText totalRentAmount;
 
+            @NonNull
+            @Override
+            public Dialog onCreateDialog(Bundle savedInstanceState) {
+                progressDialog = new ProgressDialog(getActivity());
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog.setIndeterminate(true);
+
+                LayoutInflater inflater = getActivity().getLayoutInflater();
+                View view = inflater.inflate(R.layout.dialog_fragment_register_new_flat, null);
+
+                flatNameEditText = (EditText) view.findViewById(R.id.flatNameEditText);
+                addressEditText = (EditText) view.findViewById(R.id.addressEditText);
+                cityEditText = (EditText) view.findViewById(R.id.cityEditText);
+                totalSecurityAmount = (EditText) view.findViewById(R.id.securityAmountEditText);
+                totalRentAmount = (EditText) view.findViewById(R.id.rentAmountEditText);
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                alertDialogBuilder.setTitle("Fill New Flat Details");
+                alertDialogBuilder.setView(view);
+                alertDialogBuilder.setPositiveButton("Register New Flat", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo flatInfo = new com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo();
+                        flatInfo.setFlatName(flatNameEditText.getText().toString());
+                        flatInfo.setOwnerEmailId(prefs.getString(AppConstants.EMAIL_ID, "no_email_id"));
+                        flatInfo.setOwnerId(prefs.getLong(AppConstants.USER_PROFILE_ID, 0));
+
+                        //below logic will be changed later
+                        flatInfo.setFlatAddress(addressEditText.getText().toString());
+                        flatInfo.setRentAmount(Integer.parseInt(totalRentAmount.getText().toString()));
+                        flatInfo.setSecurityAmount(Integer.parseInt(totalSecurityAmount.getText().toString()));
+
+                        RegisterNewFlatAsyncTask task = new RegisterNewFlatAsyncTask(context, flatInfo);
+                        task.setOnRegisterNewFlatReceiver(new OnRegisterNewFlatReceiver() {
+                            @Override
+                            public void onRegisterNewFlatSuccessful(com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo flatInfo) {
+                                //registerButtonClicked = false;
+                                progressDialog.cancel();
+                                if (flatInfo == null) {
+                                    Toast.makeText(context, "Flat with given name already registered. \n Please enter different name", Toast.LENGTH_LONG).show();
+                                    return;
+                                }
+                                Log.d(TAG, "FlatInfo uploaded");
+                                Toast.makeText(context, "New Flat Registered", Toast.LENGTH_SHORT).show();
+
+                                //getCompleteUserInformation();
+                            }
+
+                            @Override
+                            public void onRegisterNewFlatFailed() {
+                                //registerButtonClicked = false;
+                                progressDialog.cancel();
+                            }
+                        });
+                        task.execute();
+                        progressDialog.setMessage("Registering new flat");
+                        progressDialog.show();
+                    }
+                });
+                alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d(TAG, "Cancel: onClick");
+                        dialog.dismiss();
+                    }
+                });
+                return alertDialogBuilder.create();
+            }
+        };
+        registerNewFlatDialog.show(getFragmentManager(), "Fragment");
     }
 
     @Override
