@@ -198,12 +198,12 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo flatInfo = new com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo();
+                        
                         flatInfo.setFlatName(flatNameEditText.getText().toString());
                         flatInfo.setOwnerEmailId(prefs.getString(AppConstants.EMAIL_ID, "no_email_id"));
                         flatInfo.setOwnerId(prefs.getLong(AppConstants.USER_PROFILE_ID, 0));
-
-                        //below logic will be changed later
                         flatInfo.setFlatAddress(addressEditText.getText().toString());
+                        flatInfo.setCity(cityEditText.getText().toString());
                         flatInfo.setRentAmount(Integer.parseInt(totalRentAmount.getText().toString()));
                         flatInfo.setSecurityAmount(Integer.parseInt(totalSecurityAmount.getText().toString()));
 
