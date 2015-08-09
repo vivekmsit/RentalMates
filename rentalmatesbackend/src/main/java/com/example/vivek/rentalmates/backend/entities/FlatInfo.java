@@ -51,6 +51,7 @@ public class FlatInfo {
     private Long ownerId;
     private Long expenseGroupId;
     private int numberOfUsers;
+    private int numberOfContacts;
     private int updateCount;
     private int securityAmount;
     private int rentAmount;
@@ -58,6 +59,7 @@ public class FlatInfo {
     private String flatAddress;
     private double[][] vertices;
     private List<Long> memberIds = new ArrayList<>();
+    private List<Long> contactIds = new ArrayList<>();
     private List<BlobKey> flatPicturesBlobKeys;
 
     @Serialize
@@ -71,6 +73,7 @@ public class FlatInfo {
     public FlatInfo() {
         date = new Date();
         numberOfUsers = 0;
+        numberOfContacts = 0;
         updateCount = -1;
     }
 
@@ -148,8 +151,30 @@ public class FlatInfo {
     }
 
     public void removeMemberId(Long id) {
-        memberIds.remove(id);
-        numberOfUsers--;
+        if (memberIds.contains(id)) {
+            memberIds.remove(id);
+            numberOfUsers--;
+        }
+    }
+
+    public List<Long> getContactIds() {
+        return contactIds;
+    }
+
+    public void setContactIds(List<Long> contactIds) {
+        this.contactIds = contactIds;
+    }
+
+    public void addContactId(Long id) {
+        contactIds.add(id);
+        numberOfContacts++;
+    }
+
+    public void deleteContactId(Long id) {
+        if (contactIds.contains(id)) {
+            contactIds.remove(id);
+            numberOfContacts--;
+        }
     }
 
     public int getNumberOfUsers() {

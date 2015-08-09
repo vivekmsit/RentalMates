@@ -1,6 +1,7 @@
 package com.example.vivek.rentalmates.backend.endpoints;
 
 import com.example.vivek.rentalmates.backend.entities.AggregateData;
+import com.example.vivek.rentalmates.backend.entities.Contact;
 import com.example.vivek.rentalmates.backend.entities.ExpenseData;
 import com.example.vivek.rentalmates.backend.entities.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.entities.FlatInfo;
@@ -43,6 +44,7 @@ public class MainEndpoint {
         ObjectifyService.register(ExpenseGroup.class);
         ObjectifyService.register(UserProfile.class);
         ObjectifyService.register(Request.class);
+        ObjectifyService.register(Contact.class);
         ObjectifyService.register(RegistrationRecord.class);
     }
 
@@ -300,5 +302,43 @@ public class MainEndpoint {
                 ofy().save().entity(finalExpenseGroup).now();
             }
         }
+    }
+
+    /**
+     * Add a new contact to a given flat.
+     */
+    @ApiMethod(
+            name = "addContact",
+            path = "addContact",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public Contact addContact(Contact contact, @Named("requesterId") Long requesterId) throws IOException {
+        ofy().save().entity(contact).now();
+        contact = ofy().load().entity(contact).now();
+        FlatInfo flatInfo = ofy().load().type(FlatInfo.class).id(contact.getFlatId()).now();
+        flatInfo.addContactId(contact.getId());
+        ofy().save().entity(flatInfo).now();
+        contact.setRequestResult("SUCCESSFUL");
+        return contact;
+    }
+
+    /**
+     * Returns List of {@code Contact} for a given {@code FlatInfo}.
+     */
+    @ApiMethod(
+            name = "getContactList",
+            path = "getContactList",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public List<Contact> getContactList(@Named("id") Long flatId, @Named("flatId") Long userProfileId) throws NotFoundException {
+        UserProfile userProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
+        if (!userProfile.getFlatIds().contains(flatId)) {
+            return null;
+        }
+        FlatInfo flatInfo = ofy().load().type(FlatInfo.class).id(flatId).now();
+        List<Contact> contacts = new ArrayList<>();
+        for (Long contactId : flatInfo.getContactIds()) {
+            Contact contact = ofy().load().type(Contact.class).id(contactId).now();
+            contacts.add(contact);
+        }
+        return contacts;
     }
 }

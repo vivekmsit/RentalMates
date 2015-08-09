@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
+import com.example.vivek.rentalmates.backend.mainApi.model.Contact;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.Request;
@@ -35,6 +36,8 @@ public class AppData implements Serializable {
 
     private List<LocalExpenseData> expenses;
     private List<LocalRequest> requests;
+    private List<LocalContact> contacts;
+
     private HashMap<String, String> profilePicturesPath;
     private HashMap<Long, LocalFlatInfo> flats;
     private HashMap<Long, LocalFlatInfo> availableFlats;
@@ -50,6 +53,7 @@ public class AppData implements Serializable {
     private AppData() {
         expenses = new ArrayList<>();
         requests = new ArrayList<>();
+        contacts = new ArrayList<>();
         profilePicturesPath = new HashMap<>();
         flats = new HashMap<>();
         availableFlats = new HashMap<>();
@@ -63,6 +67,14 @@ public class AppData implements Serializable {
 
     public void setRequests(List<LocalRequest> requests) {
         this.requests = requests;
+    }
+
+    public List<Contact> getContacts() {
+        return LocalContact.convertLocalContactToContact(this.contacts);
+    }
+
+    public void setContacts(List<LocalContact> contacts) {
+        this.contacts = contacts;
     }
 
     public HashMap<Long, LocalUserProfile> getUserProfiles() {
@@ -161,6 +173,11 @@ public class AppData implements Serializable {
         return storeAppData(context);
     }
 
+    public boolean storeContactList(Context context, List<Contact> contacts) {
+        this.contacts = LocalContact.convertContactToLocalContact(contacts);
+        return storeAppData(context);
+    }
+
     public boolean storeExpenseDataList(Context context, List<ExpenseData> expenses) {
         this.expenses = LocalExpenseData.convertExpenseToLocalExpense(expenses);
         return storeAppData(context);
@@ -168,6 +185,13 @@ public class AppData implements Serializable {
 
     public boolean storeRequestList(Context context, List<Request> requests) {
         this.requests = LocalRequest.convertRequestToLocalRequest(requests);
+        return storeAppData(context);
+    }
+
+    public boolean deleteContact(Context context, int position) {
+        if (this.contacts.size() != 0) {
+            this.contacts.remove(position);
+        }
         return storeAppData(context);
     }
 
@@ -182,6 +206,16 @@ public class AppData implements Serializable {
         if (this.requests.size() != 0) {
             this.requests.remove(position);
         }
+        return storeAppData(context);
+    }
+
+    public boolean addLocalContact(Context context, Contact contact) {
+        LocalContact data = new LocalContact();
+        data.setId(contact.getId());
+        data.setContactDetails(contact.getContactDetails());
+        data.setContactNumber(contact.getContactNumber());
+        data.setUploaderId(contact.getUploaderId());
+        this.contacts.add(0, data);
         return storeAppData(context);
     }
 
@@ -260,6 +294,7 @@ public class AppData implements Serializable {
         //Initialize all the variables
         this.expenses = new ArrayList<>();
         this.requests = new ArrayList<>();
+        this.contacts = new ArrayList<>();
         this.userProfiles = new HashMap<>();
         this.flats = new HashMap<>();
         this.availableFlats = new HashMap<>();

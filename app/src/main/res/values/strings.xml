@@ -24,6 +24,11 @@
         <item>reject request</item>
     </string-array>
 
+    <string-array name="contactMenuOptions">
+        <item>delete</item>
+        <item>call</item>
+    </string-array>
+
     <string name="title_activity_my_login">MyLoginActivity</string>
     <string name="title_activity_main_tab">RentalMates</string>
 
