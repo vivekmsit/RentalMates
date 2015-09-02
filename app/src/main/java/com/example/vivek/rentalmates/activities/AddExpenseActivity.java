@@ -2,7 +2,6 @@ package com.example.vivek.rentalmates.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -171,9 +170,7 @@ public class AddExpenseActivity extends AppCompatActivity implements View.OnClic
                                 userProfile.setPayback(totalProfileShare - share);
                             } //end of code for updating of user share
                         }
-                        Intent intent = new Intent(context, MainTabActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        context.startActivity(intent);
+                        finish();
                     }
 
                     @Override

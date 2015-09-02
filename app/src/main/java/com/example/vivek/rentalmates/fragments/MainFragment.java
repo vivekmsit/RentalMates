@@ -17,6 +17,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
     CardView sharedContactsCardView;
     CardView expenseManagerCardView;
+    CardView flatRulesCardView;
     MainTabActivity mainTabActivity;
     Context context;
 
@@ -29,6 +30,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
         sharedContactsCardView = (CardView) layout.findViewById(R.id.shared_contacts_card_view);
         expenseManagerCardView = (CardView) layout.findViewById(R.id.expense_manager_card_view);
+        flatRulesCardView = (CardView) layout.findViewById(R.id.flat_rules_card_view);
 
         sharedContactsCardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,8 +42,14 @@ public class MainFragment extends android.support.v4.app.Fragment {
         expenseManagerCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "To be implemented", Toast.LENGTH_SHORT).show();
                 mainTabActivity.OnFragmentTransactionRequest("ExpenseManager");
+            }
+        });
+
+        flatRulesCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "To be implemented", Toast.LENGTH_SHORT).show();
             }
         });
 

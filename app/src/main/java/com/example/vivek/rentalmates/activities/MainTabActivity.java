@@ -32,6 +32,7 @@ import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.fragments.DevelopersFragment;
 import com.example.vivek.rentalmates.fragments.ExpenseDataListFragment;
+import com.example.vivek.rentalmates.fragments.ExpenseManagerFragment;
 import com.example.vivek.rentalmates.fragments.MainFragment;
 import com.example.vivek.rentalmates.fragments.ManageExpenseGroupsFragment;
 import com.example.vivek.rentalmates.fragments.ManageFlatsFragment;
@@ -368,13 +369,19 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
 
     @Override
     public void OnFragmentTransactionRequest(String requestType) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
         switch (requestType) {
             case "SharedContacts":
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction ft = fragmentManager.beginTransaction();
                 toolbar.setTitle("Shared Contacts");
                 ft.replace(R.id.fragmentFrameLayout, new SharedContactsListFragment());
                 ft.addToBackStack("SharedContactsListFragment");
+                ft.commit();
+                break;
+            case "ExpenseManager":
+                toolbar.setTitle("Expense Manager");
+                ft.replace(R.id.fragmentFrameLayout, new ExpenseManagerFragment());
+                ft.addToBackStack("ExpenseManagerFragment");
                 ft.commit();
                 break;
             default:
@@ -407,9 +414,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
                 fragment = new SearchFlatFragment();
             } else if (position == 2) {
                 fragment = new SearchRoomMateFragment();
-            } /*else if (position == 3) {
-                fragment = new NewsFeedFragment();
-            }*/
+            }
             registeredFragments.put(position, fragment);
             return fragment;
         }
@@ -427,9 +432,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
                 return "Search Flats";
             } else if (position == 2) {
                 return "Search RoomMates";
-            } /*else if (position == 3) {
-                return "Activities";
-            }*/ else {
+            } else {
                 return null;
             }
         }
