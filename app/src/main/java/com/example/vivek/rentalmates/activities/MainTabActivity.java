@@ -32,6 +32,7 @@ import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.fragments.DevelopersFragment;
 import com.example.vivek.rentalmates.fragments.ExpenseDataListFragment;
+import com.example.vivek.rentalmates.fragments.MainFragment;
 import com.example.vivek.rentalmates.fragments.ManageExpenseGroupsFragment;
 import com.example.vivek.rentalmates.fragments.ManageFlatsFragment;
 import com.example.vivek.rentalmates.fragments.NewsFeedFragment;
@@ -40,13 +41,14 @@ import com.example.vivek.rentalmates.fragments.SearchFlatFragment;
 import com.example.vivek.rentalmates.fragments.SearchRoomMateFragment;
 import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.fragments.SharedContactsListFragment;
+import com.example.vivek.rentalmates.interfaces.FragmentTransactionRequestReceiver;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.pkmmte.view.CircularImageView;
 
-public class MainTabActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MainTabActivity extends AppCompatActivity implements FragmentTransactionRequestReceiver, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "MainTabActivity_Debug";
     private static final long DRAWER_CLOSE_DELAY_MS = 250;
@@ -123,7 +125,7 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
             public void onPageSelected(int position) {
                 Log.d(TAG, "onPageSelected " + position);
                 if (position == 0) {
-                    fab.setVisibility(View.VISIBLE);
+                    fab.setVisibility(View.GONE);
                 } else {
                     fab.clearAnimation();
                     fab.setVisibility(View.GONE);
@@ -155,6 +157,7 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
         anim.setInterpolator(new OvershootInterpolator());
         fab.setAnimation(anim);
         fab.animate();
+        fab.setVisibility(View.GONE);
 
         //Initialize TabLayout
         tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -324,10 +327,6 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
                 ft.commit();
                 break;
             case R.id.drawer_item_about:
-                toolbar.setTitle("Shared Contacts");
-                ft.replace(R.id.fragmentFrameLayout, new SharedContactsListFragment());
-                ft.addToBackStack("SharedContactsListFragment");
-                ft.commit();
                 break;
             case R.id.drawer_item_help:
                 break;
@@ -358,13 +357,29 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
 
     public void showFab() {
         if (currentPosition == 0 && backStackCount == 0) {
-            fab.setVisibility(View.VISIBLE);
+            fab.setVisibility(View.GONE);
         }
     }
 
     public void hideFab() {
         fab.clearAnimation();
         fab.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void OnFragmentTransactionRequest(String requestType) {
+        switch (requestType) {
+            case "SharedContacts":
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction ft = fragmentManager.beginTransaction();
+                toolbar.setTitle("Shared Contacts");
+                ft.replace(R.id.fragmentFrameLayout, new SharedContactsListFragment());
+                ft.addToBackStack("SharedContactsListFragment");
+                ft.commit();
+                break;
+            default:
+                break;
+        }
     }
 
     public class MyAdapter extends FragmentStatePagerAdapter {
@@ -379,41 +394,42 @@ public class MainTabActivity extends AppCompatActivity implements GoogleApiClien
         public Fragment getItem(int position) {
             Fragment fragment = null;
             if (position == 0) {
-                fragment = new ExpenseDataListFragment();
+                /*fragment = new ExpenseDataListFragment();
                 if (newExpenseAvailable) {
                     Log.d(TAG, "new expense available");
                     Bundle bundle = new Bundle();
                     bundle.putInt("newExpenseAvailable", 1);
                     fragment.setArguments(bundle);
                     newExpenseAvailable = false;
-                }
+                }*/
+                fragment = new MainFragment();
             } else if (position == 1) {
                 fragment = new SearchFlatFragment();
             } else if (position == 2) {
                 fragment = new SearchRoomMateFragment();
-            } else if (position == 3) {
+            } /*else if (position == 3) {
                 fragment = new NewsFeedFragment();
-            }
+            }*/
             registeredFragments.put(position, fragment);
             return fragment;
         }
 
         @Override
         public int getCount() {
-            return 4;
+            return 3;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             if (position == 0) {
-                return "Expenses";
+                return "Home";
             } else if (position == 1) {
                 return "Search Flats";
             } else if (position == 2) {
                 return "Search RoomMates";
-            } else if (position == 3) {
+            } /*else if (position == 3) {
                 return "Activities";
-            } else {
+            }*/ else {
                 return null;
             }
         }
