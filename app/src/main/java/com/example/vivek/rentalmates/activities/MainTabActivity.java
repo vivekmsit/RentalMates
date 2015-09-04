@@ -305,12 +305,6 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
                 ft.addToBackStack("ManageFlatsFragment");
                 ft.commit();
                 break;
-            case R.id.drawer_item_expense_groups:
-                toolbar.setTitle("Expense Groups");
-                ft.replace(R.id.fragmentFrameLayout, new ManageExpenseGroupsFragment());
-                ft.addToBackStack("ManageExpenseGroupsFragment");
-                ft.commit();
-                break;
             case R.id.drawer_item_account_settings:
                 intent = new Intent(this, MyLoginActivity.class);
                 this.startActivity(intent);

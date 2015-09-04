@@ -14,10 +14,6 @@
             android:icon="@drawable/ic_action_person_light"
             android:title="Flats" />
         <item
-            android:id="@+id/drawer_item_expense_groups"
-            android:icon="@drawable/ic_action_person_light"
-            android:title="Expense Groups" />
-        <item
             android:id="@+id/drawer_item_account_settings"
             android:icon="@drawable/ic_action_settings_light"
             android:title="Account Settings" />
