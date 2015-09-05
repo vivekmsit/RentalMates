@@ -1,9 +1,15 @@
 package com.example.vivek.rentalmates.fragments;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,19 +19,26 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.adapters.ExpenseListViewAdapter;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
+import com.example.vivek.rentalmates.backend.mainApi.model.Request;
 import com.example.vivek.rentalmates.interfaces.OnExpenseListReceiver;
 import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.data.LocalExpenseGroup;
+import com.example.vivek.rentalmates.interfaces.OnRequestJoinExistingEntityReceiver;
 import com.example.vivek.rentalmates.tasks.GetAllExpenseListAsyncTask;
+import com.example.vivek.rentalmates.tasks.RequestAsyncTask;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -66,6 +79,12 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
         } else {
             payBackAmountView.setText("Payback Amount: NA");
         }
+        payBackAmountView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDistributionDialog();
+            }
+        });
 
         //Initialize expense Group Text View
         expenseGroupNameView = (TextView) layout.findViewById(R.id.expenseGroupName);
@@ -144,5 +163,62 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
             }
         });
         task.execute();
+    }
+
+    public void openDistributionDialog() {
+        DialogFragment expenseDistributionDialog = new android.support.v4.app.DialogFragment() {
+            private ProgressDialog progressDialog;
+            private TextView expenseDistributionTextView;
+
+            @NonNull
+            @Override
+            public Dialog onCreateDialog(Bundle savedInstanceState) {
+                progressDialog = new ProgressDialog(getActivity());
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog.setIndeterminate(true);
+
+                LayoutInflater inflater = getActivity().getLayoutInflater();
+                View view = inflater.inflate(R.layout.dialog_expense_distribution, null);
+                expenseDistributionTextView = (TextView) view.findViewById(R.id.expenseDistributionTextView);
+
+                LocalExpenseGroup localExpenseGroup = appData.getLocalExpenseGroup(prefs.getLong(AppConstants.FLAT_EXPENSE_GROUP_ID, 0));
+                Map<Long, Long> membersData = localExpenseGroup.getMembersData();
+                Set<Long> memberIds = localExpenseGroup.getMembersData().keySet();
+                String finalData = "";
+                for (Long memberId : memberIds) {
+                    String name = appData.getLocalUserProfile(memberId).getUserName();
+                    Long share = membersData.get(memberId);
+                    if (share > 0) {
+                        finalData = finalData + "\n" + name + " will pay Rs. " + share.toString() + " to others";
+                    } else if (share < 0) {
+                        finalData = finalData + "\n" + name + " will get Rs. " + share.toString() + " from others";
+                    } else {
+                        finalData = finalData + "\n" + name + " will not pay to anyone";
+                    }
+                }
+                expenseDistributionTextView.setText(finalData);
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                alertDialogBuilder.setTitle("Expense Distribution");
+                alertDialogBuilder.setView(view);
+                alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d(TAG, "Cancel: onClick");
+                        dialog.dismiss();
+                    }
+                });
+                alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d(TAG, "Cancel: onClick");
+                        dialog.dismiss();
+                    }
+                });
+                return alertDialogBuilder.create();
+            }
+        };
+        expenseDistributionDialog.show(getFragmentManager(), "Fragment");
     }
 }
