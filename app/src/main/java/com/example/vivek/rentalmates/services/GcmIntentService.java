@@ -12,6 +12,7 @@ import android.util.Log;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.activities.FirstActivity;
+import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.receivers.GcmBroadcastReceiver;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
@@ -21,9 +22,11 @@ import java.util.logging.Logger;
 public class GcmIntentService extends IntentService {
 
     private static final String TAG = "GcmIntent_Debug";
+    private AppData appData;
 
     public GcmIntentService() {
         super("GcmIntentService");
+        appData = AppData.getInstance();
     }
 
     @Override
@@ -39,6 +42,11 @@ public class GcmIntentService extends IntentService {
             // Since we're not using two way messaging, this is all we really to check for
             if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 Logger.getLogger("GCM_RECEIVED").log(Level.INFO, extras.toString());
+                for (String key : appData.getGcmTypes()) {
+                    if (extras.containsKey(key)) {
+                        appData.addGcmData(key, extras.getString(key), getApplicationContext());
+                    }
+                }
                 String message = extras.getString("message");
                 showNotification(message);
             }

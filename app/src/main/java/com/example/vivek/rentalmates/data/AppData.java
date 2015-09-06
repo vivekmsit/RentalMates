@@ -37,12 +37,14 @@ public class AppData implements Serializable {
     private List<LocalExpenseData> expenses;
     private List<LocalRequest> requests;
     private List<LocalContact> contacts;
+    private List<String> gcmTypes;
 
     private HashMap<String, String> profilePicturesPath;
     private HashMap<Long, LocalFlatInfo> flats;
     private HashMap<Long, LocalFlatInfo> availableFlats;
     private HashMap<Long, LocalUserProfile> userProfiles;
     private HashMap<Long, LocalExpenseGroup> expenseGroups;
+    private HashMap<String, String> gcmData;
 
     private static AppData appDataInstance = new AppData();
 
@@ -54,11 +56,40 @@ public class AppData implements Serializable {
         expenses = new ArrayList<>();
         requests = new ArrayList<>();
         contacts = new ArrayList<>();
+        gcmTypes = new ArrayList<>();
+        gcmTypes.add("NEW_EXPENSE_DATA");
+        gcmTypes.add("NEW_FLAT_USER");
+        gcmTypes.add("NEW_EXPENSE_GROUP_USER");
+        gcmTypes.add("NEW_REQUEST");
+        gcmTypes.add("message");
         profilePicturesPath = new HashMap<>();
         flats = new HashMap<>();
         availableFlats = new HashMap<>();
         userProfiles = new HashMap<>();
         expenseGroups = new HashMap<>();
+        gcmData = new HashMap<>();
+    }
+
+    public List<String> getGcmTypes() {
+        return gcmTypes;
+    }
+
+    public void setGcmTypes(List<String> gcmTypes) {
+        this.gcmTypes = gcmTypes;
+    }
+
+    public HashMap<String, String> getGcmData() {
+        return gcmData;
+    }
+
+    public boolean addGcmData(String key, String value, Context context) {
+        this.gcmData.put(key, value);
+        return storeAppData(context);
+    }
+
+    public boolean clearGcmData(Context context) {
+        this.gcmData.clear();
+        return storeAppData(context);
     }
 
     public List<Request> getRequests() {
@@ -291,14 +322,22 @@ public class AppData implements Serializable {
             return false;
         }
 
-        //Initialize all the variables
-        this.expenses = new ArrayList<>();
-        this.requests = new ArrayList<>();
-        this.contacts = new ArrayList<>();
-        this.userProfiles = new HashMap<>();
-        this.flats = new HashMap<>();
-        this.availableFlats = new HashMap<>();
-        this.expenseGroups = new HashMap<>();
+        //Initialize all the variables (code copied from constructor)
+        expenses = new ArrayList<>();
+        requests = new ArrayList<>();
+        contacts = new ArrayList<>();
+        gcmTypes = new ArrayList<>();
+        gcmTypes.add("NEW_EXPENSE_DATA");
+        gcmTypes.add("NEW_FLAT_USER");
+        gcmTypes.add("NEW_EXPENSE_GROUP_USER");
+        gcmTypes.add("NEW_REQUEST");
+        gcmTypes.add("message");
+        profilePicturesPath = new HashMap<>();
+        flats = new HashMap<>();
+        availableFlats = new HashMap<>();
+        userProfiles = new HashMap<>();
+        expenseGroups = new HashMap<>();
+        gcmData = new HashMap<>();
 
         Toast.makeText(context, "AppData cleared", Toast.LENGTH_LONG).show();
         Log.d(TAG, "AppData cleared");

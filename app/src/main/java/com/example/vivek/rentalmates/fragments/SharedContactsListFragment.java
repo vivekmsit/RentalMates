@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.adapters.ContactListViewAdapter;
@@ -143,6 +144,14 @@ public class SharedContactsListFragment extends android.support.v4.app.Fragment 
                 alertDialogBuilder.setPositiveButton("Add Contact", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        if (contactDetailsEditText.getText().toString().trim().matches("")) {
+                            Toast.makeText(context, "No contact details entered", Toast.LENGTH_LONG).show();
+                            return;
+                        } else if (contactNumberEditText.getText().toString().trim().matches("")) {
+                            Toast.makeText(context, "No contact number entered", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
                         Contact contact = new Contact();
                         contact.setContactDetails(contactDetailsEditText.getText().toString());
                         contact.setContactNumber(Long.parseLong(contactNumberEditText.getText().toString()));

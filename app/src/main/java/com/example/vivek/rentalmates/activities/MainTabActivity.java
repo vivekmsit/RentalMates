@@ -240,6 +240,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         if (pendingIntent.getBooleanExtra("notification", false) && pendingIntent.getBooleanExtra("newExpenseAvailable", false)) {
             newExpenseAvailable = true;
         }
+        Toast.makeText(this, "gcm values: " + appData.getGcmData().values().toString(), Toast.LENGTH_LONG).show();
     }
 
     @Override
