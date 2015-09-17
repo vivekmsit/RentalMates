@@ -29,6 +29,17 @@
             android:text="Delete Remote Data"
             android:textColor="@color/white" />
 
+        <Button
+            android:id="@+id/testButton"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/orange"
+            android:gravity="center"
+            android:text="Test"
+            android:textColor="@color/white" />
+
     </RelativeLayout>
 
 </FrameLayout>
