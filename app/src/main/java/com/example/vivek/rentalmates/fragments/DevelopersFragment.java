@@ -169,14 +169,10 @@ public class DevelopersFragment extends android.support.v4.app.Fragment {
             private boolean currentLocationUpdated;
 
 
-            private void makeUseOfNewLocation(Location location) {
-                currentLatitude = location.getLatitude();
-                currentLongitude = location.getLongitude();
+            private void makeUseOfNewLocation() {
                 // Updates the location and zoom of the MapView
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(currentLatitude, currentLongitude), (float) 17.23);
                 map.animateCamera(cameraUpdate);
-                //LatLng position = new LatLng(currentLatitude, currentLongitude);
-                //Marker marker = map.addMarker(new MarkerOptions().position(position));
             }
 
             @Override
@@ -221,8 +217,10 @@ public class DevelopersFragment extends android.support.v4.app.Fragment {
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(currentLatitude, currentLongitude), (float) 17.23);
                 map.animateCamera(cameraUpdate);
 
+                //map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
                 //LatLng ll = map.getCameraPosition().target;
                 //double zoom = map.getCameraPosition().zoom;
+                //Marker marker = map.addMarker(new MarkerOptions().position(new LatLng(currentLatitude, currentLongitude)));
 
                 // Acquire a reference to the system Location Manager
                 LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
@@ -233,8 +231,10 @@ public class DevelopersFragment extends android.support.v4.app.Fragment {
                     locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new android.location.LocationListener() {
                         @Override
                         public void onLocationChanged(Location location) {
+                            currentLatitude = location.getLatitude();
+                            currentLongitude = location.getLongitude();
                             if (!currentLocationUpdated) {
-                                makeUseOfNewLocation(location);
+                                makeUseOfNewLocation();
                                 currentLocationUpdated = true;
                             }
                         }
