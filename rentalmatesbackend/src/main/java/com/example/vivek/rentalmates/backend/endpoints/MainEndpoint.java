@@ -361,34 +361,64 @@ public class MainEndpoint {
             Contact contact = ofy().load().type(Contact.class).id(contactId).now();
             contacts.add(contact);
         }
-        sendMail();
+        sendExpenseDataAsMail(userProfileId);
         return contacts;
     }
 
-    private void sendMail() {
+    private void sendExpenseDataAsMail(Long userProfileId) {
+        UserProfile userProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
-        String msgBody = "Hi.. Message from rental mates backend";
+        String msgBody = "All Expenses";
         WritableWorkbook workbook;
-        ByteArrayOutputStream byteArrayOutputStream;
         byte[] attachmentData;
 
         try {
-            byteArrayOutputStream = new ByteArrayOutputStream();
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             workbook = Workbook.createWorkbook(byteArrayOutputStream);
-            WritableSheet sheet = workbook.createSheet("First Sheet", 0);
-            Label label1 = new Label(0, 0, "First label record");
-            sheet.addCell(label1);
-            Label label2 = new Label(0, 1, "Second label record");
-            sheet.addCell(label2);
+            for (Long expenseGroupId : userProfile.getExpenseGroupIds()) {
+                ExpenseGroup expenseGroup = ofy().load().type(ExpenseGroup.class).id(expenseGroupId).now();
+                WritableSheet sheet = workbook.createSheet(expenseGroup.getName(), 0);
+                sheet.addCell(new Label(0, 0, "ExpenseGroup: "));
+                sheet.addCell(new Label(1, 0, expenseGroup.getName()));
+                sheet.addCell(new Label(0, 1, "Sl. No."));
+                sheet.addCell(new Label(1, 1, "Description"));
+                sheet.addCell(new Label(2, 1, "Uploaded By"));
+                sheet.addCell(new Label(3, 1, "Date"));
+                int rowNumber = 4;
+                int numberOfMembers = expenseGroup.getNumberOfMembers();
+                List<Long> memberIds = new ArrayList<>();
+                int count = 0;
+                UserProfile tempUserProfile;
+                for (Long memberId : expenseGroup.getMembersData().keySet()) {
+                    tempUserProfile = ofy().load().type(UserProfile.class).id(memberId).now();
+                    memberIds.add(count, memberId);
+                    sheet.addCell(new Label(rowNumber + count, 1, tempUserProfile.getUserName()));
+                    count++;
+                }
+                int currentRow = 2;
+                for (Long expenseDataId : expenseGroup.getExpenseDataIds()) {
+                    ExpenseData expenseData = ofy().load().type(ExpenseData.class).id(expenseDataId).now();
+                    sheet.addCell(new Label(0, currentRow, String.valueOf(currentRow - 1)));
+                    sheet.addCell(new Label(1, currentRow, expenseData.getDescription()));
+                    sheet.addCell(new Label(2, currentRow, expenseData.getUserName()));
+                    sheet.addCell(new Label(3, currentRow, expenseData.getDate().toString()));
+                    for (int j = 0; j < numberOfMembers; j++) {
+                        Long userId = memberIds.get(j);
+                        Long amount = expenseData.getExpenseValues().get(userId);
+                        sheet.addCell(new Label(4 + j, currentRow, amount.toString()));
+                    }
+                    currentRow++;
+                }
+            }
             workbook.write();
             workbook.close();
-            attachmentData = byteArrayOutputStream.toByteArray();
 
+            attachmentData = byteArrayOutputStream.toByteArray();
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress("vivekmsit@gmail.com", "RentalMates"));
             message.addRecipient(Message.RecipientType.TO,
-                    new InternetAddress("vivekmsit1@gmail.com", "Mr. Vivek Sharma"));
+                    new InternetAddress(userProfile.getEmailId(), userProfile.getUserName()));
             message.setSubject("RentalMates: Testing Mail feature");
             message.setText(msgBody);
 
