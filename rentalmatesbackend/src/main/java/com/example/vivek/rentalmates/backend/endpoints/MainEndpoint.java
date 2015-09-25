@@ -14,12 +14,34 @@ import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.response.NotFoundException;
 import com.googlecode.objectify.ObjectifyService;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.inject.Named;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+
+import jxl.Workbook;
+import jxl.write.Label;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+import jxl.write.WriteException;
+import jxl.write.biff.RowsExceededException;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
@@ -339,6 +361,59 @@ public class MainEndpoint {
             Contact contact = ofy().load().type(Contact.class).id(contactId).now();
             contacts.add(contact);
         }
+        sendMail();
         return contacts;
+    }
+
+    private void sendMail() {
+        Properties props = new Properties();
+        Session session = Session.getDefaultInstance(props, null);
+        String msgBody = "Hi.. Message from rental mates backend";
+        WritableWorkbook workbook;
+        ByteArrayOutputStream byteArrayOutputStream;
+        byte[] attachmentData;
+
+        try {
+            byteArrayOutputStream = new ByteArrayOutputStream();
+            workbook = Workbook.createWorkbook(byteArrayOutputStream);
+            WritableSheet sheet = workbook.createSheet("First Sheet", 0);
+            Label label1 = new Label(0, 0, "First label record");
+            sheet.addCell(label1);
+            Label label2 = new Label(0, 1, "Second label record");
+            sheet.addCell(label2);
+            workbook.write();
+            workbook.close();
+            attachmentData = byteArrayOutputStream.toByteArray();
+
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("vivekmsit@gmail.com", "RentalMates"));
+            message.addRecipient(Message.RecipientType.TO,
+                    new InternetAddress("vivekmsit1@gmail.com", "Mr. Vivek Sharma"));
+            message.setSubject("RentalMates: Testing Mail feature");
+            message.setText(msgBody);
+
+            Multipart mp = new MimeMultipart();
+            MimeBodyPart attachment = new MimeBodyPart();
+            InputStream attachmentDataStream = new ByteArrayInputStream(attachmentData);
+            attachment.setFileName("Expenses.xls");
+            attachment.setContent(attachmentDataStream, "application/xls");
+            mp.addBodyPart(attachment);
+
+            message.setContent(mp);
+            Transport.send(message);
+
+        } catch (AddressException e) {
+            e.printStackTrace();
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (RowsExceededException e) {
+            e.printStackTrace();
+        } catch (WriteException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
