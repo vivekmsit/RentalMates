@@ -37,7 +37,11 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 import jxl.Workbook;
+import jxl.format.Alignment;
+import jxl.format.Colour;
 import jxl.write.Label;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
@@ -379,12 +383,20 @@ public class MainEndpoint {
             for (Long expenseGroupId : userProfile.getExpenseGroupIds()) {
                 ExpenseGroup expenseGroup = ofy().load().type(ExpenseGroup.class).id(expenseGroupId).now();
                 WritableSheet sheet = workbook.createSheet(expenseGroup.getName(), 0);
-                sheet.addCell(new Label(0, 0, "ExpenseGroup: "));
-                sheet.addCell(new Label(1, 0, expenseGroup.getName()));
-                sheet.addCell(new Label(0, 1, "Sl. No."));
-                sheet.addCell(new Label(1, 1, "Description"));
-                sheet.addCell(new Label(2, 1, "Uploaded By"));
-                sheet.addCell(new Label(3, 1, "Date"));
+                WritableFont headingFont = new WritableFont(WritableFont.ARIAL, 12, WritableFont.BOLD, false);
+                WritableFont normalFont = new WritableFont(WritableFont.ARIAL, 10, WritableFont.NO_BOLD, false);
+                WritableCellFormat headingFormat = new WritableCellFormat(headingFont);
+                headingFormat.setBackground(Colour.GREEN);
+                headingFormat.setAlignment(Alignment.CENTRE);
+                WritableCellFormat normalFormat = new WritableCellFormat(normalFont);
+                normalFormat.setBackground(Colour.VERY_LIGHT_YELLOW);
+                normalFormat.setAlignment(Alignment.CENTRE);
+                sheet.addCell(new Label(0, 0, "ExpenseGroup: ", headingFormat));
+                sheet.addCell(new Label(1, 0, expenseGroup.getName(), normalFormat));
+                sheet.addCell(new Label(0, 1, "Sl. No.", headingFormat));
+                sheet.addCell(new Label(1, 1, "Description", headingFormat));
+                sheet.addCell(new Label(2, 1, "Uploaded By", headingFormat));
+                sheet.addCell(new Label(3, 1, "Date", headingFormat));
                 int rowNumber = 4;
                 int numberOfMembers = expenseGroup.getNumberOfMembers();
                 List<Long> memberIds = new ArrayList<>();
@@ -393,20 +405,20 @@ public class MainEndpoint {
                 for (Long memberId : expenseGroup.getMembersData().keySet()) {
                     tempUserProfile = ofy().load().type(UserProfile.class).id(memberId).now();
                     memberIds.add(count, memberId);
-                    sheet.addCell(new Label(rowNumber + count, 1, tempUserProfile.getUserName()));
+                    sheet.addCell(new Label(rowNumber + count, 1, tempUserProfile.getUserName(), headingFormat));
                     count++;
                 }
                 int currentRow = 2;
                 for (Long expenseDataId : expenseGroup.getExpenseDataIds()) {
                     ExpenseData expenseData = ofy().load().type(ExpenseData.class).id(expenseDataId).now();
-                    sheet.addCell(new Label(0, currentRow, String.valueOf(currentRow - 1)));
-                    sheet.addCell(new Label(1, currentRow, expenseData.getDescription()));
-                    sheet.addCell(new Label(2, currentRow, expenseData.getUserName()));
-                    sheet.addCell(new Label(3, currentRow, expenseData.getDate().toString()));
+                    sheet.addCell(new Label(0, currentRow, String.valueOf(currentRow - 1), normalFormat));
+                    sheet.addCell(new Label(1, currentRow, expenseData.getDescription(), normalFormat));
+                    sheet.addCell(new Label(2, currentRow, expenseData.getUserName(), normalFormat));
+                    sheet.addCell(new Label(3, currentRow, expenseData.getDate().toString(), normalFormat));
                     for (int j = 0; j < numberOfMembers; j++) {
                         Long userId = memberIds.get(j);
                         Long amount = expenseData.getExpenseValues().get(userId);
-                        sheet.addCell(new Label(4 + j, currentRow, amount.toString()));
+                        sheet.addCell(new Label(4 + j, currentRow, amount.toString(), normalFormat));
                     }
                     currentRow++;
                 }
