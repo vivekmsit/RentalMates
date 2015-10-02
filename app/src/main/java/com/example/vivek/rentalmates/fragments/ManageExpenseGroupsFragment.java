@@ -59,7 +59,7 @@ public class ManageExpenseGroupsFragment extends android.support.v4.app.Fragment
 
         //Initialize RecyclerView
         recyclerView = (RecyclerView) layout.findViewById(R.id.listExpenseGroups);
-        expenseGroupListViewAdapter = new ExpenseGroupListViewAdapter(context);
+        expenseGroupListViewAdapter = new ExpenseGroupListViewAdapter(context, getFragmentManager());
         recyclerView.setAdapter(expenseGroupListViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
