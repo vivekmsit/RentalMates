@@ -75,7 +75,15 @@ public class ExpenseGroupListViewAdapter extends RecyclerView.Adapter<ExpenseGro
         viewHolder.location.setText(current.location);
         viewHolder.members.setText(current.ownerName);
         viewHolder.ownerName.setText(current.ownerName);
-        viewHolder.payBackAmountValue.setText(current.paybackAmountValue);
+        String finalData;
+        if (current.paybackAmountValue > 0) {
+            finalData = "You will get Rs. " + current.paybackAmountValue.toString() + " from others";
+        } else if (current.paybackAmountValue < 0) {
+            finalData = "You will Pay Rs. " + current.paybackAmountValue.toString() + " to others";
+        } else {
+            finalData = "No payback amount";
+        }
+        viewHolder.payBackAmountValue.setText(finalData);
     }
 
     @Override

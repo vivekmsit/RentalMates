@@ -45,10 +45,10 @@ public class ExpenseManagerFragment extends android.support.v4.app.Fragment {
             public void onPageSelected(int position) {
                 Log.d(TAG, "onPageSelected " + position);
                 if (position == 0) {
-                    fab.setVisibility(View.VISIBLE);
-                } else {
                     fab.clearAnimation();
                     fab.setVisibility(View.GONE);
+                } else {
+                    fab.setVisibility(View.VISIBLE);
                 }
                 currentPosition = position;
             }
@@ -73,6 +73,7 @@ public class ExpenseManagerFragment extends android.support.v4.app.Fragment {
                 context.startActivity(intent);
             }
         });
+        fab.setVisibility(View.GONE);
         return layout;
     }
 
@@ -90,9 +91,9 @@ public class ExpenseManagerFragment extends android.support.v4.app.Fragment {
             Log.d(TAG, "inside getItem() with position " + position);
             Fragment fragment = null;
             if (position == 0) {
-                fragment = new ExpenseDataListFragment();
-            } else if (position == 1) {
                 fragment = new ManageExpenseGroupsFragment();
+            } else if (position == 1) {
+                fragment = new ExpenseDataListFragment();
             }
             registeredFragments.put(position, fragment);
             return fragment;
@@ -106,9 +107,9 @@ public class ExpenseManagerFragment extends android.support.v4.app.Fragment {
         @Override
         public CharSequence getPageTitle(int position) {
             if (position == 0) {
-                return "Expenses";
-            } else if (position == 1) {
                 return "Expense Groups";
+            } else if (position == 1) {
+                return "All Expenses";
             } else {
                 return null;
             }

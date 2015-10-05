@@ -8,7 +8,7 @@ public class ExpenseGroupListItem {
     public final String location;
     public final String members;
     public final String date;
-    public final String paybackAmountValue;
+    public final Long paybackAmountValue;
 
     public ExpenseGroupListItem(LocalExpenseGroup expenseGroup, Long userProfileId) {
         this.flatName = expenseGroup.getName();
@@ -16,6 +16,6 @@ public class ExpenseGroupListItem {
         this.location = "bangalore";
         this.members = "vivek, ashish";
         this.date = "date";
-        paybackAmountValue = expenseGroup.getMembersData().get(userProfileId).toString();
+        paybackAmountValue = expenseGroup.getMembersData().get(userProfileId);
     }
 }
