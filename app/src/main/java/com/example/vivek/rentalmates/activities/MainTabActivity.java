@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -15,7 +16,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -29,18 +30,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
+import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.fragments.DevelopersFragment;
-import com.example.vivek.rentalmates.fragments.ExpenseDataListFragment;
 import com.example.vivek.rentalmates.fragments.ExpenseManagerFragment;
 import com.example.vivek.rentalmates.fragments.MainFragment;
-import com.example.vivek.rentalmates.fragments.ManageExpenseGroupsFragment;
 import com.example.vivek.rentalmates.fragments.ManageFlatsFragment;
-import com.example.vivek.rentalmates.fragments.NewsFeedFragment;
 import com.example.vivek.rentalmates.fragments.RequestsFragment;
 import com.example.vivek.rentalmates.fragments.SearchFlatFragment;
 import com.example.vivek.rentalmates.fragments.SearchRoomMateFragment;
-import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.fragments.SharedContactsListFragment;
 import com.example.vivek.rentalmates.interfaces.FragmentTransactionRequestReceiver;
 import com.google.android.gms.common.ConnectionResult;
@@ -98,6 +96,11 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        final ActionBar ab = getSupportActionBar();
+        if (ab != null) {
+            ab.setHomeAsUpIndicator(R.drawable.ic_menu_search);
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
 
         //Initialize FragmentManager
         fragmentManager = getSupportFragmentManager();
@@ -396,14 +399,6 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         public Fragment getItem(int position) {
             Fragment fragment = null;
             if (position == 0) {
-                /*fragment = new ExpenseDataListFragment();
-                if (newExpenseAvailable) {
-                    Log.d(TAG, "new expense available");
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("newExpenseAvailable", 1);
-                    fragment.setArguments(bundle);
-                    newExpenseAvailable = false;
-                }*/
                 fragment = new MainFragment();
             } else if (position == 1) {
                 fragment = new SearchFlatFragment();
