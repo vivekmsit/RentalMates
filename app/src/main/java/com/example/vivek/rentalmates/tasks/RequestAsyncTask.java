@@ -21,16 +21,18 @@ public class RequestAsyncTask extends AsyncTask<Context, Void, String> {
     private static MainApi mainApi = null;
     private String entityType;
     private String entityName;
+    private String ownerEmailId;
     private Context context;
     private Request request;
     private SharedPreferences prefs;
     private IOException ioException;
     private OnRequestJoinExistingEntityReceiver receiver;
 
-    public RequestAsyncTask(Context context, final String entityType, final String entityName) {
+    public RequestAsyncTask(Context context, final String entityType, final String entityName, final String ownerEmailId) {
         this.context = context;
         this.entityType = entityType;
         this.entityName = entityName;
+        this.ownerEmailId = ownerEmailId;
 
         prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
     }
@@ -49,7 +51,7 @@ public class RequestAsyncTask extends AsyncTask<Context, Void, String> {
         }
         try {
             Long userProfileId = prefs.getLong(AppConstants.USER_PROFILE_ID, 0);
-            request = mainApi.requestJoinExistingEntity(this.entityType, this.entityName, userProfileId).execute();
+            request = mainApi.requestJoinExistingEntity(this.entityType, this.entityName, this.ownerEmailId, userProfileId).execute();
             if (request == null) {
                 msg = "SUCCESS_NO_FLAT_AVAILABLE";
             } else {

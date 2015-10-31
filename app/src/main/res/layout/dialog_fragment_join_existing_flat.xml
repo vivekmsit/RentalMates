@@ -11,4 +11,13 @@
         android:layout_marginTop="40dp"
         android:hint="flat name" />
 
+    <EditText
+        android:id="@+id/ownerEmailIdEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:ems="10"
+        android:hint="Owner Email Id"
+        android:inputType="textEmailAddress" />
+
 </LinearLayout>

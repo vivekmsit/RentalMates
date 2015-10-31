@@ -108,6 +108,7 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
         DialogFragment joinExistingFlatDialog = new android.support.v4.app.DialogFragment() {
             private ProgressDialog progressDialog;
             private EditText flatNameEditText;
+            private EditText ownerEmailIdEditText;
 
             @NonNull
             @Override
@@ -119,6 +120,7 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
                 LayoutInflater inflater = getActivity().getLayoutInflater();
                 View view = inflater.inflate(R.layout.dialog_fragment_join_existing_flat, null);
                 flatNameEditText = (EditText) view.findViewById(R.id.flatNameEditText);
+                ownerEmailIdEditText = (EditText) view.findViewById(R.id.ownerEmailIdEditText);
 
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
                 alertDialogBuilder.setTitle("Enter flat name");
@@ -126,7 +128,7 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
                 alertDialogBuilder.setPositiveButton("Join Flat", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        RequestAsyncTask task = new RequestAsyncTask(context, "FlatInfo", flatNameEditText.getText().toString());
+                        RequestAsyncTask task = new RequestAsyncTask(context, "FlatInfo", flatNameEditText.getText().toString(), ownerEmailIdEditText.getText().toString());
                         task.setOnRequestJoinExistingEntityReceiver(new OnRequestJoinExistingEntityReceiver() {
                             @Override
                             public void onRequestJoinExistingEntitySuccessful(Request request) {
@@ -198,7 +200,7 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo flatInfo = new com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo();
-                        
+
                         flatInfo.setFlatName(flatNameEditText.getText().toString());
                         flatInfo.setOwnerEmailId(prefs.getString(AppConstants.EMAIL_ID, "no_email_id"));
                         flatInfo.setOwnerId(prefs.getLong(AppConstants.USER_PROFILE_ID, 0));

@@ -1,11 +1,12 @@
 package com.example.vivek.rentalmates.backend.endpoints;
 
+import com.example.vivek.rentalmates.backend.entities.Contact;
 import com.example.vivek.rentalmates.backend.entities.ExpenseData;
 import com.example.vivek.rentalmates.backend.entities.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.entities.FlatInfo;
+import com.example.vivek.rentalmates.backend.entities.RegistrationRecord;
 import com.example.vivek.rentalmates.backend.entities.Request;
 import com.example.vivek.rentalmates.backend.entities.UserProfile;
-import com.example.vivek.rentalmates.backend.entities.RegistrationRecord;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
@@ -206,6 +207,9 @@ public class UserProfileEndpoint {
         }
         for (Request request : ofy().load().type(Request.class).list()) {
             ofy().delete().entity(request);
+        }
+        for (Contact contact : ofy().load().type(Contact.class).list()) {
+            ofy().delete().entity(contact);
         }
         for (FlatInfo flatInfo : ofy().load().type(FlatInfo.class).list()) {
             ofy().delete().entity(flatInfo);

@@ -138,7 +138,7 @@ public class MainEndpoint {
             name = "requestJoinExistingEntity",
             path = "requestJoinExistingEntity",
             httpMethod = ApiMethod.HttpMethod.POST)
-    public Request requestJoinExistingEntity(@Named("entityType") String entityName, @Named("entityName") String entityType, @Named("userProfileId") Long userProfileId) throws IOException, NotFoundException {
+    public Request requestJoinExistingEntity(@Named("entityType") String entityName, @Named("entityName") String entityType, @Named("ownerEmailId") String ownerEmailId, @Named("userProfileId") Long userProfileId) throws IOException, NotFoundException {
         Request request = new Request();
         UserProfile requesterUserProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
         if (requesterUserProfile == null) {
@@ -147,7 +147,10 @@ public class MainEndpoint {
         }
         switch (entityType) {
             case "FlatInfo":
-                FlatInfo flatInfo = ofy().load().type(FlatInfo.class).filter("flatName", entityName).first().now();
+                FlatInfo flatInfo = ofy().load().type(FlatInfo.class)
+                        .filter("flatName", entityName)
+                        .filter("ownerEmailId", ownerEmailId)
+                        .first().now();
                 if (flatInfo == null) {
                     request.setStatus("ENTITY_NOT_AVAILABLE");
                     return request;
@@ -160,7 +163,10 @@ public class MainEndpoint {
                 request.setRequestProviderId(flatInfo.getOwnerId());
                 break;
             case "ExpenseGroup":
-                ExpenseGroup expenseGroup = ofy().load().type(ExpenseGroup.class).filter("name", entityName).first().now();
+                ExpenseGroup expenseGroup = ofy().load().type(ExpenseGroup.class)
+                        .filter("name", entityName)
+                        .filter("ownerEmailId", ownerEmailId)
+                        .first().now();
                 if (expenseGroup == null) {
                     request.setStatus("ENTITY_NOT_AVAILABLE");
                     return request;

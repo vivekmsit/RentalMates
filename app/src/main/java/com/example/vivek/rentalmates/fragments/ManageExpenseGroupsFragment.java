@@ -103,6 +103,7 @@ public class ManageExpenseGroupsFragment extends android.support.v4.app.Fragment
         DialogFragment joinExistingExpenseGroupDialog = new android.support.v4.app.DialogFragment() {
             private ProgressDialog progressDialog;
             private EditText expenseGroupNameEditText;
+            private EditText ownerEmailIdEditText;
 
             @NonNull
             @Override
@@ -114,6 +115,7 @@ public class ManageExpenseGroupsFragment extends android.support.v4.app.Fragment
                 LayoutInflater inflater = getActivity().getLayoutInflater();
                 View view = inflater.inflate(R.layout.dialog_fragment_join_existing_expense_group, null);
                 expenseGroupNameEditText = (EditText) view.findViewById(R.id.expenseGroupNameEditText);
+                ownerEmailIdEditText = (EditText) view.findViewById(R.id.ownerEmailIdEditText);
 
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
                 alertDialogBuilder.setTitle("Enter Expense Group name");
@@ -121,7 +123,7 @@ public class ManageExpenseGroupsFragment extends android.support.v4.app.Fragment
                 alertDialogBuilder.setPositiveButton("Join Expense Group", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        RequestAsyncTask task = new RequestAsyncTask(context, "ExpenseGroup", expenseGroupNameEditText.getText().toString());
+                        RequestAsyncTask task = new RequestAsyncTask(context, "ExpenseGroup", expenseGroupNameEditText.getText().toString(), ownerEmailIdEditText.getText().toString());
                         task.setOnRequestJoinExistingEntityReceiver(new OnRequestJoinExistingEntityReceiver() {
                             @Override
                             public void onRequestJoinExistingEntitySuccessful(Request request) {

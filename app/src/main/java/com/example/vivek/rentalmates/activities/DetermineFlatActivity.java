@@ -28,14 +28,14 @@ import com.example.vivek.rentalmates.backend.mainApi.model.Request;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
 import com.example.vivek.rentalmates.data.AppConstants;
+import com.example.vivek.rentalmates.data.AppData;
+import com.example.vivek.rentalmates.data.LocalFlatInfo;
 import com.example.vivek.rentalmates.interfaces.OnExpenseGroupListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnExpenseListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnFlatInfoListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnRegisterNewFlatReceiver;
 import com.example.vivek.rentalmates.interfaces.OnRequestJoinExistingEntityReceiver;
 import com.example.vivek.rentalmates.interfaces.OnUserProfileListReceiver;
-import com.example.vivek.rentalmates.data.AppData;
-import com.example.vivek.rentalmates.data.LocalFlatInfo;
 import com.example.vivek.rentalmates.services.BackendApiService;
 import com.example.vivek.rentalmates.tasks.GetAllExpenseListAsyncTask;
 import com.example.vivek.rentalmates.tasks.GetExpenseGroupListAsyncTask;
@@ -147,7 +147,7 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
                     return;
                 }
                 registerWithAlreadyRegisteredFlatButtonClicked = true;
-                RequestAsyncTask task = new RequestAsyncTask(this, "FlatInfo", alreadyRegisteredFlatEditText.getText().toString());
+                RequestAsyncTask task = new RequestAsyncTask(this, "FlatInfo", alreadyRegisteredFlatEditText.getText().toString(), "vivekmsit@gmail.com");
                 task.setOnRequestJoinExistingEntityReceiver(new OnRequestJoinExistingEntityReceiver() {
                     @Override
                     public void onRequestJoinExistingEntitySuccessful(Request request) {

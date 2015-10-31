@@ -73,11 +73,15 @@ public class FlatInfoEndpoint {
             httpMethod = ApiMethod.HttpMethod.POST)
     public FlatInfo registerNewFlat(FlatInfo flatInfo) {
         String flatName = flatInfo.getFlatName();
-        FlatInfo finalFlatInfo = ofy().load().type(FlatInfo.class).filter("flatName", flatName).first().now();
+        FlatInfo finalFlatInfo = ofy().load().type(FlatInfo.class)
+                .filter("flatName", flatName)
+                .filter("ownerEmailId", flatInfo.getOwnerEmailId())
+                .first().now();
         if (finalFlatInfo == null) {
             //create a new ExpenseGroup for given flat
             ExpenseGroup expenseGroup = new ExpenseGroup();
             expenseGroup.setName(flatName);
+            expenseGroup.setOwnerEmailId(flatInfo.getOwnerEmailId());
             ExpenseGroup finalExpenseGroup = ofy().load().type(ExpenseGroup.class).filter("name", expenseGroup.getName()).first().now();
             if (finalExpenseGroup == null) {
                 ofy().save().entity(expenseGroup).now();
@@ -98,7 +102,7 @@ public class FlatInfoEndpoint {
             relatedUserProfile.setFlatExpenseGroupId(finalExpenseGroup.getId());
             ofy().save().entity(relatedUserProfile).now();
 
-            Long l = new Long(0);//need to be changed later
+            Long l = (long) 0;//need to be changed later
             finalExpenseGroup.setOwnerId(finalFlatInfo.getOwnerId());
             if (!finalExpenseGroup.getMembersData().keySet().contains(userProfileId)) {
                 finalExpenseGroup.addMemberData(userProfileId, l);

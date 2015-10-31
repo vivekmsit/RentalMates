@@ -24,9 +24,11 @@ public class ExpenseGroup implements Serializable {
     @Index
     private String name;
 
+    @Index
+    private String ownerEmailId;
+
     private Date date;
     private String description;
-    private String ownerEmailId;
     private Long ownerId;
     private int numberOfExpenses;
     private int numberOfMembers;
