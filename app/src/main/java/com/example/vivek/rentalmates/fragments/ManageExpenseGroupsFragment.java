@@ -1,14 +1,9 @@
 package com.example.vivek.rentalmates.fragments;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +22,8 @@ import com.example.vivek.rentalmates.backend.userProfileApi.model.ExpenseGroup;
 import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.data.LocalUserProfile;
+import com.example.vivek.rentalmates.dialogs.GetExistingExpenseGroupInfoDialog;
+import com.example.vivek.rentalmates.dialogs.GetExpenseGroupNameDialog;
 import com.example.vivek.rentalmates.interfaces.OnCreateExpenseGroupReceiver;
 import com.example.vivek.rentalmates.interfaces.OnExpenseGroupListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnRequestJoinExistingEntityReceiver;
@@ -107,133 +103,99 @@ public class ManageExpenseGroupsFragment extends android.support.v4.app.Fragment
     }
 
     public void joinExistingExpenseGroup() {
-        DialogFragment joinExistingExpenseGroupDialog = new android.support.v4.app.DialogFragment() {
-            private ProgressDialog progressDialog;
-            private EditText expenseGroupNameEditText;
-            private EditText ownerEmailIdEditText;
-
-            @NonNull
+        final ProgressDialog progressDialog;
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setIndeterminate(true);
+        GetExistingExpenseGroupInfoDialog dialog = new GetExistingExpenseGroupInfoDialog();
+        dialog.setOnDialogResultListener(new GetExistingExpenseGroupInfoDialog.OnDialogResultListener() {
             @Override
-            public Dialog onCreateDialog(Bundle savedInstanceState) {
-                progressDialog = new ProgressDialog(getActivity());
-                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                progressDialog.setIndeterminate(true);
-
-                LayoutInflater inflater = getActivity().getLayoutInflater();
-                View view = inflater.inflate(R.layout.dialog_fragment_join_existing_expense_group, null);
-                expenseGroupNameEditText = (EditText) view.findViewById(R.id.expenseGroupNameEditText);
-                ownerEmailIdEditText = (EditText) view.findViewById(R.id.ownerEmailIdEditText);
-
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-                alertDialogBuilder.setTitle("Enter Expense Group name");
-                alertDialogBuilder.setView(view);
-                alertDialogBuilder.setPositiveButton("Join Expense Group", new DialogInterface.OnClickListener() {
+            public void onPositiveResult(final String expenseGroupName, String ownerEmailId) {
+                RequestAsyncTask task = new RequestAsyncTask(context, "ExpenseGroup", expenseGroupName, ownerEmailId);
+                task.setOnRequestJoinExistingEntityReceiver(new OnRequestJoinExistingEntityReceiver() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        RequestAsyncTask task = new RequestAsyncTask(context, "ExpenseGroup", expenseGroupNameEditText.getText().toString(), ownerEmailIdEditText.getText().toString());
-                        task.setOnRequestJoinExistingEntityReceiver(new OnRequestJoinExistingEntityReceiver() {
-                            @Override
-                            public void onRequestJoinExistingEntitySuccessful(Request request) {
-                                progressDialog.cancel();
-                                if (request.getStatus().equals("PENDING")) {
-                                    Toast.makeText(context, "Request sent to owner of the ExpenseGroup", Toast.LENGTH_LONG).show();
-                                } else if (request.getStatus().equals("ENTITY_NOT_AVAILABLE")) {
-                                    Toast.makeText(context, "ExpenseGroup with given name doesn't exist.\nPlease enter different name", Toast.LENGTH_LONG).show();
-                                } else if (request.getStatus().equals("ALREADY_MEMBER")) {
-                                    Toast.makeText(context, "You are already member of " + expenseGroupNameEditText.getText().toString(), Toast.LENGTH_LONG).show();
-                                } else {
-                                    Toast.makeText(context, "Failed request due to Unknown Reason", Toast.LENGTH_LONG).show();
-                                }
-                            }
-
-                            @Override
-                            public void onRequestJoinExistingEntityFailed() {
-                                progressDialog.cancel();
-                            }
-                        });
-                        task.execute();
-                        progressDialog.setMessage("Requesting for Register with flat " + expenseGroupNameEditText.getText().toString());
-                        progressDialog.show();
+                    public void onRequestJoinExistingEntitySuccessful(Request request) {
+                        progressDialog.cancel();
+                        switch (request.getStatus()) {
+                            case "PENDING":
+                                Toast.makeText(context, "Request sent to owner of the ExpenseGroup", Toast.LENGTH_LONG).show();
+                                break;
+                            case "ENTITY_NOT_AVAILABLE":
+                                Toast.makeText(context, "ExpenseGroup with given name doesn't exist.\nPlease enter different name", Toast.LENGTH_LONG).show();
+                                break;
+                            case "ALREADY_MEMBER":
+                                Toast.makeText(context, "You are already member of " + expenseGroupName, Toast.LENGTH_LONG).show();
+                                break;
+                            default:
+                                Toast.makeText(context, "Failed request due to Unknown Reason", Toast.LENGTH_LONG).show();
+                                break;
+                        }
                     }
-                });
-                alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.d(TAG, "Cancel: onClick");
-                        dialog.dismiss();
+                    public void onRequestJoinExistingEntityFailed() {
+                        progressDialog.cancel();
                     }
                 });
-                return alertDialogBuilder.create();
+                task.execute();
+                progressDialog.setMessage("Requesting for Register with flat " + expenseGroupName);
+                progressDialog.show();
             }
-        };
-        joinExistingExpenseGroupDialog.show(getFragmentManager(), "Fragment");
+
+            @Override
+            public void onNegativeResult() {
+
+            }
+        });
+        dialog.show(getFragmentManager(), "Fragment");
     }
 
     public void createNewExpenseGroup() {
-        DialogFragment createExpenseGroupDialog = new android.support.v4.app.DialogFragment() {
-            private ProgressDialog progressDialog;
-            private EditText expenseGroupNameEditText;
-
-            @NonNull
+        final ProgressDialog progressDialog;
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setIndeterminate(true);
+        GetExpenseGroupNameDialog dialog = new GetExpenseGroupNameDialog();
+        dialog.setOnDialogResultListener(new GetExpenseGroupNameDialog.OnDialogResultListener() {
             @Override
-            public Dialog onCreateDialog(Bundle savedInstanceState) {
-                progressDialog = new ProgressDialog(getActivity());
-                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                progressDialog.setIndeterminate(true);
+            public void onPositiveResult(String expenseGroupName) {
+                com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseGroup expenseGroup = new com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseGroup();
+                expenseGroup.setName(expenseGroupName);
+                LocalUserProfile localUserProfile = appData.getLocalUserProfile(prefs.getLong(AppConstants.USER_PROFILE_ID, 0));
+                expenseGroup.setOwnerId(localUserProfile.getUserProfileId());
+                expenseGroup.setOwnerEmailId(localUserProfile.getEmailId());
 
-                LayoutInflater inflater = getActivity().getLayoutInflater();
-                View view = inflater.inflate(R.layout.dialog_fragment_create_expense_group, null);
-                expenseGroupNameEditText = (EditText) view.findViewById(R.id.expenseGroupNameEditText);
-
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-                alertDialogBuilder.setTitle("Enter Expense Group name");
-                alertDialogBuilder.setView(view);
-                alertDialogBuilder.setPositiveButton("Create Expense Group", new DialogInterface.OnClickListener() {
+                CreateExpenseGroupAsyncTask task = new CreateExpenseGroupAsyncTask(context, expenseGroup);
+                task.setOnCreateExpenseGroupReceiver(new OnCreateExpenseGroupReceiver() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseGroup expenseGroup = new com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseGroup();
-                        expenseGroup.setName(expenseGroupNameEditText.getText().toString());
-                        LocalUserProfile localUserProfile = appData.getLocalUserProfile(prefs.getLong(AppConstants.USER_PROFILE_ID, 0));
-                        expenseGroup.setOwnerId(localUserProfile.getUserProfileId());
-                        expenseGroup.setOwnerEmailId(localUserProfile.getEmailId());
-
-                        CreateExpenseGroupAsyncTask task = new CreateExpenseGroupAsyncTask(context, expenseGroup);
-                        task.setOnCreateExpenseGroupReceiver(new OnCreateExpenseGroupReceiver() {
-                            @Override
-                            public void onCreateExpenseGroupSuccessful(com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseGroup expenseGroup) {
-                                progressDialog.cancel();
-                                if (expenseGroup.getOperationResult().equals("OLD_EXPENSE_GROUP")) {
-                                    Toast.makeText(context, "Already a member of given Expense Group", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(context, "Expense Group Created", Toast.LENGTH_SHORT).show();
-                                    swipeRefreshLayout.setRefreshing(true);
-                                    onRefresh();
-                                }
-                            }
-
-                            @Override
-                            public void onCreateExpenseGroupFailed() {
-                                progressDialog.cancel();
-                            }
-                        });
-                        task.execute();
-                        progressDialog.setMessage("Creating Expense Group " + expenseGroupNameEditText.getText().toString());
-                        progressDialog.show();
+                    public void onCreateExpenseGroupSuccessful(com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseGroup expenseGroup) {
+                        progressDialog.cancel();
+                        if (expenseGroup.getOperationResult().equals("OLD_EXPENSE_GROUP")) {
+                            Toast.makeText(context, "Already a member of given Expense Group", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(context, "Expense Group Created", Toast.LENGTH_SHORT).show();
+                            swipeRefreshLayout.setRefreshing(true);
+                            onRefresh();
+                        }
                     }
-                });
-                alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.d(TAG, "Cancel: onClick");
-                        dialog.dismiss();
+                    public void onCreateExpenseGroupFailed() {
+                        progressDialog.cancel();
                     }
                 });
-                return alertDialogBuilder.create();
+                task.execute();
+                progressDialog.setMessage("Creating Expense Group " + expenseGroupName);
+                progressDialog.show();
+
             }
-        };
-        createExpenseGroupDialog.show(getFragmentManager(), "Fragment");
+
+            @Override
+            public void onNegativeResult() {
+
+            }
+        });
+        dialog.show(getFragmentManager(), "Fragment");
     }
 
     @Override
