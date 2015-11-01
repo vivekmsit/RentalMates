@@ -82,11 +82,19 @@ public class ExpenseGroupEndpoint {
             path = "expenseGroup",
             httpMethod = ApiMethod.HttpMethod.POST)
     public ExpenseGroup createExpenseGroup(ExpenseGroup expenseGroup) {
-        ExpenseGroup finalExpenseGroup = ofy().load().type(ExpenseGroup.class).filter("name", expenseGroup.getName()).first().now();
+        UserProfile userProfile = ofy().load().type(UserProfile.class).id(expenseGroup.getOwnerId()).now();
+        ExpenseGroup finalExpenseGroup = ofy().load().type(ExpenseGroup.class)
+                .filter("name", expenseGroup.getName())
+                .filter("ownerEmailId", userProfile.getEmailId())
+                .first().now();
         if (finalExpenseGroup == null) {
+            Long l = (long) 0;//need to be changed later
+            expenseGroup.addMemberData(userProfile.getId(), l);
             ofy().save().entity(expenseGroup).now();
             finalExpenseGroup = ofy().load().entity(expenseGroup).now();
             finalExpenseGroup.setOperationResult("NEW_EXPENSE_GROUP");
+            userProfile.addExpenseGroupId(finalExpenseGroup.getId());
+            ofy().save().entity(userProfile).now();
         } else {
             finalExpenseGroup.setOperationResult("OLD_EXPENSE_GROUP");
         }
