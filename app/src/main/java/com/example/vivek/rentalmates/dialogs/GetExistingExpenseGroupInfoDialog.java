@@ -46,7 +46,9 @@ public class GetExistingExpenseGroupInfoDialog extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (verifyInputData()) {
-                    listener.onPositiveResult(expenseGroupNameEditText.getText().toString(), ownerEmailIdEditText.getText().toString());
+                    if (listener != null) {
+                        listener.onPositiveResult(expenseGroupNameEditText.getText().toString(), ownerEmailIdEditText.getText().toString());
+                    }
                 }
             }
         });
@@ -54,7 +56,9 @@ public class GetExistingExpenseGroupInfoDialog extends DialogFragment {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                listener.onNegativeResult();
+                if (listener != null) {
+                    listener.onNegativeResult();
+                }
                 dialog.dismiss();
             }
         });

@@ -44,7 +44,9 @@ public class GetExpenseGroupNameDialog extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (verifyInputData()) {
-                    listener.onPositiveResult(expenseGroupNameEditText.getText().toString());
+                    if (listener != null) {
+                        listener.onPositiveResult(expenseGroupNameEditText.getText().toString());
+                    }
                 }
             }
         });
@@ -53,7 +55,9 @@ public class GetExpenseGroupNameDialog extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                listener.onNegativeResult();
+                if (listener != null) {
+                    listener.onNegativeResult();
+                }
             }
         });
         return alertDialogBuilder.create();
