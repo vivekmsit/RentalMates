@@ -27,6 +27,7 @@ import com.example.vivek.rentalmates.backend.mainApi.model.Request;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
 import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.AppData;
+import com.example.vivek.rentalmates.dialogs.GetExistingFlatInfoDialog;
 import com.example.vivek.rentalmates.interfaces.OnFlatInfoListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnRegisterNewFlatReceiver;
 import com.example.vivek.rentalmates.interfaces.OnRequestJoinExistingEntityReceiver;
@@ -105,67 +106,51 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
     }
 
     public void joinExistingFlat() {
-        DialogFragment joinExistingFlatDialog = new android.support.v4.app.DialogFragment() {
-            private ProgressDialog progressDialog;
-            private EditText flatNameEditText;
-            private EditText ownerEmailIdEditText;
-
-            @NonNull
+        final ProgressDialog progressDialog;
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setIndeterminate(true);
+        GetExistingFlatInfoDialog dialog = new GetExistingFlatInfoDialog();
+        dialog.setOnDialogResultListener(new GetExistingFlatInfoDialog.OnDialogResultListener() {
             @Override
-            public Dialog onCreateDialog(Bundle savedInstanceState) {
-                progressDialog = new ProgressDialog(getActivity());
-                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                progressDialog.setIndeterminate(true);
-
-                LayoutInflater inflater = getActivity().getLayoutInflater();
-                View view = inflater.inflate(R.layout.dialog_fragment_join_existing_flat, null);
-                flatNameEditText = (EditText) view.findViewById(R.id.flatNameEditText);
-                ownerEmailIdEditText = (EditText) view.findViewById(R.id.ownerEmailIdEditText);
-
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-                alertDialogBuilder.setTitle("Enter flat name");
-                alertDialogBuilder.setView(view);
-                alertDialogBuilder.setPositiveButton("Join Flat", new DialogInterface.OnClickListener() {
+            public void onPositiveResult(final String flatName, String ownerEmailId) {
+                RequestAsyncTask task = new RequestAsyncTask(context, "FlatInfo", flatName, ownerEmailId);
+                task.setOnRequestJoinExistingEntityReceiver(new OnRequestJoinExistingEntityReceiver() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        RequestAsyncTask task = new RequestAsyncTask(context, "FlatInfo", flatNameEditText.getText().toString(), ownerEmailIdEditText.getText().toString());
-                        task.setOnRequestJoinExistingEntityReceiver(new OnRequestJoinExistingEntityReceiver() {
-                            @Override
-                            public void onRequestJoinExistingEntitySuccessful(Request request) {
-                                progressDialog.cancel();
-                                if (request.getStatus().equals("PENDING")) {
-                                    Toast.makeText(context, "Request sent to owner of the Flat", Toast.LENGTH_LONG).show();
-                                } else if (request.getStatus().equals("ENTITY_NOT_AVAILABLE")) {
-                                    Toast.makeText(context, "Flat with given name doesn't exist.\nPlease enter different name", Toast.LENGTH_LONG).show();
-                                } else if (request.getStatus().equals("ALREADY_MEMBER")) {
-                                    Toast.makeText(context, "You are already member of " + flatNameEditText.getText().toString(), Toast.LENGTH_LONG).show();
-                                } else {
-                                    Toast.makeText(context, "Failed Request due to Unknown Reason", Toast.LENGTH_LONG).show();
-                                }
-                            }
-
-                            @Override
-                            public void onRequestJoinExistingEntityFailed() {
-                                progressDialog.cancel();
-                            }
-                        });
-                        task.execute();
-                        progressDialog.setMessage("Requesting for Register with flat " + flatNameEditText.getText().toString());
-                        progressDialog.show();
+                    public void onRequestJoinExistingEntitySuccessful(Request request) {
+                        progressDialog.cancel();
+                        switch (request.getStatus()) {
+                            case "PENDING":
+                                Toast.makeText(context, "Request sent to owner of the Flat", Toast.LENGTH_LONG).show();
+                                break;
+                            case "ENTITY_NOT_AVAILABLE":
+                                Toast.makeText(context, "Flat with given name doesn't exist.\nPlease enter different name", Toast.LENGTH_LONG).show();
+                                break;
+                            case "ALREADY_MEMBER":
+                                Toast.makeText(context, "You are already member of " + flatName, Toast.LENGTH_LONG).show();
+                                break;
+                            default:
+                                Toast.makeText(context, "Failed request due to Unknown Reason", Toast.LENGTH_LONG).show();
+                                break;
+                        }
                     }
-                });
-                alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.d(TAG, "Cancel: onClick");
-                        dialog.dismiss();
+                    public void onRequestJoinExistingEntityFailed() {
+                        progressDialog.cancel();
                     }
                 });
-                return alertDialogBuilder.create();
+                task.execute();
+                progressDialog.setMessage("Requesting for Register with flat " + flatName);
+                progressDialog.show();
             }
-        };
-        joinExistingFlatDialog.show(getFragmentManager(), "Fragment");
+
+            @Override
+            public void onNegativeResult() {
+
+            }
+        });
+        dialog.show(getFragmentManager(), "Fragment");
     }
 
     public void registerNewFlat() {
