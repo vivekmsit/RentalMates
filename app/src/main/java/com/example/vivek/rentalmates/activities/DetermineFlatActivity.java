@@ -1,23 +1,17 @@
 package com.example.vivek.rentalmates.activities;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,12 +24,14 @@ import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
 import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.data.LocalFlatInfo;
+import com.example.vivek.rentalmates.dialogs.GetExistingFlatInfoDialog;
 import com.example.vivek.rentalmates.interfaces.OnExpenseGroupListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnExpenseListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnFlatInfoListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnRegisterNewFlatReceiver;
 import com.example.vivek.rentalmates.interfaces.OnRequestJoinExistingEntityReceiver;
 import com.example.vivek.rentalmates.interfaces.OnUserProfileListReceiver;
+import com.example.vivek.rentalmates.libraries.GetNewFlatInfoTask;
 import com.example.vivek.rentalmates.services.BackendApiService;
 import com.example.vivek.rentalmates.tasks.GetAllExpenseListAsyncTask;
 import com.example.vivek.rentalmates.tasks.GetExpenseGroupListAsyncTask;
@@ -52,10 +48,7 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
     private static final String TAG = "DetermineFlat_Debug";
 
     private TextView alreadyTextView;
-    private TextView newRegisteredTextView;
-    private TextView registerNewFlatTextView;
     private Spinner chooseFlatSpinner;
-    private EditText alreadyRegisteredFlatEditText;
     private Button continueWithOldFlatButton;
     private Button requestRegisterWithOtherFlatButton;
     private Button registerNewFlatButton;
@@ -69,6 +62,7 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
     private Long selectedGroupExpenseId;
     private ProgressDialog progressDialog;
     private SharedPreferences prefs;
+    private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,15 +71,13 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
 
         context = getApplicationContext();
         appData = AppData.getInstance();
+        fragmentManager = getSupportFragmentManager();
         prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
 
         for (LocalFlatInfo localFlatInfo : appData.getFlats().values()) {
             localFlats.add(localFlatInfo);
         }
         alreadyTextView = (TextView) findViewById(R.id.alreadyTextView);
-        newRegisteredTextView = (TextView) findViewById(R.id.newRegisteredTextView);
-        registerNewFlatTextView = (TextView) findViewById(R.id.registerNewFlatTextView);
-        alreadyRegisteredFlatEditText = (EditText) findViewById(R.id.alreadyRegisteredFlatEditText);
         chooseFlatSpinner = (Spinner) findViewById(R.id.chooseFlatSpinner);
         continueWithOldFlatButton = (Button) findViewById(R.id.continueWithOldFlatButton);
         requestRegisterWithOtherFlatButton = (Button) findViewById(R.id.requestRegisterWithOtherFlatButton);
@@ -143,33 +135,11 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
                 break;
 
             case R.id.requestRegisterWithOtherFlatButton:
-                if (registerWithAlreadyRegisteredFlatButtonClicked || !verifyFlatInfoData()) {
+                if (registerWithAlreadyRegisteredFlatButtonClicked) {
                     return;
                 }
                 registerWithAlreadyRegisteredFlatButtonClicked = true;
-                RequestAsyncTask task = new RequestAsyncTask(this, "FlatInfo", alreadyRegisteredFlatEditText.getText().toString(), "vivekmsit@gmail.com");
-                task.setOnRequestJoinExistingEntityReceiver(new OnRequestJoinExistingEntityReceiver() {
-                    @Override
-                    public void onRequestJoinExistingEntitySuccessful(Request request) {
-                        registerWithAlreadyRegisteredFlatButtonClicked = false;
-                        progressDialog.cancel();
-                        if (request.getStatus().equals("PENDING")) {
-                            Toast.makeText(getApplicationContext(), "Request sent to owner of the Flat", Toast.LENGTH_LONG).show();
-                            loadAllExpenseGroups();
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Flat with given name doesn't exist.\nPlease enter different name", Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-                    @Override
-                    public void onRequestJoinExistingEntityFailed() {
-                        registerWithAlreadyRegisteredFlatButtonClicked = false;
-                        progressDialog.cancel();
-                    }
-                });
-                task.execute();
-                progressDialog.setMessage("Requesting for Register with flat " + alreadyRegisteredFlatEditText.getText().toString());
-                progressDialog.show();
+                joinExistingFlat();
                 break;
 
             case R.id.registerNewFlatButton:
@@ -180,89 +150,94 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
         }
     }
 
-    public void registerNewFlat() {
-        DialogFragment registerNewFlatDialog = new android.support.v4.app.DialogFragment() {
-            private ProgressDialog progressDialog;
-            private EditText flatNameEditText;
-            private EditText addressEditText;
-            private EditText cityEditText;
-            private EditText totalSecurityAmount;
-            private EditText totalRentAmount;
-            boolean registerButtonClicked;
-
-            @NonNull
+    public void joinExistingFlat() {
+        final ProgressDialog progressDialog;
+        progressDialog = new ProgressDialog(DetermineFlatActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setIndeterminate(true);
+        GetExistingFlatInfoDialog dialog = new GetExistingFlatInfoDialog();
+        dialog.setOnDialogResultListener(new GetExistingFlatInfoDialog.OnDialogResultListener() {
             @Override
-            public Dialog onCreateDialog(Bundle savedInstanceState) {
-                progressDialog = new ProgressDialog(getActivity());
+            public void onPositiveResult(final String flatName, String ownerEmailId) {
+                RequestAsyncTask task = new RequestAsyncTask(context, "FlatInfo", flatName, ownerEmailId);
+                task.setOnRequestJoinExistingEntityReceiver(new OnRequestJoinExistingEntityReceiver() {
+                    @Override
+                    public void onRequestJoinExistingEntitySuccessful(Request request) {
+                        progressDialog.cancel();
+                        switch (request.getStatus()) {
+                            case "PENDING":
+                                Toast.makeText(context, "Request sent to owner of the Flat", Toast.LENGTH_LONG).show();
+                                break;
+                            case "ENTITY_NOT_AVAILABLE":
+                                Toast.makeText(context, "Flat with given name doesn't exist.\nPlease enter different name", Toast.LENGTH_LONG).show();
+                                break;
+                            case "ALREADY_MEMBER":
+                                Toast.makeText(context, "You are already member of " + flatName, Toast.LENGTH_LONG).show();
+                                break;
+                            default:
+                                Toast.makeText(context, "Failed request due to Unknown Reason", Toast.LENGTH_LONG).show();
+                                break;
+                        }
+                    }
+
+                    @Override
+                    public void onRequestJoinExistingEntityFailed() {
+                        progressDialog.cancel();
+                    }
+                });
+                task.execute();
+                progressDialog.setMessage("Requesting for Register with flat " + flatName);
+                progressDialog.show();
+            }
+
+            @Override
+            public void onNegativeResult() {
+
+            }
+        });
+        dialog.show(fragmentManager, "Fragment");
+    }
+
+
+    public void registerNewFlat() {
+        GetNewFlatInfoTask getNewFlatInfoTask = new GetNewFlatInfoTask(getApplicationContext(), getSupportFragmentManager());
+        getNewFlatInfoTask.setOnGetFlatInfoTask(new GetNewFlatInfoTask.OnGetFlatInfoTask() {
+            @Override
+            public void onRegisterNewFlatSuccessful(com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo newFlatInfo) {
+                final ProgressDialog progressDialog;
+                progressDialog = new ProgressDialog(DetermineFlatActivity.this);
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 progressDialog.setIndeterminate(true);
-                registerButtonClicked = false;
-
-                LayoutInflater inflater = getActivity().getLayoutInflater();
-                View view = inflater.inflate(R.layout.dialog_fragment_register_new_flat, null);
-
-                flatNameEditText = (EditText) view.findViewById(R.id.flatNameEditText);
-                addressEditText = (EditText) view.findViewById(R.id.addressEditText);
-                cityEditText = (EditText) view.findViewById(R.id.cityEditText);
-                totalSecurityAmount = (EditText) view.findViewById(R.id.securityAmountEditText);
-                totalRentAmount = (EditText) view.findViewById(R.id.rentAmountEditText);
-
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-                alertDialogBuilder.setTitle("Fill New Flat Details");
-                alertDialogBuilder.setView(view);
-                alertDialogBuilder.setPositiveButton("Register New Flat", new DialogInterface.OnClickListener() {
+                RegisterNewFlatAsyncTask task = new RegisterNewFlatAsyncTask(context, newFlatInfo);
+                task.setOnRegisterNewFlatReceiver(new OnRegisterNewFlatReceiver() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo flatInfo = new com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo();
-                        flatInfo.setFlatName(flatNameEditText.getText().toString());
-                        flatInfo.setOwnerEmailId(prefs.getString(AppConstants.EMAIL_ID, "no_email_id"));
-                        flatInfo.setOwnerId(prefs.getLong(AppConstants.USER_PROFILE_ID, 0));
-
-                        //below logic will be changed later
-                        flatInfo.setFlatAddress(addressEditText.getText().toString());
-                        flatInfo.setCity(cityEditText.getText().toString());
-                        flatInfo.setRentAmount(Integer.parseInt(totalRentAmount.getText().toString()));
-                        flatInfo.setSecurityAmount(Integer.parseInt(totalSecurityAmount.getText().toString()));
-
-                        RegisterNewFlatAsyncTask task = new RegisterNewFlatAsyncTask(context, flatInfo);
-                        task.setOnRegisterNewFlatReceiver(new OnRegisterNewFlatReceiver() {
-                            @Override
-                            public void onRegisterNewFlatSuccessful(com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo flatInfo) {
-                                registerButtonClicked = false;
-                                progressDialog.cancel();
-                                if (flatInfo == null) {
-                                    Toast.makeText(context, "Flat with given name already registered. \n Please enter different name", Toast.LENGTH_LONG).show();
-                                    return;
-                                }
-                                Log.d(TAG, "FlatInfo uploaded");
-                                Toast.makeText(context, "New Flat Registered", Toast.LENGTH_SHORT).show();
-
-                                getCompleteUserInformation();
-                            }
-
-                            @Override
-                            public void onRegisterNewFlatFailed() {
-                                registerButtonClicked = false;
-                                progressDialog.cancel();
-                            }
-                        });
-                        task.execute();
-                        progressDialog.setMessage("Registering new flat");
-                        progressDialog.show();
+                    public void onRegisterNewFlatSuccessful(com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo flatInfo) {
+                        progressDialog.cancel();
+                        if (flatInfo == null) {
+                            Toast.makeText(context, "Flat with given name already registered. \n Please enter different name", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        Log.d(TAG, "FlatInfo uploaded");
+                        Toast.makeText(context, "New Flat Registered", Toast.LENGTH_SHORT).show();
+                        getCompleteUserInformation();
                     }
-                });
-                alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.d(TAG, "Cancel: onClick");
-                        dialog.dismiss();
+                    public void onRegisterNewFlatFailed() {
+                        progressDialog.cancel();
                     }
                 });
-                return alertDialogBuilder.create();
+                task.execute();
+                progressDialog.setMessage("Registering new flat");
+                progressDialog.show();
             }
-        };
-        registerNewFlatDialog.show(getSupportFragmentManager(), "Fragment");
+
+            @Override
+            public void onRegisterNewFlatFailed() {
+
+            }
+        });
+        getNewFlatInfoTask.execute();
     }
 
     public void getCompleteUserInformation() {
@@ -375,15 +350,6 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
         task.execute();
         progressDialog.setMessage("Loading Expense List");
         progressDialog.show();
-    }
-
-    public boolean verifyFlatInfoData() {
-        if (alreadyRegisteredFlatEditText.getText().toString().trim().matches("")) {
-            Toast.makeText(this, "No Flat Name entered", Toast.LENGTH_LONG).show();
-            return false;
-        } else {
-            return true;
-        }
     }
 
     @Override

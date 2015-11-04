@@ -15,7 +15,6 @@
         android:layout_height="wrap_content"
         android:text="You are already member of given flats, Choose any of the flats and press Continue" />
 
-
     <Spinner
         android:id="@+id/chooseFlatSpinner"
         android:layout_width="wrap_content"
@@ -46,17 +45,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/alreadyRegisteredFlatEditText"
-        android:text="Request Register With Other FLAT" />
-
-    <EditText
-        android:id="@+id/alreadyRegisteredFlatEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:layout_below="@+id/newRegisteredTextView"
-        android:layout_marginTop="40dp"
-        android:hint="Flat Name" />
+        android:text="Request Register With Other FLAT" />
 
     <TextView
         android:id="@+id/registerNewFlatTextView"
