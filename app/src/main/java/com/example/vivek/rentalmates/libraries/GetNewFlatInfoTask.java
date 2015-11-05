@@ -6,10 +6,14 @@ import android.support.v4.app.FragmentManager;
 
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
 import com.example.vivek.rentalmates.data.AppConstants;
+import com.example.vivek.rentalmates.dialogs.CurrentLocationMapDialog;
 import com.example.vivek.rentalmates.dialogs.FlatFacilitiesDialog;
 import com.example.vivek.rentalmates.dialogs.FlatNameDialog;
 import com.example.vivek.rentalmates.dialogs.FlatPropertiesDialog;
 import com.example.vivek.rentalmates.dialogs.FlatRentDetailsDialog;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GetNewFlatInfoTask {
     private FragmentManager fragmentManager;
@@ -48,17 +52,37 @@ public class GetNewFlatInfoTask {
                     public void onPositiveResult(Integer securityAmount, Integer rentAmount) {
                         flatInfo.setSecurityAmount(securityAmount);
                         flatInfo.setRentAmount(rentAmount);
-                        final FlatFacilitiesDialog flatFacilitiesDialog = new FlatFacilitiesDialog();
-                        flatFacilitiesDialog.setOnDialogResultListener(new FlatFacilitiesDialog.OnDialogResultListener() {
+                        CurrentLocationMapDialog dialog = new CurrentLocationMapDialog();
+                        dialog.setOnDialogResultListener(new CurrentLocationMapDialog.OnDialogResultListener() {
                             @Override
-                            public void onPositiveResult(boolean cookAvailable, boolean maidAvailable, boolean wifiAvailable) {
-                                FlatPropertiesDialog flatPropertiesDialog = new FlatPropertiesDialog();
-                                flatPropertiesDialog.setOnDialogResultListener(new FlatPropertiesDialog.OnDialogResultListener() {
+                            public void onPositiveResult(double currentLatitude, double currentLongitude) {
+                                List<Double> vertices = new ArrayList<>();
+                                vertices.add(currentLatitude);
+                                vertices.add(currentLongitude);
+                                flatInfo.setVertices(vertices);
+                                final FlatFacilitiesDialog flatFacilitiesDialog = new FlatFacilitiesDialog();
+                                flatFacilitiesDialog.setOnDialogResultListener(new FlatFacilitiesDialog.OnDialogResultListener() {
                                     @Override
-                                    public void onPositiveResult(boolean availableForRent, boolean expenseGroupRequired) {
-                                        if (receiver != null) {
-                                            receiver.onRegisterNewFlatSuccessful(flatInfo);
-                                        }
+                                    public void onPositiveResult(boolean cookAvailable, boolean maidAvailable, boolean wifiAvailable) {
+                                        FlatPropertiesDialog flatPropertiesDialog = new FlatPropertiesDialog();
+                                        flatPropertiesDialog.setOnDialogResultListener(new FlatPropertiesDialog.OnDialogResultListener() {
+                                            @Override
+                                            public void onPositiveResult(boolean availableForRent, boolean expenseGroupRequired) {
+                                                flatInfo.setAvailable(availableForRent);
+                                                if (receiver != null) {
+                                                    receiver.onRegisterNewFlatSuccessful(flatInfo);
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onNegativeResult() {
+                                                if (receiver != null) {
+                                                    receiver.onRegisterNewFlatFailed();
+                                                }
+
+                                            }
+                                        });
+                                        flatPropertiesDialog.show(fragmentManager, "fragment");
                                     }
 
                                     @Override
@@ -66,10 +90,10 @@ public class GetNewFlatInfoTask {
                                         if (receiver != null) {
                                             receiver.onRegisterNewFlatFailed();
                                         }
-
                                     }
                                 });
-                                flatPropertiesDialog.show(fragmentManager, "fragment");
+                                flatFacilitiesDialog.show(fragmentManager, "fragment");
+
                             }
 
                             @Override
@@ -79,7 +103,7 @@ public class GetNewFlatInfoTask {
                                 }
                             }
                         });
-                        flatFacilitiesDialog.show(fragmentManager, "fragment");
+                        dialog.show(fragmentManager, "fragment");
                     }
 
                     @Override

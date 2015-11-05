@@ -57,7 +57,7 @@ public class FlatInfo {
     private int rentAmount;
     private String createFlatResult;
     private String flatAddress;
-    private double[][] vertices;
+    private double[] vertices;
     private List<Long> memberIds = new ArrayList<>();
     private List<Long> contactIds = new ArrayList<>();
     private List<BlobKey> flatPicturesBlobKeys;
@@ -267,11 +267,11 @@ public class FlatInfo {
         this.updateCount = updateCount;
     }
 
-    public double[][] getVertices() {
+    public double[] getVertices() {
         return vertices;
     }
 
-    public void setVertices(double[][] vertices) {
+    public void setVertices(double[] vertices) {
         this.vertices = vertices;
     }
 }
