@@ -10,9 +10,21 @@ import com.google.api.server.spi.response.CollectionResponse;
 import com.google.api.server.spi.response.NotFoundException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.QueryResultIterator;
+import com.google.appengine.api.search.Document;
+import com.google.appengine.api.search.Field;
+import com.google.appengine.api.search.GeoPoint;
+import com.google.appengine.api.search.Index;
+import com.google.appengine.api.search.IndexSpec;
+import com.google.appengine.api.search.PutException;
+import com.google.appengine.api.search.SearchServiceFactory;
+import com.google.appengine.api.search.StatusCode;
+import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserServiceFactory;
+import com.google.storage.onestore.v3.OnestoreEntity;
 import com.googlecode.objectify.cmd.Query;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -91,9 +103,10 @@ public class FlatInfoEndpoint {
             flatInfo.setExpenseGroupId(finalExpenseGroup.getId());
             flatInfo.addMemberId(flatInfo.getOwnerId());
             ofy().save().entity(flatInfo).now();
+            finalFlatInfo = ofy().load().entity(flatInfo).now();
+            createFlatDocument(finalFlatInfo);
 
             //Add created FlatInfo flatId to corresponding UserProfile flatIds list
-            finalFlatInfo = ofy().load().entity(flatInfo).now();
             Long userProfileId = finalFlatInfo.getOwnerId();
             UserProfile relatedUserProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
             relatedUserProfile.addFlatId(finalFlatInfo.getFlatId());
@@ -115,6 +128,28 @@ public class FlatInfoEndpoint {
         }
         logger.info("Created FlatInfo.");
         return finalFlatInfo;
+    }
+
+    private void createFlatDocument(FlatInfo flatInfo) {
+        Document doc = Document.newBuilder()
+                .addField(Field.newBuilder().setName("FlatName").setText(flatInfo.getFlatName()))
+                .addField(Field.newBuilder().setName("OwnerEmailId")
+                        .setText(flatInfo.getOwnerEmailId()))
+                .addField(Field.newBuilder().setName("Id").setText(flatInfo.getFlatId().toString()))
+                .addField(Field.newBuilder().setName("CreationDate").setDate(flatInfo.getDate()))
+                /*.addField(Field.newBuilder().setGeoPoint(new GeoPoint(flatInfo.getVertices()[0], flatInfo.getVertices()[1])))*/
+                .build();
+
+        //Insert the document into Index
+        IndexSpec indexSpec = IndexSpec.newBuilder().setName("FlatInfoIndex").build();
+        Index index = SearchServiceFactory.getSearchService().getIndex(indexSpec);
+        try {
+            index.put(doc);
+        } catch (PutException e) {
+            if (StatusCode.TRANSIENT_ERROR.equals(e.getOperationResult().getCode())) {
+                index.put(doc); // retry putting the document
+            }
+        }
     }
 
     /**
