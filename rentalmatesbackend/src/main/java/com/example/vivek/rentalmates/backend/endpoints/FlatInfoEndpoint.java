@@ -133,11 +133,10 @@ public class FlatInfoEndpoint {
     private void createFlatDocument(FlatInfo flatInfo) {
         Document doc = Document.newBuilder()
                 .addField(Field.newBuilder().setName("FlatName").setText(flatInfo.getFlatName()))
-                .addField(Field.newBuilder().setName("OwnerEmailId")
-                        .setText(flatInfo.getOwnerEmailId()))
+                .addField(Field.newBuilder().setName("OwnerEmailId").setText(flatInfo.getOwnerEmailId()))
                 .addField(Field.newBuilder().setName("Id").setText(flatInfo.getFlatId().toString()))
                 .addField(Field.newBuilder().setName("CreationDate").setDate(flatInfo.getDate()))
-                /*.addField(Field.newBuilder().setGeoPoint(new GeoPoint(flatInfo.getVertices()[0], flatInfo.getVertices()[1])))*/
+                .addField(Field.newBuilder().setName("GeoPoint").setGeoPoint(new GeoPoint(flatInfo.getVertices()[0], flatInfo.getVertices()[1])))
                 .build();
 
         //Insert the document into Index
