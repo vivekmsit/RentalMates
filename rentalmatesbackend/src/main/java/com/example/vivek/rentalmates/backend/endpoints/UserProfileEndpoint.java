@@ -15,11 +15,18 @@ import com.google.api.server.spi.response.NotFoundException;
 import com.google.appengine.api.ThreadManager;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.QueryResultIterator;
+import com.google.appengine.api.search.Document;
+import com.google.appengine.api.search.GetRequest;
+import com.google.appengine.api.search.GetResponse;
+import com.google.appengine.api.search.Index;
+import com.google.appengine.api.search.IndexSpec;
+import com.google.appengine.api.search.SearchServiceFactory;
 import com.googlecode.objectify.cmd.Query;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
@@ -195,7 +202,31 @@ public class UserProfileEndpoint {
     }
 
 
-    public void removeAllDataStoreData() {
+    private boolean removeAllSearchDocuments() {
+        IndexSpec indexSpec = IndexSpec.newBuilder().setName("FlatInfoIndex").build();
+        Index index = SearchServiceFactory.getSearchService().getIndex(indexSpec);
+        try {
+            // looping because getRange by default returns up to 100 documents at a time
+            while (true) {
+                List<String> docIds = new ArrayList<String>();
+                // Return a set of doc_ids.
+                GetRequest request = GetRequest.newBuilder().setReturningIdsOnly(true).build();
+                GetResponse<Document> response = index.getRange(request);
+                if (response.getResults().isEmpty()) {
+                    break;
+                }
+                for (Document doc : response) {
+                    docIds.add(doc.getId());
+                }
+                index.delete(docIds);
+            }
+        } catch (RuntimeException e) {
+            return false;
+        }
+        return true;
+    }
+
+    private void removeAllDataStoreData() {
         for (RegistrationRecord registrationRecord : ofy().load().type(RegistrationRecord.class).list()) {
             ofy().delete().entity(registrationRecord);
         }
@@ -238,6 +269,12 @@ public class UserProfileEndpoint {
                 @Override
                 public void run() {
                     removeAllDataStoreData();
+                }
+            }).run();
+            f.newThread(new Runnable() {
+                @Override
+                public void run() {
+                    removeAllSearchDocuments();
                 }
             }).run();
         }
