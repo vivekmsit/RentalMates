@@ -1,4 +1,4 @@
-package com.example.vivek.rentalmates.libraries;
+package com.example.vivek.rentalmates.library;
 
 import android.content.Context;
 import android.content.SharedPreferences;

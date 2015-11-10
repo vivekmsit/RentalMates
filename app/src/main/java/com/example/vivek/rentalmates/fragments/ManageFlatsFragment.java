@@ -25,7 +25,7 @@ import com.example.vivek.rentalmates.dialogs.GetExistingFlatInfoDialog;
 import com.example.vivek.rentalmates.interfaces.OnFlatInfoListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnRegisterNewFlatReceiver;
 import com.example.vivek.rentalmates.interfaces.OnRequestJoinExistingEntityReceiver;
-import com.example.vivek.rentalmates.libraries.GetNewFlatInfoTask;
+import com.example.vivek.rentalmates.library.GetNewFlatInfoTask;
 import com.example.vivek.rentalmates.tasks.GetFlatInfoListAsyncTask;
 import com.example.vivek.rentalmates.tasks.RegisterNewFlatAsyncTask;
 import com.example.vivek.rentalmates.tasks.RequestAsyncTask;

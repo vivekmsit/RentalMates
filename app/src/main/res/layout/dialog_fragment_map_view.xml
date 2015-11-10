@@ -4,6 +4,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <AutoCompleteTextView
+        android:id="@+id/autocomplete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Type in your Location" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">

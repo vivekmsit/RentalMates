@@ -31,7 +31,7 @@ import com.example.vivek.rentalmates.interfaces.OnFlatInfoListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnRegisterNewFlatReceiver;
 import com.example.vivek.rentalmates.interfaces.OnRequestJoinExistingEntityReceiver;
 import com.example.vivek.rentalmates.interfaces.OnUserProfileListReceiver;
-import com.example.vivek.rentalmates.libraries.GetNewFlatInfoTask;
+import com.example.vivek.rentalmates.library.GetNewFlatInfoTask;
 import com.example.vivek.rentalmates.services.BackendApiService;
 import com.example.vivek.rentalmates.tasks.GetAllExpenseListAsyncTask;
 import com.example.vivek.rentalmates.tasks.GetExpenseGroupListAsyncTask;
