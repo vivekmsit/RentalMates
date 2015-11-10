@@ -20,7 +20,7 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.activities.FirstActivity;
-import com.example.vivek.rentalmates.backend.mainApi.model.FlatInfo;
+import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
 import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.interfaces.OnDeleteRemoteDataReceiver;
@@ -149,24 +149,7 @@ public class DevelopersFragment extends android.support.v4.app.Fragment {
     }
 
     public void onTestButtonClicked() {
-        //Toast.makeText(context, "To be implemented", Toast.LENGTH_LONG).show();
-        SearchFlatsForRentAsyncTask task = new SearchFlatsForRentAsyncTask(context, 2.22, 3.33);
-        task.setOnExecuteTaskReceiver(new SearchFlatsForRentAsyncTask.OnExecuteTaskReceiver() {
-            @Override
-            public void onTaskCompleted(List<FlatInfo> flatInfos) {
-                Toast.makeText(context, "Number: " + flatInfos.size(), Toast.LENGTH_SHORT).show();
-                progressDialog.cancel();
-            }
-
-            @Override
-            public void onTaskFailed() {
-                Toast.makeText(context, "Task Failed", Toast.LENGTH_LONG).show();
-                progressDialog.cancel();
-            }
-        });
-        task.execute();
-        progressDialog.setMessage("Searching Flats");
-        progressDialog.show();
+        Toast.makeText(context, "To be implemented", Toast.LENGTH_LONG).show();
     }
 }
 

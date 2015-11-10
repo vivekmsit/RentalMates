@@ -5,9 +5,9 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.vivek.rentalmates.backend.mainApi.MainApi;
-import com.example.vivek.rentalmates.backend.mainApi.model.FlatInfo;
-import com.example.vivek.rentalmates.backend.mainApi.model.FlatInfoCollection;
+import com.example.vivek.rentalmates.backend.userProfileApi.UserProfileApi;
+import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
+import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfoCollection;
 import com.example.vivek.rentalmates.data.AppConstants;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
@@ -18,7 +18,7 @@ import java.util.List;
 public class SearchFlatsForRentAsyncTask extends AsyncTask<Context, Void, String> {
     private static final String TAG = "SearchFlats_Debug";
 
-    private static MainApi mainApi = null;
+    private static UserProfileApi ufService = null;
     double latitude;
     double longitude;
     private Context context;
@@ -45,13 +45,13 @@ public class SearchFlatsForRentAsyncTask extends AsyncTask<Context, Void, String
     @Override
     protected String doInBackground(Context... params) {
         String msg;
-        if (mainApi == null) {
-            MainApi.Builder builder1 = new MainApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
+        if (ufService == null) {
+            UserProfileApi.Builder builder1 = new UserProfileApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
                     .setRootUrl(AppConstants.BACKEND_ROOT_URL);
-            mainApi = builder1.build();
+            ufService = builder1.build();
         }
         try {
-            FlatInfoCollection flatInfoCollection = mainApi.searchFlatsForRent(latitude, longitude).execute();
+            FlatInfoCollection flatInfoCollection = ufService.searchFlatsForRent(latitude, longitude).execute();
             if (flatInfoCollection == null) {
                 msg = "SUCCESS_NO_FLAT_AVAILABLE";
             } else {

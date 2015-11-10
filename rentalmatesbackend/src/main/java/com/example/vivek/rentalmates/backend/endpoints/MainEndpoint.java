@@ -12,13 +12,6 @@ import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.response.NotFoundException;
-import com.google.appengine.api.search.Index;
-import com.google.appengine.api.search.IndexSpec;
-import com.google.appengine.api.search.Results;
-import com.google.appengine.api.search.ScoredDocument;
-import com.google.appengine.api.search.SearchException;
-import com.google.appengine.api.search.SearchServiceFactory;
-import com.google.appengine.api.search.StatusCode;
 import com.googlecode.objectify.ObjectifyService;
 
 import java.io.ByteArrayInputStream;
@@ -470,37 +463,5 @@ public class MainEndpoint {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Returns List of {@code Contact} for a given {@code FlatInfo}.
-     */
-    @ApiMethod(
-            name = "searchFlatsForRent",
-            path = "searchFlatsForRent",
-            httpMethod = ApiMethod.HttpMethod.POST)
-    public List<FlatInfo> searchFlatsForRent(@Named("latitude") double latitude, @Named("longitude") double longitude) throws NotFoundException {
-        List<FlatInfo> flats = new ArrayList<>();
-        IndexSpec indexSpec = IndexSpec.newBuilder().setName("FlatInfoIndex").build();
-        Index index = SearchServiceFactory.getSearchService().getIndex(indexSpec);
-        latitude = 12.8486324;
-        longitude = 77.6570782;
-        try {
-            String queryString = "distance(GeoPoint, geopoint(" + latitude + "," + longitude + ")) < 10000";
-            Results<ScoredDocument> results = index.search(queryString);
-
-            // Iterate over the documents in the results
-            for (ScoredDocument document : results) {
-                Long flatId = Long.valueOf(document.getOnlyField("Id").getText());
-                FlatInfo flatInfo = ofy().load().type(FlatInfo.class).id(flatId).now();
-                flats.add(flatInfo);
-            }
-        } catch (SearchException e) {
-            if (StatusCode.TRANSIENT_ERROR.equals(e.getOperationResult().getCode())) {
-                // retry
-                flats = null;
-            }
-        }
-        return flats;
     }
 }

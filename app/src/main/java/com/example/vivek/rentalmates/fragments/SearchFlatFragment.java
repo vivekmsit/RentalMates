@@ -1,5 +1,6 @@
 package com.example.vivek.rentalmates.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -9,13 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.adapters.AvailableFlatListViewAdapter;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
-import com.example.vivek.rentalmates.interfaces.OnAvailableFlatInfoListReceiver;
 import com.example.vivek.rentalmates.data.AppData;
-import com.example.vivek.rentalmates.tasks.GetAvailableFlatInfoListAsyncTask;
+import com.example.vivek.rentalmates.tasks.SearchFlatsForRentAsyncTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,7 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment {
     private static final String TAG = "AFlatList_Debug";
 
     private AppData appData;
+    private Context context;
     private RecyclerView recyclerView;
     private TextView availableFlatsTextView;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -34,6 +36,7 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         appData = AppData.getInstance();
+        context = getActivity().getApplicationContext();
     }
 
     @Override
@@ -76,17 +79,19 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment {
     }
 
     public void onSwipeRefresh() {
-        GetAvailableFlatInfoListAsyncTask task = new GetAvailableFlatInfoListAsyncTask(getActivity());
-        task.setOnAvailableFlatInfoListReceiver(new OnAvailableFlatInfoListReceiver() {
+        SearchFlatsForRentAsyncTask task = new SearchFlatsForRentAsyncTask(context, 12.8486324, 77.6570782);
+        task.setOnExecuteTaskReceiver(new SearchFlatsForRentAsyncTask.OnExecuteTaskReceiver() {
             @Override
-            public void onAvailableFlatInfoListLoadSuccessful(List<FlatInfo> flats) {
+            public void onTaskCompleted(List<FlatInfo> flats) {
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
                 if (flats == null) {
                     appData.storeAvailableFlatInfoList(getActivity(), new ArrayList<FlatInfo>());
+                    Toast.makeText(context, "No Matching Flats Found", Toast.LENGTH_SHORT).show();
                 } else {
                     appData.storeAvailableFlatInfoList(getActivity(), flats);
+                    Toast.makeText(context, flats.size() + " Flats found", Toast.LENGTH_SHORT).show();
                 }
                 availableFlatListViewAdapter.updateAvailableFlatsData();
                 availableFlatListViewAdapter.notifyDataSetChanged();
@@ -94,7 +99,7 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment {
             }
 
             @Override
-            public void onAvailableFlatInfoListLoadFailed() {
+            public void onTaskFailed() {
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
