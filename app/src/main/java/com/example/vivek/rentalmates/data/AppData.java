@@ -46,6 +46,10 @@ public class AppData implements Serializable {
     private HashMap<Long, LocalExpenseGroup> expenseGroups;
     private HashMap<String, String> gcmData;
 
+    private double lastLocationLatitude;
+    private double lastLocationLongitude;
+    private float lastLocationZoom;
+
     private static AppData appDataInstance = new AppData();
 
     public static AppData getInstance() {
@@ -68,6 +72,9 @@ public class AppData implements Serializable {
         userProfiles = new HashMap<>();
         expenseGroups = new HashMap<>();
         gcmData = new HashMap<>();
+        lastLocationLatitude = 23.3192728;
+        lastLocationLongitude = 81.9220346;
+        lastLocationZoom = 5;
     }
 
     public List<String> getGcmTypes() {
@@ -85,6 +92,25 @@ public class AppData implements Serializable {
     public boolean addGcmData(String key, String value, Context context) {
         this.gcmData.put(key, value);
         return storeAppData(context);
+    }
+
+    public boolean storeLastLocationData(Context context, double lastLocationLatitude, double lastLocationLongitude, float lastLocationZoom) {
+        this.lastLocationLatitude = lastLocationLatitude;
+        this.lastLocationLongitude = lastLocationLongitude;
+        this.lastLocationZoom = lastLocationZoom;
+        return storeAppData(context);
+    }
+
+    public double getLastLocationLatitude() {
+        return lastLocationLatitude;
+    }
+
+    public double getLastLocationLongitude() {
+        return lastLocationLongitude;
+    }
+
+    public float getLastLocationZoom() {
+        return lastLocationZoom;
     }
 
     public boolean clearGcmData(Context context) {

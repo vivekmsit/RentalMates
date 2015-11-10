@@ -18,6 +18,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
+import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.library.PlaceAutoCompleteAdapter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -44,8 +45,10 @@ public class CurrentLocationMapDialog extends DialogFragment implements GoogleAp
     private GoogleMap map;
     private double currentLatitude;
     private double currentLongitude;
+    private float currentZoom;
     private boolean currentLocationUpdated;
     private OnDialogResultListener listener;
+    private AppData appData;
 
     /**
      * GoogleApiClient wraps our service connection to Google Play Services and provides access
@@ -103,6 +106,7 @@ public class CurrentLocationMapDialog extends DialogFragment implements GoogleAp
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         context = getActivity().getApplicationContext();
+        appData = AppData.getInstance();
 
         // Construct a GoogleApiClient for the {@link Places#GEO_DATA_API} using AutoManage
         // functionality, which automatically sets up the API client to handle Activity lifecycle
@@ -138,12 +142,13 @@ public class CurrentLocationMapDialog extends DialogFragment implements GoogleAp
         // Needs to call MapsInitializer before doing any CameraUpdateFactory calls
         MapsInitializer.initialize(this.getActivity());
 
-        currentLatitude = 12.8486324; //velankini
-        currentLongitude = 77.657392; //velankini
+        currentLatitude = appData.getLastLocationLatitude();
+        currentLongitude = appData.getLastLocationLongitude();
+        currentZoom = appData.getLastLocationZoom();
         currentLocationUpdated = false;
 
         // Updates the location and zoom of the MapView
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(currentLatitude, currentLongitude), (float) 17.23);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(currentLatitude, currentLongitude), currentZoom);
         map.animateCamera(cameraUpdate);
 
         //map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
@@ -162,6 +167,7 @@ public class CurrentLocationMapDialog extends DialogFragment implements GoogleAp
                 public void onLocationChanged(Location location) {
                     currentLatitude = location.getLatitude();
                     currentLongitude = location.getLongitude();
+                    appData.storeLastLocationData(context, currentLatitude, currentLongitude, (float) 12.5);
                     if (!currentLocationUpdated) {
                         makeUseOfNewLocation();
                         currentLocationUpdated = true;
