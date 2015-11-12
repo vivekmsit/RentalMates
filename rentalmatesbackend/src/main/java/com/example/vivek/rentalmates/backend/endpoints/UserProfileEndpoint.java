@@ -4,8 +4,10 @@ import com.example.vivek.rentalmates.backend.entities.Contact;
 import com.example.vivek.rentalmates.backend.entities.ExpenseData;
 import com.example.vivek.rentalmates.backend.entities.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.entities.FlatInfo;
+import com.example.vivek.rentalmates.backend.entities.FlatSearchCriteria;
 import com.example.vivek.rentalmates.backend.entities.RegistrationRecord;
 import com.example.vivek.rentalmates.backend.entities.Request;
+import com.example.vivek.rentalmates.backend.entities.RoomMateSearchCriteria;
 import com.example.vivek.rentalmates.backend.entities.UserProfile;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -412,12 +414,12 @@ public class UserProfileEndpoint {
             name = "searchFlatsForRent",
             path = "searchFlatsForRent",
             httpMethod = ApiMethod.HttpMethod.POST)
-    public List<FlatInfo> searchFlatsForRent(@Named("latitude") double latitude, @Named("longitude") double longitude) throws NotFoundException {
+    public List<FlatInfo> searchFlatsForRent(FlatSearchCriteria criteria) throws NotFoundException {
         List<FlatInfo> flats = new ArrayList<>();
         IndexSpec indexSpec = IndexSpec.newBuilder().setName("FlatInfoIndex").build();
         Index index = SearchServiceFactory.getSearchService().getIndex(indexSpec);
         try {
-            String queryString = "distance(GeoPoint, geopoint(" + latitude + "," + longitude + ")) < 10000";
+            String queryString = "distance(GeoPoint, geopoint(" + criteria.getLocationLatitude() + "," + criteria.getLocationLongitude() + ")) < " + criteria.getAreaRange();
             Results<ScoredDocument> results = index.search(queryString);
 
             // Iterate over the documents in the results
@@ -433,5 +435,17 @@ public class UserProfileEndpoint {
             }
         }
         return flats;
+    }
+
+    /**
+     * Returns List of {@code Contact} for a given {@code FlatInfo}.
+     */
+    @ApiMethod(
+            name = "searchRoomMates",
+            path = "searchRoomMates",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public List<UserProfile> searchRoomMates(RoomMateSearchCriteria criteria) throws NotFoundException {
+        List<UserProfile> userProfiles = new ArrayList<>();
+        return userProfiles;
     }
 }

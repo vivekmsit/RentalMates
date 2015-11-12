@@ -32,6 +32,17 @@
 
         </android.support.v4.widget.SwipeRefreshLayout>
 
+        <Button
+            android:id="@+id/searchCriteriaButton"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/orange"
+            android:gravity="center"
+            android:text="Search Criteria"
+            android:textColor="@color/white" />
+
     </RelativeLayout>
 
 </FrameLayout>

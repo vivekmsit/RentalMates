@@ -9,13 +9,16 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.adapters.AvailableFlatListViewAdapter;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
+import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatSearchCriteria;
 import com.example.vivek.rentalmates.data.AppData;
+import com.example.vivek.rentalmates.dialogs.FlatSearchCriteriaDialog;
 import com.example.vivek.rentalmates.tasks.SearchFlatsForRentAsyncTask;
 
 import java.util.ArrayList;
@@ -23,14 +26,13 @@ import java.util.List;
 
 public class SearchFlatFragment extends android.support.v4.app.Fragment {
 
-    private static final String TAG = "AFlatList_Debug";
-
     private AppData appData;
     private Context context;
     private RecyclerView recyclerView;
     private TextView availableFlatsTextView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private AvailableFlatListViewAdapter availableFlatListViewAdapter;
+    private Button searchCriteriaButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,7 +60,7 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                onSwipeRefresh();
+                onSwipeRefresh(new FlatSearchCriteria());
             }
         });
         swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.white);
@@ -66,8 +68,34 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment {
         swipeRefreshLayout.setProgressViewOffset(false, 0,
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
 
+        //Initialize SearchCriteriaButton
+        searchCriteriaButton = (Button) layout.findViewById(R.id.searchCriteriaButton);
+        searchCriteriaButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchFlats();
+            }
+        });
+
         updateView();
         return layout;
+    }
+
+    public void searchFlats() {
+        FlatSearchCriteriaDialog dialog = new FlatSearchCriteriaDialog();
+        dialog.setOnDialogResultListener(new FlatSearchCriteriaDialog.OnDialogResultListener() {
+            @Override
+            public void onPositiveResult(FlatSearchCriteria flatSearchCriteria) {
+                swipeRefreshLayout.setRefreshing(true);
+                onSwipeRefresh(flatSearchCriteria);
+            }
+
+            @Override
+            public void onNegativeResult() {
+
+            }
+        });
+        dialog.show(getFragmentManager(), "fragment");
     }
 
     public void updateView() {
@@ -78,8 +106,11 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment {
         }
     }
 
-    public void onSwipeRefresh() {
-        SearchFlatsForRentAsyncTask task = new SearchFlatsForRentAsyncTask(context, 12.8486324, 77.6570782);
+    public void onSwipeRefresh(FlatSearchCriteria flatSearchCriteria) {
+        flatSearchCriteria.setLocationLatitude(12.8486324);
+        flatSearchCriteria.setLocationLongitude(77.6570782);
+        flatSearchCriteria.setAreaRange(10000);
+        SearchFlatsForRentAsyncTask task = new SearchFlatsForRentAsyncTask(context, flatSearchCriteria);
         task.setOnExecuteTaskReceiver(new SearchFlatsForRentAsyncTask.OnExecuteTaskReceiver() {
             @Override
             public void onTaskCompleted(List<FlatInfo> flats) {

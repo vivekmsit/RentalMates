@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.example.vivek.rentalmates.backend.userProfileApi.UserProfileApi;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfoCollection;
+import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatSearchCriteria;
 import com.example.vivek.rentalmates.data.AppConstants;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
@@ -19,11 +20,10 @@ public class SearchFlatsForRentAsyncTask extends AsyncTask<Context, Void, String
     private static final String TAG = "SearchFlats_Debug";
 
     private static UserProfileApi ufService = null;
-    double latitude;
-    double longitude;
     private Context context;
     private IOException ioException;
     private OnExecuteTaskReceiver receiver;
+    private FlatSearchCriteria flatSearchCriteria;
     private List<FlatInfo> flats;
 
     public interface OnExecuteTaskReceiver {
@@ -36,10 +36,9 @@ public class SearchFlatsForRentAsyncTask extends AsyncTask<Context, Void, String
         this.receiver = receiver;
     }
 
-    public SearchFlatsForRentAsyncTask(Context context, final double latitude, final double longitude) {
+    public SearchFlatsForRentAsyncTask(Context context, final FlatSearchCriteria flatSearchCriteria) {
         this.context = context;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.flatSearchCriteria = flatSearchCriteria;
     }
 
     @Override
@@ -51,7 +50,7 @@ public class SearchFlatsForRentAsyncTask extends AsyncTask<Context, Void, String
             ufService = builder1.build();
         }
         try {
-            FlatInfoCollection flatInfoCollection = ufService.searchFlatsForRent(latitude, longitude).execute();
+            FlatInfoCollection flatInfoCollection = ufService.searchFlatsForRent(flatSearchCriteria).execute();
             if (flatInfoCollection == null) {
                 msg = "SUCCESS_NO_FLAT_AVAILABLE";
             } else {

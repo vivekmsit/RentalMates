@@ -5,8 +5,10 @@ import com.example.vivek.rentalmates.backend.entities.Contact;
 import com.example.vivek.rentalmates.backend.entities.ExpenseData;
 import com.example.vivek.rentalmates.backend.entities.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.entities.FlatInfo;
+import com.example.vivek.rentalmates.backend.entities.FlatSearchCriteria;
 import com.example.vivek.rentalmates.backend.entities.RegistrationRecord;
 import com.example.vivek.rentalmates.backend.entities.Request;
+import com.example.vivek.rentalmates.backend.entities.RoomMateSearchCriteria;
 import com.example.vivek.rentalmates.backend.entities.UserProfile;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -71,6 +73,8 @@ public class MainEndpoint {
         ObjectifyService.register(UserProfile.class);
         ObjectifyService.register(Request.class);
         ObjectifyService.register(Contact.class);
+        ObjectifyService.register(FlatSearchCriteria.class);
+        ObjectifyService.register(RoomMateSearchCriteria.class);
         ObjectifyService.register(RegistrationRecord.class);
     }
 
