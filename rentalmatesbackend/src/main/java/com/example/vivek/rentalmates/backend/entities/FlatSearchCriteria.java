@@ -10,7 +10,9 @@ public class FlatSearchCriteria implements Serializable {
     @Id
     Long id;
     private boolean sharing;
+    private Long minRentAmountPerPerson;
     private Long maxRentAmountPerPerson;
+    private Long minSecurityAmountPerPerson;
     private Long maxSecurityAmountPerPerson;
     private int areaRange; // in metres
     private Long gender;
@@ -136,5 +138,21 @@ public class FlatSearchCriteria implements Serializable {
 
     public void setRequesterProfilePicture(String requesterProfilePicture) {
         this.requesterProfilePicture = requesterProfilePicture;
+    }
+
+    public Long getMinRentAmountPerPerson() {
+        return minRentAmountPerPerson;
+    }
+
+    public void setMinRentAmountPerPerson(Long minRentAmountPerPerson) {
+        this.minRentAmountPerPerson = minRentAmountPerPerson;
+    }
+
+    public Long getMinSecurityAmountPerPerson() {
+        return minSecurityAmountPerPerson;
+    }
+
+    public void setMinSecurityAmountPerPerson(Long minSecurityAmountPerPerson) {
+        this.minSecurityAmountPerPerson = minSecurityAmountPerPerson;
     }
 }

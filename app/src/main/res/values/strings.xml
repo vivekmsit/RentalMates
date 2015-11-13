@@ -46,5 +46,6 @@
     <string name="title_activity_manage_expense_groups">ManageExpenseGroupsActivity</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
+    <string name="title_activity_test">TestActivity</string>
 
 </resources>

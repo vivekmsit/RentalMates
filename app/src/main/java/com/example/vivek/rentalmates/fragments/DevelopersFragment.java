@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.activities.FirstActivity;
+import com.example.vivek.rentalmates.activities.TestActivity;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
 import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.AppData;
@@ -150,6 +151,8 @@ public class DevelopersFragment extends android.support.v4.app.Fragment {
 
     public void onTestButtonClicked() {
         Toast.makeText(context, "To be implemented", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(getActivity(), TestActivity.class);
+        startActivity(intent);
     }
 }
 
