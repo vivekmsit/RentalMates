@@ -207,25 +207,37 @@ public class AppData implements Serializable {
     }
 
     public boolean storeUserProfileList(Context context, List<UserProfile> profiles) {
-        List<LocalUserProfile> userProfiles = LocalUserProfile.convertUserProfileToLocalUserProfile(profiles);
-        for (LocalUserProfile profile : userProfiles) {
-            this.userProfiles.put(profile.getUserProfileId(), profile);
+        if (profiles.size() == 0) {
+            this.userProfiles = new HashMap<>();
+        } else {
+            List<LocalUserProfile> userProfiles = LocalUserProfile.convertUserProfileToLocalUserProfile(profiles);
+            for (LocalUserProfile profile : userProfiles) {
+                this.userProfiles.put(profile.getUserProfileId(), profile);
+            }
         }
         return storeAppData(context);
     }
 
     public boolean storeAvailableFlatInfoList(Context context, List<FlatInfo> flats) {
-        List<LocalFlatInfo> localFlats = LocalFlatInfo.convertFlatInfoToLocalFlatInfo(flats);
-        for (LocalFlatInfo flatInfo : localFlats) {
-            this.availableFlats.put(flatInfo.getFlatId(), flatInfo);
+        if (flats.size() == 0) {
+            this.availableFlats = new HashMap<>();
+        } else {
+            List<LocalFlatInfo> localFlats = LocalFlatInfo.convertFlatInfoToLocalFlatInfo(flats);
+            for (LocalFlatInfo flatInfo : localFlats) {
+                this.availableFlats.put(flatInfo.getFlatId(), flatInfo);
+            }
         }
         return storeAppData(context);
     }
 
     public boolean storeFlatInfoList(Context context, List<FlatInfo> flats) {
-        List<LocalFlatInfo> localFlats = LocalFlatInfo.convertFlatInfoToLocalFlatInfo(flats);
-        for (LocalFlatInfo flatInfo : localFlats) {
-            this.flats.put(flatInfo.getFlatId(), flatInfo);
+        if (flats.size() == 0) {
+            this.flats = new HashMap<>();
+        } else {
+            List<LocalFlatInfo> localFlats = LocalFlatInfo.convertFlatInfoToLocalFlatInfo(flats);
+            for (LocalFlatInfo flatInfo : localFlats) {
+                this.flats.put(flatInfo.getFlatId(), flatInfo);
+            }
         }
         return storeAppData(context);
     }

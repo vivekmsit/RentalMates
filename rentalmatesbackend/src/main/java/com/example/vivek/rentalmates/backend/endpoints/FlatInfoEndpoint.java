@@ -136,6 +136,8 @@ public class FlatInfoEndpoint {
                 .addField(Field.newBuilder().setName("OwnerEmailId").setText(flatInfo.getOwnerEmailId()))
                 .addField(Field.newBuilder().setName("Id").setText(flatInfo.getFlatId().toString()))
                 .addField(Field.newBuilder().setName("CreationDate").setDate(flatInfo.getDate()))
+                .addField(Field.newBuilder().setName("rentPerPerson").setNumber(flatInfo.getRentAmount()))
+                .addField(Field.newBuilder().setName("securityPerPerson").setNumber(flatInfo.getSecurityAmount()))
                 .addField(Field.newBuilder().setName("GeoPoint").setGeoPoint(new GeoPoint(flatInfo.getVertices()[0], flatInfo.getVertices()[1])))
                 .build();
 

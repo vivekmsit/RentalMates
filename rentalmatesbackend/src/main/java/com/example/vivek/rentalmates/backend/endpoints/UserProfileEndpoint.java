@@ -420,6 +420,8 @@ public class UserProfileEndpoint {
         Index index = SearchServiceFactory.getSearchService().getIndex(indexSpec);
         try {
             String queryString = "distance(GeoPoint, geopoint(" + criteria.getLocationLatitude() + "," + criteria.getLocationLongitude() + ")) < " + criteria.getAreaRange();
+            queryString = queryString + " AND rentPerPerson > " + criteria.getMinRentAmountPerPerson() + " AND rentPerPerson < " + criteria.getMaxRentAmountPerPerson();
+            queryString = queryString + " AND securityPerPerson > " + criteria.getMinSecurityAmountPerPerson() + " AND securityPerPerson < " + criteria.getMaxSecurityAmountPerPerson();
             Results<ScoredDocument> results = index.search(queryString);
 
             // Iterate over the documents in the results

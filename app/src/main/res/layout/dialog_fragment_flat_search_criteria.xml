@@ -2,14 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/lightGrey"
     android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/rentRangeSeekBarOuterLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@color/white"
         android:orientation="vertical"
-        android:paddingBottom="10dp">
+        android:padding="5dp">
 
         <RelativeLayout
             android:id="@+id/minMaxRentRelativeLayout"
@@ -70,8 +73,10 @@
         android:id="@+id/securityRangeSeekBarOuterLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@color/white"
         android:orientation="vertical"
-        android:paddingBottom="10dp">
+        android:padding="5dp">
 
         <RelativeLayout
             android:id="@+id/minMaxSecurityRelativeLayout"
@@ -129,24 +134,122 @@
 
     </RelativeLayout>
 
-    <RadioButton
-        android:id="@+id/sharingRadioButton"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginTop="20dp"
-        android:layout_weight="0.13"
-        android:checked="false"
-        android:text="Sharing"
-        android:textSize="25sp" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:padding="5dp">
 
-    <RadioButton
-        android:id="@+id/availableRadioButton"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginTop="20dp"
-        android:layout_weight="0.13"
-        android:checked="false"
-        android:text="Available"
-        android:textSize="25sp" />
+        <TextView
+            android:id="@+id/basicAmenitiesTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="Basic Amenities" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/basicAmenitiesTextView"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/column1AmenitiesLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:orientation="vertical">
+
+                <CheckBox
+                    android:id="@+id/wifiCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="WiFi" />
+
+                <CheckBox
+                    android:id="@+id/cookCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="Cook" />
+
+                <CheckBox
+                    android:id="@+id/maidCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="Maid" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/column2AmenitiesLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@+id/column1AmenitiesLayout"
+                android:orientation="vertical">
+
+                <CheckBox
+                    android:id="@+id/lpgCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="LPG" />
+
+                <CheckBox
+                    android:id="@+id/parkingCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="Parking" />
+
+                <CheckBox
+                    android:id="@+id/gymCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="Gym" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/column3AmenitiesLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@+id/column2AmenitiesLayout"
+                android:orientation="vertical">
+
+                <CheckBox
+                    android:id="@+id/swimmingPoolCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="Swimming Pool" />
+
+                <CheckBox
+                    android:id="@+id/attachedBathroomPoolCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="Attached Bathroom" />
+
+                <CheckBox
+                    android:id="@+id/attachedBalconyPoolCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="Attached Balcony" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
 
 </LinearLayout>
