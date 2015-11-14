@@ -5,14 +5,14 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/rangeSeekBarOuterLayout"
+        android:id="@+id/rentRangeSeekBarOuterLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingBottom="10dp">
 
         <RelativeLayout
-            android:id="@+id/minMaxRelativeLayout"
+            android:id="@+id/minMaxRentRelativeLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -28,22 +28,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:text="Min Rent" />
+                android:text="Max Rent" />
 
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/minMaxValueRelativeLayout"
+            android:id="@+id/minMaxRentValueRelativeLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/minMaxRelativeLayout">
+            android:layout_below="@id/minMaxRentRelativeLayout">
 
             <TextView
                 android:id="@+id/minRentValueTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:text="Rs 2K"
+                android:text="Rs 0K"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
@@ -56,12 +56,74 @@
 
         </RelativeLayout>
 
-
         <LinearLayout
-            android:id="@+id/rangeSeekBarInnerLayout"
+            android:id="@+id/rentRangeSeekBarInnerLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/minMaxValueRelativeLayout"
+            android:layout_below="@id/minMaxRentValueRelativeLayout"
+            android:orientation="horizontal"
+            android:paddingBottom="10dp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/securityRangeSeekBarOuterLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="10dp">
+
+        <RelativeLayout
+            android:id="@+id/minMaxSecurityRelativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/minSecurityTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:text="Min Security" />
+
+            <TextView
+                android:id="@+id/maxSecurityTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:text="Max Security" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/minMaxSecurityValueRelativeLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/minMaxSecurityRelativeLayout">
+
+            <TextView
+                android:id="@+id/minSecurityValueTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:text="Rs 0K"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/maxSecurityValueTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:text="Rs 200K"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:id="@+id/securityRangeSeekBarInnerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/minMaxSecurityValueRelativeLayout"
             android:orientation="horizontal"
             android:paddingBottom="10dp" />
 
