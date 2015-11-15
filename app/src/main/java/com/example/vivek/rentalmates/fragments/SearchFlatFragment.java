@@ -60,7 +60,7 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                onSwipeRefresh(new FlatSearchCriteria());
+                onSwipeRefresh();
             }
         });
         swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.white);
@@ -87,7 +87,8 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment {
             @Override
             public void onPositiveResult(FlatSearchCriteria flatSearchCriteria) {
                 swipeRefreshLayout.setRefreshing(true);
-                onSwipeRefresh(flatSearchCriteria);
+                appData.storeFlatSearchCriteria(context, flatSearchCriteria);
+                onSwipeRefresh();
             }
 
             @Override
@@ -106,11 +107,8 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment {
         }
     }
 
-    public void onSwipeRefresh(FlatSearchCriteria flatSearchCriteria) {
-        flatSearchCriteria.setLocationLatitude(12.8486324);
-        flatSearchCriteria.setLocationLongitude(77.6570782);
-        flatSearchCriteria.setAreaRange(10000);
-        SearchFlatsForRentAsyncTask task = new SearchFlatsForRentAsyncTask(context, flatSearchCriteria);
+    public void onSwipeRefresh() {
+        SearchFlatsForRentAsyncTask task = new SearchFlatsForRentAsyncTask(context, appData.getFlatSearchCriteria());
         task.setOnExecuteTaskReceiver(new SearchFlatsForRentAsyncTask.OnExecuteTaskReceiver() {
             @Override
             public void onTaskCompleted(List<FlatInfo> flats) {

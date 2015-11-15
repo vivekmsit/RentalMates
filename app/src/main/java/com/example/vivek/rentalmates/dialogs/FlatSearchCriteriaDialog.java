@@ -53,10 +53,13 @@ public class FlatSearchCriteriaDialog extends DialogFragment {
         setUpSecurityRangeSeekBar(view);
 
         flatSearchCriteria = new FlatSearchCriteria();
-        flatSearchCriteria.setMinRentAmountPerPerson((long) 0);
-        flatSearchCriteria.setMaxRentAmountPerPerson((long) 50000);
-        flatSearchCriteria.setMinSecurityAmountPerPerson((long) 0);
-        flatSearchCriteria.setMaxSecurityAmountPerPerson((long) 200000);
+        flatSearchCriteria.setLocationLatitude(12.8486324);
+        flatSearchCriteria.setLocationLongitude(77.6570782);
+        flatSearchCriteria.setAreaRange(10000);
+        flatSearchCriteria.setMinRentAmountPerPerson(0);
+        flatSearchCriteria.setMaxRentAmountPerPerson(100000);
+        flatSearchCriteria.setMinSecurityAmountPerPerson(0);
+        flatSearchCriteria.setMaxSecurityAmountPerPerson(200000);
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         alertDialogBuilder.setTitle("Search Criteria");
@@ -89,8 +92,8 @@ public class FlatSearchCriteriaDialog extends DialogFragment {
         seekBar.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>() {
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue) {
-                flatSearchCriteria.setMaxRentAmountPerPerson((long) (maxValue * 1000));
-                flatSearchCriteria.setMinRentAmountPerPerson((long) (minValue * 1000));
+                flatSearchCriteria.setMaxRentAmountPerPerson(maxValue * 1000);
+                flatSearchCriteria.setMinRentAmountPerPerson(minValue * 1000);
                 minRentValueTextView.setText("Rs " + minValue + "K");
                 maxRentValueTextView.setText("Rs " + maxValue + "K");
             }
@@ -106,13 +109,13 @@ public class FlatSearchCriteriaDialog extends DialogFragment {
         seekBar.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Integer>() {
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Integer minValue, Integer maxValue) {
-                flatSearchCriteria.setMaxSecurityAmountPerPerson((long) (maxValue * 1000));
-                flatSearchCriteria.setMinSecurityAmountPerPerson((long) (minValue * 1000));
+                flatSearchCriteria.setMaxSecurityAmountPerPerson(maxValue * 1000);
+                flatSearchCriteria.setMinSecurityAmountPerPerson(minValue * 1000);
                 minSecurityValueTextView.setText("Rs " + minValue + "K");
                 maxSecurityValueTextView.setText("Rs " + maxValue + "K");
             }
         });
-        seekBar.setNormalizedMinValue(0);
+        seekBar.setSelectedMinValue(0);
         seekBar.setSelectedMaxValue(200);
         ViewGroup layout = (ViewGroup) view.findViewById(R.id.securityRangeSeekBarInnerLayout);
         layout.addView(seekBar);

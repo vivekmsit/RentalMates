@@ -10,6 +10,7 @@ import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.Expe
 import com.example.vivek.rentalmates.backend.mainApi.model.Contact;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.ExpenseGroup;
+import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatSearchCriteria;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.Request;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
 import com.example.vivek.rentalmates.tasks.LoadProfileImageAsyncTask;
@@ -46,6 +47,8 @@ public class AppData implements Serializable {
     private HashMap<Long, LocalExpenseGroup> expenseGroups;
     private HashMap<String, String> gcmData;
 
+    private LocalFlatSearchCriteria localFlatSearchCriteria;
+
     private double lastLocationLatitude;
     private double lastLocationLongitude;
     private float lastLocationZoom;
@@ -72,6 +75,7 @@ public class AppData implements Serializable {
         userProfiles = new HashMap<>();
         expenseGroups = new HashMap<>();
         gcmData = new HashMap<>();
+        localFlatSearchCriteria = new LocalFlatSearchCriteria();
         lastLocationLatitude = 23.3192728;
         lastLocationLongitude = 81.9220346;
         lastLocationZoom = 5;
@@ -183,6 +187,7 @@ public class AppData implements Serializable {
     }
 
     public boolean storeExpenseGroupList(Context context, List<ExpenseGroup> expenseGroups) {
+        this.expenseGroups = new HashMap<>();
         List<LocalExpenseGroup> localExpenseGroups = LocalExpenseGroup.convertEGroupToLocalEGroup(expenseGroups);
         for (LocalExpenseGroup group : localExpenseGroups) {
             this.expenseGroups.put(group.getId(), group);
@@ -207,39 +212,39 @@ public class AppData implements Serializable {
     }
 
     public boolean storeUserProfileList(Context context, List<UserProfile> profiles) {
-        if (profiles.size() == 0) {
-            this.userProfiles = new HashMap<>();
-        } else {
-            List<LocalUserProfile> userProfiles = LocalUserProfile.convertUserProfileToLocalUserProfile(profiles);
-            for (LocalUserProfile profile : userProfiles) {
-                this.userProfiles.put(profile.getUserProfileId(), profile);
-            }
+        this.userProfiles = new HashMap<>();
+        List<LocalUserProfile> userProfiles = LocalUserProfile.convertUserProfileToLocalUserProfile(profiles);
+        for (LocalUserProfile profile : userProfiles) {
+            this.userProfiles.put(profile.getUserProfileId(), profile);
         }
         return storeAppData(context);
     }
 
     public boolean storeAvailableFlatInfoList(Context context, List<FlatInfo> flats) {
-        if (flats.size() == 0) {
-            this.availableFlats = new HashMap<>();
-        } else {
-            List<LocalFlatInfo> localFlats = LocalFlatInfo.convertFlatInfoToLocalFlatInfo(flats);
-            for (LocalFlatInfo flatInfo : localFlats) {
-                this.availableFlats.put(flatInfo.getFlatId(), flatInfo);
-            }
+        this.availableFlats = new HashMap<>();
+        List<LocalFlatInfo> localFlats = LocalFlatInfo.convertFlatInfoToLocalFlatInfo(flats);
+        for (LocalFlatInfo flatInfo : localFlats) {
+            this.availableFlats.put(flatInfo.getFlatId(), flatInfo);
         }
         return storeAppData(context);
     }
 
     public boolean storeFlatInfoList(Context context, List<FlatInfo> flats) {
-        if (flats.size() == 0) {
-            this.flats = new HashMap<>();
-        } else {
-            List<LocalFlatInfo> localFlats = LocalFlatInfo.convertFlatInfoToLocalFlatInfo(flats);
-            for (LocalFlatInfo flatInfo : localFlats) {
-                this.flats.put(flatInfo.getFlatId(), flatInfo);
-            }
+        this.flats = new HashMap<>();
+        List<LocalFlatInfo> localFlats = LocalFlatInfo.convertFlatInfoToLocalFlatInfo(flats);
+        for (LocalFlatInfo flatInfo : localFlats) {
+            this.flats.put(flatInfo.getFlatId(), flatInfo);
         }
         return storeAppData(context);
+    }
+
+    public boolean storeFlatSearchCriteria(Context context, FlatSearchCriteria flatSearchCriteria) {
+        this.localFlatSearchCriteria = LocalFlatSearchCriteria.convertFlatSearchCriteriaToLocalFlatSearchCriteria(flatSearchCriteria);
+        return storeAppData(context);
+    }
+
+    public FlatSearchCriteria getFlatSearchCriteria() {
+        return LocalFlatSearchCriteria.convertLocalFlatSearchCriteriaToFlatSearchCriteria(this.localFlatSearchCriteria);
     }
 
     public boolean storeContactList(Context context, List<Contact> contacts) {
@@ -376,6 +381,7 @@ public class AppData implements Serializable {
         userProfiles = new HashMap<>();
         expenseGroups = new HashMap<>();
         gcmData = new HashMap<>();
+        localFlatSearchCriteria = new LocalFlatSearchCriteria();
 
         Toast.makeText(context, "AppData cleared", Toast.LENGTH_LONG).show();
         Log.d(TAG, "AppData cleared");

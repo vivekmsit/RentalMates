@@ -10,10 +10,10 @@ public class FlatSearchCriteria implements Serializable {
     @Id
     Long id;
     private boolean sharing;
-    private Long minRentAmountPerPerson;
-    private Long maxRentAmountPerPerson;
-    private Long minSecurityAmountPerPerson;
-    private Long maxSecurityAmountPerPerson;
+    private int minRentAmountPerPerson;
+    private int maxRentAmountPerPerson;
+    private int minSecurityAmountPerPerson;
+    private int maxSecurityAmountPerPerson;
     private int areaRange; // in metres
     private Long gender;
     private Long requesterId;
@@ -26,6 +26,13 @@ public class FlatSearchCriteria implements Serializable {
     private String requesterProfilePicture;
 
     public FlatSearchCriteria() {
+        locationLatitude = 12.8486324;
+        locationLongitude = 77.6570782;
+        areaRange = 10000;
+        minRentAmountPerPerson = 0;
+        maxRentAmountPerPerson = 100000;
+        minSecurityAmountPerPerson = 0;
+        maxSecurityAmountPerPerson = 200000;
     }
 
     public Long getId() {
@@ -44,19 +51,19 @@ public class FlatSearchCriteria implements Serializable {
         this.sharing = sharing;
     }
 
-    public Long getMaxRentAmountPerPerson() {
+    public int getMaxRentAmountPerPerson() {
         return maxRentAmountPerPerson;
     }
 
-    public void setMaxRentAmountPerPerson(Long maxRentAmountPerPerson) {
+    public void setMaxRentAmountPerPerson(int maxRentAmountPerPerson) {
         this.maxRentAmountPerPerson = maxRentAmountPerPerson;
     }
 
-    public Long getMaxSecurityAmountPerPerson() {
+    public int getMaxSecurityAmountPerPerson() {
         return maxSecurityAmountPerPerson;
     }
 
-    public void setMaxSecurityAmountPerPerson(Long maxSecurityAmountPerPerson) {
+    public void setMaxSecurityAmountPerPerson(int maxSecurityAmountPerPerson) {
         this.maxSecurityAmountPerPerson = maxSecurityAmountPerPerson;
     }
 
@@ -140,19 +147,19 @@ public class FlatSearchCriteria implements Serializable {
         this.requesterProfilePicture = requesterProfilePicture;
     }
 
-    public Long getMinRentAmountPerPerson() {
+    public int getMinRentAmountPerPerson() {
         return minRentAmountPerPerson;
     }
 
-    public void setMinRentAmountPerPerson(Long minRentAmountPerPerson) {
+    public void setMinRentAmountPerPerson(int minRentAmountPerPerson) {
         this.minRentAmountPerPerson = minRentAmountPerPerson;
     }
 
-    public Long getMinSecurityAmountPerPerson() {
+    public int getMinSecurityAmountPerPerson() {
         return minSecurityAmountPerPerson;
     }
 
-    public void setMinSecurityAmountPerPerson(Long minSecurityAmountPerPerson) {
+    public void setMinSecurityAmountPerPerson(int minSecurityAmountPerPerson) {
         this.minSecurityAmountPerPerson = minSecurityAmountPerPerson;
     }
 }

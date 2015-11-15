@@ -12,9 +12,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class LocalExpenseData implements Serializable {
-
-    private static final String TAG = "LocalExpenseData_Debug";
-
     private int amount;
     private String description;
     private String ownerEmailId;
@@ -131,16 +128,6 @@ public class LocalExpenseData implements Serializable {
         this.membersData = membersData;
     }
 
-    public void addMemberData(Long memberId, Long share) {
-        membersData.put(memberId, share);
-        numberOfMembers++;
-    }
-
-    public void deleteMemberData(Long memberId) {
-        membersData.remove(memberId);
-        numberOfMembers--;
-    }
-
     public static List<ExpenseData> convertLocalExpenseToExpense(List<LocalExpenseData> expenses) {
         if (expenses == null) {
             return null;
@@ -193,7 +180,7 @@ public class LocalExpenseData implements Serializable {
 
             Map<Long, Long> expenseRatios = new HashMap<>();
             for (Long memberId : expenseData.getMemberIds()) {
-                expenseRatios.put(memberId, new Long(1));
+                expenseRatios.put(memberId, (long) 1);
             }
             data.setMembersData(expenseRatios);
 
