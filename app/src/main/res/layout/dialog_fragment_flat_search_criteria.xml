@@ -1,255 +1,399 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lightGrey"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/rentRangeSeekBarOuterLayout"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:background="@color/white"
-        android:orientation="vertical"
-        android:padding="5dp">
+        android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/minMaxRentRelativeLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/minRentTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:text="Min Rent" />
-
-            <TextView
-                android:id="@+id/maxRentTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:text="Max Rent" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/minMaxRentValueRelativeLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/minMaxRentRelativeLayout">
-
-            <TextView
-                android:id="@+id/minRentValueTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:text="Rs 0"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-
-            <TextView
-                android:id="@+id/maxRentValueTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:text="Rs 50000"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-
-        </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/rentRangeSeekBarInnerLayout"
+            android:id="@+id/rentRangeSeekBarOuterLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/minMaxRentValueRelativeLayout"
-            android:orientation="horizontal"
-            android:paddingBottom="10dp" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/securityRangeSeekBarOuterLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:background="@color/white"
-        android:orientation="vertical"
-        android:padding="5dp">
-
-        <RelativeLayout
-            android:id="@+id/minMaxSecurityRelativeLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/minSecurityTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:text="Min Security" />
-
-            <TextView
-                android:id="@+id/maxSecurityTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:text="Max Security" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/minMaxSecurityValueRelativeLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/minMaxSecurityRelativeLayout">
-
-            <TextView
-                android:id="@+id/minSecurityValueTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:text="Rs 0"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-
-            <TextView
-                android:id="@+id/maxSecurityValueTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:text="Rs 200000"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-
-        </RelativeLayout>
-
-
-        <LinearLayout
-            android:id="@+id/securityRangeSeekBarInnerLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/minMaxSecurityValueRelativeLayout"
-            android:orientation="horizontal"
-            android:paddingBottom="10dp" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:background="@color/white"
-        android:orientation="vertical"
-        android:padding="5dp">
-
-        <TextView
-            android:id="@+id/basicAmenitiesTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="Basic Amenities" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/basicAmenitiesTextView"
+            android:layout_margin="10dp"
+            android:background="@color/white"
+            android:elevation="3dp"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/column1AmenitiesLayout"
+            <RelativeLayout
+                android:id="@+id/filterHeaderRent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="@color/primaryColor">
+
+                <TextView
+                    android:id="@+id/filterHeaderRentTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="Rent"
+                    android:textColor="@color/white" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/minMaxRentRelativeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/filterHeaderRent"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/minRentTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:text="Minimum" />
+
+                <TextView
+                    android:id="@+id/maxRentTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="Maximum" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/minMaxRentValueRelativeLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:orientation="vertical">
+                android:layout_below="@id/minMaxRentRelativeLayout"
+                android:padding="5dp">
 
-                <CheckBox
-                    android:id="@+id/wifiCheckBox"
+                <TextView
+                    android:id="@+id/minRentValueTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="WiFi" />
+                    android:layout_alignParentStart="true"
+                    android:text="Rs 0"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
 
-                <CheckBox
-                    android:id="@+id/cookCheckBox"
+                <TextView
+                    android:id="@+id/maxRentValueTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="Cook" />
+                    android:layout_alignParentEnd="true"
+                    android:text="Rs 50000"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
 
-                <CheckBox
-                    android:id="@+id/maidCheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="Maid" />
-
-            </LinearLayout>
+            </RelativeLayout>
 
             <LinearLayout
-                android:id="@+id/column2AmenitiesLayout"
-                android:layout_width="wrap_content"
+                android:id="@+id/rentRangeSeekBarInnerLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_toEndOf="@+id/column1AmenitiesLayout"
-                android:orientation="vertical">
-
-                <CheckBox
-                    android:id="@+id/lpgCheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="LPG" />
-
-                <CheckBox
-                    android:id="@+id/parkingCheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="Parking" />
-
-                <CheckBox
-                    android:id="@+id/gymCheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="Gym" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/column3AmenitiesLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_toEndOf="@+id/column2AmenitiesLayout"
-                android:orientation="vertical">
-
-                <CheckBox
-                    android:id="@+id/swimmingPoolCheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="Swimming Pool" />
-
-                <CheckBox
-                    android:id="@+id/attachedBathroomPoolCheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="Attached Bathroom" />
-
-                <CheckBox
-                    android:id="@+id/attachedBalconyPoolCheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="Attached Balcony" />
-
-            </LinearLayout>
+                android:layout_below="@id/minMaxRentValueRelativeLayout"
+                android:orientation="horizontal"
+                android:paddingBottom="10dp" />
 
         </RelativeLayout>
 
-    </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/securityRangeSeekBarOuterLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@color/white"
+            android:elevation="3dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/filterHeaderSecurity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="@color/primaryColor">
+
+                <TextView
+                    android:id="@+id/filterHeaderSecurityTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="Security"
+                    android:textColor="@color/white" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/minMaxSecurityRelativeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/filterHeaderSecurity"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/minSecurityTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:text="Minimum" />
+
+                <TextView
+                    android:id="@+id/maxSecurityTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="Maximum" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/minMaxSecurityValueRelativeLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/minMaxSecurityRelativeLayout"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/minSecurityValueTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:text="Rs 0"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <TextView
+                    android:id="@+id/maxSecurityValueTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="Rs 200000"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            </RelativeLayout>
 
 
-</LinearLayout>
+            <LinearLayout
+                android:id="@+id/securityRangeSeekBarInnerLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/minMaxSecurityValueRelativeLayout"
+                android:orientation="horizontal"
+                android:paddingBottom="10dp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@color/white"
+            android:elevation="3dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/filterHeaderFlatAmenities"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="@color/primaryColor">
+
+                <TextView
+                    android:id="@+id/flatAmenitiesTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="Flat Amenities"
+                    android:textColor="@color/white" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/filterHeaderFlatAmenities"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+                <LinearLayout
+                    android:id="@+id/column1FlatAmenitiesLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:orientation="vertical">
+
+                    <CheckBox
+                        android:id="@+id/wifiCheckBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="WiFi" />
+
+                    <CheckBox
+                        android:id="@+id/cookCheckBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Cook" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/column2FlatAmenitiesLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_toEndOf="@+id/column1FlatAmenitiesLayout"
+                    android:orientation="vertical">
+
+                    <CheckBox
+                        android:id="@+id/lpgCheckBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="LPG" />
+
+                    <CheckBox
+                        android:id="@+id/maidCheckBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Maid" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/column3FlatAmenitiesLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_toEndOf="@+id/column2FlatAmenitiesLayout"
+                    android:orientation="vertical">
+
+                    <CheckBox
+                        android:id="@+id/attachedBathroomPoolCheckBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Attached Bathroom" />
+
+                    <CheckBox
+                        android:id="@+id/attachedBalconyPoolCheckBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Attached Balcony" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@color/white"
+            android:elevation="3dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/filterHeaderSocietyAmenities"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="@color/primaryColor">
+
+                <TextView
+                    android:id="@+id/societyAmenitiesTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="Society Amenities"
+                    android:textColor="@color/white" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/filterHeaderSocietyAmenities"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+                <LinearLayout
+                    android:id="@+id/column1SocietyAmenitiesLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:orientation="vertical">
+
+                    <CheckBox
+                        android:id="@+id/gymCheckBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Gym" />
+
+                    <CheckBox
+                        android:id="@+id/clubCheckBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Club" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/column2SocietyAmenitiesLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_toEndOf="@+id/column1SocietyAmenitiesLayout"
+                    android:orientation="vertical">
+
+                    <CheckBox
+                        android:id="@+id/swimmingPoolCheckBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Swimming Pool" />
+
+                    <CheckBox
+                        android:id="@+id/powerBackupCheckBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Power Backup" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/column3SocietyAmenitiesLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_toEndOf="@+id/column2SocietyAmenitiesLayout"
+                    android:orientation="vertical">
+
+                    <CheckBox
+                        android:id="@+id/securityGuardCheckBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Security Guard" />
+
+                    <CheckBox
+                        android:id="@+id/waterBackupCheckBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Water Backup" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</ScrollView>
