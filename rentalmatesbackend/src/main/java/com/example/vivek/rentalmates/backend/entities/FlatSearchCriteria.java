@@ -24,6 +24,7 @@ public class FlatSearchCriteria implements Serializable {
     private String message; //Only applicable if @publicPost is true
     private String requesterName;
     private String requesterProfilePicture;
+    private String selectedLocation;
 
     public FlatSearchCriteria() {
         locationLatitude = 12.8486324;
@@ -161,5 +162,13 @@ public class FlatSearchCriteria implements Serializable {
 
     public void setMinSecurityAmountPerPerson(int minSecurityAmountPerPerson) {
         this.minSecurityAmountPerPerson = minSecurityAmountPerPerson;
+    }
+
+    public String getSelectedLocation() {
+        return selectedLocation;
+    }
+
+    public void setSelectedLocation(String selectedLocation) {
+        this.selectedLocation = selectedLocation;
     }
 }

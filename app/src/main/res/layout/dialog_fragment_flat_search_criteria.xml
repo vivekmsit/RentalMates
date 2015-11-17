@@ -10,6 +10,50 @@
         android:orientation="vertical">
 
         <RelativeLayout
+            android:id="@+id/locationOuterLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@color/white"
+            android:elevation="3dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/filterHeaderLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="@color/primaryColor">
+
+                <TextView
+                    android:id="@+id/filterHeaderLocationTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="Location"
+                    android:textColor="@color/white" />
+
+            </RelativeLayout>
+
+            <AutoCompleteTextView
+                android:id="@+id/autocomplete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/filterHeaderLocation"
+                android:hint="Type in your Location"
+                android:padding="10dp" />
+
+            <TextView
+                android:id="@+id/selectedLocationTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/autocomplete"
+                android:padding="5dp"
+                android:text="Selected Location" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/rentRangeSeekBarOuterLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

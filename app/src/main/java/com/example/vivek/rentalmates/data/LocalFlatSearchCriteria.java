@@ -22,6 +22,7 @@ public class LocalFlatSearchCriteria implements Serializable {
     private String message; //Only applicable if @publicPost is true
     private String requesterName;
     private String requesterProfilePicture;
+    private String selectedLocation;
 
     public LocalFlatSearchCriteria() {
         locationLatitude = 12.8486324;
@@ -183,6 +184,7 @@ public class LocalFlatSearchCriteria implements Serializable {
         //flatSearchCriteria.setMessage(localFlatSearchCriteria.getMessage());
         //flatSearchCriteria.setRequesterName(localFlatSearchCriteria.getRequesterName());
         //flatSearchCriteria.setRequesterProfilePicture(localFlatSearchCriteria.getRequesterProfilePicture());
+        flatSearchCriteria.setSelectedLocation(localFlatSearchCriteria.getSelectedLocation());
 
         return flatSearchCriteria;
     }
@@ -209,7 +211,16 @@ public class LocalFlatSearchCriteria implements Serializable {
         //localFlatSearchCriteria.setMessage(flatSearchCriteria.getMessage());
         //localFlatSearchCriteria.setRequesterName(flatSearchCriteria.getRequesterName());
         //localFlatSearchCriteria.setRequesterProfilePicture(flatSearchCriteria.getRequesterProfilePicture());
+        localFlatSearchCriteria.setSelectedLocation(flatSearchCriteria.getSelectedLocation());
 
         return localFlatSearchCriteria;
+    }
+
+    public String getSelectedLocation() {
+        return selectedLocation;
+    }
+
+    public void setSelectedLocation(String selectedLocation) {
+        this.selectedLocation = selectedLocation;
     }
 }

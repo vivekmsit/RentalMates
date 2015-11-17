@@ -3,7 +3,7 @@ package com.example.vivek.rentalmates.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -52,8 +52,8 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment {
         recyclerView = (RecyclerView) layout.findViewById(R.id.listAvailableFlats);
         availableFlatListViewAdapter = new AvailableFlatListViewAdapter(getActivity());
         recyclerView.setAdapter(availableFlatListViewAdapter);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-        //recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        //recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         //Initialize SwipeRefreshLayout
         swipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeAvailableFlats);

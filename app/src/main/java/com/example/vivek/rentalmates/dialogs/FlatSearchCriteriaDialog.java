@@ -10,14 +10,28 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatSearchCriteria;
 import com.example.vivek.rentalmates.data.AppData;
+import com.example.vivek.rentalmates.library.PlaceAutoCompleteAdapter;
 import com.example.vivek.rentalmates.library.RangeSeekBar;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.AutocompletePrediction;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 
-public class FlatSearchCriteriaDialog extends DialogFragment {
+public class FlatSearchCriteriaDialog extends DialogFragment implements GoogleApiClient.ConnectionCallbacks {
     private OnDialogResultListener listener;
     private Context context;
     private AppData appData;
@@ -26,6 +40,33 @@ public class FlatSearchCriteriaDialog extends DialogFragment {
     private TextView maxRentValueTextView;
     private TextView minSecurityValueTextView;
     private TextView maxSecurityValueTextView;
+    private TextView selectedLocationTextView;
+    private GoogleApiClient mGoogleApiClient;
+    private PlaceAutoCompleteAdapter mAdapter;
+    private AutoCompleteTextView autocompleteView;
+    private static final LatLngBounds BOUNDS_GREATER_SYDNEY = new LatLngBounds(new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mGoogleApiClient.disconnect();
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Toast.makeText(context, "Suspended", Toast.LENGTH_SHORT).show();
+    }
 
     public interface OnDialogResultListener {
         void onPositiveResult(FlatSearchCriteria flatSearchCriteria);
@@ -42,12 +83,30 @@ public class FlatSearchCriteriaDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         context = getActivity().getApplicationContext();
         appData = AppData.getInstance();
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                //.enableAutoManage(getActivity(), 0 /* clientId */, this)
+                .addApi(Places.GEO_DATA_API)
+                .addConnectionCallbacks(this)
+                .build();
+
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_fragment_flat_search_criteria, null);
+
+        // Set up the adapter that will retrieve suggestions from the Places Geo Data API that cover
+        // the entire world.
+        mAdapter = new PlaceAutoCompleteAdapter(context, mGoogleApiClient, BOUNDS_GREATER_SYDNEY, null);
+
+        // Initialize AutoCompleteView
+        autocompleteView = (AutoCompleteTextView) view.findViewById(R.id.autocomplete);
+        autocompleteView.setAdapter(mAdapter);
+        // Register a listener that receives callbacks when a suggestion has been selected
+        autocompleteView.setOnItemClickListener(mAutocompleteClickListener);
+
         minRentValueTextView = (TextView) view.findViewById(R.id.minRentValueTextView);
         maxRentValueTextView = (TextView) view.findViewById(R.id.maxRentValueTextView);
         minSecurityValueTextView = (TextView) view.findViewById(R.id.minSecurityValueTextView);
         maxSecurityValueTextView = (TextView) view.findViewById(R.id.maxSecurityValueTextView);
+        selectedLocationTextView = (TextView) view.findViewById(R.id.selectedLocationTextView);
 
         FlatSearchCriteria flatSearchCriteriaSaved = appData.getFlatSearchCriteria();
         int minRent = flatSearchCriteriaSaved.getMinRentAmountPerPerson();
@@ -57,11 +116,13 @@ public class FlatSearchCriteriaDialog extends DialogFragment {
         double locationLatitude = flatSearchCriteriaSaved.getLocationLatitude();
         double locationLongitude = flatSearchCriteriaSaved.getLocationLongitude();
         int areaRange = flatSearchCriteriaSaved.getAreaRange();
+        String selectedLocation = flatSearchCriteriaSaved.getSelectedLocation();
 
         minRentValueTextView.setText("Rs " + minRent);
         maxRentValueTextView.setText("Rs " + maxRent);
         minSecurityValueTextView.setText("Rs " + minSecurity);
         maxSecurityValueTextView.setText("Rs " + maxSecurity);
+        selectedLocationTextView.setText(selectedLocation);
         setUpRentRangeSeekBar(view);
         setUpSecurityRangeSeekBar(view);
 
@@ -74,6 +135,7 @@ public class FlatSearchCriteriaDialog extends DialogFragment {
         flatSearchCriteria.setMaxRentAmountPerPerson(maxRent);
         flatSearchCriteria.setMinSecurityAmountPerPerson(minSecurity);
         flatSearchCriteria.setMaxSecurityAmountPerPerson(maxSecurity);
+        flatSearchCriteria.setSelectedLocation(selectedLocation);
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         alertDialogBuilder.setTitle("Search Criteria");
@@ -138,4 +200,68 @@ public class FlatSearchCriteriaDialog extends DialogFragment {
     public boolean verifyInputData() {
         return true;
     }
+
+
+    /**
+     * Listener that handles selections from suggestions from the AutoCompleteTextView that
+     * displays Place suggestions.
+     * Gets the place id of the selected item and issues a request to the Places Geo Data API
+     * to retrieve more details about the place.
+     *
+     * @see com.google.android.gms.location.places.GeoDataApi#getPlaceById(com.google.android.gms.common.api.GoogleApiClient,
+     * String...)
+     */
+    private AdapterView.OnItemClickListener mAutocompleteClickListener
+            = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            /*
+             Retrieve the place ID of the selected item from the Adapter.
+             The adapter stores each Place suggestion in a AutocompletePrediction from which we
+             read the place ID and title.
+              */
+            autocompleteView.setText("");
+            autocompleteView.dismissDropDown();
+            final AutocompletePrediction item = mAdapter.getItem(position);
+            final String placeId = item.getPlaceId();
+
+            /*
+             Issue a request to the Places Geo Data API to retrieve a Place object with additional
+             details about the place.
+              */
+            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId);
+            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+        }
+    };
+
+    /**
+     * Callback for results from a Places Geo Data API query that shows the first place result in
+     * the details view on screen.
+     */
+    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback
+            = new ResultCallback<PlaceBuffer>() {
+        @Override
+        public void onResult(PlaceBuffer places) {
+            if (!places.getStatus().isSuccess()) {
+                // Request did not complete successfully
+                //Log.e(TAG, "Place query did not complete. Error: " + places.getStatus().toString());
+                places.release();
+                return;
+            }
+            // Get the Place object from the buffer.
+            final Place place = places.get(0);
+            // Updates the latitude and longitude of flatSearchCriteria
+            selectedLocationTextView.setText(place.getAddress());
+            flatSearchCriteria.setLocationLatitude(place.getLatLng().latitude);
+            flatSearchCriteria.setLocationLongitude(place.getLatLng().longitude);
+            flatSearchCriteria.setSelectedLocation(place.getAddress().toString());
+            places.release();
+            // Check if no view has focus:
+            View currentView = getActivity().getCurrentFocus();
+            if (currentView != null) {
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(currentView.getWindowToken(), 0);
+            }
+        }
+    };
 }
