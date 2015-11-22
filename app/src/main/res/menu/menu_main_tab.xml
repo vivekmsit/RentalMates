@@ -9,7 +9,7 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/action_find_location"
-        android:icon="@drawable/ic_action_email"
+        android:icon="@drawable/ic_email_24dp"
         android:orderInCategory="101"
         android:title="Email"
         app:showAsAction="always" />

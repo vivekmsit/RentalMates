@@ -35,7 +35,7 @@
                         android:layout_height="wrap_content"
                         android:contentDescription="contact uploader pic"
                         android:padding="4dp"
-                        android:src="@drawable/ic_coins_l" />
+                        android:src="@drawable/ic_attach_money_24dp" />
 
                     <TextView
                         android:id="@+id/expenseManagerTextView"
@@ -72,7 +72,7 @@
                         android:layout_height="wrap_content"
                         android:contentDescription="contact uploader pic"
                         android:padding="4dp"
-                        android:src="@drawable/ic_action_person_light" />
+                        android:src="@drawable/ic_person_24dp" />
 
                     <TextView
                         android:id="@+id/sharedContactsTextView"
@@ -109,7 +109,7 @@
                         android:layout_height="wrap_content"
                         android:contentDescription="contact uploader pic"
                         android:padding="4dp"
-                        android:src="@drawable/ic_menu_paste_holo_light" />
+                        android:src="@drawable/ic_description_24dp" />
 
                     <TextView
                         android:id="@+id/flatRulesTextView"

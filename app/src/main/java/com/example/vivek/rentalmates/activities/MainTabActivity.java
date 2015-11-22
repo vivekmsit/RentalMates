@@ -98,7 +98,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         setSupportActionBar(toolbar);
         final ActionBar ab = getSupportActionBar();
         if (ab != null) {
-            ab.setHomeAsUpIndicator(R.drawable.ic_menu_search);
+            //ab.setHomeAsUpIndicator(R.drawable.ic_menu_search);
             ab.setDisplayHomeAsUpEnabled(true);
         }
 

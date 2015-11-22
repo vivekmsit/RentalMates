@@ -8,4 +8,4 @@
     android:layout_centerVertical="true"
     android:contentDescription="contact uploader pic"
     android:padding="4dp"
-    android:src="@drawable/autocomplete_google_logo" />
+    android:src="@drawable/powered_by_google_on_white" />
