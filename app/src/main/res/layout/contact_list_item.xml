@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="contact uploader pic"
                 android:padding="4dp"
-                android:src="@drawable/ic_person_24dp" />
+                android:src="@drawable/ic_person_40dp" />
 
             <RelativeLayout
                 android:id="@+id/contactDetailsRelativeLayout"
@@ -60,7 +60,7 @@
                 android:layout_alignParentEnd="true"
                 android:contentDescription="contact uploader pic"
                 android:padding="4dp"
-                android:src="@drawable/ic_local_phone_24dp" />
+                android:src="@drawable/ic_local_phone_40dp" />
 
         </RelativeLayout>
 
