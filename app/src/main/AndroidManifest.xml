@@ -75,8 +75,8 @@
             android:label="@string/title_activity_main_tab" >
         </activity>
         <activity
-            android:name=".activities.FirstActivity"
-            android:label="@string/title_activity_first" >
+            android:name=".activities.MainSplashActivity"
+            android:label="@string/title_activity_main_splash" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

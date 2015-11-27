@@ -33,19 +33,15 @@
     <string name="title_activity_main_tab">RentalMates</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_first">Rental Mates</string>
     <string name="title_activity_register_flat">RegisterFlatActivity</string>
     <string name="title_activity_add_expense">AddExpenseActivity</string>
     <string name="title_activity_determine_flat">DetermineFlatActivity</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
     <string name="title_activity_developer_mode">DeveloperModeActivity</string>
-    <string name="title_activity_register_new_flat">RegisterNewFlatActivity</string>
-    <string name="title_activity_manage_flats">ManageFlatsActivity</string>
-    <string name="title_activity_manage_expense_groups">ManageExpenseGroupsActivity</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
     <string name="title_activity_test">TestActivity</string>
+    <string name="title_activity_main_splash">Rental Mates</string>
 
 </resources>

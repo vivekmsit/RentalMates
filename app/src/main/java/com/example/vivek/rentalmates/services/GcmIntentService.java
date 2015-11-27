@@ -11,7 +11,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.example.vivek.rentalmates.R;
-import com.example.vivek.rentalmates.activities.FirstActivity;
+import com.example.vivek.rentalmates.activities.MainSplashActivity;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.receivers.GcmBroadcastReceiver;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -66,7 +66,7 @@ public class GcmIntentService extends IntentService {
     public void createNotification(String message) {
         // Prepare intent which is triggered if the
         // notification is selected
-        Intent intent = new Intent(this, FirstActivity.class);
+        Intent intent = new Intent(this, MainSplashActivity.class);
         intent.putExtra("notification", true);
         intent.putExtra("newExpenseAvailable", true);
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);

@@ -19,16 +19,12 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
-import com.example.vivek.rentalmates.activities.FirstActivity;
+import com.example.vivek.rentalmates.activities.MainSplashActivity;
 import com.example.vivek.rentalmates.activities.TestActivity;
-import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
 import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.interfaces.OnDeleteRemoteDataReceiver;
 import com.example.vivek.rentalmates.tasks.DeleteRemoteDataAsyncTask;
-import com.example.vivek.rentalmates.tasks.SearchFlatsForRentAsyncTask;
-
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -98,8 +94,8 @@ public class DevelopersFragment extends android.support.v4.app.Fragment {
         //Reset AppData contents
         appData.clearAppData(context);
 
-        //Start FirstActivity
-        Intent intent = new Intent(context, FirstActivity.class);
+        //Start MainSplashActivity
+        Intent intent = new Intent(context, MainSplashActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
