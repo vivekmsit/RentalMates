@@ -40,7 +40,7 @@
             android:layout_alignParentBottom="true"
             android:background="@color/orange"
             android:gravity="center"
-            android:text="Search Criteria"
+            android:text="Search"
             android:textColor="@color/white" />
 
     </RelativeLayout>

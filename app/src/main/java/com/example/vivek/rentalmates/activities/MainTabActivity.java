@@ -135,6 +135,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
                     fab.setVisibility(View.GONE);
                 }
                 currentPosition = position;
+                updateFab();
             }
 
             @Override
@@ -148,9 +149,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), AddExpenseActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getApplicationContext().startActivity(intent);
+                Toast.makeText(MainTabActivity.this, "To be implemented", Toast.LENGTH_SHORT).show();
             }
         });
         ScaleAnimation anim = new ScaleAnimation(0, 1, 0, 1);
@@ -210,13 +209,11 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                hideFab();
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                showFab();
             }
         };
         drawerLayout.setDrawerListener(mDrawerToggle);
@@ -354,15 +351,13 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         }
     }
 
-    public void showFab() {
-        if (currentPosition == 0 && backStackCount == 0) {
+    public void updateFab() {
+        if (currentPosition == 1 && backStackCount == 0) {
+            fab.setVisibility(View.VISIBLE);
+        } else {
+            fab.clearAnimation();
             fab.setVisibility(View.GONE);
         }
-    }
-
-    public void hideFab() {
-        fab.clearAnimation();
-        fab.setVisibility(View.GONE);
     }
 
     @Override

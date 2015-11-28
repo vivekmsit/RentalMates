@@ -15,7 +15,7 @@ import com.example.vivek.rentalmates.data.AppData;
 
 public class MainSplashActivity extends AppCompatActivity {
     private static final String TAG = "SplashActivity_Debug";
-    private static final int SPLASH_SHOW_TIME = 1000;
+    private static final int SPLASH_SHOW_TIME = 0;
     private Context context;
     private AppData appData;
 
