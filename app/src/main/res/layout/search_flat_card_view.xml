@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -18,80 +19,109 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/flatMainPic"
-                android:layout_width="wrap_content"
+            <FrameLayout
+                android:id="@+id/frameLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:contentDescription="flat pictures"
-                android:padding="4dp"
-                android:src="@drawable/flatview2" />
+                android:padding="10dp">
+
+                <ImageView
+                    android:id="@+id/flatMainPic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="flat pictures"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/flatview2" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_margin="10dp"
+                    android:baselineAligned="false">
+
+                    <RelativeLayout
+                        android:id="@+id/rentAmountMainTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="4dp">
+
+                        <TextView
+                            android:id="@+id/rentAmountTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:padding="4dp"
+                            android:text="Rent"
+                            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                        <TextView
+                            android:id="@+id/rentAmountValueTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/rentAmountTextView"
+                            android:layout_centerHorizontal="true"
+                            android:padding="4dp"
+                            android:text="5000"
+                            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/securityAmountMainTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="4dp">
+
+                        <TextView
+                            android:id="@+id/securityAmountTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:padding="4dp"
+                            android:text="Security"
+                            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                        <TextView
+                            android:id="@+id/securityAmountValueTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/securityAmountTextView"
+                            android:layout_centerHorizontal="true"
+                            android:padding="4dp"
+                            android:text="25000"
+                            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+                <com.pkmmte.view.CircularImageView
+                    android:id="@+id/ownerProfileImageView"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="top"
+                    android:paddingEnd="5dp"
+                    android:paddingStart="5dp"
+                    android:src="@drawable/ic_launcher"
+                    app:border="false"
+                    app:border_color="#EEEEEE"
+                    app:border_width="4dp"
+                    app:shadow="true" />
+
+            </FrameLayout>
 
             <TextView
                 android:id="@+id/addressTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/flatMainPic"
+                android:layout_below="@+id/frameLayout"
                 android:layout_centerHorizontal="true"
                 android:padding="4dp"
                 android:text="B902, SJR Apartments"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
-
-            <RelativeLayout
-                android:id="@+id/rentAmountMainTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/addressTextView">
-
-                <TextView
-                    android:id="@+id/rentAmountTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:padding="4dp"
-                    android:text="Rent"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
-
-                <TextView
-                    android:id="@+id/rentAmountValueTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/rentAmountTextView"
-                    android:layout_centerHorizontal="true"
-                    android:padding="4dp"
-                    android:text="5000"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/securityAmountMainTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/addressTextView"
-                android:layout_toEndOf="@+id/rentAmountMainTextView">
-
-
-                <TextView
-                    android:id="@+id/securityAmountTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:padding="4dp"
-                    android:text="Security"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
-
-                <TextView
-                    android:id="@+id/securityAmountValueTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/securityAmountTextView"
-                    android:layout_centerHorizontal="true"
-                    android:padding="4dp"
-                    android:text="25000"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
-
-            </RelativeLayout>
-
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>

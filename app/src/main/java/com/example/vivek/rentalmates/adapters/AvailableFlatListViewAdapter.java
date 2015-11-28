@@ -16,6 +16,7 @@ import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.data.LocalFlatInfo;
 import com.example.vivek.rentalmates.viewholders.AvailableFlatListItem;
+import com.pkmmte.view.CircularImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +58,15 @@ public class AvailableFlatListViewAdapter extends RecyclerView.Adapter<Available
         Log.d(TAG, "inside onBindViewHolder");
         AvailableFlatListItem current = data.get(position);
 
+        if (appData.getProfilePicturesPath().containsKey(current.emailId)) {
+            viewHolder.circularImageView.setImageBitmap(appData.getProfilePictureBitmap(current.emailId));
+        } else {
+            //show ic_launcher in place of profile picture if profile picture is not available
+            Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
+            Bitmap newBitmap = Bitmap.createScaledBitmap(bm, 200, 200, true);
+            viewHolder.circularImageView.setImageBitmap(newBitmap);
+        }
+
         viewHolder.address.setText("Address: " + current.address);
         viewHolder.rentAmount.setText(current.rentAmount);
         viewHolder.securityAmount.setText(current.securityAmount);
@@ -75,6 +85,7 @@ public class AvailableFlatListViewAdapter extends RecyclerView.Adapter<Available
      * repeatedly in the getView() method of the adapter.
      */
     class AvailableFlatViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+        CircularImageView circularImageView;
         ImageView flatPicture;
         TextView address;
         TextView rentAmount;
@@ -83,6 +94,7 @@ public class AvailableFlatListViewAdapter extends RecyclerView.Adapter<Available
         public AvailableFlatViewHolder(View itemView) {
             super(itemView);
 
+            circularImageView = (CircularImageView) itemView.findViewById(R.id.ownerProfileImageView);
             flatPicture = (ImageView) itemView.findViewById(R.id.flatMainPic);
             address = (TextView) itemView.findViewById(R.id.addressTextView);
             rentAmount = (TextView) itemView.findViewById(R.id.rentAmountValueTextView);

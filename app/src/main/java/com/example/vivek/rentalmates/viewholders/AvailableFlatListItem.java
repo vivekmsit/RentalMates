@@ -9,6 +9,7 @@ public class AvailableFlatListItem {
     public final String address;
     public final String rentAmount;
     public final String securityAmount;
+    public final String emailId;
     public final int flatPictureResourceId;
 
     public AvailableFlatListItem(LocalFlatInfo flatInfo) {
@@ -16,6 +17,7 @@ public class AvailableFlatListItem {
         this.flatName = flatInfo.getFlatName();
         this.location = flatInfo.getCity();
         this.address = flatInfo.getAddress();
+        this.emailId = flatInfo.getOwnerEmailId();
         if (flatInfo.getNumberOfUsers() == 0) {
             this.rentAmount = "0";
             this.securityAmount = "0";
