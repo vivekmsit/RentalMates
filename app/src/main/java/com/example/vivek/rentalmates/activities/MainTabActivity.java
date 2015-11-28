@@ -47,6 +47,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.pkmmte.view.CircularImageView;
 
+import java.util.HashMap;
+
 public class MainTabActivity extends AppCompatActivity implements FragmentTransactionRequestReceiver, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "MainTabActivity_Debug";
@@ -74,12 +76,26 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
     private boolean newExpenseAvailable;
     private int mNavItemId;
 
+    private HashMap<String, ActivityEventReceiver> eventReceiverHashMap;
+
+    public interface ActivityEventReceiver {
+        void onEventReceived(String eventType);
+    }
+
+    public boolean registerForActivityEvents(String fragment, ActivityEventReceiver receiver) {
+        if (eventReceiverHashMap.containsKey(fragment))
+            return false;
+        eventReceiverHashMap.put(fragment, receiver);
+        return true;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "inside onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tab);
 
+        eventReceiverHashMap = new HashMap<>();
         currentPosition = 0;
         newExpenseAvailable = false;
         appData = AppData.getInstance();
@@ -149,7 +165,9 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainTabActivity.this, "To be implemented", Toast.LENGTH_SHORT).show();
+                if (eventReceiverHashMap.containsKey("searchflatsfragment")) {
+                    eventReceiverHashMap.get("searchflatsfragment").onEventReceived("filterFABPressed");
+                }
             }
         });
         ScaleAnimation anim = new ScaleAnimation(0, 1, 0, 1);

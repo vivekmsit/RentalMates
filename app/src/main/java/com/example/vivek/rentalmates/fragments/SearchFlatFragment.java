@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
+import com.example.vivek.rentalmates.activities.MainTabActivity;
 import com.example.vivek.rentalmates.adapters.AvailableFlatListViewAdapter;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatSearchCriteria;
@@ -24,7 +25,7 @@ import com.example.vivek.rentalmates.tasks.SearchFlatsForRentAsyncTask;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchFlatFragment extends android.support.v4.app.Fragment {
+public class SearchFlatFragment extends android.support.v4.app.Fragment implements MainTabActivity.ActivityEventReceiver {
 
     private AppData appData;
     private Context context;
@@ -33,12 +34,15 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private AvailableFlatListViewAdapter availableFlatListViewAdapter;
     private Button searchCriteriaButton;
+    private MainTabActivity mainTabActivity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         appData = AppData.getInstance();
         context = getActivity().getApplicationContext();
+        mainTabActivity = (MainTabActivity) getActivity();
+        mainTabActivity.registerForActivityEvents("searchflatsfragment", this);
     }
 
     @Override
@@ -135,5 +139,16 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment {
             }
         });
         task.execute();
+    }
+
+    @Override
+    public void onEventReceived(String eventType) {
+        switch (eventType) {
+            case "filterFABPressed":
+                searchFlats();
+                break;
+            default:
+                break;
+        }
     }
 }
