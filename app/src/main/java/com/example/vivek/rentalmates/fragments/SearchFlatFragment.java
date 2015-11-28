@@ -9,7 +9,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +33,7 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment implemen
     private TextView availableFlatsTextView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private AvailableFlatListViewAdapter availableFlatListViewAdapter;
-    private Button searchCriteriaButton;
+    private LinearLayout searchCriteriaLayout;
     private MainTabActivity mainTabActivity;
 
     @Override
@@ -72,9 +72,9 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment implemen
         swipeRefreshLayout.setProgressViewOffset(false, 0,
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
 
-        //Initialize SearchCriteriaButton
-        searchCriteriaButton = (Button) layout.findViewById(R.id.searchCriteriaButton);
-        searchCriteriaButton.setOnClickListener(new View.OnClickListener() {
+        //Initialize SearchCriteriaLayout
+        searchCriteriaLayout = (LinearLayout) layout.findViewById(R.id.searchCriteriaLayout);
+        searchCriteriaLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 searchFlats();
