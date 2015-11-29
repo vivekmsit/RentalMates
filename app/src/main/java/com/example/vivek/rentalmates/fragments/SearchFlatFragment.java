@@ -80,6 +80,9 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment implemen
                 searchFlats();
             }
         });
+        if (!appData.getFlatSearchCriteria().getFilterResetDone()) {
+            searchCriteriaLayout.setVisibility(View.INVISIBLE);
+        }
 
         updateView();
         return layout;
@@ -91,6 +94,8 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment implemen
             @Override
             public void onPositiveResult(FlatSearchCriteria flatSearchCriteria) {
                 swipeRefreshLayout.setRefreshing(true);
+                flatSearchCriteria.setFilterResetDone(false);
+                searchCriteriaLayout.setVisibility(View.INVISIBLE);
                 appData.storeFlatSearchCriteria(context, flatSearchCriteria);
                 onSwipeRefresh();
             }

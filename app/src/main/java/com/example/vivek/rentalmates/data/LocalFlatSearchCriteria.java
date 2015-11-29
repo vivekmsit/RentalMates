@@ -15,6 +15,7 @@ public class LocalFlatSearchCriteria implements Serializable {
     private int areaRange; // in metres
     private Long gender;
     private Long requesterId;
+    private boolean filterResetDone;
     private boolean notifyIfAvailable;
     private boolean publicPost; //Your requirement will appear in search roommates section
     private double locationLatitude;
@@ -32,6 +33,7 @@ public class LocalFlatSearchCriteria implements Serializable {
         maxRentAmountPerPerson = 100000;
         minSecurityAmountPerPerson = 0;
         maxSecurityAmountPerPerson = 200000;
+        filterResetDone = true;
     }
 
     public Long getId() {
@@ -185,6 +187,7 @@ public class LocalFlatSearchCriteria implements Serializable {
         //flatSearchCriteria.setRequesterName(localFlatSearchCriteria.getRequesterName());
         //flatSearchCriteria.setRequesterProfilePicture(localFlatSearchCriteria.getRequesterProfilePicture());
         flatSearchCriteria.setSelectedLocation(localFlatSearchCriteria.getSelectedLocation());
+        flatSearchCriteria.setFilterResetDone(localFlatSearchCriteria.isFilterResetDone());
 
         return flatSearchCriteria;
     }
@@ -212,6 +215,7 @@ public class LocalFlatSearchCriteria implements Serializable {
         //localFlatSearchCriteria.setRequesterName(flatSearchCriteria.getRequesterName());
         //localFlatSearchCriteria.setRequesterProfilePicture(flatSearchCriteria.getRequesterProfilePicture());
         localFlatSearchCriteria.setSelectedLocation(flatSearchCriteria.getSelectedLocation());
+        localFlatSearchCriteria.setFilterResetDone(flatSearchCriteria.getFilterResetDone());
 
         return localFlatSearchCriteria;
     }
@@ -222,5 +226,13 @@ public class LocalFlatSearchCriteria implements Serializable {
 
     public void setSelectedLocation(String selectedLocation) {
         this.selectedLocation = selectedLocation;
+    }
+
+    public boolean isFilterResetDone() {
+        return filterResetDone;
+    }
+
+    public void setFilterResetDone(boolean filterResetDone) {
+        this.filterResetDone = filterResetDone;
     }
 }
