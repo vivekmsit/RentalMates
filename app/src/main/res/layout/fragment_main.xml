@@ -126,6 +126,43 @@
 
             </android.support.v7.widget.CardView>
 
+            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/post_your_flat_card_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                card_view:cardBackgroundColor="@color/facebookBackground"
+                card_view:cardCornerRadius="6dp"
+                card_view:cardElevation="4dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/postFlatPic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="contact uploader pic"
+                        android:padding="4dp"
+                        android:src="@drawable/ic_home_40dp" />
+
+                    <TextView
+                        android:id="@+id/postFlatTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@+id/postFlatPic"
+                        android:padding="4dp"
+                        android:text="POST YOUR FLAT"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
         </LinearLayout>
 
     </ScrollView>

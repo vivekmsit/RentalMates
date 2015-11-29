@@ -10,6 +10,12 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.activities.MainTabActivity;
+import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
+import com.example.vivek.rentalmates.data.AppData;
+import com.example.vivek.rentalmates.data.LocalFlatInfo;
+import com.example.vivek.rentalmates.dialogs.ItemPickerDialogFragment;
+
+import java.util.ArrayList;
 
 public class MainFragment extends android.support.v4.app.Fragment {
 
@@ -18,8 +24,10 @@ public class MainFragment extends android.support.v4.app.Fragment {
     CardView sharedContactsCardView;
     CardView expenseManagerCardView;
     CardView flatRulesCardView;
+    CardView postYourFlatCardView;
     MainTabActivity mainTabActivity;
     Context context;
+    AppData appData;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -27,10 +35,12 @@ public class MainFragment extends android.support.v4.app.Fragment {
         View layout = inflater.inflate(R.layout.fragment_main, container, false);
         mainTabActivity = (MainTabActivity) getActivity();
         context = getActivity().getApplicationContext();
+        appData = AppData.getInstance();
 
         sharedContactsCardView = (CardView) layout.findViewById(R.id.shared_contacts_card_view);
         expenseManagerCardView = (CardView) layout.findViewById(R.id.expense_manager_card_view);
         flatRulesCardView = (CardView) layout.findViewById(R.id.flat_rules_card_view);
+        postYourFlatCardView = (CardView) layout.findViewById(R.id.post_your_flat_card_view);
 
         sharedContactsCardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,7 +63,39 @@ public class MainFragment extends android.support.v4.app.Fragment {
             }
         });
 
+        postYourFlatCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                postYourFlat();
+            }
+        });
+
         return layout;
     }
 
+    private void postYourFlat() {
+        ArrayList<ItemPickerDialogFragment.Item> pickerItems = new ArrayList<>();
+        for (LocalFlatInfo localFlatInfo : appData.getFlats().values()) {
+            pickerItems.add(new ItemPickerDialogFragment.Item(localFlatInfo.getFlatName(), localFlatInfo.getAddress()));
+        }
+
+        ItemPickerDialogFragment dialog = ItemPickerDialogFragment.newInstance("Select flat", "Create New Flat", pickerItems, -1);
+        dialog.setOnDialogResultListener(new ItemPickerDialogFragment.OnDialogResultListener() {
+            @Override
+            public void onPositiveResult(String flatName) {
+                Toast.makeText(context, "selected flat: " + flatName, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNeutralButtonResult() {
+                Toast.makeText(context, "New Flat To be Created", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNegativeResult() {
+
+            }
+        });
+        dialog.show(getFragmentManager(), "ItemPicker");
+    }
 }
