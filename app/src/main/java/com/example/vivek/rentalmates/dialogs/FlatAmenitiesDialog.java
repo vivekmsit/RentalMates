@@ -2,7 +2,6 @@ package com.example.vivek.rentalmates.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,12 +11,11 @@ import android.view.View;
 
 import com.example.vivek.rentalmates.R;
 
-public class FlatFacilitiesDialog extends DialogFragment {
+public class FlatAmenitiesDialog extends DialogFragment {
     private OnDialogResultListener listener;
-    private Context context;
 
     public interface OnDialogResultListener {
-        void onPositiveResult(boolean cookAvailable, boolean maidAvailable, boolean wifiAvailable);
+        void onPositiveResult(String amenities);
 
         void onNegativeResult();
     }
@@ -29,20 +27,17 @@ public class FlatFacilitiesDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        context = getActivity().getApplicationContext();
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_fragment_flat_facilities, null);
+        View view = inflater.inflate(R.layout.dialog_fragment_flat_amenities, null);
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-        alertDialogBuilder.setTitle("Flat Facilities");
+        alertDialogBuilder.setTitle("Amenities");
         alertDialogBuilder.setView(view);
         alertDialogBuilder.setPositiveButton("Next", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (verifyInputData()) {
-                    if (listener != null) {
-                        listener.onPositiveResult(true, true, true);
-                    }
+                if (listener != null) {
+                    listener.onPositiveResult("NONE");
                 }
             }
         });
@@ -57,9 +52,5 @@ public class FlatFacilitiesDialog extends DialogFragment {
             }
         });
         return alertDialogBuilder.create();
-    }
-
-    public boolean verifyInputData() {
-        return true;
     }
 }

@@ -23,7 +23,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:background="@color/primaryColor">
+                android:background="@color/primaryColor"
+                android:padding="4dp">
 
                 <TextView
                     android:id="@+id/filterHeaderLocationTextView"
@@ -67,7 +68,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:background="@color/primaryColor">
+                android:background="@color/primaryColor"
+                android:padding="4dp">
 
                 <TextView
                     android:id="@+id/filterHeaderRentTextView"
@@ -151,7 +153,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:background="@color/primaryColor">
+                android:background="@color/primaryColor"
+                android:padding="4dp">
 
                 <TextView
                     android:id="@+id/filterHeaderSecurityTextView"
@@ -235,7 +238,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:background="@color/primaryColor">
+                android:background="@color/primaryColor"
+                android:padding="4dp">
 
                 <TextView
                     android:id="@+id/flatAmenitiesTextView"
@@ -248,18 +252,19 @@
             </RelativeLayout>
 
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/filterHeaderFlatAmenities"
-                android:orientation="vertical"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
                 android:padding="5dp">
 
                 <LinearLayout
                     android:id="@+id/column1FlatAmenitiesLayout"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
+                    android:layout_weight="1"
                     android:orientation="vertical">
 
                     <CheckBox
@@ -276,14 +281,21 @@
                         android:layout_marginTop="5dp"
                         android:text="Cook" />
 
+                    <CheckBox
+                        android:id="@+id/attachedBalconyPoolCheckBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Attached Balcony" />
+
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/column2FlatAmenitiesLayout"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:layout_toEndOf="@+id/column1FlatAmenitiesLayout"
+                    android:layout_weight="1"
                     android:orientation="vertical">
 
                     <CheckBox
@@ -300,16 +312,6 @@
                         android:layout_marginTop="5dp"
                         android:text="Maid" />
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/column3FlatAmenitiesLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_toEndOf="@+id/column2FlatAmenitiesLayout"
-                    android:orientation="vertical">
-
                     <CheckBox
                         android:id="@+id/attachedBathroomPoolCheckBox"
                         android:layout_width="wrap_content"
@@ -317,16 +319,9 @@
                         android:layout_marginTop="5dp"
                         android:text="Attached Bathroom" />
 
-                    <CheckBox
-                        android:id="@+id/attachedBalconyPoolCheckBox"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="Attached Balcony" />
-
                 </LinearLayout>
 
-            </RelativeLayout>
+            </LinearLayout>
 
         </RelativeLayout>
 
@@ -343,7 +338,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:background="@color/primaryColor">
+                android:background="@color/primaryColor"
+                android:padding="4dp">
 
                 <TextView
                     android:id="@+id/societyAmenitiesTextView"
@@ -356,18 +352,18 @@
             </RelativeLayout>
 
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/filterHeaderSocietyAmenities"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:padding="5dp">
 
                 <LinearLayout
                     android:id="@+id/column1SocietyAmenitiesLayout"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
+                    android:layout_weight="1"
                     android:orientation="vertical">
 
                     <CheckBox
@@ -384,14 +380,21 @@
                         android:layout_marginTop="5dp"
                         android:text="Club" />
 
+                    <CheckBox
+                        android:id="@+id/securityGuardCheckBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Security Guard" />
+
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/column2SocietyAmenitiesLayout"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:layout_toEndOf="@+id/column1SocietyAmenitiesLayout"
+                    android:layout_weight="1"
                     android:orientation="vertical">
 
                     <CheckBox
@@ -408,23 +411,6 @@
                         android:layout_marginTop="5dp"
                         android:text="Power Backup" />
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/column3SocietyAmenitiesLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_toEndOf="@+id/column2SocietyAmenitiesLayout"
-                    android:orientation="vertical">
-
-                    <CheckBox
-                        android:id="@+id/securityGuardCheckBox"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="Security Guard" />
-
                     <CheckBox
                         android:id="@+id/waterBackupCheckBox"
                         android:layout_width="wrap_content"
@@ -434,7 +420,7 @@
 
                 </LinearLayout>
 
-            </RelativeLayout>
+            </LinearLayout>
 
         </RelativeLayout>
 

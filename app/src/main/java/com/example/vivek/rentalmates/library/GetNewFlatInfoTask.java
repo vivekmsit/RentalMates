@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentManager;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
 import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.dialogs.CurrentLocationMapDialog;
-import com.example.vivek.rentalmates.dialogs.FlatFacilitiesDialog;
+import com.example.vivek.rentalmates.dialogs.FlatAmenitiesDialog;
 import com.example.vivek.rentalmates.dialogs.FlatNameDialog;
 import com.example.vivek.rentalmates.dialogs.FlatPropertiesDialog;
 import com.example.vivek.rentalmates.dialogs.FlatRentDetailsDialog;
@@ -60,14 +60,14 @@ public class GetNewFlatInfoTask {
                                 vertices.add(currentLatitude);
                                 vertices.add(currentLongitude);
                                 flatInfo.setVertices(vertices);
-                                final FlatFacilitiesDialog flatFacilitiesDialog = new FlatFacilitiesDialog();
-                                flatFacilitiesDialog.setOnDialogResultListener(new FlatFacilitiesDialog.OnDialogResultListener() {
+                                final FlatAmenitiesDialog flatAmenitiesDialog = new FlatAmenitiesDialog();
+                                flatAmenitiesDialog.setOnDialogResultListener(new FlatAmenitiesDialog.OnDialogResultListener() {
                                     @Override
-                                    public void onPositiveResult(boolean cookAvailable, boolean maidAvailable, boolean wifiAvailable) {
+                                    public void onPositiveResult(String amenities) {
                                         FlatPropertiesDialog flatPropertiesDialog = new FlatPropertiesDialog();
                                         flatPropertiesDialog.setOnDialogResultListener(new FlatPropertiesDialog.OnDialogResultListener() {
                                             @Override
-                                            public void onPositiveResult(boolean availableForRent, boolean expenseGroupRequired) {
+                                            public void onPositiveResult(boolean expenseGroupRequired, boolean availableForRent) {
                                                 flatInfo.setAvailable(availableForRent);
                                                 if (receiver != null) {
                                                     receiver.onRegisterNewFlatSuccessful(flatInfo);
@@ -92,7 +92,7 @@ public class GetNewFlatInfoTask {
                                         }
                                     }
                                 });
-                                flatFacilitiesDialog.show(fragmentManager, "fragment");
+                                flatAmenitiesDialog.show(fragmentManager, "fragment");
 
                             }
 
