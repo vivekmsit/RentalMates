@@ -18,13 +18,9 @@ import com.google.appengine.api.search.IndexSpec;
 import com.google.appengine.api.search.PutException;
 import com.google.appengine.api.search.SearchServiceFactory;
 import com.google.appengine.api.search.StatusCode;
-import com.google.appengine.api.users.User;
-import com.google.appengine.api.users.UserServiceFactory;
-import com.google.storage.onestore.v3.OnestoreEntity;
 import com.googlecode.objectify.cmd.Query;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -133,6 +129,7 @@ public class FlatInfoEndpoint {
     private void createFlatDocument(FlatInfo flatInfo) {
         Document doc = Document.newBuilder()
                 .addField(Field.newBuilder().setName("FlatName").setText(flatInfo.getFlatName()))
+                .addField(Field.newBuilder().setName("Availability").setNumber(1))
                 .addField(Field.newBuilder().setName("OwnerEmailId").setText(flatInfo.getOwnerEmailId()))
                 .addField(Field.newBuilder().setName("Id").setText(flatInfo.getFlatId().toString()))
                 .addField(Field.newBuilder().setName("CreationDate").setDate(flatInfo.getDate()))
@@ -222,5 +219,25 @@ public class FlatInfoEndpoint {
         } catch (com.googlecode.objectify.NotFoundException e) {
             throw new NotFoundException("Could not find FlatInfo with ID: " + id);
         }
+    }
+
+
+    /**
+     * Post the specified {@code FlatInfo} as available.
+     *
+     * @param id the ID of the entity to post
+     * @throws NotFoundException if the {@code id} does not correspond to an existing
+     *                           {@code FlatInfo}
+     */
+    @ApiMethod(
+            name = "postFlatAsAvailable",
+            path = "flatInfo/{id}",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public void postFlatAsAvailable(@Named("id") Long id) throws NotFoundException {
+        checkExists(id);
+        FlatInfo flatInfo = ofy().load().type(FlatInfo.class).id(id).now();
+        flatInfo.setAvailable(true);
+        ofy().save().entity(flatInfo).now();
+        logger.info("Posted FlatInfo with ID: " + id);
     }
 }

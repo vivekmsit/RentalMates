@@ -19,15 +19,17 @@ public class GetNewFlatInfoTask {
     private FragmentManager fragmentManager;
     private SharedPreferences prefs;
     private OnGetFlatInfoTask receiver;
+    private String type;
 
     public interface OnGetFlatInfoTask {
-        void onRegisterNewFlatSuccessful(FlatInfo newFlatInfo);
+        void onGetFlatInfoTaskSuccess(FlatInfo newFlatInfo);
 
-        void onRegisterNewFlatFailed();
+        void onGetFlatInfoTaskFailed();
     }
 
-    public GetNewFlatInfoTask(Context context, FragmentManager fragmentManager) {
+    public GetNewFlatInfoTask(Context context, FragmentManager fragmentManager, String type) {
         this.fragmentManager = fragmentManager;
+        this.type = type;
         prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
     }
 
@@ -64,20 +66,26 @@ public class GetNewFlatInfoTask {
                                 flatAmenitiesDialog.setOnDialogResultListener(new FlatAmenitiesDialog.OnDialogResultListener() {
                                     @Override
                                     public void onPositiveResult(String amenities) {
+                                        if (type.equals("POST")) {
+                                            if (receiver != null) {
+                                                receiver.onGetFlatInfoTaskSuccess(flatInfo);
+                                            }
+                                            return;
+                                        }
                                         FlatPropertiesDialog flatPropertiesDialog = new FlatPropertiesDialog();
                                         flatPropertiesDialog.setOnDialogResultListener(new FlatPropertiesDialog.OnDialogResultListener() {
                                             @Override
                                             public void onPositiveResult(boolean expenseGroupRequired, boolean availableForRent) {
                                                 flatInfo.setAvailable(availableForRent);
                                                 if (receiver != null) {
-                                                    receiver.onRegisterNewFlatSuccessful(flatInfo);
+                                                    receiver.onGetFlatInfoTaskSuccess(flatInfo);
                                                 }
                                             }
 
                                             @Override
                                             public void onNegativeResult() {
                                                 if (receiver != null) {
-                                                    receiver.onRegisterNewFlatFailed();
+                                                    receiver.onGetFlatInfoTaskFailed();
                                                 }
 
                                             }
@@ -88,7 +96,7 @@ public class GetNewFlatInfoTask {
                                     @Override
                                     public void onNegativeResult() {
                                         if (receiver != null) {
-                                            receiver.onRegisterNewFlatFailed();
+                                            receiver.onGetFlatInfoTaskFailed();
                                         }
                                     }
                                 });
@@ -99,7 +107,7 @@ public class GetNewFlatInfoTask {
                             @Override
                             public void onNegativeResult() {
                                 if (receiver != null) {
-                                    receiver.onRegisterNewFlatFailed();
+                                    receiver.onGetFlatInfoTaskFailed();
                                 }
                             }
                         });
@@ -109,7 +117,7 @@ public class GetNewFlatInfoTask {
                     @Override
                     public void onNegativeResult() {
                         if (receiver != null) {
-                            receiver.onRegisterNewFlatFailed();
+                            receiver.onGetFlatInfoTaskFailed();
                         }
                     }
                 });
@@ -119,7 +127,7 @@ public class GetNewFlatInfoTask {
             @Override
             public void onNegativeResult() {
                 if (receiver != null) {
-                    receiver.onRegisterNewFlatFailed();
+                    receiver.onGetFlatInfoTaskFailed();
                 }
             }
         });

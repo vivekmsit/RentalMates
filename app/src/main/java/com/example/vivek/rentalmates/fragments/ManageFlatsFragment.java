@@ -149,10 +149,10 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
     }
 
     public void registerNewFlat() {
-        GetNewFlatInfoTask getNewFlatInfoTask = new GetNewFlatInfoTask(context, getFragmentManager());
+        GetNewFlatInfoTask getNewFlatInfoTask = new GetNewFlatInfoTask(context, getFragmentManager(), "NONE");
         getNewFlatInfoTask.setOnGetFlatInfoTask(new GetNewFlatInfoTask.OnGetFlatInfoTask() {
             @Override
-            public void onRegisterNewFlatSuccessful(com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo newFlatInfo) {
+            public void onGetFlatInfoTaskSuccess(com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo newFlatInfo) {
                 final ProgressDialog progressDialog;
                 progressDialog = new ProgressDialog(getActivity());
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -183,7 +183,7 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
             }
 
             @Override
-            public void onRegisterNewFlatFailed() {
+            public void onGetFlatInfoTaskFailed() {
 
             }
         });

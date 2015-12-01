@@ -200,10 +200,10 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
 
 
     public void registerNewFlat() {
-        GetNewFlatInfoTask getNewFlatInfoTask = new GetNewFlatInfoTask(getApplicationContext(), getSupportFragmentManager());
+        GetNewFlatInfoTask getNewFlatInfoTask = new GetNewFlatInfoTask(getApplicationContext(), getSupportFragmentManager(), "NONE");
         getNewFlatInfoTask.setOnGetFlatInfoTask(new GetNewFlatInfoTask.OnGetFlatInfoTask() {
             @Override
-            public void onRegisterNewFlatSuccessful(com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo newFlatInfo) {
+            public void onGetFlatInfoTaskSuccess(com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo newFlatInfo) {
                 final ProgressDialog progressDialog;
                 progressDialog = new ProgressDialog(DetermineFlatActivity.this);
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -233,7 +233,7 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
             }
 
             @Override
-            public void onRegisterNewFlatFailed() {
+            public void onGetFlatInfoTaskFailed() {
 
             }
         });

@@ -29,7 +29,7 @@ public class ItemPickerDialogFragment extends DialogFragment {
     private OnDialogResultListener listener;
 
     public interface OnDialogResultListener {
-        void onPositiveResult(String expenseGroupName);
+        void onPositiveResult(Long flatId);
 
         void onNeutralButtonResult();
 
@@ -92,7 +92,7 @@ public class ItemPickerDialogFragment extends DialogFragment {
                         if (listener != null) {
                             if (0 <= selectedIndex && selectedIndex < items.size()) {
                                 Item item = items.get(selectedIndex);
-                                listener.onPositiveResult(item.getTitle());
+                                listener.onPositiveResult(item.getId());
                             }
                         }
                     }
@@ -140,11 +140,11 @@ public class ItemPickerDialogFragment extends DialogFragment {
     public static class Item {
         private String title;
         private int intValue;
-        private String stringValue;
+        private Long id;
 
         private static final String KEY_TITLE = "title";
         private static final String KEY_INT_VALUE = "intValue";
-        private static final String KEY_STRING_VALUE = "stringValue";
+        private static final String KEY_ID = "id";
 
         /**
          * Construct with title and integer value
@@ -163,13 +163,13 @@ public class ItemPickerDialogFragment extends DialogFragment {
          * Construct with title and string value
          *
          * @param title Name displayed in list
-         * @param value String value associated with item
+         * @param id    Long value associated with item
          */
-        public Item(String title, String value) {
+        public Item(String title, Long id) {
             assert (!TextUtils.isEmpty(title));
 
             this.title = title;
-            this.stringValue = value;
+            this.id = id;
         }
 
         /**
@@ -180,7 +180,7 @@ public class ItemPickerDialogFragment extends DialogFragment {
         public Item(Bundle bundle) {
             title = bundle.getString(KEY_TITLE, null);
             intValue = bundle.getInt(KEY_INT_VALUE, 0);
-            stringValue = bundle.getString(KEY_STRING_VALUE, null);
+            id = bundle.getLong(KEY_ID, 0);
         }
 
         /**
@@ -194,8 +194,8 @@ public class ItemPickerDialogFragment extends DialogFragment {
 
             bundle.putString(KEY_TITLE, title);
             bundle.putInt(KEY_INT_VALUE, intValue);
-            if (stringValue != null) {
-                bundle.putString(KEY_STRING_VALUE, stringValue);
+            if (id != 0) {
+                bundle.putLong(KEY_ID, id);
             }
 
             return bundle;
@@ -209,8 +209,8 @@ public class ItemPickerDialogFragment extends DialogFragment {
             return intValue;
         }
 
-        public String getStringValue() {
-            return stringValue;
+        public Long getId() {
+            return id;
         }
 
         /**
