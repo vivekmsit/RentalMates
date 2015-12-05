@@ -43,6 +43,7 @@ import com.example.vivek.rentalmates.fragments.SearchFlatFragment;
 import com.example.vivek.rentalmates.fragments.SearchRoomMateFragment;
 import com.example.vivek.rentalmates.fragments.SharedContactsListFragment;
 import com.example.vivek.rentalmates.interfaces.FragmentTransactionRequestReceiver;
+import com.example.vivek.rentalmates.library.RegisterNewFlatTask;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -288,16 +289,30 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case R.id.newFlatMenu:
+                                registerNewFlat();
                                 break;
                             case R.id.newExpenseGroupMenu:
-                                break;
-                            case R.id.newContactMenu:
                                 break;
                             default:
                                 break;
                         }
                     }
                 }).show();
+    }
+
+    private void registerNewFlat() {
+        RegisterNewFlatTask registerNewFlatTask = new RegisterNewFlatTask(MainTabActivity.this, getSupportFragmentManager(), "NONE");
+        registerNewFlatTask.setOnRegisterNewFlatTask(new RegisterNewFlatTask.OnRegisterNewFlatTask() {
+            @Override
+            public void onRegisterNewFlatTaskSuccess(com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo newFlatInfo) {
+            }
+
+            @Override
+            public void onRegisterNewFlatTaskFailed() {
+
+            }
+        });
+        registerNewFlatTask.execute();
     }
 
     @Override

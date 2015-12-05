@@ -1,8 +1,12 @@
 package com.example.vivek.rentalmates.library;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
 import com.example.vivek.rentalmates.data.AppConstants;
@@ -11,29 +15,36 @@ import com.example.vivek.rentalmates.dialogs.FlatAmenitiesDialog;
 import com.example.vivek.rentalmates.dialogs.FlatNameDialog;
 import com.example.vivek.rentalmates.dialogs.FlatPropertiesDialog;
 import com.example.vivek.rentalmates.dialogs.FlatRentDetailsDialog;
+import com.example.vivek.rentalmates.interfaces.OnRegisterNewFlatReceiver;
+import com.example.vivek.rentalmates.tasks.RegisterNewFlatAsyncTask;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetNewFlatInfoTask {
+public class RegisterNewFlatTask {
+    private static final String TAG = "RegisterNewFlat_Debug";
     private FragmentManager fragmentManager;
     private SharedPreferences prefs;
-    private OnGetFlatInfoTask receiver;
+    private OnRegisterNewFlatTask receiver;
     private String type;
+    private Activity activity;
+    private Context context;
 
-    public interface OnGetFlatInfoTask {
-        void onGetFlatInfoTaskSuccess(FlatInfo newFlatInfo);
+    public interface OnRegisterNewFlatTask {
+        void onRegisterNewFlatTaskSuccess(FlatInfo newFlatInfo);
 
-        void onGetFlatInfoTaskFailed();
+        void onRegisterNewFlatTaskFailed();
     }
 
-    public GetNewFlatInfoTask(Context context, FragmentManager fragmentManager, String type) {
+    public RegisterNewFlatTask(Activity activity, FragmentManager fragmentManager, String type) {
         this.fragmentManager = fragmentManager;
         this.type = type;
+        this.activity = activity;
+        this.context = activity.getApplicationContext();
         prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
     }
 
-    public void setOnGetFlatInfoTask(OnGetFlatInfoTask receiver) {
+    public void setOnRegisterNewFlatTask(OnRegisterNewFlatTask receiver) {
         this.receiver = receiver;
     }
 
@@ -67,9 +78,7 @@ public class GetNewFlatInfoTask {
                                     @Override
                                     public void onPositiveResult(String amenities) {
                                         if (type.equals("POST")) {
-                                            if (receiver != null) {
-                                                receiver.onGetFlatInfoTaskSuccess(flatInfo);
-                                            }
+                                            registerFlat(flatInfo);
                                             return;
                                         }
                                         FlatPropertiesDialog flatPropertiesDialog = new FlatPropertiesDialog();
@@ -77,15 +86,13 @@ public class GetNewFlatInfoTask {
                                             @Override
                                             public void onPositiveResult(boolean expenseGroupRequired, boolean availableForRent) {
                                                 flatInfo.setAvailable(availableForRent);
-                                                if (receiver != null) {
-                                                    receiver.onGetFlatInfoTaskSuccess(flatInfo);
-                                                }
+                                                registerFlat(flatInfo);
                                             }
 
                                             @Override
                                             public void onNegativeResult() {
                                                 if (receiver != null) {
-                                                    receiver.onGetFlatInfoTaskFailed();
+                                                    receiver.onRegisterNewFlatTaskFailed();
                                                 }
 
                                             }
@@ -96,7 +103,7 @@ public class GetNewFlatInfoTask {
                                     @Override
                                     public void onNegativeResult() {
                                         if (receiver != null) {
-                                            receiver.onGetFlatInfoTaskFailed();
+                                            receiver.onRegisterNewFlatTaskFailed();
                                         }
                                     }
                                 });
@@ -107,7 +114,7 @@ public class GetNewFlatInfoTask {
                             @Override
                             public void onNegativeResult() {
                                 if (receiver != null) {
-                                    receiver.onGetFlatInfoTaskFailed();
+                                    receiver.onRegisterNewFlatTaskFailed();
                                 }
                             }
                         });
@@ -117,7 +124,7 @@ public class GetNewFlatInfoTask {
                     @Override
                     public void onNegativeResult() {
                         if (receiver != null) {
-                            receiver.onGetFlatInfoTaskFailed();
+                            receiver.onRegisterNewFlatTaskFailed();
                         }
                     }
                 });
@@ -127,10 +134,44 @@ public class GetNewFlatInfoTask {
             @Override
             public void onNegativeResult() {
                 if (receiver != null) {
-                    receiver.onGetFlatInfoTaskFailed();
+                    receiver.onRegisterNewFlatTaskFailed();
                 }
             }
         });
         flatNameDialog.show(fragmentManager, "fragment");
+    }
+
+    private void registerFlat(FlatInfo flatInfo) {
+        final ProgressDialog progressDialog;
+        progressDialog = new ProgressDialog(activity);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setIndeterminate(true);
+        RegisterNewFlatAsyncTask task = new RegisterNewFlatAsyncTask(context, flatInfo);
+        task.setOnRegisterNewFlatReceiver(new OnRegisterNewFlatReceiver() {
+            @Override
+            public void onRegisterNewFlatSuccessful(FlatInfo flatInfo) {
+                progressDialog.cancel();
+                if (flatInfo == null) {
+                    Toast.makeText(context, "Flat with given name already registered. \n Please enter different name", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Log.d(TAG, "FlatInfo uploaded");
+                Toast.makeText(context, "New Flat Registered", Toast.LENGTH_SHORT).show();
+                if (receiver != null) {
+                    receiver.onRegisterNewFlatTaskSuccess(flatInfo);
+                }
+            }
+
+            @Override
+            public void onRegisterNewFlatFailed() {
+                progressDialog.cancel();
+                if (receiver != null) {
+                    receiver.onRegisterNewFlatTaskFailed();
+                }
+            }
+        });
+        task.execute();
+        progressDialog.setMessage("Registering new flat");
+        progressDialog.show();
     }
 }

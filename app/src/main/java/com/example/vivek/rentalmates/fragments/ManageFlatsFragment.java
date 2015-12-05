@@ -23,11 +23,9 @@ import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.dialogs.GetExistingFlatInfoDialog;
 import com.example.vivek.rentalmates.interfaces.OnFlatInfoListReceiver;
-import com.example.vivek.rentalmates.interfaces.OnRegisterNewFlatReceiver;
 import com.example.vivek.rentalmates.interfaces.OnRequestJoinExistingEntityReceiver;
-import com.example.vivek.rentalmates.library.GetNewFlatInfoTask;
+import com.example.vivek.rentalmates.library.RegisterNewFlatTask;
 import com.example.vivek.rentalmates.tasks.GetFlatInfoListAsyncTask;
-import com.example.vivek.rentalmates.tasks.RegisterNewFlatAsyncTask;
 import com.example.vivek.rentalmates.tasks.RequestAsyncTask;
 
 import java.util.ArrayList;
@@ -149,45 +147,20 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
     }
 
     public void registerNewFlat() {
-        GetNewFlatInfoTask getNewFlatInfoTask = new GetNewFlatInfoTask(context, getFragmentManager(), "NONE");
-        getNewFlatInfoTask.setOnGetFlatInfoTask(new GetNewFlatInfoTask.OnGetFlatInfoTask() {
+        RegisterNewFlatTask registerNewFlatTask = new RegisterNewFlatTask(getActivity(), getFragmentManager(), "NONE");
+        registerNewFlatTask.setOnRegisterNewFlatTask(new RegisterNewFlatTask.OnRegisterNewFlatTask() {
             @Override
-            public void onGetFlatInfoTaskSuccess(com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo newFlatInfo) {
-                final ProgressDialog progressDialog;
-                progressDialog = new ProgressDialog(getActivity());
-                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                progressDialog.setIndeterminate(true);
-                RegisterNewFlatAsyncTask task = new RegisterNewFlatAsyncTask(context, newFlatInfo);
-                task.setOnRegisterNewFlatReceiver(new OnRegisterNewFlatReceiver() {
-                    @Override
-                    public void onRegisterNewFlatSuccessful(com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo flatInfo) {
-                        progressDialog.cancel();
-                        if (flatInfo == null) {
-                            Toast.makeText(context, "Flat with given name already registered. \n Please enter different name", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        Log.d(TAG, "FlatInfo uploaded");
-                        Toast.makeText(context, "New Flat Registered", Toast.LENGTH_SHORT).show();
-                        swipeRefreshLayout.setRefreshing(true);
-                        onRefresh();
-                    }
-
-                    @Override
-                    public void onRegisterNewFlatFailed() {
-                        progressDialog.cancel();
-                    }
-                });
-                task.execute();
-                progressDialog.setMessage("Registering new flat");
-                progressDialog.show();
+            public void onRegisterNewFlatTaskSuccess(com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo newFlatInfo) {
+                swipeRefreshLayout.setRefreshing(true);
+                onRefresh();
             }
 
             @Override
-            public void onGetFlatInfoTaskFailed() {
+            public void onRegisterNewFlatTaskFailed() {
 
             }
         });
-        getNewFlatInfoTask.execute();
+        registerNewFlatTask.execute();
     }
 
     @Override
