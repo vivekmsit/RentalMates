@@ -63,7 +63,8 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
     private DrawerLayout drawerLayout;
     private FragmentManager fragmentManager;
     private MyAdapter pageAdapter;
-    private FloatingActionButton fab;
+    private FloatingActionButton filterFab;
+    private FloatingActionButton addFab;
     private NavigationView navigationView;
     private CircularImageView circularImageView;
     private TextView userNameTextView;
@@ -97,6 +98,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
 
         eventReceiverHashMap = new HashMap<>();
         currentPosition = 0;
+        backStackCount = 0;
         newExpenseAvailable = false;
         appData = AppData.getInstance();
         prefs = this.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
@@ -144,12 +146,6 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
             @Override
             public void onPageSelected(int position) {
                 Log.d(TAG, "onPageSelected " + position);
-                if (position == 0) {
-                    fab.setVisibility(View.GONE);
-                } else {
-                    fab.clearAnimation();
-                    fab.setVisibility(View.GONE);
-                }
                 currentPosition = position;
                 updateFab();
             }
@@ -160,9 +156,29 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
             }
         });
 
-        //Initialize FloatingActionButton
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        //Initialize Add FloatingActionButton
+        addFab = (FloatingActionButton) findViewById(R.id.addFab);
+        addFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (eventReceiverHashMap.containsKey("mainfragment")) {
+                    eventReceiverHashMap.get("mainfragment").onEventReceived("addFABPressed");
+                }
+            }
+        });
+        ScaleAnimation anim2 = new ScaleAnimation(0, 1, 0, 1);
+        anim2.setFillBefore(true);
+        anim2.setFillAfter(true);
+        anim2.setFillEnabled(true);
+        anim2.setDuration(300);
+        anim2.setInterpolator(new OvershootInterpolator());
+        addFab.setAnimation(anim2);
+        addFab.animate();
+        addFab.setVisibility(View.VISIBLE);
+
+        //Initialize Filter FloatingActionButton
+        filterFab = (FloatingActionButton) findViewById(R.id.filterFab);
+        filterFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (eventReceiverHashMap.containsKey("searchflatsfragment")) {
@@ -176,9 +192,9 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         anim.setFillEnabled(true);
         anim.setDuration(300);
         anim.setInterpolator(new OvershootInterpolator());
-        fab.setAnimation(anim);
-        fab.animate();
-        fab.setVisibility(View.GONE);
+        filterFab.setAnimation(anim);
+        filterFab.animate();
+        filterFab.setVisibility(View.GONE);
 
         //Initialize TabLayout
         tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -370,11 +386,17 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
     }
 
     public void updateFab() {
-        if (currentPosition == 1 && backStackCount == 0) {
-            fab.setVisibility(View.VISIBLE);
+        if (currentPosition == 0 && backStackCount == 0) {
+            addFab.setVisibility(View.VISIBLE);
+            filterFab.setVisibility(View.GONE);
+        } else if (currentPosition == 1 && backStackCount == 0) {
+            addFab.setVisibility(View.GONE);
+            filterFab.setVisibility(View.VISIBLE);
         } else {
-            fab.clearAnimation();
-            fab.setVisibility(View.GONE);
+            filterFab.clearAnimation();
+            filterFab.setVisibility(View.GONE);
+            addFab.clearAnimation();
+            addFab.setVisibility(View.GONE);
         }
     }
 

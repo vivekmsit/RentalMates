@@ -22,7 +22,7 @@ import com.example.vivek.rentalmates.tasks.RegisterNewFlatAsyncTask;
 
 import java.util.ArrayList;
 
-public class MainFragment extends android.support.v4.app.Fragment {
+public class MainFragment extends android.support.v4.app.Fragment implements MainTabActivity.ActivityEventReceiver {
 
     private static final String TAG = "MainFragment_Debug";
 
@@ -74,6 +74,8 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 postYourFlat();
             }
         });
+
+        mainTabActivity.registerForActivityEvents("mainfragment", this);
 
         return layout;
     }
@@ -164,6 +166,17 @@ public class MainFragment extends android.support.v4.app.Fragment {
                 }
             });
             getNewFlatInfoTask.execute();
+        }
+    }
+
+    @Override
+    public void onEventReceived(String eventType) {
+        switch (eventType) {
+            case "addFABPressed":
+                Toast.makeText(context, "To be implemented", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                break;
         }
     }
 }
