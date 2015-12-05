@@ -1,6 +1,7 @@
 package com.example.vivek.rentalmates.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -29,6 +30,7 @@ import android.view.animation.ScaleAnimation;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cocosw.bottomsheet.BottomSheet;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.AppData;
@@ -130,6 +132,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
                     navigationView.getMenu().findItem(R.id.drawer_item_home).setChecked(true);
                     toolbar.setTitle("RentalMates");
                 }
+                updateFab();
             }
         });
 
@@ -161,9 +164,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         addFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (eventReceiverHashMap.containsKey("mainfragment")) {
-                    eventReceiverHashMap.get("mainfragment").onEventReceived("addFABPressed");
-                }
+                displayBottomSheet();
             }
         });
         ScaleAnimation anim2 = new ScaleAnimation(0, 1, 0, 1);
@@ -275,6 +276,28 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
             newExpenseAvailable = true;
         }
         Toast.makeText(this, "gcm values: " + appData.getGcmData().values().toString(), Toast.LENGTH_LONG).show();
+    }
+
+    public void displayBottomSheet() {
+        new BottomSheet.Builder(this, R.style.BottomSheet_Dialog)
+                .title("New")
+                .grid()
+                .sheet(R.menu.menu_bottom_sheet)
+                .listener(new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case R.id.newFlatMenu:
+                                break;
+                            case R.id.newExpenseGroupMenu:
+                                break;
+                            case R.id.newContactMenu:
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }).show();
     }
 
     @Override
