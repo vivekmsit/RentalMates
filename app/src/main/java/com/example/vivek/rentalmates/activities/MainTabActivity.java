@@ -43,6 +43,7 @@ import com.example.vivek.rentalmates.fragments.SearchFlatFragment;
 import com.example.vivek.rentalmates.fragments.SearchRoomMateFragment;
 import com.example.vivek.rentalmates.fragments.SharedContactsListFragment;
 import com.example.vivek.rentalmates.interfaces.FragmentTransactionRequestReceiver;
+import com.example.vivek.rentalmates.library.CreateNewExpenseGroupTask;
 import com.example.vivek.rentalmates.library.RegisterNewFlatTask;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -292,6 +293,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
                                 registerNewFlat();
                                 break;
                             case R.id.newExpenseGroupMenu:
+                                createNewExpenseGroup();
                                 break;
                             default:
                                 break;
@@ -313,6 +315,22 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
             }
         });
         registerNewFlatTask.execute();
+    }
+
+    private void createNewExpenseGroup() {
+        CreateNewExpenseGroupTask task = new CreateNewExpenseGroupTask(MainTabActivity.this, getSupportFragmentManager());
+        task.setOnRegisterNewFlatTask(new CreateNewExpenseGroupTask.OnCreateNewExpenseGroupTask() {
+            @Override
+            public void onCreateNewExpenseGroupTaskSuccess(com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseGroup expenseGroup) {
+
+            }
+
+            @Override
+            public void onCreateNewExpenseGroupTaskFailed() {
+
+            }
+        });
+        task.execute();
     }
 
     @Override

@@ -21,13 +21,10 @@ import com.example.vivek.rentalmates.backend.mainApi.model.Request;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.ExpenseGroup;
 import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.AppData;
-import com.example.vivek.rentalmates.data.LocalUserProfile;
 import com.example.vivek.rentalmates.dialogs.GetExistingExpenseGroupInfoDialog;
-import com.example.vivek.rentalmates.dialogs.GetExpenseGroupNameDialog;
-import com.example.vivek.rentalmates.interfaces.OnCreateExpenseGroupReceiver;
 import com.example.vivek.rentalmates.interfaces.OnExpenseGroupListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnRequestJoinExistingEntityReceiver;
-import com.example.vivek.rentalmates.tasks.CreateExpenseGroupAsyncTask;
+import com.example.vivek.rentalmates.library.CreateNewExpenseGroupTask;
 import com.example.vivek.rentalmates.tasks.GetExpenseGroupListAsyncTask;
 import com.example.vivek.rentalmates.tasks.RequestAsyncTask;
 
@@ -150,52 +147,21 @@ public class ManageExpenseGroupsFragment extends android.support.v4.app.Fragment
         dialog.show(getFragmentManager(), "Fragment");
     }
 
-    public void createNewExpenseGroup() {
-        final ProgressDialog progressDialog;
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.setIndeterminate(true);
-        GetExpenseGroupNameDialog dialog = new GetExpenseGroupNameDialog();
-        dialog.setOnDialogResultListener(new GetExpenseGroupNameDialog.OnDialogResultListener() {
+    private void createNewExpenseGroup() {
+        CreateNewExpenseGroupTask task = new CreateNewExpenseGroupTask(getActivity(), getFragmentManager());
+        task.setOnRegisterNewFlatTask(new CreateNewExpenseGroupTask.OnCreateNewExpenseGroupTask() {
             @Override
-            public void onPositiveResult(String expenseGroupName) {
-                com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseGroup expenseGroup = new com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseGroup();
-                expenseGroup.setName(expenseGroupName);
-                LocalUserProfile localUserProfile = appData.getLocalUserProfile(prefs.getLong(AppConstants.USER_PROFILE_ID, 0));
-                expenseGroup.setOwnerId(localUserProfile.getUserProfileId());
-                expenseGroup.setOwnerEmailId(localUserProfile.getEmailId());
-
-                CreateExpenseGroupAsyncTask task = new CreateExpenseGroupAsyncTask(context, expenseGroup);
-                task.setOnCreateExpenseGroupReceiver(new OnCreateExpenseGroupReceiver() {
-                    @Override
-                    public void onCreateExpenseGroupSuccessful(com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseGroup expenseGroup) {
-                        progressDialog.cancel();
-                        if (expenseGroup.getOperationResult().equals("OLD_EXPENSE_GROUP")) {
-                            Toast.makeText(context, "Already a member of given Expense Group", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(context, "Expense Group Created", Toast.LENGTH_SHORT).show();
-                            swipeRefreshLayout.setRefreshing(true);
-                            onRefresh();
-                        }
-                    }
-
-                    @Override
-                    public void onCreateExpenseGroupFailed() {
-                        progressDialog.cancel();
-                    }
-                });
-                task.execute();
-                progressDialog.setMessage("Creating Expense Group " + expenseGroupName);
-                progressDialog.show();
-
+            public void onCreateNewExpenseGroupTaskSuccess(com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseGroup expenseGroup) {
+                swipeRefreshLayout.setRefreshing(true);
+                onRefresh();
             }
 
             @Override
-            public void onNegativeResult() {
+            public void onCreateNewExpenseGroupTaskFailed() {
 
             }
         });
-        dialog.show(getFragmentManager(), "Fragment");
+        task.execute();
     }
 
     @Override
