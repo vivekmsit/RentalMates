@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +42,8 @@ public class FlatSearchCriteriaDialog extends DialogFragment implements GoogleAp
     private TextView minSecurityValueTextView;
     private TextView maxSecurityValueTextView;
     private TextView selectedLocationTextView;
+    private TextView seekBarValueTextView;
+    private SeekBar searchRadiusSeekBar;
     private GoogleApiClient mGoogleApiClient;
     private PlaceAutoCompleteAdapter mAdapter;
     private AutoCompleteTextView autocompleteView;
@@ -83,14 +86,36 @@ public class FlatSearchCriteriaDialog extends DialogFragment implements GoogleAp
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         context = getActivity().getApplicationContext();
         appData = AppData.getInstance();
+        flatSearchCriteria = new FlatSearchCriteria();
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                //.enableAutoManage(getActivity(), 0 /* clientId */, this)
                 .addApi(Places.GEO_DATA_API)
                 .addConnectionCallbacks(this)
                 .build();
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_fragment_flat_search_criteria, null);
+
+        seekBarValueTextView = (TextView) view.findViewById(R.id.seekBarValueTextView);
+
+        //Initialize searchRadiusSeekBar
+        searchRadiusSeekBar = (SeekBar) view.findViewById(R.id.searchRadiusSeekBar);
+        searchRadiusSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                flatSearchCriteria.setAreaRange(progress * 1000);
+                seekBarValueTextView.setText("Radius: " + progress + " km");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
 
         // Set up the adapter that will retrieve suggestions from the Places Geo Data API that cover
         // the entire world.
@@ -108,7 +133,7 @@ public class FlatSearchCriteriaDialog extends DialogFragment implements GoogleAp
         maxSecurityValueTextView = (TextView) view.findViewById(R.id.maxSecurityValueTextView);
         selectedLocationTextView = (TextView) view.findViewById(R.id.selectedLocationTextView);
 
-        FlatSearchCriteria flatSearchCriteriaSaved = appData.getFlatSearchCriteria();
+        final FlatSearchCriteria flatSearchCriteriaSaved = appData.getFlatSearchCriteria();
         int minRent = flatSearchCriteriaSaved.getMinRentAmountPerPerson();
         int maxRent = flatSearchCriteriaSaved.getMaxRentAmountPerPerson();
         int minSecurity = flatSearchCriteriaSaved.getMinSecurityAmountPerPerson();
@@ -123,10 +148,13 @@ public class FlatSearchCriteriaDialog extends DialogFragment implements GoogleAp
         minSecurityValueTextView.setText("Rs " + minSecurity);
         maxSecurityValueTextView.setText("Rs " + maxSecurity);
         selectedLocationTextView.setText(selectedLocation);
+        if (areaRange != 0) {
+            searchRadiusSeekBar.setProgress(areaRange / 1000);
+        } else {
+            searchRadiusSeekBar.setProgress(0);
+        }
         setUpRentRangeSeekBar(view);
         setUpSecurityRangeSeekBar(view);
-
-        flatSearchCriteria = new FlatSearchCriteria();
 
         flatSearchCriteria.setLocationLatitude(locationLatitude);
         flatSearchCriteria.setLocationLongitude(locationLongitude);

@@ -49,8 +49,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/autocomplete"
+                android:layout_centerHorizontal="true"
                 android:padding="5dp"
                 android:text="Selected Location" />
+
+            <TextView
+                android:id="@+id/seekBarValueTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/selectedLocationTextView"
+                android:layout_centerHorizontal="true"
+                android:padding="5dp"
+                android:text="Radius: 10 km" />
+
+            <SeekBar
+                android:id="@+id/searchRadiusSeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/seekBarValueTextView"
+                android:layout_margin="5dp"
+                android:max="50"
+                android:padding="10dp"
+                android:progress="10" />
 
         </RelativeLayout>
 
