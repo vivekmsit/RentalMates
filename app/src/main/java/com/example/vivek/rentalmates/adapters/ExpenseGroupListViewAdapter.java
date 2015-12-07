@@ -70,12 +70,8 @@ public class ExpenseGroupListViewAdapter extends RecyclerView.Adapter<ExpenseGro
     public void onBindViewHolder(ExpenseGroupViewHolder viewHolder, int position) {
         Log.d(TAG, "inside onBindViewHolder");
         ExpenseGroupListItem current = data.get(position);
-        viewHolder.flatName.setText(current.flatName);
-        viewHolder.date.setText(current.date);
-        viewHolder.location.setText(current.location);
-        viewHolder.members.setText(current.ownerName);
-        viewHolder.ownerName.setText(current.ownerName);
-        String finalData;
+        viewHolder.expenseGroupNameTextView.setText(current.flatName);
+        /*String finalData;
         if (current.paybackAmountValue > 0) {
             finalData = "You will get Rs. " + current.paybackAmountValue.toString() + " from others";
         } else if (current.paybackAmountValue < 0) {
@@ -83,7 +79,7 @@ public class ExpenseGroupListViewAdapter extends RecyclerView.Adapter<ExpenseGro
         } else {
             finalData = "No payback amount";
         }
-        viewHolder.payBackAmountValue.setText(finalData);
+        viewHolder.payBackAmountValue.setText(finalData);*/
     }
 
     @Override
@@ -96,21 +92,11 @@ public class ExpenseGroupListViewAdapter extends RecyclerView.Adapter<ExpenseGro
      * repeatedly in the getView() method of the adapter.
      */
     class ExpenseGroupViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-        TextView flatName;
-        TextView ownerName;
-        TextView location;
-        TextView members;
-        TextView date;
-        TextView payBackAmountValue;
+        TextView expenseGroupNameTextView;
 
         public ExpenseGroupViewHolder(View itemView) {
             super(itemView);
-            flatName = (TextView) itemView.findViewById(R.id.flatNameTextView);
-            ownerName = (TextView) itemView.findViewById(R.id.ownerTextView);
-            location = (TextView) itemView.findViewById(R.id.locationTextView);
-            members = (TextView) itemView.findViewById(R.id.membersTextView);
-            date = (TextView) itemView.findViewById(R.id.dateTextView);
-            payBackAmountValue = (TextView) itemView.findViewById(R.id.paybackAmountValueTextView);
+            expenseGroupNameTextView = (TextView) itemView.findViewById(R.id.expenseGroupNameTextView);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
         }

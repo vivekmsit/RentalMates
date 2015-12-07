@@ -54,10 +54,6 @@ public class FlatListViewAdapter extends RecyclerView.Adapter<FlatListViewAdapte
         Log.d(TAG, "inside onBindViewHolder");
         FlatListItem current = data.get(position);
         viewHolder.flatName.setText(current.flatName);
-        viewHolder.date.setText(current.date);
-        viewHolder.location.setText(current.location);
-        viewHolder.members.setText(current.ownerName);
-        viewHolder.ownerName.setText(current.ownerName);
     }
 
     @Override
@@ -71,18 +67,10 @@ public class FlatListViewAdapter extends RecyclerView.Adapter<FlatListViewAdapte
      */
     class FlatViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         TextView flatName;
-        TextView ownerName;
-        TextView location;
-        TextView members;
-        TextView date;
 
         public FlatViewHolder(View itemView) {
             super(itemView);
             flatName = (TextView) itemView.findViewById(R.id.flatNameTextView);
-            ownerName = (TextView) itemView.findViewById(R.id.ownerTextView);
-            location = (TextView) itemView.findViewById(R.id.locationTextView);
-            members = (TextView) itemView.findViewById(R.id.membersTextView);
-            date = (TextView) itemView.findViewById(R.id.dateTextView);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
         }
