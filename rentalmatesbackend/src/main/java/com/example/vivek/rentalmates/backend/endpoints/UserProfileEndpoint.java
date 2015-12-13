@@ -7,7 +7,6 @@ import com.example.vivek.rentalmates.backend.entities.FlatInfo;
 import com.example.vivek.rentalmates.backend.entities.FlatSearchCriteria;
 import com.example.vivek.rentalmates.backend.entities.RegistrationRecord;
 import com.example.vivek.rentalmates.backend.entities.Request;
-import com.example.vivek.rentalmates.backend.entities.RoomMateSearchCriteria;
 import com.example.vivek.rentalmates.backend.entities.UserProfile;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -18,10 +17,13 @@ import com.google.appengine.api.ThreadManager;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.QueryResultIterator;
 import com.google.appengine.api.search.Document;
+import com.google.appengine.api.search.Field;
+import com.google.appengine.api.search.GeoPoint;
 import com.google.appengine.api.search.GetRequest;
 import com.google.appengine.api.search.GetResponse;
 import com.google.appengine.api.search.Index;
 import com.google.appengine.api.search.IndexSpec;
+import com.google.appengine.api.search.PutException;
 import com.google.appengine.api.search.Results;
 import com.google.appengine.api.search.ScoredDocument;
 import com.google.appengine.api.search.SearchException;
@@ -201,19 +203,24 @@ public class UserProfileEndpoint {
             path = "queryUserProfiles",
             httpMethod = ApiMethod.HttpMethod.POST)
     public List<UserProfile> queryUserProfiles(@Named("type") String type, @Named("value") String value) {
-        Query query = ofy().load().type(UserProfile.class);
+        Query<UserProfile> query = ofy().load().type(UserProfile.class);
         query = query.filter(type + " = ", value);
-        return (List<UserProfile>) query.list();
+        return query.list();
     }
 
-
     private boolean removeAllSearchDocuments() {
-        IndexSpec indexSpec = IndexSpec.newBuilder().setName("FlatInfoIndex").build();
+        removeSearchDocument("FlatInfoIndex");
+        removeSearchDocument("FlatSearchCriteriaIndex");
+        return true;
+    }
+
+    private boolean removeSearchDocument(String indexName) {
+        IndexSpec indexSpec = IndexSpec.newBuilder().setName(indexName).build();
         Index index = SearchServiceFactory.getSearchService().getIndex(indexSpec);
         try {
             // looping because getRange by default returns up to 100 documents at a time
             while (true) {
-                List<String> docIds = new ArrayList<String>();
+                List<String> docIds = new ArrayList<>();
                 // Return a set of doc_ids.
                 GetRequest request = GetRequest.newBuilder().setReturningIdsOnly(true).build();
                 GetResponse<Document> response = index.getRange(request);
@@ -446,8 +453,65 @@ public class UserProfileEndpoint {
             name = "searchRoomMates",
             path = "searchRoomMates",
             httpMethod = ApiMethod.HttpMethod.POST)
-    public List<UserProfile> searchRoomMates(RoomMateSearchCriteria criteria) throws NotFoundException {
-        List<UserProfile> userProfiles = new ArrayList<>();
-        return userProfiles;
+    public List<FlatSearchCriteria> searchRoomMates(FlatInfo flatInfo) throws NotFoundException {
+        List<FlatSearchCriteria> flatSearchCriteriaList = new ArrayList<>();
+        IndexSpec indexSpec = IndexSpec.newBuilder().setName("FlatSearchCriteriaIndex").build();
+        Index index = SearchServiceFactory.getSearchService().getIndex(indexSpec);
+        try {
+            String queryString = "distance(GeoPoint, geopoint(" + flatInfo.getVertices()[0] + "," + flatInfo.getVertices()[1] + ")) < areaRange";
+            queryString = queryString + " AND minRentPerPerson < " + flatInfo.getRentAmount() + " AND maxRentPerPerson > " + flatInfo.getRentAmount();
+            queryString = queryString + " AND minSecurityPerPerson < " + flatInfo.getSecurityAmount() + " AND maxSecurityPerPerson > " + flatInfo.getSecurityAmount();
+            Results<ScoredDocument> results = index.search(queryString);
+
+            // Iterate over the documents in the results
+            for (ScoredDocument document : results) {
+                Long flatSearchCriteriaId = Long.valueOf(document.getOnlyField("flatSearchCriteriaId").getText());
+                FlatSearchCriteria flatSearchCriteria = ofy().load().type(FlatSearchCriteria.class).id(flatSearchCriteriaId).now();
+                flatSearchCriteriaList.add(flatSearchCriteria);
+            }
+        } catch (SearchException e) {
+            if (StatusCode.TRANSIENT_ERROR.equals(e.getOperationResult().getCode())) {
+                // retry
+                flatSearchCriteriaList = null;
+            }
+        }
+        return flatSearchCriteriaList;
+    }
+
+    /**
+     * posts room requirement using {@code FlatSearchCriteria}.
+     */
+    @ApiMethod(
+            name = "postYourRoomRequirement",
+            path = "postYourRoomRequirement",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public FlatSearchCriteria postYourRoomRequirement(FlatSearchCriteria criteria) throws NotFoundException {
+        ofy().save().entity(criteria).now();
+        criteria = ofy().load().entity(criteria).now();
+        createFlatSearchCriteriaDocument(criteria);
+        return criteria;
+    }
+
+    private void createFlatSearchCriteriaDocument(FlatSearchCriteria flatSearchCriteria) {
+        Document doc = Document.newBuilder()
+                .addField(Field.newBuilder().setName("minRentPerPerson").setNumber(flatSearchCriteria.getMinRentAmountPerPerson()))
+                .addField(Field.newBuilder().setName("maxRentPerPerson").setNumber(flatSearchCriteria.getMaxRentAmountPerPerson()))
+                .addField(Field.newBuilder().setName("minSecurityPerPerson").setNumber(flatSearchCriteria.getMinSecurityAmountPerPerson()))
+                .addField(Field.newBuilder().setName("maxSecurityPerPerson").setNumber(flatSearchCriteria.getMaxSecurityAmountPerPerson()))
+                .addField(Field.newBuilder().setName("areaRange").setNumber(flatSearchCriteria.getAreaRange()))
+                .addField(Field.newBuilder().setName("GeoPoint").setGeoPoint(new GeoPoint(flatSearchCriteria.getLocationLatitude(), flatSearchCriteria.getLocationLongitude())))
+                .addField(Field.newBuilder().setName("flatSearchCriteriaId").setNumber(flatSearchCriteria.getId()))
+                .build();
+
+        //Insert the document into Index
+        IndexSpec indexSpec = IndexSpec.newBuilder().setName("FlatSearchCriteriaIndex").build();
+        Index index = SearchServiceFactory.getSearchService().getIndex(indexSpec);
+        try {
+            index.put(doc);
+        } catch (PutException e) {
+            if (StatusCode.TRANSIENT_ERROR.equals(e.getOperationResult().getCode())) {
+                index.put(doc); // retry putting the document
+            }
+        }
     }
 }

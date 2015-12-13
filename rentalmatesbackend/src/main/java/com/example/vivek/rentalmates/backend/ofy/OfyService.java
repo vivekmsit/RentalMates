@@ -3,6 +3,7 @@ package com.example.vivek.rentalmates.backend.ofy;
 import com.example.vivek.rentalmates.backend.entities.ExpenseData;
 import com.example.vivek.rentalmates.backend.entities.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.entities.FlatInfo;
+import com.example.vivek.rentalmates.backend.entities.FlatSearchCriteria;
 import com.example.vivek.rentalmates.backend.entities.RegistrationRecord;
 import com.example.vivek.rentalmates.backend.entities.UserProfile;
 import com.googlecode.objectify.Objectify;
@@ -21,6 +22,7 @@ public class OfyService {
         ObjectifyService.register(FlatInfo.class);
         ObjectifyService.register(ExpenseData.class);
         ObjectifyService.register(ExpenseGroup.class);
+        ObjectifyService.register(FlatSearchCriteria.class);
     }
 
     public static Objectify ofy() {

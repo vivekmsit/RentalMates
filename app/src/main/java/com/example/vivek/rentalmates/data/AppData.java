@@ -38,6 +38,7 @@ public class AppData implements Serializable {
     private List<LocalExpenseData> expenses;
     private List<LocalRequest> requests;
     private List<LocalContact> contacts;
+    private List<LocalFlatSearchCriteria> roomMateList;
     private List<String> gcmTypes;
 
     private HashMap<String, String> profilePicturesPath;
@@ -63,6 +64,7 @@ public class AppData implements Serializable {
         expenses = new ArrayList<>();
         requests = new ArrayList<>();
         contacts = new ArrayList<>();
+        roomMateList = new ArrayList<>();
         gcmTypes = new ArrayList<>();
         gcmTypes.add("NEW_EXPENSE_DATA");
         gcmTypes.add("NEW_FLAT_USER");
@@ -369,6 +371,7 @@ public class AppData implements Serializable {
         expenses = new ArrayList<>();
         requests = new ArrayList<>();
         contacts = new ArrayList<>();
+        roomMateList = new ArrayList<>();
         gcmTypes = new ArrayList<>();
         gcmTypes.add("NEW_EXPENSE_DATA");
         gcmTypes.add("NEW_FLAT_USER");
@@ -423,5 +426,15 @@ public class AppData implements Serializable {
             result = false;
         }
         return result;
+    }
+
+    public List<FlatSearchCriteria> getRoomMateList() {
+        return LocalFlatSearchCriteria.convertLocalFlatSearchCriteriaListToFlatSearchCriteriaList(roomMateList);
+    }
+
+
+    public boolean storeRoomMateList(Context context, List<FlatSearchCriteria> requests) {
+        this.roomMateList = LocalFlatSearchCriteria.convertFlatSearchCriteriaListToLocalFlatSearchCriteriaList(requests);
+        return storeAppData(context);
     }
 }

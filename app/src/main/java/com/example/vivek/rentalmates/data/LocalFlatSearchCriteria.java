@@ -3,6 +3,8 @@ package com.example.vivek.rentalmates.data;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatSearchCriteria;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LocalFlatSearchCriteria implements Serializable {
 
@@ -162,6 +164,28 @@ public class LocalFlatSearchCriteria implements Serializable {
 
     public void setRequesterProfilePicture(String requesterProfilePicture) {
         this.requesterProfilePicture = requesterProfilePicture;
+    }
+
+    public static List<FlatSearchCriteria> convertLocalFlatSearchCriteriaListToFlatSearchCriteriaList(List<LocalFlatSearchCriteria> localFlatSearchCriteriaList) {
+        if (localFlatSearchCriteriaList == null) {
+            return null;
+        }
+        List<FlatSearchCriteria> flatSearchCriteriaList = new ArrayList<>();
+        for (LocalFlatSearchCriteria localFlatSearchCriteria : localFlatSearchCriteriaList) {
+            flatSearchCriteriaList.add(convertLocalFlatSearchCriteriaToFlatSearchCriteria(localFlatSearchCriteria));
+        }
+        return flatSearchCriteriaList;
+    }
+
+    public static List<LocalFlatSearchCriteria> convertFlatSearchCriteriaListToLocalFlatSearchCriteriaList(List<FlatSearchCriteria> flatSearchCriteriaList) {
+        if (flatSearchCriteriaList == null) {
+            return null;
+        }
+        List<LocalFlatSearchCriteria> localFlatSearchCriteriaList = new ArrayList<>();
+        for (FlatSearchCriteria flatSearchCriteria : flatSearchCriteriaList) {
+            localFlatSearchCriteriaList.add(convertFlatSearchCriteriaToLocalFlatSearchCriteria(flatSearchCriteria));
+        }
+        return localFlatSearchCriteriaList;
     }
 
     public static FlatSearchCriteria convertLocalFlatSearchCriteriaToFlatSearchCriteria(LocalFlatSearchCriteria localFlatSearchCriteria) {

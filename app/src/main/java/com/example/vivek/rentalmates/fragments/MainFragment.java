@@ -11,11 +11,14 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.activities.MainTabActivity;
+import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatSearchCriteria;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.data.LocalFlatInfo;
+import com.example.vivek.rentalmates.dialogs.FlatSearchCriteriaDialog;
 import com.example.vivek.rentalmates.dialogs.ItemPickerDialogFragment;
 import com.example.vivek.rentalmates.library.RegisterNewFlatTask;
 import com.example.vivek.rentalmates.tasks.PostYourFlatAsyncTask;
+import com.example.vivek.rentalmates.tasks.PostYourRoomRequirementAsyncTask;
 
 import java.util.ArrayList;
 
@@ -27,6 +30,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Mai
     CardView expenseManagerCardView;
     CardView flatRulesCardView;
     CardView postYourFlatCardView;
+    CardView postYourRoomRequirementCardView;
     MainTabActivity mainTabActivity;
     Context context;
     AppData appData;
@@ -43,6 +47,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Mai
         expenseManagerCardView = (CardView) layout.findViewById(R.id.expense_manager_card_view);
         flatRulesCardView = (CardView) layout.findViewById(R.id.flat_rules_card_view);
         postYourFlatCardView = (CardView) layout.findViewById(R.id.post_your_flat_card_view);
+        postYourRoomRequirementCardView = (CardView) layout.findViewById(R.id.post_your_room_requirement_card_view);
 
         sharedContactsCardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,6 +74,13 @@ public class MainFragment extends android.support.v4.app.Fragment implements Mai
             @Override
             public void onClick(View v) {
                 postYourFlat();
+            }
+        });
+
+        postYourRoomRequirementCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                postYourRoomRequirement();
             }
         });
 
@@ -137,6 +149,42 @@ public class MainFragment extends android.support.v4.app.Fragment implements Mai
             }
         });
         registerNewFlatTask.execute();
+    }
+
+    private void postYourRoomRequirement() {
+        FlatSearchCriteriaDialog dialog = new FlatSearchCriteriaDialog();
+        dialog.setOnDialogResultListener(new FlatSearchCriteriaDialog.OnDialogResultListener() {
+            @Override
+            public void onPositiveResult(FlatSearchCriteria flatSearchCriteria) {
+                final ProgressDialog progressDialog;
+                progressDialog = new ProgressDialog(getActivity());
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog.setIndeterminate(true);
+
+                PostYourRoomRequirementAsyncTask task = new PostYourRoomRequirementAsyncTask(context, flatSearchCriteria);
+                task.setOnExecuteTaskReceiver(new PostYourRoomRequirementAsyncTask.OnExecuteTaskReceiver() {
+                    @Override
+                    public void onTaskCompleted(FlatSearchCriteria uploadedFlatSearchCriteria) {
+                        progressDialog.cancel();
+                        Toast.makeText(context, "Your Room Requirement Uploaded", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onTaskFailed() {
+                        progressDialog.cancel();
+                    }
+                });
+                task.execute();
+                progressDialog.setMessage("posting your room requirement");
+                progressDialog.show();
+            }
+
+            @Override
+            public void onNegativeResult() {
+
+            }
+        });
+        dialog.show(getFragmentManager(), "fragment");
     }
 
     @Override
