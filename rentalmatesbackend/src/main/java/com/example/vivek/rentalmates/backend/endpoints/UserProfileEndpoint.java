@@ -447,38 +447,6 @@ public class UserProfileEndpoint {
     }
 
     /**
-     * Returns List of {@code Contact} for a given {@code FlatInfo}.
-     */
-    @ApiMethod(
-            name = "searchRoomMates",
-            path = "searchRoomMates",
-            httpMethod = ApiMethod.HttpMethod.POST)
-    public List<FlatSearchCriteria> searchRoomMates(FlatInfo flatInfo) throws NotFoundException {
-        List<FlatSearchCriteria> flatSearchCriteriaList = new ArrayList<>();
-        IndexSpec indexSpec = IndexSpec.newBuilder().setName("FlatSearchCriteriaIndex").build();
-        Index index = SearchServiceFactory.getSearchService().getIndex(indexSpec);
-        try {
-            String queryString = "distance(GeoPoint, geopoint(" + flatInfo.getVertices()[0] + "," + flatInfo.getVertices()[1] + ")) < areaRange";
-            queryString = queryString + " AND minRentPerPerson < " + flatInfo.getRentAmount() + " AND maxRentPerPerson > " + flatInfo.getRentAmount();
-            queryString = queryString + " AND minSecurityPerPerson < " + flatInfo.getSecurityAmount() + " AND maxSecurityPerPerson > " + flatInfo.getSecurityAmount();
-            Results<ScoredDocument> results = index.search(queryString);
-
-            // Iterate over the documents in the results
-            for (ScoredDocument document : results) {
-                Long flatSearchCriteriaId = Long.valueOf(document.getOnlyField("flatSearchCriteriaId").getText());
-                FlatSearchCriteria flatSearchCriteria = ofy().load().type(FlatSearchCriteria.class).id(flatSearchCriteriaId).now();
-                flatSearchCriteriaList.add(flatSearchCriteria);
-            }
-        } catch (SearchException e) {
-            if (StatusCode.TRANSIENT_ERROR.equals(e.getOperationResult().getCode())) {
-                // retry
-                flatSearchCriteriaList = null;
-            }
-        }
-        return flatSearchCriteriaList;
-    }
-
-    /**
      * posts room requirement using {@code FlatSearchCriteria}.
      */
     @ApiMethod(
@@ -514,4 +482,41 @@ public class UserProfileEndpoint {
             }
         }
     }
+
+    /**
+     * Returns List of {@code Contact} for a given {@code FlatInfo}.
+     */
+    @ApiMethod(
+            name = "searchRoomMates",
+            path = "searchRoomMates",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public List<FlatSearchCriteria> searchRoomMates(@Named("id") Long flatId) throws NotFoundException {
+        FlatInfo flatInfo = ofy().load().type(FlatInfo.class).id(flatId).now();
+        if (flatInfo == null) {
+            return null;
+        }
+        List<FlatSearchCriteria> flatSearchCriteriaList = new ArrayList<>();
+        IndexSpec indexSpec = IndexSpec.newBuilder().setName("FlatSearchCriteriaIndex").build();
+        Index index = SearchServiceFactory.getSearchService().getIndex(indexSpec);
+        try {
+            String queryString = "distance(GeoPoint, geopoint(" + flatInfo.getVertices()[0] + "," + flatInfo.getVertices()[1] + ")) < areaRange";
+            queryString = queryString + " AND minRentPerPerson < " + flatInfo.getRentAmount() + " AND maxRentPerPerson > " + flatInfo.getRentAmount();
+            queryString = queryString + " AND minSecurityPerPerson < " + flatInfo.getSecurityAmount() + " AND maxSecurityPerPerson > " + flatInfo.getSecurityAmount();
+            Results<ScoredDocument> results = index.search(queryString);
+
+            // Iterate over the documents in the results
+            for (ScoredDocument document : results) {
+                Long flatSearchCriteriaId = Long.valueOf(document.getOnlyField("flatSearchCriteriaId").getText());
+                FlatSearchCriteria flatSearchCriteria = ofy().load().type(FlatSearchCriteria.class).id(flatSearchCriteriaId).now();
+                flatSearchCriteriaList.add(flatSearchCriteria);
+            }
+        } catch (SearchException e) {
+            if (StatusCode.TRANSIENT_ERROR.equals(e.getOperationResult().getCode())) {
+                // retry
+                flatSearchCriteriaList = null;
+            }
+        }
+        return flatSearchCriteriaList;
+    }
+
 }

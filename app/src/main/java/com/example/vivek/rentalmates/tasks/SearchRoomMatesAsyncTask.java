@@ -6,7 +6,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.backend.userProfileApi.UserProfileApi;
-import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatSearchCriteria;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatSearchCriteriaCollection;
 import com.example.vivek.rentalmates.data.AppConstants;
@@ -23,7 +22,7 @@ public class SearchRoomMatesAsyncTask extends AsyncTask<Context, Void, String> {
     private Context context;
     private IOException ioException;
     private OnExecuteTaskReceiver receiver;
-    private FlatInfo flatInfo;
+    private Long flatId;
     private List<FlatSearchCriteria> flatSearchCriteriaList;
 
     public interface OnExecuteTaskReceiver {
@@ -36,9 +35,9 @@ public class SearchRoomMatesAsyncTask extends AsyncTask<Context, Void, String> {
         this.receiver = receiver;
     }
 
-    public SearchRoomMatesAsyncTask(Context context, final FlatInfo flatInfo) {
+    public SearchRoomMatesAsyncTask(Context context, final Long flatId) {
         this.context = context;
-        this.flatInfo = flatInfo;
+        this.flatId = flatId;
     }
 
     @Override
@@ -50,7 +49,7 @@ public class SearchRoomMatesAsyncTask extends AsyncTask<Context, Void, String> {
             ufService = builder1.build();
         }
         try {
-            FlatSearchCriteriaCollection flatSearchCriteriaCollection = ufService.searchRoomMates(flatInfo).execute();
+            FlatSearchCriteriaCollection flatSearchCriteriaCollection = ufService.searchRoomMates(flatId).execute();
             if (flatSearchCriteriaCollection == null) {
                 msg = "SUCCESS_NO_ROOMMATE_AVAILABLE";
             } else {

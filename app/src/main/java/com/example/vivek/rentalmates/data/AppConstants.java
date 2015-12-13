@@ -4,7 +4,7 @@ public class AppConstants {
     public static final String GCM_REG_ID = "registration_id";
     public static final String SENDER_ID = "56111997016";
     public static final int PROFILE_PIC_SIZE = 400;
-    public static final String BACKEND_ROOT_URL = "https://296-dot-kinetic-wind-814.appspot.com/_ah/api/";
+    public static final String BACKEND_ROOT_URL = "https://297-dot-kinetic-wind-814.appspot.com/_ah/api/";
 
     //SharedPreferences string values
     public static final String PRIMARY_FLAT_ID = "primary_flat_id";
