@@ -500,7 +500,7 @@ public class UserProfileEndpoint {
                 .addField(Field.newBuilder().setName("maxSecurityPerPerson").setNumber(flatSearchCriteria.getMaxSecurityAmountPerPerson()))
                 .addField(Field.newBuilder().setName("areaRange").setNumber(flatSearchCriteria.getAreaRange()))
                 .addField(Field.newBuilder().setName("GeoPoint").setGeoPoint(new GeoPoint(flatSearchCriteria.getLocationLatitude(), flatSearchCriteria.getLocationLongitude())))
-                .addField(Field.newBuilder().setName("flatSearchCriteriaId").setNumber(flatSearchCriteria.getId()))
+                .addField(Field.newBuilder().setName("flatSearchCriteriaId").setText(flatSearchCriteria.getId().toString()))
                 .build();
 
         //Insert the document into Index
