@@ -5,6 +5,7 @@ import com.example.vivek.rentalmates.backend.entities.ExpenseData;
 import com.example.vivek.rentalmates.backend.entities.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.entities.FlatInfo;
 import com.example.vivek.rentalmates.backend.entities.FlatSearchCriteria;
+import com.example.vivek.rentalmates.backend.entities.LogStore;
 import com.example.vivek.rentalmates.backend.entities.RegistrationRecord;
 import com.example.vivek.rentalmates.backend.entities.Request;
 import com.example.vivek.rentalmates.backend.entities.UserProfile;
@@ -257,8 +258,14 @@ public class UserProfileEndpoint {
         for (FlatInfo flatInfo : ofy().load().type(FlatInfo.class).list()) {
             ofy().delete().entity(flatInfo);
         }
-        for (UserProfile userProfile1 : ofy().load().type(UserProfile.class).list()) {
-            ofy().delete().entity(userProfile1);
+        for (UserProfile userProfile : ofy().load().type(UserProfile.class).list()) {
+            ofy().delete().entity(userProfile);
+        }
+        for (FlatSearchCriteria flatSearchCriteria : ofy().load().type(FlatSearchCriteria.class).list()) {
+            ofy().delete().entity(flatSearchCriteria);
+        }
+        for (LogStore logStore : ofy().load().type(LogStore.class).list()) {
+            ofy().delete().entity(logStore);
         }
     }
 
@@ -492,27 +499,32 @@ public class UserProfileEndpoint {
             httpMethod = ApiMethod.HttpMethod.POST)
     public List<FlatSearchCriteria> searchRoomMates(@Named("id") Long flatId) throws NotFoundException {
         FlatInfo flatInfo = ofy().load().type(FlatInfo.class).id(flatId).now();
+        MainEndpoint.writeLog("searchRoomMates: test1");
         if (flatInfo == null) {
             return null;
         }
         List<FlatSearchCriteria> flatSearchCriteriaList = new ArrayList<>();
         IndexSpec indexSpec = IndexSpec.newBuilder().setName("FlatSearchCriteriaIndex").build();
+        MainEndpoint.writeLog("searchRoomMates: test2");
         Index index = SearchServiceFactory.getSearchService().getIndex(indexSpec);
         try {
             String queryString = "distance(GeoPoint, geopoint(" + flatInfo.getVertices()[0] + "," + flatInfo.getVertices()[1] + ")) < areaRange";
             queryString = queryString + " AND minRentPerPerson < " + flatInfo.getRentAmount() + " AND maxRentPerPerson > " + flatInfo.getRentAmount();
             queryString = queryString + " AND minSecurityPerPerson < " + flatInfo.getSecurityAmount() + " AND maxSecurityPerPerson > " + flatInfo.getSecurityAmount();
             Results<ScoredDocument> results = index.search(queryString);
+            MainEndpoint.writeLog("searchRoomMates: test3" + " count is: " + results.getResults().size());
 
             // Iterate over the documents in the results
             for (ScoredDocument document : results) {
                 Long flatSearchCriteriaId = Long.valueOf(document.getOnlyField("flatSearchCriteriaId").getText());
                 FlatSearchCriteria flatSearchCriteria = ofy().load().type(FlatSearchCriteria.class).id(flatSearchCriteriaId).now();
                 flatSearchCriteriaList.add(flatSearchCriteria);
+                MainEndpoint.writeLog("searchRoomMates: inside document");
             }
         } catch (SearchException e) {
             if (StatusCode.TRANSIENT_ERROR.equals(e.getOperationResult().getCode())) {
                 // retry
+                MainEndpoint.writeLog("searchRoomMates: SearchException");
                 flatSearchCriteriaList = null;
             }
         }

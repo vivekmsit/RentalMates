@@ -6,6 +6,7 @@ import com.example.vivek.rentalmates.backend.entities.ExpenseData;
 import com.example.vivek.rentalmates.backend.entities.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.entities.FlatInfo;
 import com.example.vivek.rentalmates.backend.entities.FlatSearchCriteria;
+import com.example.vivek.rentalmates.backend.entities.LogStore;
 import com.example.vivek.rentalmates.backend.entities.RegistrationRecord;
 import com.example.vivek.rentalmates.backend.entities.Request;
 import com.example.vivek.rentalmates.backend.entities.RoomMateSearchCriteria;
@@ -76,6 +77,7 @@ public class MainEndpoint {
         ObjectifyService.register(FlatSearchCriteria.class);
         ObjectifyService.register(RoomMateSearchCriteria.class);
         ObjectifyService.register(RegistrationRecord.class);
+        ObjectifyService.register(LogStore.class);
     }
 
     /**
@@ -467,5 +469,15 @@ public class MainEndpoint {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void writeLog(String log) {
+        LogStore logStore = ofy().load().type(LogStore.class).filter("ownerEmailId", "vivekmsit@gmail.com").first().now();
+        if (logStore == null) {
+            logStore = new LogStore();
+            logStore.setOwnerEmailId("vivekmsit@gmail.com");
+        }
+        logStore.writeLog(log);
+        ofy().save().entity(logStore).now();
     }
 }
