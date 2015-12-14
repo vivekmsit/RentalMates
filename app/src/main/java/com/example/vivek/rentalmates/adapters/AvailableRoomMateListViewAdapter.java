@@ -12,7 +12,6 @@ import android.widget.Toast;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatSearchCriteria;
 import com.example.vivek.rentalmates.data.AppData;
-import com.example.vivek.rentalmates.viewholders.RoomMateListItem;
 import com.pkmmte.view.CircularImageView;
 
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ public class AvailableRoomMateListViewAdapter extends RecyclerView.Adapter<Avail
     @Override
     public AvailableRoomMateViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.d(TAG, "inside onCreateViewHolder");
-        View view = inflater.inflate(R.layout.search_flat_card_view, parent, false);
+        View view = inflater.inflate(R.layout.search_roommate_card_view, parent, false);
         return new AvailableRoomMateViewHolder(view);
     }
 
@@ -108,6 +107,20 @@ public class AvailableRoomMateListViewAdapter extends RecyclerView.Adapter<Avail
         public boolean onLongClick(View v) {
             Toast.makeText(context, "To be implemented", Toast.LENGTH_SHORT).show();
             return false;
+        }
+    }
+
+    class RoomMateListItem {
+        public final String name;
+        public final String profilePictureLink;
+        public final int minRent;
+        public final int maxRent;
+
+        public RoomMateListItem(FlatSearchCriteria flatSearchCriteria) {
+            this.name = flatSearchCriteria.getRequesterName();
+            this.minRent = flatSearchCriteria.getMinRentAmountPerPerson();
+            this.maxRent = flatSearchCriteria.getMaxRentAmountPerPerson();
+            this.profilePictureLink = flatSearchCriteria.getRequesterProfilePicture();
         }
     }
 }

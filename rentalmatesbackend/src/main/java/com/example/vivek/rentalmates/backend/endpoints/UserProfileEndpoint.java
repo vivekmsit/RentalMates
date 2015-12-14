@@ -499,32 +499,28 @@ public class UserProfileEndpoint {
             httpMethod = ApiMethod.HttpMethod.POST)
     public List<FlatSearchCriteria> searchRoomMates(@Named("id") Long flatId) throws NotFoundException {
         FlatInfo flatInfo = ofy().load().type(FlatInfo.class).id(flatId).now();
-        MainEndpoint.writeLog("searchRoomMates: test1");
         if (flatInfo == null) {
             return null;
         }
         List<FlatSearchCriteria> flatSearchCriteriaList = new ArrayList<>();
         IndexSpec indexSpec = IndexSpec.newBuilder().setName("FlatSearchCriteriaIndex").build();
-        MainEndpoint.writeLog("searchRoomMates: test2");
         Index index = SearchServiceFactory.getSearchService().getIndex(indexSpec);
         try {
-            String queryString = "distance(GeoPoint, geopoint(" + flatInfo.getVertices()[0] + "," + flatInfo.getVertices()[1] + ")) < areaRange";
+            String queryString = "distance(GeoPoint, geopoint(" + flatInfo.getVertices()[0] + "," + flatInfo.getVertices()[1] + ")) < 15000";
             queryString = queryString + " AND minRentPerPerson < " + flatInfo.getRentAmount() + " AND maxRentPerPerson > " + flatInfo.getRentAmount();
             queryString = queryString + " AND minSecurityPerPerson < " + flatInfo.getSecurityAmount() + " AND maxSecurityPerPerson > " + flatInfo.getSecurityAmount();
             Results<ScoredDocument> results = index.search(queryString);
-            MainEndpoint.writeLog("searchRoomMates: test3" + " count is: " + results.getResults().size());
 
             // Iterate over the documents in the results
             for (ScoredDocument document : results) {
                 Long flatSearchCriteriaId = Long.valueOf(document.getOnlyField("flatSearchCriteriaId").getText());
                 FlatSearchCriteria flatSearchCriteria = ofy().load().type(FlatSearchCriteria.class).id(flatSearchCriteriaId).now();
                 flatSearchCriteriaList.add(flatSearchCriteria);
-                MainEndpoint.writeLog("searchRoomMates: inside document");
             }
         } catch (SearchException e) {
+            MainEndpoint.writeLog("searchRoomMates: Unknown SearchException" + e.getMessage() + e.getLocalizedMessage());
             if (StatusCode.TRANSIENT_ERROR.equals(e.getOperationResult().getCode())) {
                 // retry
-                MainEndpoint.writeLog("searchRoomMates: SearchException");
                 flatSearchCriteriaList = null;
             }
         }
