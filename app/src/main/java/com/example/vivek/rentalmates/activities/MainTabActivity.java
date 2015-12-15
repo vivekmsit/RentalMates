@@ -97,10 +97,10 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "inside onCreate");
+        eventReceiverHashMap = new HashMap<>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tab);
 
-        eventReceiverHashMap = new HashMap<>();
         currentPosition = 0;
         backStackCount = 0;
         newExpenseAvailable = false;

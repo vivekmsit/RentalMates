@@ -202,14 +202,14 @@ public class LocalFlatSearchCriteria implements Serializable {
         flatSearchCriteria.setMaxSecurityAmountPerPerson(localFlatSearchCriteria.getMaxSecurityAmountPerPerson());
         flatSearchCriteria.setAreaRange(localFlatSearchCriteria.getAreaRange());
         //flatSearchCriteria.setGender(localFlatSearchCriteria.getGender());
-        //flatSearchCriteria.setRequesterId(localFlatSearchCriteria.getRequesterId());
+        flatSearchCriteria.setRequesterId(localFlatSearchCriteria.getRequesterId());
         //flatSearchCriteria.setNotifyIfAvailable(localFlatSearchCriteria.isNotifyIfAvailable());
         //flatSearchCriteria.setPublicPost(localFlatSearchCriteria.isPublicPost());
         flatSearchCriteria.setLocationLatitude(localFlatSearchCriteria.getLocationLatitude());
         flatSearchCriteria.setLocationLongitude(localFlatSearchCriteria.getLocationLongitude());
         //flatSearchCriteria.setMessage(localFlatSearchCriteria.getMessage());
-        //flatSearchCriteria.setRequesterName(localFlatSearchCriteria.getRequesterName());
-        //flatSearchCriteria.setRequesterProfilePicture(localFlatSearchCriteria.getRequesterProfilePicture());
+        flatSearchCriteria.setRequesterName(localFlatSearchCriteria.getRequesterName());
+        flatSearchCriteria.setRequesterProfilePicture(localFlatSearchCriteria.getRequesterProfilePicture());
         flatSearchCriteria.setSelectedLocation(localFlatSearchCriteria.getSelectedLocation());
         flatSearchCriteria.setFilterResetDone(localFlatSearchCriteria.isFilterResetDone());
 
@@ -230,14 +230,14 @@ public class LocalFlatSearchCriteria implements Serializable {
         localFlatSearchCriteria.setMaxSecurityAmountPerPerson(flatSearchCriteria.getMaxSecurityAmountPerPerson());
         localFlatSearchCriteria.setAreaRange(flatSearchCriteria.getAreaRange());
         //localFlatSearchCriteria.setGender(flatSearchCriteria.getGender());
-        //localFlatSearchCriteria.setRequesterId(flatSearchCriteria.getRequesterId());
+        localFlatSearchCriteria.setRequesterId(flatSearchCriteria.getRequesterId());
         //localFlatSearchCriteria.setNotifyIfAvailable(flatSearchCriteria.getNotifyIfAvailable());
         //localFlatSearchCriteria.setPublicPost(flatSearchCriteria.getPublicPost());
         localFlatSearchCriteria.setLocationLatitude(flatSearchCriteria.getLocationLatitude());
         localFlatSearchCriteria.setLocationLongitude(flatSearchCriteria.getLocationLongitude());
         //localFlatSearchCriteria.setMessage(flatSearchCriteria.getMessage());
-        //localFlatSearchCriteria.setRequesterName(flatSearchCriteria.getRequesterName());
-        //localFlatSearchCriteria.setRequesterProfilePicture(flatSearchCriteria.getRequesterProfilePicture());
+        localFlatSearchCriteria.setRequesterName(flatSearchCriteria.getRequesterName());
+        localFlatSearchCriteria.setRequesterProfilePicture(flatSearchCriteria.getRequesterProfilePicture());
         localFlatSearchCriteria.setSelectedLocation(flatSearchCriteria.getSelectedLocation());
         localFlatSearchCriteria.setFilterResetDone(flatSearchCriteria.getFilterResetDone());
 

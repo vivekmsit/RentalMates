@@ -69,6 +69,9 @@ public class AvailableRoomMateListViewAdapter extends RecyclerView.Adapter<Avail
         }
         viewHolder.roomMateName.setText(current.name);
         viewHolder.rentRange.setText("Rs. " + current.minRent + " to " + current.maxRent);
+        viewHolder.securityRange.setText("Rs. " + current.minSecurity + " to " + current.maxSecurity);
+        viewHolder.numberOfPersons.setText(current.numberOfPersons + " Person");
+        viewHolder.location.setText(current.location);
     }
 
     @Override
@@ -84,6 +87,9 @@ public class AvailableRoomMateListViewAdapter extends RecyclerView.Adapter<Avail
         CircularImageView circularImageView;
         TextView roomMateName;
         TextView rentRange;
+        TextView securityRange;
+        TextView numberOfPersons;
+        TextView location;
 
         public AvailableRoomMateViewHolder(View itemView) {
             super(itemView);
@@ -91,6 +97,9 @@ public class AvailableRoomMateListViewAdapter extends RecyclerView.Adapter<Avail
             circularImageView = (CircularImageView) itemView.findViewById(R.id.roomMateProfileImageView);
             roomMateName = (TextView) itemView.findViewById(R.id.seekerNameTextView);
             rentRange = (TextView) itemView.findViewById(R.id.rentRangeTextView);
+            securityRange = (TextView) itemView.findViewById(R.id.securityRangeTextView);
+            numberOfPersons = (TextView) itemView.findViewById(R.id.numberOfPersonsTextView);
+            location = (TextView) itemView.findViewById(R.id.roomLocationTextView);
 
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
@@ -113,14 +122,22 @@ public class AvailableRoomMateListViewAdapter extends RecyclerView.Adapter<Avail
     class RoomMateListItem {
         public final String name;
         public final String profilePictureLink;
+        public final String location;
         public final int minRent;
         public final int maxRent;
+        public final int minSecurity;
+        public final int maxSecurity;
+        public final int numberOfPersons;
 
         public RoomMateListItem(FlatSearchCriteria flatSearchCriteria) {
             this.name = flatSearchCriteria.getRequesterName();
+            this.profilePictureLink = flatSearchCriteria.getRequesterProfilePicture();
+            this.location = flatSearchCriteria.getSelectedLocation();
             this.minRent = flatSearchCriteria.getMinRentAmountPerPerson();
             this.maxRent = flatSearchCriteria.getMaxRentAmountPerPerson();
-            this.profilePictureLink = flatSearchCriteria.getRequesterProfilePicture();
+            this.minSecurity = flatSearchCriteria.getMinSecurityAmountPerPerson();
+            this.maxSecurity = flatSearchCriteria.getMaxSecurityAmountPerPerson();
+            this.numberOfPersons = 1;
         }
     }
 }

@@ -18,8 +18,8 @@
 
         <com.pkmmte.view.CircularImageView
             android:id="@+id/roomMateProfileImageView"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_centerHorizontal="true"
             android:layout_gravity="top"
             android:paddingEnd="5dp"
@@ -42,63 +42,119 @@
             android:textStyle="bold" />
 
         <LinearLayout
+            android:id="@+id/rentSecurityDetailsLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/seekerNameTextView"
-            android:baselineAligned="false">
+            android:baselineAligned="false"
+            android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_weight="1"
                     android:padding="4dp"
-                    android:text="Rent Range"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:text="Rent: "
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 <TextView
                     android:id="@+id/rentRangeTextView"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_weight="1"
                     android:padding="4dp"
                     android:text="Rs 5k to 7k"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_weight="1"
                     android:padding="4dp"
-                    android:text="Group of"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:text="Security: "
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/securityRangeTextView"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_weight="1"
                     android:padding="4dp"
-                    android:text="1 Person"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="10k to 50k"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold" />
 
             </LinearLayout>
 
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/numberOfPersonsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rentSecurityDetailsLayout"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="4dp"
+                android:text="Group of"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <TextView
+                android:id="@+id/numberOfPersonsTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="4dp"
+                android:text="1 person"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/numberOfPersonsLayout">
+
+            <ImageView
+                android:id="@+id/postRoomRequirementPic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="contact uploader pic"
+                android:padding="4dp"
+                android:src="@drawable/ic_place_24dp" />
+
+            <TextView
+                android:id="@+id/roomLocationTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/postRoomRequirementPic"
+                android:padding="4dp"
+                android:text="Bangalore"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        </RelativeLayout>
+
 
     </RelativeLayout>
 

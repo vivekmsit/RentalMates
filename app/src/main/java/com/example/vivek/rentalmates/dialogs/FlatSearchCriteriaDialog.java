@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -19,7 +20,9 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatSearchCriteria;
+import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.AppData;
+import com.example.vivek.rentalmates.data.LocalUserProfile;
 import com.example.vivek.rentalmates.library.PlaceAutoCompleteAdapter;
 import com.example.vivek.rentalmates.library.RangeSeekBar;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -47,6 +50,7 @@ public class FlatSearchCriteriaDialog extends DialogFragment implements GoogleAp
     private GoogleApiClient mGoogleApiClient;
     private PlaceAutoCompleteAdapter mAdapter;
     private AutoCompleteTextView autocompleteView;
+    private SharedPreferences prefs;
     private static final LatLngBounds BOUNDS_GREATER_SYDNEY = new LatLngBounds(new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
 
     @Override
@@ -86,6 +90,7 @@ public class FlatSearchCriteriaDialog extends DialogFragment implements GoogleAp
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         context = getActivity().getApplicationContext();
         appData = AppData.getInstance();
+        prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
         flatSearchCriteria = new FlatSearchCriteria();
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addApi(Places.GEO_DATA_API)
@@ -156,6 +161,9 @@ public class FlatSearchCriteriaDialog extends DialogFragment implements GoogleAp
         setUpRentRangeSeekBar(view);
         setUpSecurityRangeSeekBar(view);
 
+        Long profileId = prefs.getLong(AppConstants.USER_PROFILE_ID, 0);
+        LocalUserProfile userProfile = appData.getLocalUserProfile(profileId);
+
         flatSearchCriteria.setLocationLatitude(locationLatitude);
         flatSearchCriteria.setLocationLongitude(locationLongitude);
         flatSearchCriteria.setAreaRange(areaRange);
@@ -164,6 +172,9 @@ public class FlatSearchCriteriaDialog extends DialogFragment implements GoogleAp
         flatSearchCriteria.setMinSecurityAmountPerPerson(minSecurity);
         flatSearchCriteria.setMaxSecurityAmountPerPerson(maxSecurity);
         flatSearchCriteria.setSelectedLocation(selectedLocation);
+        flatSearchCriteria.setRequesterId(userProfile.getUserProfileId());
+        flatSearchCriteria.setRequesterName(userProfile.getUserName());
+        flatSearchCriteria.setRequesterProfilePicture(userProfile.getProfilePhotoURL());
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         alertDialogBuilder.setTitle("Search Criteria");
