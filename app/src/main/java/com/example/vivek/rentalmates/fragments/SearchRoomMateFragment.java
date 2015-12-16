@@ -42,7 +42,7 @@ public class SearchRoomMateFragment extends android.support.v4.app.Fragment impl
         context = getActivity().getApplicationContext();
         prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mainTabActivity = (MainTabActivity) getActivity();
-        mainTabActivity.registerForActivityEvents("searchflatsfragment", this);
+        mainTabActivity.registerForActivityEvents("searchRoomMatesFragment", this);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class SearchRoomMateFragment extends android.support.v4.app.Fragment impl
     }
 
     private void searchRoomMates() {
-
+        Toast.makeText(context, "To be implemented", Toast.LENGTH_SHORT).show();
     }
 
     private void onSwipeRefresh() {
@@ -121,7 +121,7 @@ public class SearchRoomMateFragment extends android.support.v4.app.Fragment impl
     @Override
     public void onEventReceived(String eventType) {
         switch (eventType) {
-            case "filterFABPressed":
+            case "filterRoomMatesFABPressed":
                 searchRoomMates();
                 break;
             default:

@@ -42,7 +42,7 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment implemen
         appData = AppData.getInstance();
         context = getActivity().getApplicationContext();
         mainTabActivity = (MainTabActivity) getActivity();
-        mainTabActivity.registerForActivityEvents("searchflatsfragment", this);
+        mainTabActivity.registerForActivityEvents("searchFlatsFragment", this);
     }
 
     @Override
@@ -149,7 +149,7 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment implemen
     @Override
     public void onEventReceived(String eventType) {
         switch (eventType) {
-            case "filterFABPressed":
+            case "filterFlatsFABPressed":
                 searchFlats();
                 break;
             default:

@@ -67,8 +67,9 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
     private DrawerLayout drawerLayout;
     private FragmentManager fragmentManager;
     private MyAdapter pageAdapter;
-    private FloatingActionButton filterFab;
     private FloatingActionButton addFab;
+    private FloatingActionButton filterFlatsFab;
+    private FloatingActionButton filterRoomMatesFab;
     private NavigationView navigationView;
     private CircularImageView circularImageView;
     private TextView userNameTextView;
@@ -169,35 +170,55 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
                 displayBottomSheet();
             }
         });
+        ScaleAnimation anim1 = new ScaleAnimation(0, 1, 0, 1);
+        anim1.setFillBefore(true);
+        anim1.setFillAfter(true);
+        anim1.setFillEnabled(true);
+        anim1.setDuration(300);
+        anim1.setInterpolator(new OvershootInterpolator());
+        addFab.setAnimation(anim1);
+        addFab.animate();
+        addFab.setVisibility(View.VISIBLE);
+
+        //Initialize Flats Filter FloatingActionButton
+        filterFlatsFab = (FloatingActionButton) findViewById(R.id.filterFlatsFab);
+        filterFlatsFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (eventReceiverHashMap.containsKey("searchFlatsFragment")) {
+                    eventReceiverHashMap.get("searchFlatsFragment").onEventReceived("filterFlatsFABPressed");
+                }
+            }
+        });
         ScaleAnimation anim2 = new ScaleAnimation(0, 1, 0, 1);
         anim2.setFillBefore(true);
         anim2.setFillAfter(true);
         anim2.setFillEnabled(true);
         anim2.setDuration(300);
         anim2.setInterpolator(new OvershootInterpolator());
-        addFab.setAnimation(anim2);
-        addFab.animate();
-        addFab.setVisibility(View.VISIBLE);
+        filterFlatsFab.setAnimation(anim2);
+        filterFlatsFab.animate();
+        filterFlatsFab.setVisibility(View.GONE);
 
-        //Initialize Filter FloatingActionButton
-        filterFab = (FloatingActionButton) findViewById(R.id.filterFab);
-        filterFab.setOnClickListener(new View.OnClickListener() {
+        //Initialize RoomMates Filter FloatingActionButton
+        filterRoomMatesFab = (FloatingActionButton) findViewById(R.id.filterRoomMatesFab);
+        filterRoomMatesFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (eventReceiverHashMap.containsKey("searchflatsfragment")) {
-                    eventReceiverHashMap.get("searchflatsfragment").onEventReceived("filterFABPressed");
+                if (eventReceiverHashMap.containsKey("searchRoomMatesFragment")) {
+                    eventReceiverHashMap.get("searchRoomMatesFragment").onEventReceived("filterRoomMatesFABPressed");
                 }
             }
         });
-        ScaleAnimation anim = new ScaleAnimation(0, 1, 0, 1);
-        anim.setFillBefore(true);
-        anim.setFillAfter(true);
-        anim.setFillEnabled(true);
-        anim.setDuration(300);
-        anim.setInterpolator(new OvershootInterpolator());
-        filterFab.setAnimation(anim);
-        filterFab.animate();
-        filterFab.setVisibility(View.GONE);
+        ScaleAnimation anim3 = new ScaleAnimation(0, 1, 0, 1);
+        anim3.setFillBefore(true);
+        anim3.setFillAfter(true);
+        anim3.setFillEnabled(true);
+        anim3.setDuration(300);
+        anim3.setInterpolator(new OvershootInterpolator());
+        filterRoomMatesFab.setAnimation(anim3);
+        filterRoomMatesFab.animate();
+        filterRoomMatesFab.setVisibility(View.GONE);
 
         //Initialize TabLayout
         tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -444,15 +465,22 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
     public void updateFab() {
         if (currentPosition == 0 && backStackCount == 0) {
             addFab.setVisibility(View.VISIBLE);
-            filterFab.setVisibility(View.GONE);
+            filterFlatsFab.setVisibility(View.GONE);
+            filterFlatsFab.clearAnimation();
+            filterRoomMatesFab.setVisibility(View.GONE);
+            filterRoomMatesFab.clearAnimation();
         } else if (currentPosition == 1 && backStackCount == 0) {
             addFab.setVisibility(View.GONE);
-            filterFab.setVisibility(View.VISIBLE);
-        } else {
-            filterFab.clearAnimation();
-            filterFab.setVisibility(View.GONE);
             addFab.clearAnimation();
+            filterFlatsFab.setVisibility(View.VISIBLE);
+            filterRoomMatesFab.setVisibility(View.GONE);
+            filterRoomMatesFab.clearAnimation();
+        } else if (currentPosition == 2 && backStackCount == 0) {
             addFab.setVisibility(View.GONE);
+            addFab.clearAnimation();
+            filterFlatsFab.setVisibility(View.GONE);
+            filterFlatsFab.clearAnimation();
+            filterRoomMatesFab.setVisibility(View.VISIBLE);
         }
     }
 
