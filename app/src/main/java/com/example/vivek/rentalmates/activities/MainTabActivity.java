@@ -135,7 +135,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
                     navigationView.getMenu().findItem(R.id.drawer_item_home).setChecked(true);
                     toolbar.setTitle("RentalMates");
                 }
-                updateFab();
+                updateFABs();
             }
         });
 
@@ -153,7 +153,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
             public void onPageSelected(int position) {
                 Log.d(TAG, "onPageSelected " + position);
                 currentPosition = position;
-                updateFab();
+                updateFABs();
             }
 
             @Override
@@ -462,7 +462,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         }
     }
 
-    public void updateFab() {
+    public void updateFABs() {
         if (currentPosition == 0 && backStackCount == 0) {
             addFab.setVisibility(View.VISIBLE);
             filterFlatsFab.setVisibility(View.GONE);
@@ -481,6 +481,13 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
             filterFlatsFab.setVisibility(View.GONE);
             filterFlatsFab.clearAnimation();
             filterRoomMatesFab.setVisibility(View.VISIBLE);
+        } else {
+            addFab.setVisibility(View.GONE);
+            addFab.clearAnimation();
+            filterFlatsFab.setVisibility(View.GONE);
+            filterFlatsFab.clearAnimation();
+            filterRoomMatesFab.setVisibility(View.GONE);
+            filterRoomMatesFab.clearAnimation();
         }
     }
 

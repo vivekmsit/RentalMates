@@ -85,10 +85,10 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="20dp"
         android:src="@drawable/ic_add_24dp"
+        app:backgroundTint="@color/accentColor"
         app:borderWidth="0dp"
         app:elevation="6dp"
-        app:pressedTranslationZ="12dp"
-        app:rippleColor="@color/orange" />
+        app:pressedTranslationZ="12dp" />
 
     <android.support.design.widget.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/filterFlatsFab"
@@ -96,11 +96,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="20dp"
+        android:backgroundTint="@color/orange"
         android:src="@drawable/ic_filter_24dp"
         app:borderWidth="0dp"
         app:elevation="6dp"
-        app:pressedTranslationZ="12dp"
-        app:rippleColor="@color/accentColor" />
+        app:pressedTranslationZ="12dp" />
 
     <android.support.design.widget.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/filterRoomMatesFab"
@@ -108,10 +108,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="20dp"
+        android:backgroundTint="@color/blue"
         android:src="@drawable/ic_filter_24dp"
         app:borderWidth="0dp"
         app:elevation="6dp"
-        app:pressedTranslationZ="12dp"
-        app:rippleColor="@color/yellow" />
+        app:pressedTranslationZ="12dp" />
 
 </FrameLayout>
