@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SharedContactsListFragment extends android.support.v4.app.Fragment implements SwipeRefreshLayout.OnRefreshListener {
-    private static final String TAG = "ManageFlats_Debug";
+    private static final String TAG = "SharedContacts_Debug";
 
     private AppData appData;
     private Context context;
@@ -95,7 +95,7 @@ public class SharedContactsListFragment extends android.support.v4.app.Fragment 
         task.setOnContactListReceiver(new OnContactListReceiver() {
             @Override
             public void onContactListLoadSuccessful(List<Contact> contacts) {
-                Log.d(TAG, "inside onFlatInfoListLoaded");
+                Log.d(TAG, "inside onContactListLoaded");
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }

@@ -4,20 +4,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -27,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,14 +47,12 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
-import com.pkmmte.view.CircularImageView;
 
 import java.util.HashMap;
 
 public class MainTabActivity extends AppCompatActivity implements FragmentTransactionRequestReceiver, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "MainTabActivity_Debug";
-    private static final long DRAWER_CLOSE_DELAY_MS = 250;
     private static final String NAV_ITEM_ID = "navItemId";
 
     private ViewPager viewPager;
@@ -71,12 +67,11 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
     private FloatingActionButton filterFlatsFab;
     private FloatingActionButton filterRoomMatesFab;
     private NavigationView navigationView;
-    private CircularImageView circularImageView;
+    private ImageView headerImageView;
     private TextView userNameTextView;
     private TextView emailTextView;
     private ActionBarDrawerToggle mDrawerToggle;
     private AppData appData;
-    private final Handler mDrawerActionHandler = new Handler();
     private int currentPosition;
     private int backStackCount;
     private boolean newExpenseAvailable;
@@ -115,15 +110,16 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
             mNavItemId = savedInstanceState.getInt(NAV_ITEM_ID);
         }
 
+        //Initialize DrawerLayout
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
 
+        //Initialize Toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        final ActionBar ab = getSupportActionBar();
-        if (ab != null) {
-            //ab.setHomeAsUpIndicator(R.drawable.ic_menu_search);
-            ab.setDisplayHomeAsUpEnabled(true);
-        }
 
         //Initialize FragmentManager
         fragmentManager = getSupportFragmentManager();
@@ -232,52 +228,20 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(final MenuItem menuItem) {
-                // update highlighted item in the navigation menu
-                menuItem.setChecked(true);
-                mNavItemId = menuItem.getItemId();
-
-                // allow some time after closing the drawer before performing real navigation
-                // so the user can see what is happening
-                drawerLayout.closeDrawer(GravityCompat.START);
-                mDrawerActionHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        navigate(menuItem.getItemId());
-                    }
-                }, DRAWER_CLOSE_DELAY_MS);
-                return true;
+                return navigate(menuItem);
             }
         });
-        // select the correct nav menu item
-        navigationView.getMenu().findItem(mNavItemId).setChecked(true);
 
         //Initialize HeaderView
-        View headerView = navigationView.inflateHeaderView(R.layout.drawer_header);
-        circularImageView = (CircularImageView) headerView.findViewById(R.id.drawerImageView);
+        View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main_tab);
+        headerImageView = (ImageView) headerView.findViewById(R.id.imageView);
         String emailId = prefs.getString(AppConstants.EMAIL_ID, "no_email_id");
-        circularImageView.setImageBitmap(appData.getProfilePictureBitmap(emailId));
-        userNameTextView = (TextView) headerView.findViewById(R.id.userNameTextView);
+        headerImageView.setImageBitmap(appData.getProfilePictureBitmap(emailId));
+        userNameTextView = (TextView) headerView.findViewById(R.id.nameTextView);
         String userName = prefs.getString(AppConstants.USER_NAME, "no_user_name");
         userNameTextView.setText(userName);
-        emailTextView = (TextView) headerView.findViewById(R.id.userEmailTextView);
+        emailTextView = (TextView) headerView.findViewById(R.id.emailTextView);
         emailTextView.setText(emailId);
-
-        // Initialize DrawerToggle
-        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-            }
-        };
-        drawerLayout.setDrawerListener(mDrawerToggle);
-        mDrawerToggle.syncState();
-
-        navigate(mNavItemId);
 
         // Initializing google plus api client
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -298,7 +262,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         if (pendingIntent.getBooleanExtra("notification", false) && pendingIntent.getBooleanExtra("newExpenseAvailable", false)) {
             newExpenseAvailable = true;
         }
-        Toast.makeText(this, "gcm values: " + appData.getGcmData().values().toString(), Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "gcm values: " + appData.getGcmData().values().toString(), Toast.LENGTH_LONG).show();
     }
 
     public void displayBottomSheet() {
@@ -371,20 +335,6 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
     }
 
     @Override
-    public void onConfigurationChanged(final Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        if (item.getItemId() == android.support.v7.appcompat.R.id.home) {
-            return mDrawerToggle.onOptionsItemSelected(item);
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
@@ -399,11 +349,12 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         outState.putInt(NAV_ITEM_ID, mNavItemId);
     }
 
-    private void navigate(final int itemId) {
+    public boolean navigate(MenuItem item) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
+        int id = item.getItemId();
         Intent intent;
-        switch (itemId) {
+        switch (id) {
             case R.id.drawer_item_home:
                 for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
                     fragmentManager.popBackStack();
@@ -413,7 +364,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
                 break;
             case R.id.drawer_item_flats:
                 toolbar.setTitle("Flats");
-                ft.replace(R.id.fragmentFrameLayout, new ManageFlatsFragment());
+                ft.replace(R.id.mainTabActivityFrameLayout, new ManageFlatsFragment());
                 ft.addToBackStack("ManageFlatsFragment");
                 ft.commit();
                 break;
@@ -423,13 +374,13 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
                 break;
             case R.id.drawer_item_developer_mode:
                 toolbar.setTitle("Developers Fragment");
-                ft.replace(R.id.fragmentFrameLayout, new DevelopersFragment());
+                ft.replace(R.id.mainTabActivityFrameLayout, new DevelopersFragment());
                 ft.addToBackStack("DevelopersFragment");
                 ft.commit();
                 break;
             case R.id.drawer_item_requests:
                 toolbar.setTitle("Requests");
-                ft.replace(R.id.fragmentFrameLayout, new RequestsFragment());
+                ft.replace(R.id.mainTabActivityFrameLayout, new RequestsFragment());
                 ft.addToBackStack("RequestsFragment");
                 ft.commit();
                 break;
@@ -438,6 +389,10 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
             case R.id.drawer_item_help:
                 break;
         }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     @Override
@@ -513,7 +468,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         }
     }
 
-    public class MyAdapter extends FragmentStatePagerAdapter {
+    public class MyAdapter extends FragmentPagerAdapter {
 
         SparseArray<Fragment> registeredFragments = new SparseArray<>();
 

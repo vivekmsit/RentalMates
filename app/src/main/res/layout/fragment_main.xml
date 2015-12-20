@@ -16,6 +16,43 @@
             android:orientation="vertical">
 
             <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/flatManagerCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                card_view:cardBackgroundColor="@color/white"
+                card_view:cardCornerRadius="6dp"
+                card_view:cardElevation="4dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/flatManagerPic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="contact uploader pic"
+                        android:padding="4dp"
+                        android:src="@drawable/ic_home_40dp" />
+
+                    <TextView
+                        android:id="@+id/flatManagerTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@+id/flatManagerPic"
+                        android:padding="4dp"
+                        android:text="FLAT MANAGER"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/expense_manager_card_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -46,80 +83,6 @@
                         android:layout_toEndOf="@+id/expenseManagerPic"
                         android:padding="4dp"
                         android:text="Expense Manager"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                </RelativeLayout>
-
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/shared_contacts_card_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="10dp"
-                card_view:cardBackgroundColor="@color/white"
-                card_view:cardCornerRadius="6dp"
-                card_view:cardElevation="4dp">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <ImageView
-                        android:id="@+id/sharedContactsPic"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="contact uploader pic"
-                        android:padding="4dp"
-                        android:src="@drawable/ic_person_40dp" />
-
-                    <TextView
-                        android:id="@+id/sharedContactsTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:layout_toEndOf="@id/sharedContactsPic"
-                        android:padding="4dp"
-                        android:text="Shared Contacts"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                </RelativeLayout>
-
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/flat_rules_card_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="10dp"
-                card_view:cardBackgroundColor="@color/white"
-                card_view:cardCornerRadius="6dp"
-                card_view:cardElevation="4dp">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <ImageView
-                        android:id="@+id/flatRulesPic"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="contact uploader pic"
-                        android:padding="4dp"
-                        android:src="@drawable/ic_description_40dp" />
-
-                    <TextView
-                        android:id="@+id/flatRulesTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:layout_toEndOf="@+id/flatRulesPic"
-                        android:padding="4dp"
-                        android:text="FLAT RULES"
                         android:textAppearance="?android:attr/textAppearanceLarge" />
 
                 </RelativeLayout>

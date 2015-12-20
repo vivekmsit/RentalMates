@@ -311,7 +311,6 @@ public class AppData implements Serializable {
     public boolean storeAppData(Context context) {
         boolean status;
         String path = context.getApplicationContext().getFilesDir().getPath();
-        Log.d(TAG, "path is: " + path);
         try {
             FileOutputStream fos = new FileOutputStream(path + "/" + "appData.tmp");
             ObjectOutputStream oos = new ObjectOutputStream(fos);

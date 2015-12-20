@@ -2,6 +2,7 @@ package com.example.vivek.rentalmates.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
@@ -10,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
+import com.example.vivek.rentalmates.activities.ExpenseManagerActivity;
+import com.example.vivek.rentalmates.activities.FlatManagerActivity;
 import com.example.vivek.rentalmates.activities.MainTabActivity;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatSearchCriteria;
 import com.example.vivek.rentalmates.data.AppData;
@@ -24,11 +27,10 @@ import java.util.ArrayList;
 
 public class MainFragment extends android.support.v4.app.Fragment implements MainTabActivity.ActivityEventReceiver {
 
-    private static final String TAG = "MainFragment_Debug";
+    //private static final String TAG = "MainFragment_Debug";
 
-    CardView sharedContactsCardView;
+    CardView flatManagerCardView;
     CardView expenseManagerCardView;
-    CardView flatRulesCardView;
     CardView postYourFlatCardView;
     CardView postYourRoomRequirementCardView;
     MainTabActivity mainTabActivity;
@@ -43,30 +45,22 @@ public class MainFragment extends android.support.v4.app.Fragment implements Mai
         context = getActivity().getApplicationContext();
         appData = AppData.getInstance();
 
-        sharedContactsCardView = (CardView) layout.findViewById(R.id.shared_contacts_card_view);
+        flatManagerCardView = (CardView) layout.findViewById(R.id.flatManagerCardView);
         expenseManagerCardView = (CardView) layout.findViewById(R.id.expense_manager_card_view);
-        flatRulesCardView = (CardView) layout.findViewById(R.id.flat_rules_card_view);
         postYourFlatCardView = (CardView) layout.findViewById(R.id.post_your_flat_card_view);
         postYourRoomRequirementCardView = (CardView) layout.findViewById(R.id.post_your_room_requirement_card_view);
 
-        sharedContactsCardView.setOnClickListener(new View.OnClickListener() {
+        flatManagerCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mainTabActivity.OnFragmentTransactionRequest("SharedContacts");
+                launchFlatManager();
             }
         });
 
         expenseManagerCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mainTabActivity.OnFragmentTransactionRequest("ExpenseManager");
-            }
-        });
-
-        flatRulesCardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context, "To be implemented", Toast.LENGTH_SHORT).show();
+                launchExpenseManager();
             }
         });
 
@@ -87,6 +81,18 @@ public class MainFragment extends android.support.v4.app.Fragment implements Mai
         mainTabActivity.registerForActivityEvents("mainfragment", this);
 
         return layout;
+    }
+
+    private void launchFlatManager() {
+        Intent intent = new Intent(context, FlatManagerActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    private void launchExpenseManager() {
+        Intent intent = new Intent(context, ExpenseManagerActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 
     private void postYourFlat() {

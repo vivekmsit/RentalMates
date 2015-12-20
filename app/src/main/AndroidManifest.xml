@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.vivek.rentalmates" >
+    package="com.example.vivek.rentalmates">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -17,7 +17,8 @@
      To retrieve OAuth 2.0 tokens or invalidate tokens to disconnect a user. This disconnect
      option is required to comply with the Google+ Sign-In developer policies
     -->
-    <uses-permission android:name="android.permission.USE_CREDENTIALS" /> <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -39,10 +40,10 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <receiver
             android:name=".receivers.GcmBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND" >
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
 
@@ -61,22 +62,19 @@
 
         <activity
             android:name=".activities.MyLoginActivity"
-            android:label="@string/title_activity_my_login" >
-        </activity>
+            android:label="@string/title_activity_my_login" />
 
         <service
             android:name=".services.BackendApiService"
             android:enabled="true"
-            android:exported="true" >
-        </service>
+            android:exported="true" />
 
         <activity
             android:name=".activities.MainTabActivity"
-            android:label="@string/title_activity_main_tab" >
-        </activity>
+            android:label="@string/title_activity_main_tab" />
         <activity
             android:name=".activities.MainSplashActivity"
-            android:label="@string/title_activity_main_splash" >
+            android:label="@string/title_activity_main_splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -85,17 +83,22 @@
         </activity>
         <activity
             android:name=".activities.AddExpenseActivity"
-            android:label="@string/title_activity_add_expense" >
-        </activity>
+            android:label="@string/title_activity_add_expense" />
         <activity
             android:name=".activities.DetermineFlatActivity"
-            android:label="@string/title_activity_determine_flat" >
-        </activity>
+            android:label="@string/title_activity_determine_flat" />
         <activity
             android:name=".activities.TestActivity"
             android:label="@string/title_activity_test"
-            android:theme="@style/AppTheme" >
-        </activity>
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.FlatManagerActivity"
+            android:label="@string/title_activity_flat_manager"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.ExpenseManagerActivity"
+            android:label="@string/title_activity_expense_manager"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
