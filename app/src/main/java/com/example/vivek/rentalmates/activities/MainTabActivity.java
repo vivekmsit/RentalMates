@@ -24,7 +24,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +46,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
+import com.pkmmte.view.CircularImageView;
 
 import java.util.HashMap;
 
@@ -67,7 +67,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
     private FloatingActionButton filterFlatsFab;
     private FloatingActionButton filterRoomMatesFab;
     private NavigationView navigationView;
-    private ImageView headerImageView;
+    private CircularImageView circularImageView;
     private TextView userNameTextView;
     private TextView emailTextView;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -128,7 +128,6 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
             public void onBackStackChanged() {
                 backStackCount = fragmentManager.getBackStackEntryCount();
                 if (backStackCount == 0) {
-                    navigationView.getMenu().findItem(R.id.drawer_item_home).setChecked(true);
                     toolbar.setTitle("RentalMates");
                 }
                 updateFABs();
@@ -233,10 +232,10 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         });
 
         //Initialize HeaderView
-        View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main_tab);
-        headerImageView = (ImageView) headerView.findViewById(R.id.imageView);
+        View headerView = navigationView.getHeaderView(0);
+        circularImageView = (CircularImageView) headerView.findViewById(R.id.drawerHeaderImageView);
         String emailId = prefs.getString(AppConstants.EMAIL_ID, "no_email_id");
-        headerImageView.setImageBitmap(appData.getProfilePictureBitmap(emailId));
+        circularImageView.setImageBitmap(appData.getProfilePictureBitmap(emailId));
         userNameTextView = (TextView) headerView.findViewById(R.id.nameTextView);
         String userName = prefs.getString(AppConstants.USER_NAME, "no_user_name");
         userNameTextView.setText(userName);
@@ -257,6 +256,8 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
             editor.putBoolean(AppConstants.FIRST_TIME_LOGIN, true);
             editor.apply();
         }
+
+        updateFABs();
 
         Intent pendingIntent = getIntent();
         if (pendingIntent.getBooleanExtra("notification", false) && pendingIntent.getBooleanExtra("newExpenseAvailable", false)) {

@@ -3,6 +3,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/drawer_item_home"
+            android:checked="true"
             android:icon="@drawable/ic_person_24dp"
             android:title="Home" />
         <item
