@@ -8,47 +8,31 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+        <TextView
+            android:id="@+id/noContactsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="16dp"
+            android:text="No Shared Contacts"
+            android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/noContactsTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_margin="16dp"
-                android:text="No Shared Contacts"
-                android:visibility="gone" />
-
-            <android.support.v4.widget.SwipeRefreshLayout
-                android:id="@+id/swipeListContacts"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/manageFlatsText">
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/listContacts"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </android.support.v4.widget.SwipeRefreshLayout>
-
-        </RelativeLayout>
-
-        <Button
-            android:id="@+id/addNewContactButton"
-            style="?android:attr/buttonBarButtonStyle"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeListContacts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@color/orange"
-            android:gravity="center"
-            android:text="Add New Contact"
-            android:textColor="@color/white" />
+            android:layout_below="@id/manageFlatsText">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/listContacts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
     </RelativeLayout>
 
 </FrameLayout>

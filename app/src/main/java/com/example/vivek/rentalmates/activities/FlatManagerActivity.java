@@ -2,7 +2,6 @@ package com.example.vivek.rentalmates.activities;
 
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -11,21 +10,40 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.fragments.ExpenseDataListFragment;
 import com.example.vivek.rentalmates.fragments.SharedContactsListFragment;
 
+import java.util.HashMap;
+
 public class FlatManagerActivity extends AppCompatActivity {
+    private static final String TAG = "MainTabActivity_Debug";
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
+    private FloatingActionButton addFAB;
+    private int currentPosition;
+
+    //Communicating Activity events to receiver fragments.
+    private HashMap<String, OnActivityEventReceiver> eventReceiverHashMap;
+
+    public interface OnActivityEventReceiver {
+        void onEventReceived(String eventType);
+    }
+
+    public boolean registerForActivityEvents(String fragment, OnActivityEventReceiver receiver) {
+        if (eventReceiverHashMap.containsKey(fragment))
+            return false;
+        eventReceiverHashMap.put(fragment, receiver);
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        eventReceiverHashMap = new HashMap<>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flat_manager);
 
@@ -36,48 +54,54 @@ public class FlatManagerActivity extends AppCompatActivity {
 
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Log.d(TAG, "onPageSelected " + position);
+                currentPosition = position;
+                updateFABs();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.addFab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        addFAB = (FloatingActionButton) findViewById(R.id.addFab);
+        addFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                onAddFABClicked();
             }
         });
 
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_flat_manager, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    private void onAddFABClicked() {
+        if (currentPosition == 0) {
+            if (eventReceiverHashMap.containsKey("expensesFragment")) {
+                eventReceiverHashMap.get("expensesFragment").onEventReceived("addFABPressed");
+            }
+        } else if (currentPosition == 1) {
+            if (eventReceiverHashMap.containsKey("sharedContactsFragment")) {
+                eventReceiverHashMap.get("sharedContactsFragment").onEventReceived("addFABPressed");
+            }
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
+    private void updateFABs() {
+
+    }
+
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
@@ -89,10 +113,10 @@ public class FlatManagerActivity extends AppCompatActivity {
             Fragment fragment = null;
             switch (position) {
                 case 0:
-                    fragment = new SharedContactsListFragment();
+                    fragment = new ExpenseDataListFragment();
                     break;
                 case 1:
-                    fragment = new ExpenseDataListFragment();
+                    fragment = new SharedContactsListFragment();
                     break;
                 default:
                     break;
@@ -102,7 +126,6 @@ public class FlatManagerActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
             return 2;
         }
 
@@ -110,9 +133,9 @@ public class FlatManagerActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "Shared Contacts";
-                case 1:
                     return "Expenses";
+                case 1:
+                    return "Shared Contacts";
                 default:
                     break;
             }

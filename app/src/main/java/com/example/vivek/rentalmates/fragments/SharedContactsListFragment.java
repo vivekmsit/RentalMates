@@ -16,12 +16,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
+import com.example.vivek.rentalmates.activities.FlatManagerActivity;
 import com.example.vivek.rentalmates.adapters.ContactListViewAdapter;
 import com.example.vivek.rentalmates.backend.mainApi.model.Contact;
 import com.example.vivek.rentalmates.data.AppConstants;
@@ -34,17 +34,17 @@ import com.example.vivek.rentalmates.tasks.GetContactListAsyncTask;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SharedContactsListFragment extends android.support.v4.app.Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class SharedContactsListFragment extends android.support.v4.app.Fragment {
     private static final String TAG = "SharedContacts_Debug";
 
     private AppData appData;
     private Context context;
     private RecyclerView recyclerView;
     private TextView noContactsTextView;
-    private Button addNewContactButton;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ContactListViewAdapter contactListViewAdapter;
     private SharedPreferences prefs;
+    private FlatManagerActivity flatManagerActivity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,15 +52,14 @@ public class SharedContactsListFragment extends android.support.v4.app.Fragment 
         View layout = inflater.inflate(R.layout.fragment_shared_contacts_list, container, false);
         appData = AppData.getInstance();
         context = getActivity().getApplicationContext();
-        prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
-
-        addNewContactButton = (Button) layout.findViewById(R.id.addNewContactButton);
-        addNewContactButton.setOnClickListener(new View.OnClickListener() {
+        flatManagerActivity = (FlatManagerActivity) getActivity();
+        flatManagerActivity.registerForActivityEvents("sharedContactsFragment", new FlatManagerActivity.OnActivityEventReceiver() {
             @Override
-            public void onClick(View v) {
+            public void onEventReceived(String eventType) {
                 addNewContact();
             }
         });
+        prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
 
         //Initialize RecyclerView
         recyclerView = (RecyclerView) layout.findViewById(R.id.listContacts);
@@ -70,7 +69,12 @@ public class SharedContactsListFragment extends android.support.v4.app.Fragment 
 
         //Initialize SwipeRefreshLayout
         swipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeListContacts);
-        swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                onSwipeRefresh();
+            }
+        });
         swipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.white));
         swipeRefreshLayout.setColorSchemeColors(R.color.primaryColor, R.color.purple, R.color.green, R.color.orange);
 
@@ -88,8 +92,7 @@ public class SharedContactsListFragment extends android.support.v4.app.Fragment 
         }
     }
 
-    @Override
-    public void onRefresh() {
+    public void onSwipeRefresh() {
         Log.d(TAG, "inside onRefresh");
         GetContactListAsyncTask task = new GetContactListAsyncTask(context);
         task.setOnContactListReceiver(new OnContactListReceiver() {

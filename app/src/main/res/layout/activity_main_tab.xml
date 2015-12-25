@@ -49,6 +49,7 @@
                         android:id="@+id/tabs"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:elevation="5dp"
                         app:tabGravity="center"
                         app:tabIndicatorColor="@color/white"
                         app:tabIndicatorHeight="2dp"

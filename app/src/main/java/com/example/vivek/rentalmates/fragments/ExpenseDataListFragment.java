@@ -14,8 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
+import com.example.vivek.rentalmates.activities.FlatManagerActivity;
 import com.example.vivek.rentalmates.adapters.ExpenseListViewAdapter;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.data.AppConstants;
@@ -36,6 +38,7 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
     private ExpenseListViewAdapter expenseListViewAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private TextView expensesTextView;
+    private FlatManagerActivity flatManagerActivity;
     private SharedPreferences prefs;
 
     @Override
@@ -50,6 +53,14 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "inside onCreateView");
+
+        flatManagerActivity = (FlatManagerActivity) getActivity();
+        flatManagerActivity.registerForActivityEvents("expensesFragment", new FlatManagerActivity.OnActivityEventReceiver() {
+            @Override
+            public void onEventReceived(String eventType) {
+                Toast.makeText(getActivity().getApplicationContext(), "To be implemented", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         // Inflate the layout for this fragment
         View layout = inflater.inflate(R.layout.fragment_expenses, container, false);

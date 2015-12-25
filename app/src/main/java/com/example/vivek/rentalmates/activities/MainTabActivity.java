@@ -77,6 +77,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
     private boolean newExpenseAvailable;
     private int mNavItemId;
 
+    //Communicating Activity events to receiver fragments.
     private HashMap<String, ActivityEventReceiver> eventReceiverHashMap;
 
     public interface ActivityEventReceiver {
@@ -92,7 +93,6 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "inside onCreate");
         eventReceiverHashMap = new HashMap<>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tab);
