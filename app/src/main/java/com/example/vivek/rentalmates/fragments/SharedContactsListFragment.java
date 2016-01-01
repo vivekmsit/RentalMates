@@ -45,6 +45,7 @@ public class SharedContactsListFragment extends android.support.v4.app.Fragment 
     private ContactListViewAdapter contactListViewAdapter;
     private SharedPreferences prefs;
     private FlatManagerActivity flatManagerActivity;
+    private Long flatId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,6 +61,7 @@ public class SharedContactsListFragment extends android.support.v4.app.Fragment 
             }
         });
         prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        flatId = prefs.getLong(AppConstants.PRIMARY_FLAT_ID, 0);
 
         //Initialize RecyclerView
         recyclerView = (RecyclerView) layout.findViewById(R.id.listContacts);
@@ -83,9 +85,10 @@ public class SharedContactsListFragment extends android.support.v4.app.Fragment 
         return layout;
     }
 
-
     void updateView() {
-        if (appData.getContacts().size() == 0) {
+        if (appData.getContacts(flatId) == null) {
+            noContactsTextView.setVisibility(View.VISIBLE);
+        } else if (appData.getContacts(flatId) != null && appData.getContacts(flatId).size() == 0) {
             noContactsTextView.setVisibility(View.VISIBLE);
         } else {
             noContactsTextView.setVisibility(View.GONE);
@@ -103,9 +106,9 @@ public class SharedContactsListFragment extends android.support.v4.app.Fragment 
                     swipeRefreshLayout.setRefreshing(false);
                 }
                 if (contacts == null) {
-                    appData.storeContactList(context, new ArrayList<Contact>());
+                    appData.storeContactList(context, flatId, new ArrayList<Contact>());
                 } else {
-                    appData.storeContactList(context, contacts);
+                    appData.storeContactList(context, flatId, contacts);
                 }
                 contactListViewAdapter.updateContactData();
                 contactListViewAdapter.notifyDataSetChanged();

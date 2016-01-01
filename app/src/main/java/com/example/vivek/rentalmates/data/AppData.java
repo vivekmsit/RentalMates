@@ -37,7 +37,6 @@ public class AppData implements Serializable {
 
     private List<LocalExpenseData> expenses;
     private List<LocalRequest> requests;
-    private List<LocalContact> contacts;
     private List<LocalFlatSearchCriteria> roomMateList;
     private List<String> gcmTypes;
 
@@ -47,6 +46,7 @@ public class AppData implements Serializable {
     private HashMap<Long, LocalUserProfile> userProfiles;
     private HashMap<Long, LocalExpenseGroup> expenseGroups;
     private HashMap<String, String> gcmData;
+    private HashMap<Long, List<LocalContact>> contacts;
 
     private LocalFlatSearchCriteria localFlatSearchCriteria;
 
@@ -63,7 +63,6 @@ public class AppData implements Serializable {
     private AppData() {
         expenses = new ArrayList<>();
         requests = new ArrayList<>();
-        contacts = new ArrayList<>();
         roomMateList = new ArrayList<>();
         gcmTypes = new ArrayList<>();
         gcmTypes.add("NEW_EXPENSE_DATA");
@@ -77,6 +76,7 @@ public class AppData implements Serializable {
         userProfiles = new HashMap<>();
         expenseGroups = new HashMap<>();
         gcmData = new HashMap<>();
+        contacts = new HashMap<>();
         localFlatSearchCriteria = new LocalFlatSearchCriteria();
         lastLocationLatitude = 23.3192728;
         lastLocationLongitude = 81.9220346;
@@ -132,12 +132,8 @@ public class AppData implements Serializable {
         this.requests = requests;
     }
 
-    public List<Contact> getContacts() {
-        return LocalContact.convertLocalContactToContact(this.contacts);
-    }
-
-    public void setContacts(List<LocalContact> contacts) {
-        this.contacts = contacts;
+    public List<Contact> getContacts(Long flatId) {
+        return LocalContact.convertLocalContactToContact(this.contacts.get(flatId));
     }
 
     public HashMap<Long, LocalUserProfile> getUserProfiles() {
@@ -249,8 +245,8 @@ public class AppData implements Serializable {
         return LocalFlatSearchCriteria.convertLocalFlatSearchCriteriaToFlatSearchCriteria(this.localFlatSearchCriteria);
     }
 
-    public boolean storeContactList(Context context, List<Contact> contacts) {
-        this.contacts = LocalContact.convertContactToLocalContact(contacts);
+    public boolean storeContactList(Context context, Long flatId, List<Contact> contacts) {
+        this.contacts.put(flatId, LocalContact.convertContactToLocalContact(contacts));
         return storeAppData(context);
     }
 
@@ -261,13 +257,6 @@ public class AppData implements Serializable {
 
     public boolean storeRequestList(Context context, List<Request> requests) {
         this.requests = LocalRequest.convertRequestToLocalRequest(requests);
-        return storeAppData(context);
-    }
-
-    public boolean deleteContact(Context context, int position) {
-        if (this.contacts.size() != 0) {
-            this.contacts.remove(position);
-        }
         return storeAppData(context);
     }
 
@@ -282,16 +271,6 @@ public class AppData implements Serializable {
         if (this.requests.size() != 0) {
             this.requests.remove(position);
         }
-        return storeAppData(context);
-    }
-
-    public boolean addLocalContact(Context context, Contact contact) {
-        LocalContact data = new LocalContact();
-        data.setId(contact.getId());
-        data.setContactDetails(contact.getContactDetails());
-        data.setContactNumber(contact.getContactNumber());
-        data.setUploaderId(contact.getUploaderId());
-        this.contacts.add(0, data);
         return storeAppData(context);
     }
 
@@ -369,7 +348,6 @@ public class AppData implements Serializable {
         //Initialize all the variables (code copied from constructor)
         expenses = new ArrayList<>();
         requests = new ArrayList<>();
-        contacts = new ArrayList<>();
         roomMateList = new ArrayList<>();
         gcmTypes = new ArrayList<>();
         gcmTypes.add("NEW_EXPENSE_DATA");
@@ -383,6 +361,7 @@ public class AppData implements Serializable {
         userProfiles = new HashMap<>();
         expenseGroups = new HashMap<>();
         gcmData = new HashMap<>();
+        contacts = new HashMap<>();
         localFlatSearchCriteria = new LocalFlatSearchCriteria();
 
         Toast.makeText(context, "AppData cleared", Toast.LENGTH_LONG).show();

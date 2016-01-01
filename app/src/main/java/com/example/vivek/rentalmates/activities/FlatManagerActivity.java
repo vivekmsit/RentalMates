@@ -76,7 +76,7 @@ public class FlatManagerActivity extends AppCompatActivity {
         for (LocalFlatInfo flat : localFlats) {
             flatNames.add(flat.getFlatName());
         }
-        ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, flatNames);
+        ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<>(this, R.layout.flat_manager_toolbar_spinner_item, flatNames);
         toolbarSpinner.setAdapter(stringArrayAdapter);
         toolbarSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.mainApi.model.Contact;
+import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.viewholders.ContactListItem;
 
@@ -33,6 +35,8 @@ public class ContactListViewAdapter extends RecyclerView.Adapter<ContactListView
     private Context context;
     private AppData appData;
     private FragmentManager manager;
+    private SharedPreferences prefs;
+    private Long flatId;
 
     public ContactListViewAdapter(Context context, FragmentManager manager) {
         Log.d(TAG, "inside Constructor");
@@ -41,13 +45,15 @@ public class ContactListViewAdapter extends RecyclerView.Adapter<ContactListView
         this.manager = manager;
         this.data = new ArrayList<>();
         appData = AppData.getInstance();
+        prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        flatId = prefs.getLong(AppConstants.PRIMARY_FLAT_ID, 0);
         updateContactData();
     }
 
     public void updateContactData() {
         this.data.clear();
-        if (appData.getContacts() != null) {
-            for (Contact contact : appData.getContacts()) {
+        if (appData.getContacts(flatId) != null) {
+            for (Contact contact : appData.getContacts(flatId)) {
                 this.data.add(new ContactListItem(contact));
             }
         }
