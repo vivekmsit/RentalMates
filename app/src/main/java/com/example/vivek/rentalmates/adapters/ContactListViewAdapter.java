@@ -52,6 +52,7 @@ public class ContactListViewAdapter extends RecyclerView.Adapter<ContactListView
 
     public void updateContactData() {
         this.data.clear();
+        flatId = prefs.getLong(AppConstants.PRIMARY_FLAT_ID, 0);
         if (appData.getContacts(flatId) != null) {
             for (Contact contact : appData.getContacts(flatId)) {
                 this.data.add(new ContactListItem(contact));

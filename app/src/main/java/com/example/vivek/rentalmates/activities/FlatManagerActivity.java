@@ -85,6 +85,7 @@ public class FlatManagerActivity extends AppCompatActivity {
                 BackendApiService.storePrimaryFlatId(context, flatInfo.getFlatId());
                 BackendApiService.storePrimaryFlatName(context, flatInfo.getFlatName());
                 BackendApiService.storeFlatExpenseGroupId(context, flatInfo.getFlatExpenseGroupId());
+                notifyPrimaryFlatChangedEvent();
             }
 
             @Override
@@ -138,6 +139,15 @@ public class FlatManagerActivity extends AppCompatActivity {
             if (eventReceiverHashMap.containsKey("sharedContactsFragment")) {
                 eventReceiverHashMap.get("sharedContactsFragment").onEventReceived("addFABPressed");
             }
+        }
+    }
+
+    private void notifyPrimaryFlatChangedEvent() {
+        if (eventReceiverHashMap.containsKey("expensesFragment")) {
+            eventReceiverHashMap.get("expensesFragment").onEventReceived("primaryFlatChanged");
+        }
+        if (eventReceiverHashMap.containsKey("sharedContactsFragment")) {
+            eventReceiverHashMap.get("sharedContactsFragment").onEventReceived("primaryFlatChanged");
         }
     }
 

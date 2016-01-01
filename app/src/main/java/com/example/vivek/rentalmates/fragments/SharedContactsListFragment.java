@@ -57,7 +57,17 @@ public class SharedContactsListFragment extends android.support.v4.app.Fragment 
         flatManagerActivity.registerForActivityEvents("sharedContactsFragment", new FlatManagerActivity.OnActivityEventReceiver() {
             @Override
             public void onEventReceived(String eventType) {
-                addNewContact();
+                switch (eventType) {
+                    case "addFABPressed":
+                        addNewContact();
+                        break;
+                    case "primaryFlatChanged":
+                        contactListViewAdapter.updateContactData();
+                        contactListViewAdapter.notifyDataSetChanged();
+                        break;
+                    default:
+                        break;
+                }
             }
         });
         prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);

@@ -58,7 +58,15 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
         flatManagerActivity.registerForActivityEvents("expensesFragment", new FlatManagerActivity.OnActivityEventReceiver() {
             @Override
             public void onEventReceived(String eventType) {
-                Toast.makeText(getActivity().getApplicationContext(), "To be implemented", Toast.LENGTH_SHORT).show();
+                switch (eventType) {
+                    case "addFABPressed":
+                        Toast.makeText(getActivity().getApplicationContext(), "To be implemented", Toast.LENGTH_SHORT).show();
+                        break;
+                    case "primaryFlatChanged":
+                        break;
+                    default:
+                        break;
+                }
             }
         });
 
