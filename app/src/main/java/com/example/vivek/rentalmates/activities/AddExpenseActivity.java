@@ -151,9 +151,10 @@ public class AddExpenseActivity extends AppCompatActivity implements View.OnClic
                     public void onAddExpenseSuccessful(ExpenseData uploadedExpenseData) {
                         addExpenseButtonClicked = true;
                         progressDialog.cancel();
+                        Long expenseGroupId = prefs.getLong(AppConstants.FLAT_EXPENSE_GROUP_ID, 0);
                         Toast.makeText(context, "Expense uploaded", Toast.LENGTH_SHORT).show();
                         if (uploadedExpenseData.getMemberIds().contains(uploadedExpenseData.getSubmitterId())) {
-                            appData.addLocalExpenseData(context, uploadedExpenseData);
+                            appData.addLocalExpenseData(context, expenseGroupId, uploadedExpenseData);
 
                             // Update user share of expense data inside expense group as well as in user profile
                             Long memberId = prefs.getLong(AppConstants.USER_PROFILE_ID, 0);

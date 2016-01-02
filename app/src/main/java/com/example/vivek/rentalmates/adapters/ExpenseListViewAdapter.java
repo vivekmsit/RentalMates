@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
+import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.interfaces.OnDeleteExpenseReceiver;
 import com.example.vivek.rentalmates.tasks.DeleteExpenseAsyncTask;
@@ -40,6 +42,8 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
     private LayoutInflater inflater;
     private Context context;
     private FragmentManager manager;
+    private SharedPreferences prefs;
+    private Long primaryExpenseGroupId;
 
     public ExpenseListViewAdapter(Context context, FragmentManager manager) {
         Log.d(TAG, "inside Constructor");
@@ -47,13 +51,16 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
         inflater = LayoutInflater.from(context);
         this.context = context;
         this.manager = manager;
-        this.data = new ArrayList<>();
+        data = new ArrayList<>();
+        prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        primaryExpenseGroupId = prefs.getLong(AppConstants.FLAT_EXPENSE_GROUP_ID, 0);
         updateExpenseData();
     }
 
     public void updateExpenseData() {
         this.data.clear();
-        List<ExpenseData> expenses = appData.getExpenses();
+        primaryExpenseGroupId = prefs.getLong(AppConstants.FLAT_EXPENSE_GROUP_ID, 0);
+        List<ExpenseData> expenses = appData.getExpenseDataList(primaryExpenseGroupId);
         if (expenses != null) {
             for (ExpenseData expenseData : expenses) {
                 this.data.add(new ExpenseListItem(expenseData));
@@ -148,7 +155,7 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
                                             progressDialog = new ProgressDialog(mainTabActivity);
                                             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                                             progressDialog.setIndeterminate(true);
-                                            final Long expenseId = appData.getExpenses().get(currentPosition).getId();
+                                            final Long expenseId = appData.getExpenseDataList(primaryExpenseGroupId).get(currentPosition).getId();
                                             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
                                             alertDialogBuilder.setTitle("Confirm");
                                             alertDialogBuilder.setMessage("Do you really want to delete selected expense?");
@@ -161,7 +168,7 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
                                                         public void onExpenseDeleteSuccessful(int position) {
                                                             progressDialog.cancel();
                                                             notifyItemRemoved(position);
-                                                            appData.deleteExpenseData(context, position);
+                                                            //appData.deleteExpenseData(context, position);
                                                             updateExpenseData();
                                                         }
 

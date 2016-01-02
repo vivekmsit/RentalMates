@@ -35,7 +35,6 @@ public class AppData implements Serializable {
 
     private static final String TAG = "AppData_Debug";
 
-    private List<LocalExpenseData> expenses;
     private List<LocalRequest> requests;
     private List<LocalFlatSearchCriteria> roomMateList;
     private List<String> gcmTypes;
@@ -47,6 +46,7 @@ public class AppData implements Serializable {
     private HashMap<Long, LocalExpenseGroup> expenseGroups;
     private HashMap<String, String> gcmData;
     private HashMap<Long, List<LocalContact>> contacts;
+    private HashMap<Long, List<LocalExpenseData>> expenses;
 
     private LocalFlatSearchCriteria localFlatSearchCriteria;
 
@@ -61,7 +61,6 @@ public class AppData implements Serializable {
     }
 
     private AppData() {
-        expenses = new ArrayList<>();
         requests = new ArrayList<>();
         roomMateList = new ArrayList<>();
         gcmTypes = new ArrayList<>();
@@ -77,6 +76,7 @@ public class AppData implements Serializable {
         expenseGroups = new HashMap<>();
         gcmData = new HashMap<>();
         contacts = new HashMap<>();
+        expenses = new HashMap<>();
         localFlatSearchCriteria = new LocalFlatSearchCriteria();
         lastLocationLatitude = 23.3192728;
         lastLocationLongitude = 81.9220346;
@@ -158,14 +158,6 @@ public class AppData implements Serializable {
 
     public void setAvailableFlats(HashMap<Long, LocalFlatInfo> availableFlats) {
         this.availableFlats = availableFlats;
-    }
-
-    public List<ExpenseData> getExpenses() {
-        return LocalExpenseData.convertLocalExpenseToExpense(this.expenses);
-    }
-
-    public void setExpenses(List<LocalExpenseData> expenses) {
-        this.expenses = expenses;
     }
 
     public Collection<LocalExpenseGroup> getExpenseGroups() {
@@ -251,20 +243,18 @@ public class AppData implements Serializable {
         return storeAppData(context);
     }
 
-    public boolean storeExpenseDataList(Context context, List<ExpenseData> expenses) {
-        this.expenses = LocalExpenseData.convertExpenseToLocalExpense(expenses);
+    public boolean storeExpenseDataList(Context context, Long expenseGroupId, List<ExpenseData> expenses) {
+        this.expenses.remove(expenseGroupId);
+        this.expenses.put(expenseGroupId, LocalExpenseData.convertExpenseToLocalExpense(expenses));
         return storeAppData(context);
+    }
+
+    public List<ExpenseData> getExpenseDataList(Long expenseGroupId) {
+        return LocalExpenseData.convertLocalExpenseToExpense(this.expenses.get(expenseGroupId));
     }
 
     public boolean storeRequestList(Context context, List<Request> requests) {
         this.requests = LocalRequest.convertRequestToLocalRequest(requests);
-        return storeAppData(context);
-    }
-
-    public boolean deleteExpenseData(Context context, int position) {
-        if (this.expenses.size() != 0) {
-            this.expenses.remove(position);
-        }
         return storeAppData(context);
     }
 
@@ -275,7 +265,7 @@ public class AppData implements Serializable {
         return storeAppData(context);
     }
 
-    public boolean addLocalExpenseData(Context context, ExpenseData expense) {
+    public boolean addLocalExpenseData(Context context, Long expenseGroupId, ExpenseData expense) {
         LocalExpenseData data = new LocalExpenseData();
         data.setExpenseId(expense.getId());
         data.setAmount(expense.getAmount());
@@ -284,7 +274,9 @@ public class AppData implements Serializable {
         data.setDate(expense.getDate());
         data.setExpenseGroupName(expense.getExpenseGroupName());
         data.setUserName(expense.getUserName());
-        this.expenses.add(0, data);
+        List<LocalExpenseData> localExpenseDataList = this.expenses.get(expenseGroupId);
+        localExpenseDataList.add(data);
+        this.expenses.put(expenseGroupId, localExpenseDataList);
         return storeAppData(context);
     }
 
@@ -347,7 +339,6 @@ public class AppData implements Serializable {
         }
 
         //Initialize all the variables (code copied from constructor)
-        expenses = new ArrayList<>();
         requests = new ArrayList<>();
         roomMateList = new ArrayList<>();
         gcmTypes = new ArrayList<>();
@@ -363,6 +354,7 @@ public class AppData implements Serializable {
         expenseGroups = new HashMap<>();
         gcmData = new HashMap<>();
         contacts = new HashMap<>();
+        expenses = new HashMap<>();
         localFlatSearchCriteria = new LocalFlatSearchCriteria();
 
         Toast.makeText(context, "AppData cleared", Toast.LENGTH_LONG).show();

@@ -22,8 +22,7 @@ import com.example.vivek.rentalmates.adapters.ExpenseListViewAdapter;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.AppData;
-import com.example.vivek.rentalmates.interfaces.OnExpenseListReceiver;
-import com.example.vivek.rentalmates.tasks.GetAllExpenseListAsyncTask;
+import com.example.vivek.rentalmates.tasks.GetExpenseListAsyncTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +36,10 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
     private RecyclerView recyclerView;
     private ExpenseListViewAdapter expenseListViewAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private TextView expensesTextView;
+    private TextView noExpensesTextView;
     private FlatManagerActivity flatManagerActivity;
     private SharedPreferences prefs;
+    private Long expenseGroupId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,6 +48,7 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
         appData = AppData.getInstance();
         context = getActivity().getApplicationContext();
         prefs = getActivity().getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        expenseGroupId = prefs.getLong(AppConstants.FLAT_EXPENSE_GROUP_ID, 0);
     }
 
     @Override
@@ -63,6 +64,10 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
                         Toast.makeText(getActivity().getApplicationContext(), "To be implemented", Toast.LENGTH_SHORT).show();
                         break;
                     case "primaryFlatChanged":
+                        expenseListViewAdapter.updateExpenseData();
+                        expenseListViewAdapter.notifyDataSetChanged();
+                        expenseGroupId = prefs.getLong(AppConstants.FLAT_EXPENSE_GROUP_ID, 0);
+                        updateView();
                         break;
                     default:
                         break;
@@ -87,16 +92,18 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
         swipeRefreshLayout.setProgressViewOffset(false, 0,
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
 
-        expensesTextView = (TextView) layout.findViewById(R.id.expensesText);
+        noExpensesTextView = (TextView) layout.findViewById(R.id.expensesText);
         updateView();
         return layout;
     }
 
     void updateView() {
-        if (appData.getExpenses().size() == 0) {
-            expensesTextView.setVisibility(View.VISIBLE);
+        if (appData.getExpenseDataList(expenseGroupId) == null) {
+            noExpensesTextView.setVisibility(View.VISIBLE);
+        } else if (appData.getExpenseDataList(expenseGroupId) != null && appData.getExpenseDataList(expenseGroupId).size() == 0) {
+            noExpensesTextView.setVisibility(View.VISIBLE);
         } else {
-            expensesTextView.setVisibility(View.GONE);
+            noExpensesTextView.setVisibility(View.GONE);
         }
     }
 
@@ -119,18 +126,18 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
     @Override
     public void onRefresh() {
         Log.d(TAG, "inside onRefresh");
-        GetAllExpenseListAsyncTask task = new GetAllExpenseListAsyncTask(context);
-        task.setOnExpenseListReceiver(new OnExpenseListReceiver() {
+        GetExpenseListAsyncTask task = new GetExpenseListAsyncTask(context, expenseGroupId);
+        task.setOnExecuteTaskReceiver(new GetExpenseListAsyncTask.OnExecuteTaskReceiver() {
             @Override
-            public void onExpenseDataListLoadSuccessful(List<ExpenseData> expenses) {
+            public void onTaskCompleted(List<ExpenseData> expenses) {
                 Log.d(TAG, "inside onExpenseDataListLoaded");
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
                 if (expenses == null) {
-                    appData.storeExpenseDataList(context, new ArrayList<ExpenseData>());
+                    appData.storeExpenseDataList(context, expenseGroupId, new ArrayList<ExpenseData>());
                 } else {
-                    appData.storeExpenseDataList(context, expenses);
+                    appData.storeExpenseDataList(context, expenseGroupId, expenses);
                 }
                 expenseListViewAdapter.updateExpenseData();
                 expenseListViewAdapter.notifyDataSetChanged();
@@ -138,7 +145,7 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
             }
 
             @Override
-            public void onExpenseDataListLoadFailed() {
+            public void onTaskFailed() {
                 Log.d(TAG, "inside onExpenseDataListLoadFailed");
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
