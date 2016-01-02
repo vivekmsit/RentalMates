@@ -64,6 +64,8 @@ public class SharedContactsListFragment extends android.support.v4.app.Fragment 
                     case "primaryFlatChanged":
                         contactListViewAdapter.updateContactData();
                         contactListViewAdapter.notifyDataSetChanged();
+                        flatId = prefs.getLong(AppConstants.PRIMARY_FLAT_ID, 0);
+                        updateView();
                         break;
                     default:
                         break;
@@ -179,6 +181,7 @@ public class SharedContactsListFragment extends android.support.v4.app.Fragment 
                             @Override
                             public void onAddContactSuccessful(Contact contact) {
                                 progressDialog.cancel();
+                                onSwipeRefresh();
                             }
 
                             @Override

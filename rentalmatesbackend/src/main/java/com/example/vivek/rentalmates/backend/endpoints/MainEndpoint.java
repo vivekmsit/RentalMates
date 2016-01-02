@@ -377,7 +377,6 @@ public class MainEndpoint {
             Contact contact = ofy().load().type(Contact.class).id(contactId).now();
             contacts.add(contact);
         }
-        sendExpenseDataAsMail(userProfileId);
         return contacts;
     }
 

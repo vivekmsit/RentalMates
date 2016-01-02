@@ -246,6 +246,7 @@ public class AppData implements Serializable {
     }
 
     public boolean storeContactList(Context context, Long flatId, List<Contact> contacts) {
+        this.contacts.remove(flatId);
         this.contacts.put(flatId, LocalContact.convertContactToLocalContact(contacts));
         return storeAppData(context);
     }
