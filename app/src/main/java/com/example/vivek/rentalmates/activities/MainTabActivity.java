@@ -110,16 +110,16 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
             mNavItemId = savedInstanceState.getInt(NAV_ITEM_ID);
         }
 
+        //Initialize Toolbar
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         //Initialize DrawerLayout
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
-
-        //Initialize Toolbar
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         //Initialize FragmentManager
         fragmentManager = getSupportFragmentManager();
