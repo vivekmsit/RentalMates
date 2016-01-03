@@ -1,12 +1,17 @@
 package com.example.vivek.rentalmates.adapters;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +20,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.mainApi.model.Contact;
@@ -101,7 +105,13 @@ public class ContactListViewAdapter extends RecyclerView.Adapter<ContactListView
         public void onClick(View v) {
             Log.d(TAG, "inside onClick");
             ContactListItem currentItem = data.get(getAdapterPosition());
-            Toast.makeText(context, currentItem.contactDetails, Toast.LENGTH_SHORT).show();
+            Intent callIntent = new Intent(Intent.ACTION_CALL);
+            callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            callIntent.setData(Uri.parse("tel:" + currentItem.contactNumber));
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            context.startActivity(callIntent);
         }
 
         @Override
