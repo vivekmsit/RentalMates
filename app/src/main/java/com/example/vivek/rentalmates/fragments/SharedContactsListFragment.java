@@ -1,12 +1,18 @@
 package com.example.vivek.rentalmates.fragments;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -17,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +43,7 @@ import java.util.List;
 
 public class SharedContactsListFragment extends android.support.v4.app.Fragment {
     private static final String TAG = "SharedContacts_Debug";
+    private static final int PICK_CONTACT_REQUEST = 1;  // The request code
 
     private AppData appData;
     private Context context;
@@ -145,6 +153,33 @@ public class SharedContactsListFragment extends android.support.v4.app.Fragment 
             private ProgressDialog progressDialog;
             private EditText contactDetailsEditText;
             private EditText contactNumberEditText;
+            private RelativeLayout importContactRelativeLayout;
+
+            @Override
+            public void onActivityResult(int requestCode, int resultCode, Intent data) {
+                // Check which request it is that we're responding to
+                if (requestCode == PICK_CONTACT_REQUEST) {
+                    // Make sure the request was successful
+                    if (resultCode == Activity.RESULT_OK) {
+                        // Get the URI that points to the selected contact
+                        Uri contactUri = data.getData();
+                        // We only need the DISPLAY_NAME, NUMBER columns, because there will be only one row in the result
+                        String[] projection = {
+                                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                                ContactsContract.CommonDataKinds.Phone.NUMBER};
+                        @SuppressLint("Recycle") Cursor cursor = context.getContentResolver()
+                                .query(contactUri, projection, null, null, null);
+                        if (cursor != null) {
+                            cursor.moveToFirst();
+                            // Retrieve the phone number from the NUMBER column
+                            int contactNameColumn = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+                            int contactNumberColumn = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                            contactDetailsEditText.setText(cursor.getString(contactNameColumn));
+                            contactNumberEditText.setText(cursor.getString(contactNumberColumn));
+                        }
+                    }
+                }
+            }
 
             @NonNull
             @Override
@@ -157,6 +192,16 @@ public class SharedContactsListFragment extends android.support.v4.app.Fragment 
                 View view = inflater.inflate(R.layout.dialog_fragment_add_contact, null);
                 contactDetailsEditText = (EditText) view.findViewById(R.id.contactDetailsEditText);
                 contactNumberEditText = (EditText) view.findViewById(R.id.contactNumberEditText);
+                importContactRelativeLayout = (RelativeLayout) view.findViewById(R.id.importContactRelativeLayout);
+
+                importContactRelativeLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent pickContactIntent = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
+                        pickContactIntent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE); // Show user only contacts w/ phone numbers
+                        startActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST);
+                    }
+                });
 
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
                 alertDialogBuilder.setTitle("Enter New Contact details");
