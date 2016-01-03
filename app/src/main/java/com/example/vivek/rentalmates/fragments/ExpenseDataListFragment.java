@@ -1,6 +1,8 @@
 package com.example.vivek.rentalmates.fragments;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
+import com.example.vivek.rentalmates.activities.AddExpenseActivity;
 import com.example.vivek.rentalmates.activities.FlatManagerActivity;
 import com.example.vivek.rentalmates.adapters.ExpenseListViewAdapter;
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
@@ -30,6 +33,7 @@ import java.util.List;
 public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "ExpenseList_Debug";
+    private static final int GET_NEW_EXPENSE_DATA = 1;
 
     private AppData appData;
     private Context context;
@@ -61,7 +65,7 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
             public void onEventReceived(String eventType) {
                 switch (eventType) {
                     case "addFABPressed":
-                        Toast.makeText(getActivity().getApplicationContext(), "To be implemented", Toast.LENGTH_SHORT).show();
+                        addExpenseData();
                         break;
                     case "primaryFlatChanged":
                         expenseListViewAdapter.updateExpenseData();
@@ -136,8 +140,10 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
                 }
                 if (expenses == null) {
                     appData.storeExpenseDataList(context, expenseGroupId, new ArrayList<ExpenseData>());
+                    Toast.makeText(context, "No expenses found", Toast.LENGTH_SHORT).show();
                 } else {
                     appData.storeExpenseDataList(context, expenseGroupId, expenses);
+                    Toast.makeText(context, expenses.size() + " expenses found", Toast.LENGTH_SHORT).show();
                 }
                 expenseListViewAdapter.updateExpenseData();
                 expenseListViewAdapter.notifyDataSetChanged();
@@ -153,5 +159,22 @@ public class ExpenseDataListFragment extends Fragment implements SwipeRefreshLay
             }
         });
         task.execute();
+    }
+
+    private void addExpenseData() {
+        Intent intent = new Intent(context, AddExpenseActivity.class);
+        intent.putExtra("EXPENSE_GROUP_ID", expenseGroupId);
+        startActivityForResult(intent, GET_NEW_EXPENSE_DATA);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == GET_NEW_EXPENSE_DATA) {
+            if (resultCode == Activity.RESULT_OK) {
+                swipeRefreshLayout.setRefreshing(true);
+                onRefresh();
+            }
+        }
     }
 }

@@ -119,8 +119,10 @@ public class SharedContactsListFragment extends android.support.v4.app.Fragment 
                 }
                 if (contacts == null) {
                     appData.storeContactList(context, flatId, new ArrayList<Contact>());
+                    Toast.makeText(context, "No contacts found", Toast.LENGTH_SHORT).show();
                 } else {
                     appData.storeContactList(context, flatId, contacts);
+                    Toast.makeText(context, contacts.size() + " contacts found", Toast.LENGTH_SHORT).show();
                 }
                 contactListViewAdapter.updateContactData();
                 contactListViewAdapter.notifyDataSetChanged();
@@ -181,6 +183,7 @@ public class SharedContactsListFragment extends android.support.v4.app.Fragment 
                             @Override
                             public void onAddContactSuccessful(Contact contact) {
                                 progressDialog.cancel();
+                                swipeRefreshLayout.setRefreshing(true);
                                 onSwipeRefresh();
                             }
 
