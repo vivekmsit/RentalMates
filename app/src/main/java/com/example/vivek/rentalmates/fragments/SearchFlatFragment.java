@@ -1,6 +1,8 @@
 package com.example.vivek.rentalmates.fragments;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,18 +16,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
+import com.example.vivek.rentalmates.activities.FlatSearchActivity;
 import com.example.vivek.rentalmates.activities.MainTabActivity;
 import com.example.vivek.rentalmates.adapters.AvailableFlatListViewAdapter;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
-import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatSearchCriteria;
 import com.example.vivek.rentalmates.data.AppData;
-import com.example.vivek.rentalmates.dialogs.FlatSearchCriteriaDialog;
 import com.example.vivek.rentalmates.tasks.SearchFlatsForRentAsyncTask;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SearchFlatFragment extends android.support.v4.app.Fragment implements MainTabActivity.ActivityEventReceiver {
+    private static final int FLAT_SEARCH_CRITERIA = 1;
 
     private AppData appData;
     private Context context;
@@ -88,24 +90,21 @@ public class SearchFlatFragment extends android.support.v4.app.Fragment implemen
         return layout;
     }
 
-    public void searchFlats() {
-        FlatSearchCriteriaDialog dialog = new FlatSearchCriteriaDialog();
-        dialog.setOnDialogResultListener(new FlatSearchCriteriaDialog.OnDialogResultListener() {
-            @Override
-            public void onPositiveResult(FlatSearchCriteria flatSearchCriteria) {
-                swipeRefreshLayout.setRefreshing(true);
-                flatSearchCriteria.setFilterResetDone(false);
+    private void searchFlats() {
+        Intent intent = new Intent(context, FlatSearchActivity.class);
+        startActivityForResult(intent, FLAT_SEARCH_CRITERIA);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == FLAT_SEARCH_CRITERIA) {
+            if (resultCode == Activity.RESULT_OK) {
                 searchCriteriaLayout.setVisibility(View.INVISIBLE);
-                appData.storeFlatSearchCriteria(context, flatSearchCriteria);
+                swipeRefreshLayout.setRefreshing(true);
                 onSwipeRefresh();
             }
-
-            @Override
-            public void onNegativeResult() {
-
-            }
-        });
-        dialog.show(getFragmentManager(), "fragment");
+        }
     }
 
     public void updateView() {
