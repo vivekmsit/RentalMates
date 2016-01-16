@@ -506,7 +506,7 @@ public class UserProfileEndpoint {
         IndexSpec indexSpec = IndexSpec.newBuilder().setName("FlatSearchCriteriaIndex").build();
         Index index = SearchServiceFactory.getSearchService().getIndex(indexSpec);
         try {
-            String queryString = "distance(GeoPoint, geopoint(" + flatInfo.getVertices()[0] + "," + flatInfo.getVertices()[1] + ")) < 15000";
+            String queryString = "distance(GeoPoint, geopoint(" + flatInfo.getLatitude() + "," + flatInfo.getLongitude() + ")) < 15000";
             queryString = queryString + " AND minRentPerPerson < " + flatInfo.getRentAmount() + " AND maxRentPerPerson > " + flatInfo.getRentAmount();
             queryString = queryString + " AND minSecurityPerPerson < " + flatInfo.getSecurityAmount() + " AND maxSecurityPerPerson > " + flatInfo.getSecurityAmount();
             Results<ScoredDocument> results = index.search(queryString);

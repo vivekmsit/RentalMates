@@ -18,9 +18,6 @@ import com.example.vivek.rentalmates.dialogs.FlatRentDetailsDialog;
 import com.example.vivek.rentalmates.interfaces.OnRegisterNewFlatReceiver;
 import com.example.vivek.rentalmates.tasks.RegisterNewFlatAsyncTask;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class RegisterNewFlatTask {
     private static final String TAG = "RegisterNewFlat_Debug";
     private FragmentManager fragmentManager;
@@ -69,10 +66,9 @@ public class RegisterNewFlatTask {
                         dialog.setOnDialogResultListener(new CurrentLocationMapDialog.OnDialogResultListener() {
                             @Override
                             public void onPositiveResult(double currentLatitude, double currentLongitude) {
-                                List<Double> vertices = new ArrayList<>();
-                                vertices.add(currentLatitude);
-                                vertices.add(currentLongitude);
-                                flatInfo.setVertices(vertices);
+                                flatInfo.setLatitude(currentLatitude);
+                                flatInfo.setLongitude(currentLongitude);
+                                flatInfo.setZoom(17.23f);
                                 final FlatAmenitiesDialog flatAmenitiesDialog = new FlatAmenitiesDialog();
                                 flatAmenitiesDialog.setOnDialogResultListener(new FlatAmenitiesDialog.OnDialogResultListener() {
                                     @Override

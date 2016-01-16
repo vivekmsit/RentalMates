@@ -135,7 +135,7 @@ public class FlatInfoEndpoint {
                 .addField(Field.newBuilder().setName("CreationDate").setDate(flatInfo.getDate()))
                 .addField(Field.newBuilder().setName("rentPerPerson").setNumber(flatInfo.getRentAmount()))
                 .addField(Field.newBuilder().setName("securityPerPerson").setNumber(flatInfo.getSecurityAmount()))
-                .addField(Field.newBuilder().setName("GeoPoint").setGeoPoint(new GeoPoint(flatInfo.getVertices()[0], flatInfo.getVertices()[1])))
+                .addField(Field.newBuilder().setName("GeoPoint").setGeoPoint(new GeoPoint(flatInfo.getLatitude(), flatInfo.getLongitude())))
                 .build();
 
         //Insert the document into Index

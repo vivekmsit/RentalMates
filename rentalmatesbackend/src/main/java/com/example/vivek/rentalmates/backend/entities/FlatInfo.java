@@ -21,6 +21,30 @@ import java.util.Map;
 @Entity
 public class FlatInfo {
 
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Long latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Long longitude) {
+        this.longitude = longitude;
+    }
+
+    public float getZoom() {
+        return zoom;
+    }
+
+    public void setZoom(float zoom) {
+        this.zoom = zoom;
+    }
+
     public enum FlatType {
         NOT_AVAILABLE,
         SINGLE_BHK,
@@ -50,14 +74,15 @@ public class FlatInfo {
     private Date date;
     private Long ownerId;
     private Long expenseGroupId;
+    private double latitude;
+    private double longitude;
+    private float zoom;
     private int numberOfUsers;
-    private int numberOfContacts;
     private int updateCount;
     private int securityAmount;
     private int rentAmount;
     private String createFlatResult;
     private String flatAddress;
-    private double[] vertices;
     private List<Long> memberIds = new ArrayList<>();
     private List<Long> contactIds = new ArrayList<>();
     private List<BlobKey> flatPicturesBlobKeys;
@@ -73,7 +98,6 @@ public class FlatInfo {
     public FlatInfo() {
         date = new Date();
         numberOfUsers = 0;
-        numberOfContacts = 0;
         updateCount = -1;
     }
 
@@ -167,13 +191,11 @@ public class FlatInfo {
 
     public void addContactId(Long id) {
         contactIds.add(id);
-        numberOfContacts++;
     }
 
     public void deleteContactId(Long id) {
         if (contactIds.contains(id)) {
             contactIds.remove(id);
-            numberOfContacts--;
         }
     }
 
@@ -265,13 +287,5 @@ public class FlatInfo {
 
     public void setUpdateCount(int updateCount) {
         this.updateCount = updateCount;
-    }
-
-    public double[] getVertices() {
-        return vertices;
-    }
-
-    public void setVertices(double[] vertices) {
-        this.vertices = vertices;
     }
 }

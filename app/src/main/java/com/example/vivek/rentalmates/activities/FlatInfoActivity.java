@@ -63,7 +63,7 @@ public class FlatInfoActivity extends AppCompatActivity implements GoogleApiClie
 
         // Gets to GoogleMap from the MapView and does initialization stuff
         map = mapView.getMap();
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-34.041458, 150.790100), 17.23f));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(localFlatInfo.getLatitude(), localFlatInfo.getLongitude()), localFlatInfo.getZoom()));
     }
 
     @Override

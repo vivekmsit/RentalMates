@@ -10,6 +10,30 @@ import java.util.List;
 
 public class LocalFlatInfo implements Serializable {
 
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public float getZoom() {
+        return zoom;
+    }
+
+    public void setZoom(float zoom) {
+        this.zoom = zoom;
+    }
+
     public enum FlatType {
         NOT_AVAILABLE,
         SINGLE_BHK,
@@ -36,6 +60,9 @@ public class LocalFlatInfo implements Serializable {
     private String address;
     private int rentAmount;
     private int securityAmount;
+    private double latitude;
+    private double longitude;
+    private float zoom;
 
     public Long getFlatId() {
         return flatId;
@@ -204,6 +231,9 @@ public class LocalFlatInfo implements Serializable {
             data.setFlatAddress(localFlat.getAddress());
             data.setRentAmount(localFlat.getRentAmount());
             data.setSecurityAmount(localFlat.getSecurityAmount());
+            data.setLatitude(localFlat.getLatitude());
+            data.setLongitude(localFlat.getLongitude());
+            data.setZoom(localFlat.getZoom());
 
             flats.add(data);
         }
@@ -235,6 +265,9 @@ public class LocalFlatInfo implements Serializable {
             data.setAddress(flat.getFlatAddress());
             data.setRentAmount(flat.getRentAmount());
             data.setSecurityAmount(flat.getSecurityAmount());
+            data.setLatitude(flat.getLatitude());
+            data.setLongitude(flat.getLongitude());
+            data.setZoom(flat.getZoom());
 
             localFlats.add(data);
         }
