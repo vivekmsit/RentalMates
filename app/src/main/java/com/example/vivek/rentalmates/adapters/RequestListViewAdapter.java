@@ -25,7 +25,6 @@ import com.example.vivek.rentalmates.interfaces.OnAcceptRequestReceiver;
 import com.example.vivek.rentalmates.interfaces.OnRejectRequestReceiver;
 import com.example.vivek.rentalmates.tasks.AcceptRequestAsyncTask;
 import com.example.vivek.rentalmates.tasks.RejectRequestAsyncTask;
-import com.example.vivek.rentalmates.viewholders.RequestListItem;
 import com.pkmmte.view.CircularImageView;
 
 import java.util.ArrayList;
@@ -235,6 +234,18 @@ public class RequestListViewAdapter extends RecyclerView.Adapter<RequestListView
             };
             newFragment.show(manager, "menus");
             return false;
+        }
+    }
+
+    public class RequestListItem {
+        public final String requesterName;
+        public final String requestedEntityName;
+        public final String requesterProfilePicLink;
+
+        public RequestListItem(Request request) {
+            this.requesterName = request.getRequesterName();
+            this.requestedEntityName = request.getRequestedEntityName();
+            this.requesterProfilePicLink = request.getRequesterProfilePicLink();
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.vivek.rentalmates.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
@@ -13,9 +14,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
+import com.example.vivek.rentalmates.activities.FlatInfoActivity;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.data.LocalFlatInfo;
-import com.example.vivek.rentalmates.viewholders.AvailableFlatListItem;
 import com.pkmmte.view.CircularImageView;
 
 import java.util.ArrayList;
@@ -108,13 +109,42 @@ public class AvailableFlatListViewAdapter extends RecyclerView.Adapter<Available
         public void onClick(View v) {
             Log.d(TAG, "inside onClick");
             AvailableFlatListItem currentItem = data.get(getAdapterPosition());
-            Toast.makeText(context, currentItem.flatName, Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(context, FlatInfoActivity.class);
+            intent.putExtra("FLAT_ID", currentItem.flatId);
+            context.startActivity(intent);
         }
 
         @Override
         public boolean onLongClick(View v) {
             Toast.makeText(context, "To be implemented", Toast.LENGTH_SHORT).show();
             return false;
+        }
+    }
+
+    public class AvailableFlatListItem {
+        public final String flatName;
+        public final String location;
+        public final String address;
+        public final String rentAmount;
+        public final String securityAmount;
+        public final String emailId;
+        public final int flatPictureResourceId;
+        public final Long flatId;
+
+        public AvailableFlatListItem(LocalFlatInfo flatInfo) {
+            this.flatPictureResourceId = R.drawable.flatview2;
+            this.flatName = flatInfo.getFlatName();
+            this.location = flatInfo.getCity();
+            this.address = flatInfo.getAddress();
+            this.emailId = flatInfo.getOwnerEmailId();
+            if (flatInfo.getNumberOfUsers() == 0) {
+                this.rentAmount = "0";
+                this.securityAmount = "0";
+            } else {
+                this.rentAmount = String.valueOf(flatInfo.getRentAmount() / flatInfo.getNumberOfUsers());
+                this.securityAmount = String.valueOf(flatInfo.getSecurityAmount() / flatInfo.getNumberOfUsers());
+            }
+            this.flatId = flatInfo.getFlatId();
         }
     }
 }

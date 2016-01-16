@@ -27,7 +27,6 @@ import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.interfaces.OnDeleteExpenseReceiver;
 import com.example.vivek.rentalmates.tasks.DeleteExpenseAsyncTask;
-import com.example.vivek.rentalmates.viewholders.ExpenseListItem;
 import com.pkmmte.view.CircularImageView;
 
 import java.util.ArrayList;
@@ -210,6 +209,24 @@ public class ExpenseListViewAdapter extends RecyclerView.Adapter<ExpenseListView
             };
             newFragment.show(manager, "menus");
             return false;
+        }
+    }
+
+    public class ExpenseListItem {
+        public final int amount;
+        public final String description;
+        public final String ownerEmailId;
+        public final String userName;
+        public final String groupName;
+        public final String date;
+
+        public ExpenseListItem(ExpenseData expenseData) {
+            this.amount = expenseData.getAmount();
+            this.description = expenseData.getDescription();
+            this.ownerEmailId = expenseData.getOwnerEmailId();
+            this.userName = expenseData.getUserName();
+            this.groupName = expenseData.getExpenseGroupName();
+            this.date = expenseData.getDate().toString();
         }
     }
 }

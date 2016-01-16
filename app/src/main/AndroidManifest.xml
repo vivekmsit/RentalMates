@@ -103,6 +103,10 @@
         <activity
             android:name=".activities.FlatSearchActivity"
             android:label="@string/title_activity_flat_search"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.FlatInfoActivity"
+            android:label="@string/title_activity_flat_info"
             android:theme="@style/AppTheme"></activity>
     </application>
 

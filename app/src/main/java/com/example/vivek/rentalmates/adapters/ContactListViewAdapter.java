@@ -25,7 +25,6 @@ import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.mainApi.model.Contact;
 import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.AppData;
-import com.example.vivek.rentalmates.viewholders.ContactListItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -141,6 +140,16 @@ public class ContactListViewAdapter extends RecyclerView.Adapter<ContactListView
             };
             newFragment.show(manager, "menus");
             return false;
+        }
+    }
+
+    public class ContactListItem {
+        public final String contactDetails;
+        public final Long contactNumber;
+
+        public ContactListItem(Contact contact) {
+            this.contactDetails = contact.getContactDetails();
+            this.contactNumber = contact.getContactNumber();
         }
     }
 }

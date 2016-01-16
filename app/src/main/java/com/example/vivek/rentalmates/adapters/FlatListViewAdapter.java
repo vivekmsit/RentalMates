@@ -12,7 +12,6 @@ import android.widget.Toast;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.data.LocalFlatInfo;
-import com.example.vivek.rentalmates.viewholders.FlatListItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +85,22 @@ public class FlatListViewAdapter extends RecyclerView.Adapter<FlatListViewAdapte
         public boolean onLongClick(View v) {
             Toast.makeText(context, "To be implemented", Toast.LENGTH_SHORT).show();
             return false;
+        }
+    }
+
+    public class FlatListItem {
+        public final String flatName;
+        public final String ownerName;
+        public final String location;
+        public final String members;
+        public final String date;
+
+        public FlatListItem(LocalFlatInfo flatInfo) {
+            this.flatName = flatInfo.getFlatName();
+            this.ownerName = "ownerName";
+            this.location = flatInfo.getCity();
+            this.members = "vivek, ashish";
+            this.date = "date";
         }
     }
 }

@@ -178,7 +178,7 @@ public class FlatSearchActivity extends AppCompatActivity implements GoogleApiCl
 
         // Needs to call MapsInitializer before doing any CameraUpdateFactory calls
         MapsInitializer.initialize(this);
-        makeUseOfNewLocation();
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(flatSearchCriteria.getLocationLatitude(), flatSearchCriteria.getLocationLongitude()), 17.23f));
     }
 
 

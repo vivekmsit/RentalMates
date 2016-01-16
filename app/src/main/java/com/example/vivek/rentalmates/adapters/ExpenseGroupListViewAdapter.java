@@ -22,7 +22,6 @@ import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.data.LocalExpenseGroup;
-import com.example.vivek.rentalmates.viewholders.ExpenseGroupListItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -171,5 +170,23 @@ public class ExpenseGroupListViewAdapter extends RecyclerView.Adapter<ExpenseGro
             }
         };
         expenseDistributionDialog.show(manager, "Fragment");
+    }
+
+    public class ExpenseGroupListItem {
+        public final String flatName;
+        public final String ownerName;
+        public final String location;
+        public final String members;
+        public final String date;
+        public final Long paybackAmountValue;
+
+        public ExpenseGroupListItem(LocalExpenseGroup expenseGroup, Long userProfileId) {
+            this.flatName = expenseGroup.getName();
+            this.ownerName = "ownerName";
+            this.location = "bangalore";
+            this.members = "vivek, ashish";
+            this.date = "date";
+            paybackAmountValue = expenseGroup.getMembersData().get(userProfileId);
+        }
     }
 }
