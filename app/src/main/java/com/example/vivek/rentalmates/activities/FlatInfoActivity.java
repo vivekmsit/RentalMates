@@ -2,6 +2,7 @@ package com.example.vivek.rentalmates.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -27,14 +28,25 @@ public class FlatInfoActivity extends AppCompatActivity implements GoogleApiClie
     private GoogleApiClient mGoogleApiClient;
     private MapView mapView;
     private GoogleMap map;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flat_info);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
+        //Initialize Toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+        }
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
+        //Initialize FAB
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,8 +56,14 @@ public class FlatInfoActivity extends AppCompatActivity implements GoogleApiClie
             }
         });
 
+        //Initialize CollapsingToolbarLayout
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        collapsingToolbarLayout.setTitle("Flat Information");
+        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
+
         appData = AppData.getInstance();
 
+        //Get selected flatId from Intent
         Intent intent = getIntent();
         Long flatId = intent.getLongExtra("FLAT_ID", 0);
         localFlatInfo = appData.getAvailableFlats().get(flatId);
@@ -58,10 +76,9 @@ public class FlatInfoActivity extends AppCompatActivity implements GoogleApiClie
                 .addConnectionCallbacks(this)
                 .build();
 
+        //Initialize MapView
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.onCreate(savedInstanceState);
-
-        // Gets to GoogleMap from the MapView and does initialization stuff
         map = mapView.getMap();
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(localFlatInfo.getLatitude(), localFlatInfo.getLongitude()), localFlatInfo.getZoom()));
     }
