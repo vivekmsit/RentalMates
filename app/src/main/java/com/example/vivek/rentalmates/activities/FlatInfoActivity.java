@@ -25,6 +25,8 @@ public class FlatInfoActivity extends AppCompatActivity implements GoogleApiClie
     private LocalFlatInfo localFlatInfo;
     private AppData appData;
     private TextView addressTextView;
+    private TextView rentAmountTextView;
+    private TextView securityAmountTextView;
     private GoogleApiClient mGoogleApiClient;
     private MapView mapView;
     private GoogleMap map;
@@ -68,8 +70,16 @@ public class FlatInfoActivity extends AppCompatActivity implements GoogleApiClie
         Long flatId = intent.getLongExtra("FLAT_ID", 0);
         localFlatInfo = appData.getAvailableFlats().get(flatId);
 
+        //Initialize various TextView values
+
         addressTextView = (TextView) findViewById(R.id.addressTextView);
         addressTextView.setText(localFlatInfo.getAddress());
+
+        rentAmountTextView = (TextView) findViewById(R.id.rentAmountTextView);
+        rentAmountTextView.setText("Rs " + localFlatInfo.getRentAmount());
+
+        securityAmountTextView = (TextView) findViewById(R.id.securityAmountTextView);
+        securityAmountTextView.setText("Rs " + localFlatInfo.getSecurityAmount());
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Places.GEO_DATA_API)
