@@ -18,7 +18,6 @@
             android:id="@+id/locationOuterLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
             card_view:cardBackgroundColor="@color/white">
 
             <RelativeLayout
@@ -27,31 +26,12 @@
                 android:orientation="vertical">
 
                 <RelativeLayout
-                    android:id="@+id/filterHeaderLocation"
+                    android:id="@+id/addressRelativeLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:background="@color/purple"
-                    android:padding="4dp">
-
-                    <TextView
-                        android:id="@+id/filterHeaderLocationTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:text="Address"
-                        android:textColor="@color/white" />
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/addressRelativeLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/filterHeaderLocation"
-                    android:layout_centerHorizontal="true"
-                    android:background="@color/white"
-                    android:padding="4dp">
+                    android:padding="10dp">
 
                     <TextView
                         android:id="@+id/addressTextView"
@@ -59,7 +39,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:text="Bangalore"
-                        android:textColor="@color/grey" />
+                        android:textColor="@color/white" />
 
                 </RelativeLayout>
 
@@ -72,7 +52,8 @@
                     <com.google.android.gms.maps.MapView
                         android:id="@+id/mapview"
                         android:layout_width="match_parent"
-                        android:layout_height="150dp" />
+                        android:layout_height="100dp"
+                        android:layout_margin="10dp" />
 
                     <ImageView
                         android:id="@+id/fixedMarkerImageView"
@@ -112,8 +93,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="4dp"
-                        android:text="Rent"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
+                        android:text="Rent Per Person"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/orange" />
 
                     <TextView
                         android:id="@+id/rentAmountTextView"
@@ -135,8 +117,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="4dp"
-                        android:text="Security"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
+                        android:text="Deposit Per Person"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/orange" />
 
                     <TextView
                         android:id="@+id/securityAmountTextView"
@@ -145,6 +128,71 @@
                         android:gravity="center"
                         android:padding="4dp"
                         android:text="Rs 100000"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            card_view:cardBackgroundColor="@color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="4dp"
+                        android:text="Space for"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/orange" />
+
+                    <TextView
+                        android:id="@+id/spaceForTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="4dp"
+                        android:text="1 Person"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="4dp"
+                        android:text="Available From"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/orange" />
+
+                    <TextView
+                        android:id="@+id/availableFromTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="4dp"
+                        android:text="10 Feb 2016"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
 
                 </LinearLayout>

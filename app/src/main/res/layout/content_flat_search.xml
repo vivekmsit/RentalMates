@@ -298,6 +298,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:visibility="gone"
             card_view:cardBackgroundColor="@color/white"
             card_view:cardCornerRadius="6dp"
             card_view:cardElevation="4dp">
@@ -405,6 +406,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:visibility="gone"
             card_view:cardBackgroundColor="@color/white"
             card_view:cardCornerRadius="6dp"
             card_view:cardElevation="4dp">

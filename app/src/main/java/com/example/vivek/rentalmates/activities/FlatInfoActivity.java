@@ -48,9 +48,19 @@ public class FlatInfoActivity extends AppCompatActivity implements GoogleApiClie
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        //Initialize FAB
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        //Initialize message FAB
+        FloatingActionButton messageFab = (FloatingActionButton) findViewById(R.id.messageFab);
+        messageFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
+        //Initialize call FAB
+        FloatingActionButton callFab = (FloatingActionButton) findViewById(R.id.callFab);
+        callFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
