@@ -1,5 +1,6 @@
 package com.example.vivek.rentalmates.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -41,7 +42,6 @@ import com.example.vivek.rentalmates.fragments.SearchRoomMateFragment;
 import com.example.vivek.rentalmates.fragments.SharedContactsListFragment;
 import com.example.vivek.rentalmates.interfaces.FragmentTransactionRequestReceiver;
 import com.example.vivek.rentalmates.library.CreateNewExpenseGroupTask;
-import com.example.vivek.rentalmates.library.RegisterNewFlatTask;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -54,6 +54,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
 
     private static final String TAG = "MainTabActivity_Debug";
     private static final String NAV_ITEM_ID = "navItemId";
+    private static final int REGISTER_NEW_FLAT = 1;
 
     private ViewPager viewPager;
     private TabLayout tabLayout;
@@ -290,23 +291,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
 
     private void registerNewFlat() {
         Intent intent = new Intent(this, NewFlatActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
-    }
-
-    private void registerNewFlat1() {
-        RegisterNewFlatTask registerNewFlatTask = new RegisterNewFlatTask(MainTabActivity.this, getSupportFragmentManager(), "NONE");
-        registerNewFlatTask.setOnRegisterNewFlatTask(new RegisterNewFlatTask.OnRegisterNewFlatTask() {
-            @Override
-            public void onRegisterNewFlatTaskSuccess(com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo newFlatInfo) {
-            }
-
-            @Override
-            public void onRegisterNewFlatTaskFailed() {
-
-            }
-        });
-        registerNewFlatTask.execute();
     }
 
     private void createNewExpenseGroup() {
@@ -472,6 +457,15 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
                 break;
             default:
                 break;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REGISTER_NEW_FLAT) {
+            if (resultCode == Activity.RESULT_OK) {
+            }
         }
     }
 

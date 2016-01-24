@@ -14,12 +14,12 @@ import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.activities.ExpenseManagerActivity;
 import com.example.vivek.rentalmates.activities.FlatManagerActivity;
 import com.example.vivek.rentalmates.activities.MainTabActivity;
+import com.example.vivek.rentalmates.activities.NewFlatActivity;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatSearchCriteria;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.data.LocalFlatInfo;
 import com.example.vivek.rentalmates.dialogs.FlatSearchCriteriaDialog;
 import com.example.vivek.rentalmates.dialogs.ItemPickerDialogFragment;
-import com.example.vivek.rentalmates.library.RegisterNewFlatTask;
 import com.example.vivek.rentalmates.tasks.PostYourFlatAsyncTask;
 import com.example.vivek.rentalmates.tasks.PostYourRoomRequirementAsyncTask;
 
@@ -28,6 +28,7 @@ import java.util.ArrayList;
 public class MainFragment extends android.support.v4.app.Fragment implements MainTabActivity.ActivityEventReceiver {
 
     //private static final String TAG = "MainFragment_Debug";
+    private static final int REGISTER_NEW_FLAT = 1;
 
     CardView flatManagerCardView;
     CardView expenseManagerCardView;
@@ -142,19 +143,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Mai
     }
 
     private void postNewFlat() {
-        RegisterNewFlatTask registerNewFlatTask = new RegisterNewFlatTask(getActivity(), getFragmentManager(), "POST");
-        registerNewFlatTask.setOnRegisterNewFlatTask(new RegisterNewFlatTask.OnRegisterNewFlatTask() {
-            @Override
-            public void onRegisterNewFlatTaskSuccess(com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo newFlatInfo) {
-
-            }
-
-            @Override
-            public void onRegisterNewFlatTaskFailed() {
-
-            }
-        });
-        registerNewFlatTask.execute();
+        Intent intent = new Intent(context, NewFlatActivity.class);
+        startActivityForResult(intent, REGISTER_NEW_FLAT);
     }
 
     private void postYourRoomRequirement() {
@@ -202,5 +192,10 @@ public class MainFragment extends android.support.v4.app.Fragment implements Mai
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

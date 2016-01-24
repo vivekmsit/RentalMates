@@ -1,5 +1,6 @@
 package com.example.vivek.rentalmates.activities;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -30,7 +31,6 @@ import com.example.vivek.rentalmates.interfaces.OnExpenseListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnFlatInfoListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnRequestJoinExistingEntityReceiver;
 import com.example.vivek.rentalmates.interfaces.OnUserProfileListReceiver;
-import com.example.vivek.rentalmates.library.RegisterNewFlatTask;
 import com.example.vivek.rentalmates.services.BackendApiService;
 import com.example.vivek.rentalmates.tasks.GetAllExpenseListAsyncTask;
 import com.example.vivek.rentalmates.tasks.GetExpenseGroupListAsyncTask;
@@ -44,6 +44,7 @@ import java.util.List;
 public class DetermineFlatActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "DetermineFlat_Debug";
+    private static final int REGISTER_NEW_FLAT = 1;
 
     private TextView alreadyTextView;
     private Spinner chooseFlatSpinner;
@@ -197,19 +198,8 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
     }
 
     public void registerNewFlat() {
-        RegisterNewFlatTask registerNewFlatTask = new RegisterNewFlatTask(DetermineFlatActivity.this, getSupportFragmentManager(), "NONE");
-        registerNewFlatTask.setOnRegisterNewFlatTask(new RegisterNewFlatTask.OnRegisterNewFlatTask() {
-            @Override
-            public void onRegisterNewFlatTaskSuccess(com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo newFlatInfo) {
-                getCompleteUserInformation();
-            }
-
-            @Override
-            public void onRegisterNewFlatTaskFailed() {
-
-            }
-        });
-        registerNewFlatTask.execute();
+        Intent intent = new Intent(context, NewFlatActivity.class);
+        startActivityForResult(intent, REGISTER_NEW_FLAT);
     }
 
     public void getCompleteUserInformation() {
@@ -334,5 +324,15 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REGISTER_NEW_FLAT) {
+            if (resultCode == Activity.RESULT_OK) {
+                getCompleteUserInformation();
+            }
+        }
     }
 }

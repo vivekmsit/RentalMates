@@ -1,7 +1,9 @@
 package com.example.vivek.rentalmates.fragments;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
+import com.example.vivek.rentalmates.activities.NewFlatActivity;
 import com.example.vivek.rentalmates.adapters.FlatListViewAdapter;
 import com.example.vivek.rentalmates.backend.mainApi.model.Request;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
@@ -24,7 +27,6 @@ import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.dialogs.GetExistingFlatInfoDialog;
 import com.example.vivek.rentalmates.interfaces.OnFlatInfoListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnRequestJoinExistingEntityReceiver;
-import com.example.vivek.rentalmates.library.RegisterNewFlatTask;
 import com.example.vivek.rentalmates.tasks.GetFlatInfoListAsyncTask;
 import com.example.vivek.rentalmates.tasks.RequestAsyncTask;
 
@@ -34,6 +36,7 @@ import java.util.List;
 public class ManageFlatsFragment extends android.support.v4.app.Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "ManageFlats_Debug";
+    private static final int REGISTER_NEW_FLAT = 1;
 
     private AppData appData;
     private Context context;
@@ -147,20 +150,8 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
     }
 
     public void registerNewFlat() {
-        RegisterNewFlatTask registerNewFlatTask = new RegisterNewFlatTask(getActivity(), getFragmentManager(), "NONE");
-        registerNewFlatTask.setOnRegisterNewFlatTask(new RegisterNewFlatTask.OnRegisterNewFlatTask() {
-            @Override
-            public void onRegisterNewFlatTaskSuccess(com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo newFlatInfo) {
-                swipeRefreshLayout.setRefreshing(true);
-                onRefresh();
-            }
-
-            @Override
-            public void onRegisterNewFlatTaskFailed() {
-
-            }
-        });
-        registerNewFlatTask.execute();
+        Intent intent = new Intent(context, NewFlatActivity.class);
+        startActivityForResult(intent, REGISTER_NEW_FLAT);
     }
 
     @Override
@@ -193,5 +184,16 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
             }
         });
         task.execute();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REGISTER_NEW_FLAT) {
+            if (resultCode == Activity.RESULT_OK) {
+                swipeRefreshLayout.setRefreshing(true);
+                onRefresh();
+            }
+        }
     }
 }
