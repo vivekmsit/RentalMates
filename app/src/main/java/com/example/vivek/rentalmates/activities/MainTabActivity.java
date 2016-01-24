@@ -289,6 +289,12 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
     }
 
     private void registerNewFlat() {
+        Intent intent = new Intent(this, NewFlatActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    private void registerNewFlat1() {
         RegisterNewFlatTask registerNewFlatTask = new RegisterNewFlatTask(MainTabActivity.this, getSupportFragmentManager(), "NONE");
         registerNewFlatTask.setOnRegisterNewFlatTask(new RegisterNewFlatTask.OnRegisterNewFlatTask() {
             @Override
