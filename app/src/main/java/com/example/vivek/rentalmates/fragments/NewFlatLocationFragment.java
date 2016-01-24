@@ -1,18 +1,17 @@
-package com.example.vivek.rentalmates.dialogs;
+package com.example.vivek.rentalmates.fragments;
 
 import android.Manifest;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
@@ -38,8 +37,11 @@ import com.google.android.gms.maps.model.LatLngBounds;
 
 import static android.support.v4.content.ContextCompat.checkSelfPermission;
 
-public class CurrentLocationMapDialog extends DialogFragment implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
-    private static final String TAG = "MapDialog_Debug";
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class NewFlatLocationFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
+    private static final String TAG = "NewFlatLocation_Debug";
     private Context context;
     private MapView mapView;
     private GoogleMap map;
@@ -47,7 +49,6 @@ public class CurrentLocationMapDialog extends DialogFragment implements GoogleAp
     private double currentLongitude;
     private float currentZoom;
     private boolean currentLocationUpdated;
-    private OnDialogResultListener listener;
     private AppData appData;
 
     /**
@@ -59,52 +60,13 @@ public class CurrentLocationMapDialog extends DialogFragment implements GoogleAp
     private AutoCompleteTextView autocompleteView;
     private static final LatLngBounds BOUNDS_GREATER_SYDNEY = new LatLngBounds(new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
 
-    @Override
-    public void onConnected(Bundle bundle) {
-    }
 
     @Override
-    public void onConnectionSuspended(int i) {
-        Toast.makeText(context, "Suspended", Toast.LENGTH_SHORT).show();
-    }
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_new_flat_location, container, false);
 
-    public interface OnDialogResultListener {
-        void onPositiveResult(double longitude, double latitude);
-
-        void onNegativeResult();
-    }
-
-    public void setOnDialogResultListener(OnDialogResultListener listener) {
-        this.listener = listener;
-    }
-
-    private void makeUseOfNewLocation() {
-        // Updates the location and zoom of the MapView
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(currentLatitude, currentLongitude), (float) 17.23);
-        map.animateCamera(cameraUpdate);
-    }
-
-    @Override
-    public void onResume() {
-        mapView.onResume();
-        super.onResume();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mapView.onDestroy();
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mapView.onLowMemory();
-    }
-
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
         context = getActivity().getApplicationContext();
         appData = AppData.getInstance();
 
@@ -117,9 +79,6 @@ public class CurrentLocationMapDialog extends DialogFragment implements GoogleAp
                 .addApi(Places.GEO_DATA_API)
                 .addConnectionCallbacks(this)
                 .build();
-
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_fragment_map_view, null);
 
         // Set up the adapter that will retrieve suggestions from the Places Geo Data API that cover
         // the entire world.
@@ -148,8 +107,7 @@ public class CurrentLocationMapDialog extends DialogFragment implements GoogleAp
         currentLocationUpdated = false;
 
         // Updates the location and zoom of the MapView
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(currentLatitude, currentLongitude), currentZoom);
-        map.animateCamera(cameraUpdate);
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLatitude, currentLongitude), currentZoom));
 
         //map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
         //LatLng ll = map.getCameraPosition().target;
@@ -190,31 +148,44 @@ public class CurrentLocationMapDialog extends DialogFragment implements GoogleAp
                 }
             });
         }
-
-        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(getActivity());
-        alertDialogBuilder.setTitle("Select Flat Location");
-        alertDialogBuilder.setView(view);
-        alertDialogBuilder.setPositiveButton("Update Location", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (listener != null) {
-                    LatLng ll = map.getCameraPosition().target;
-                    listener.onPositiveResult(ll.latitude, ll.longitude);
-                }
-            }
-        });
-        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                if (listener != null) {
-                    listener.onNegativeResult();
-                }
-            }
-        });
-        return alertDialogBuilder.create();
+        return view;
     }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    private void makeUseOfNewLocation() {
+        // Updates the location and zoom of the MapView
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(currentLatitude, currentLongitude), (float) 17.23);
+        map.animateCamera(cameraUpdate);
+    }
+
+
+    @Override
+    public void onResume() {
+        mapView.onResume();
+        super.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
+
 
     @Override
     public void onStart() {
@@ -266,7 +237,7 @@ public class CurrentLocationMapDialog extends DialogFragment implements GoogleAp
     private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback
             = new ResultCallback<PlaceBuffer>() {
         @Override
-        public void onResult(PlaceBuffer places) {
+        public void onResult(@NonNull PlaceBuffer places) {
             if (!places.getStatus().isSuccess()) {
                 // Request did not complete successfully
                 //Log.e(TAG, "Place query did not complete. Error: " + places.getStatus().toString());
@@ -291,7 +262,7 @@ public class CurrentLocationMapDialog extends DialogFragment implements GoogleAp
      * @param connectionResult can be inspected to determine the cause of the failure
      */
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.e(TAG, "onConnectionFailed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
         Toast.makeText(context, "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(), Toast.LENGTH_SHORT).show();
     }
@@ -309,5 +280,4 @@ public class CurrentLocationMapDialog extends DialogFragment implements GoogleAp
     public float getZoom() {
         return currentZoom;
     }
-
 }
