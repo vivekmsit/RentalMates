@@ -20,6 +20,7 @@ import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.fragments.NewFlatAmenitiesFragment;
 import com.example.vivek.rentalmates.fragments.NewFlatBasicInfoFragment;
 import com.example.vivek.rentalmates.fragments.NewFlatLocationFragment;
+import com.example.vivek.rentalmates.fragments.NewFlatRentDetailsFragment;
 import com.example.vivek.rentalmates.interfaces.OnRegisterNewFlatReceiver;
 import com.example.vivek.rentalmates.tasks.RegisterNewFlatAsyncTask;
 
@@ -30,6 +31,7 @@ public class NewFlatActivity extends AppCompatActivity {
     NewFlatBasicInfoFragment newFlatBasicInfoFragment;
     NewFlatAmenitiesFragment newFlatAmenitiesFragment;
     NewFlatLocationFragment newFlatLocationFragment;
+    NewFlatRentDetailsFragment newFlatRentDetailsFragment;
     int currentFragment;
     Button nextButton;
     Button fragmentNameButton;
@@ -65,6 +67,9 @@ public class NewFlatActivity extends AppCompatActivity {
                     fragmentNameButton.setText("Basic Information");
                 } else if (currentFragment == 1) {
                     nextButton.setText("Next");
+                    fragmentNameButton.setText("Rent Details");
+                } else if (currentFragment == 2) {
+                    nextButton.setText("Next");
                     fragmentNameButton.setText("Flat Amenities");
                 }
             }
@@ -85,6 +90,7 @@ public class NewFlatActivity extends AppCompatActivity {
         newFlatBasicInfoFragment = new NewFlatBasicInfoFragment();
         newFlatAmenitiesFragment = new NewFlatAmenitiesFragment();
         newFlatLocationFragment = new NewFlatLocationFragment();
+        newFlatRentDetailsFragment = new NewFlatRentDetailsFragment();
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentParentViewGroup, newFlatBasicInfoFragment)
@@ -94,13 +100,21 @@ public class NewFlatActivity extends AppCompatActivity {
     private void onNextButtonClick() {
         if (currentFragment == 0 && newFlatBasicInfoFragment.verifyInputData()) {
             nextButton.setText("Next");
+            fragmentNameButton.setText("Rent Details");
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragmentParentViewGroup, newFlatRentDetailsFragment)
+                    .addToBackStack("newFlatRentDetailsFragment")
+                    .commit();
+            currentFragment++;
+        } else if (currentFragment == 1 && newFlatRentDetailsFragment.verifyInputData()) {
+            nextButton.setText("Next");
             fragmentNameButton.setText("Flat Amenities");
             fragmentManager.beginTransaction()
                     .replace(R.id.fragmentParentViewGroup, newFlatAmenitiesFragment)
                     .addToBackStack("newFlatAmenitiesFragment")
                     .commit();
             currentFragment++;
-        } else if (currentFragment == 1) {
+        } else if (currentFragment == 2) {
             nextButton.setText("Finish");
             fragmentNameButton.setText("Flat Location");
             fragmentManager.beginTransaction()
@@ -108,7 +122,7 @@ public class NewFlatActivity extends AppCompatActivity {
                     .addToBackStack("newFlatLocationFragment")
                     .commit();
             currentFragment++;
-        } else if (currentFragment == 2) {
+        } else if (currentFragment == 3) {
             registerNewFlat();
         }
     }
@@ -119,8 +133,8 @@ public class NewFlatActivity extends AppCompatActivity {
         newFlatInfo.setFlatAddress("Bangalore");
         newFlatInfo.setCity("Bangalore");
         newFlatInfo.setFlatName(newFlatBasicInfoFragment.getFlatName());
-        newFlatInfo.setRentAmount(newFlatBasicInfoFragment.getRentAmount());
-        newFlatInfo.setSecurityAmount(newFlatBasicInfoFragment.getSecurityAmount());
+        newFlatInfo.setRentAmount(newFlatRentDetailsFragment.getRentAmount());
+        newFlatInfo.setSecurityAmount(newFlatRentDetailsFragment.getSecurityAmount());
         newFlatInfo.setLatitude(newFlatLocationFragment.getLatitude());
         newFlatInfo.setLongitude(newFlatLocationFragment.getLongitude());
         newFlatInfo.setZoom(newFlatLocationFragment.getZoom());

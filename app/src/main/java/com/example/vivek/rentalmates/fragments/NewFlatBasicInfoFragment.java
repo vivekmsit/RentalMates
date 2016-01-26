@@ -19,8 +19,6 @@ public class NewFlatBasicInfoFragment extends Fragment {
 
     EditText flatNameEditText;
     EditText flatDescriptionEditText;
-    EditText securityAmountEditText;
-    EditText rentAmountEditText;
     Context context;
 
     @Override
@@ -34,8 +32,6 @@ public class NewFlatBasicInfoFragment extends Fragment {
         //Initialize all EditText
         flatNameEditText = (EditText) layout.findViewById(R.id.flatNameEditText);
         flatDescriptionEditText = (EditText) layout.findViewById(R.id.flatDescriptionEditText);
-        rentAmountEditText = (EditText) layout.findViewById(R.id.rentAmountEditText);
-        securityAmountEditText = (EditText) layout.findViewById(R.id.securityAmountEditText);
 
         return layout;
     }
@@ -48,26 +44,12 @@ public class NewFlatBasicInfoFragment extends Fragment {
         return flatDescriptionEditText.getText().toString();
     }
 
-    public int getRentAmount() {
-        return Integer.parseInt(rentAmountEditText.getText().toString());
-    }
-
-    public int getSecurityAmount() {
-        return Integer.parseInt(securityAmountEditText.getText().toString());
-    }
-
     public boolean verifyInputData() {
         if (flatNameEditText.getText().toString().trim().matches("")) {
             Toast.makeText(context, "No flat name entered", Toast.LENGTH_LONG).show();
             return false;
         } else if (flatDescriptionEditText.getText().toString().trim().matches("")) {
             Toast.makeText(context, "No flat description entered", Toast.LENGTH_LONG).show();
-            return false;
-        } else if (securityAmountEditText.getText().toString().trim().matches("")) {
-            Toast.makeText(context, "No flat security entered", Toast.LENGTH_LONG).show();
-            return false;
-        } else if (rentAmountEditText.getText().toString().trim().matches("")) {
-            Toast.makeText(context, "No flat rent amount entered", Toast.LENGTH_LONG).show();
             return false;
         } else {
             return true;

@@ -111,7 +111,8 @@
         <activity
             android:name=".activities.NewFlatActivity"
             android:label="@string/title_activity_new_flat"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan" />
     </application>
 
 </manifest>
