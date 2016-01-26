@@ -70,7 +70,7 @@ public class NewFlatActivity extends AppCompatActivity {
                     fragmentNameButton.setText("Rent Details");
                 } else if (currentFragment == 2) {
                     nextButton.setText("Next");
-                    fragmentNameButton.setText("Flat Amenities");
+                    fragmentNameButton.setText("Amenities");
                 }
             }
         });
@@ -98,7 +98,7 @@ public class NewFlatActivity extends AppCompatActivity {
     }
 
     private void onNextButtonClick() {
-        if (currentFragment == 0 && newFlatBasicInfoFragment.verifyInputData()) {
+        if (currentFragment == 0) {
             nextButton.setText("Next");
             fragmentNameButton.setText("Rent Details");
             fragmentManager.beginTransaction()
@@ -106,9 +106,9 @@ public class NewFlatActivity extends AppCompatActivity {
                     .addToBackStack("newFlatRentDetailsFragment")
                     .commit();
             currentFragment++;
-        } else if (currentFragment == 1 && newFlatRentDetailsFragment.verifyInputData()) {
+        } else if (currentFragment == 1) {
             nextButton.setText("Next");
-            fragmentNameButton.setText("Flat Amenities");
+            fragmentNameButton.setText("Amenities");
             fragmentManager.beginTransaction()
                     .replace(R.id.fragmentParentViewGroup, newFlatAmenitiesFragment)
                     .addToBackStack("newFlatAmenitiesFragment")
@@ -123,7 +123,9 @@ public class NewFlatActivity extends AppCompatActivity {
                     .commit();
             currentFragment++;
         } else if (currentFragment == 3) {
-            registerNewFlat();
+            if (newFlatBasicInfoFragment.verifyInputData() && newFlatRentDetailsFragment.verifyInputData()) {
+                registerNewFlat();
+            }
         }
     }
 
