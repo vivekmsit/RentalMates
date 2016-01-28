@@ -94,6 +94,7 @@ public class FlatManagerActivity extends AppCompatActivity {
             }
         });
 
+        //Initialize ViewPager and TabLayout
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -120,6 +121,7 @@ public class FlatManagerActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+        //Initialize Add FAB
         addFAB = (FloatingActionButton) findViewById(R.id.addFab);
         addFAB.setOnClickListener(new View.OnClickListener() {
             @Override

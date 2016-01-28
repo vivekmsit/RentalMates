@@ -1,7 +1,6 @@
 package com.example.vivek.rentalmates.fragments;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -10,6 +9,9 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,8 +19,8 @@ import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.activities.MainTabActivity;
 import com.example.vivek.rentalmates.adapters.AvailableRoomMateListViewAdapter;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatSearchCriteria;
-import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.AppData;
+import com.example.vivek.rentalmates.data.LocalFlatInfo;
 import com.example.vivek.rentalmates.tasks.SearchRoomMatesAsyncTask;
 
 import java.util.ArrayList;
@@ -28,19 +30,21 @@ public class SearchRoomMateFragment extends android.support.v4.app.Fragment impl
 
     private AppData appData;
     private Context context;
-    private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private TextView seekersTextView;
+    private RecyclerView recyclerView;
     private MainTabActivity mainTabActivity;
-    private SharedPreferences prefs;
+    private Spinner toolbarSpinner;
+    private Long currentFlatId;
+    private List<LocalFlatInfo> localFlats;
     AvailableRoomMateListViewAdapter availableRoomMateListViewAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        localFlats = new ArrayList<>();
         appData = AppData.getInstance();
         context = getActivity().getApplicationContext();
-        prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
         mainTabActivity = (MainTabActivity) getActivity();
         mainTabActivity.registerForActivityEvents("searchRoomMatesFragment", this);
     }
@@ -72,6 +76,32 @@ public class SearchRoomMateFragment extends android.support.v4.app.Fragment impl
         swipeRefreshLayout.setProgressViewOffset(false, 0,
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
 
+        //Initialize Spinner
+        localFlats.clear();
+        toolbarSpinner = (Spinner) layout.findViewById(R.id.flatNamesSpinner);
+        for (LocalFlatInfo localFlatInfo : appData.getFlats().values()) {
+            localFlats.add(localFlatInfo);
+        }
+        List<String> flatNames = new ArrayList<>();
+        for (LocalFlatInfo flat : localFlats) {
+            flatNames.add(flat.getFlatName());
+        }
+        ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<>(context, R.layout.flat_manager_toolbar_spinner_item, flatNames);
+        toolbarSpinner.setAdapter(stringArrayAdapter);
+        toolbarSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                LocalFlatInfo flatInfo = localFlats.get(position);
+                currentFlatId = flatInfo.getFlatId();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
         updateView();
         return layout;
     }
@@ -84,12 +114,12 @@ public class SearchRoomMateFragment extends android.support.v4.app.Fragment impl
         }
     }
 
-    private void searchRoomMates() {
+    private void customRoommateSearch() {
         Toast.makeText(context, "To be implemented", Toast.LENGTH_SHORT).show();
     }
 
     private void onSwipeRefresh() {
-        SearchRoomMatesAsyncTask task = new SearchRoomMatesAsyncTask(context, prefs.getLong(AppConstants.PRIMARY_FLAT_ID, 0));
+        SearchRoomMatesAsyncTask task = new SearchRoomMatesAsyncTask(context, currentFlatId);
         task.setOnExecuteTaskReceiver(new SearchRoomMatesAsyncTask.OnExecuteTaskReceiver() {
             @Override
             public void onTaskCompleted(List<FlatSearchCriteria> flatSearchCriteriaList) {
@@ -122,7 +152,7 @@ public class SearchRoomMateFragment extends android.support.v4.app.Fragment impl
     public void onEventReceived(String eventType) {
         switch (eventType) {
             case "filterRoomMatesFABPressed":
-                searchRoomMates();
+                customRoommateSearch();
                 break;
             default:
                 break;

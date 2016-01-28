@@ -10,10 +10,37 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:id="@+id/topLinearLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:elevation="4dp">
+
+            <Button
+                android:id="@+id/joinExistingFlatButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="6"
+                android:background="@color/orange"
+                android:gravity="center"
+                android:text="Search Roommates for flat "
+                android:textColor="@color/white" />
+
+            <Spinner
+                android:id="@+id/flatNamesSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/primaryColor"
+                android:popupBackground="@color/primaryColor" />
+
+        </LinearLayout>
+
         <TextView
             android:id="@+id/seekersTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/topLinearLayout"
             android:layout_centerHorizontal="true"
             android:layout_margin="16dp"
             android:text="No Seekers"
@@ -23,7 +50,7 @@
             android:id="@+id/swipeSeekers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/availableFlatsText">
+            android:layout_below="@+id/topLinearLayout">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/listSeekers"
