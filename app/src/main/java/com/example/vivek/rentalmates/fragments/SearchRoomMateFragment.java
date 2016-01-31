@@ -93,6 +93,8 @@ public class SearchRoomMateFragment extends android.support.v4.app.Fragment impl
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 LocalFlatInfo flatInfo = localFlats.get(position);
                 currentFlatId = flatInfo.getFlatId();
+                swipeRefreshLayout.setRefreshing(true);
+                onSwipeRefresh();
             }
 
             @Override

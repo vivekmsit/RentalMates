@@ -36,9 +36,9 @@ public class AppData implements Serializable {
     private static final String TAG = "AppData_Debug";
 
     private List<LocalRequest> requests;
-    private List<LocalFlatSearchCriteria> roomMateList;
     private List<String> gcmTypes;
 
+    private HashMap<Long, LocalFlatSearchCriteria> roomMateList;
     private HashMap<String, String> profilePicturesPath;
     private HashMap<Long, LocalFlatInfo> flats;
     private HashMap<Long, LocalFlatInfo> availableFlats;
@@ -62,13 +62,13 @@ public class AppData implements Serializable {
 
     private AppData() {
         requests = new ArrayList<>();
-        roomMateList = new ArrayList<>();
         gcmTypes = new ArrayList<>();
         gcmTypes.add("NEW_EXPENSE_DATA");
         gcmTypes.add("NEW_FLAT_USER");
         gcmTypes.add("NEW_EXPENSE_GROUP_USER");
         gcmTypes.add("NEW_REQUEST");
         gcmTypes.add("message");
+        roomMateList = new HashMap<>();
         profilePicturesPath = new HashMap<>();
         flats = new HashMap<>();
         availableFlats = new HashMap<>();
@@ -210,6 +210,19 @@ public class AppData implements Serializable {
         return storeAppData(context);
     }
 
+    public HashMap<Long, LocalFlatSearchCriteria> getRoomMateList() {
+        return roomMateList;
+    }
+
+    public boolean storeRoomMateList(Context context, List<FlatSearchCriteria> roomMateList) {
+        this.roomMateList = new HashMap<>();
+        List<LocalFlatSearchCriteria> localFlatSearchCriteriaList = LocalFlatSearchCriteria.convertFlatSearchCriteriaListToLocalFlatSearchCriteriaList(roomMateList);
+        for (LocalFlatSearchCriteria localFlatSearchCriteria : localFlatSearchCriteriaList) {
+            this.roomMateList.put(localFlatSearchCriteria.getId(), localFlatSearchCriteria);
+        }
+        return storeAppData(context);
+    }
+
     public boolean storeAvailableFlatInfoList(Context context, List<FlatInfo> flats) {
         this.availableFlats = new HashMap<>();
         List<LocalFlatInfo> localFlats = LocalFlatInfo.convertFlatInfoToLocalFlatInfo(flats);
@@ -340,13 +353,13 @@ public class AppData implements Serializable {
 
         //Initialize all the variables (code copied from constructor)
         requests = new ArrayList<>();
-        roomMateList = new ArrayList<>();
         gcmTypes = new ArrayList<>();
         gcmTypes.add("NEW_EXPENSE_DATA");
         gcmTypes.add("NEW_FLAT_USER");
         gcmTypes.add("NEW_EXPENSE_GROUP_USER");
         gcmTypes.add("NEW_REQUEST");
         gcmTypes.add("message");
+        roomMateList = new HashMap<>();
         profilePicturesPath = new HashMap<>();
         flats = new HashMap<>();
         availableFlats = new HashMap<>();
@@ -397,15 +410,5 @@ public class AppData implements Serializable {
             result = false;
         }
         return result;
-    }
-
-    public List<FlatSearchCriteria> getRoomMateList() {
-        return LocalFlatSearchCriteria.convertLocalFlatSearchCriteriaListToFlatSearchCriteriaList(roomMateList);
-    }
-
-
-    public boolean storeRoomMateList(Context context, List<FlatSearchCriteria> requests) {
-        this.roomMateList = LocalFlatSearchCriteria.convertFlatSearchCriteriaListToLocalFlatSearchCriteriaList(requests);
-        return storeAppData(context);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.vivek.rentalmates.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,8 +11,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
-import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatSearchCriteria;
+import com.example.vivek.rentalmates.activities.RoomMateInfoActivity;
 import com.example.vivek.rentalmates.data.AppData;
+import com.example.vivek.rentalmates.data.LocalFlatSearchCriteria;
 import com.pkmmte.view.CircularImageView;
 
 import java.util.ArrayList;
@@ -37,8 +39,8 @@ public class AvailableRoomMateListViewAdapter extends RecyclerView.Adapter<Avail
 
     public void updateAvailableFlatsData() {
         this.data.clear();
-        for (FlatSearchCriteria flatSearchCriteria : appData.getRoomMateList()) {
-            this.data.add(new RoomMateListItem(flatSearchCriteria));
+        for (LocalFlatSearchCriteria localFlatSearchCriteria : appData.getRoomMateList().values()) {
+            this.data.add(new RoomMateListItem(localFlatSearchCriteria));
         }
     }
 
@@ -68,10 +70,6 @@ public class AvailableRoomMateListViewAdapter extends RecyclerView.Adapter<Avail
             viewHolder.circularImageView.setImageBitmap(appData.getProfilePictureBitmap("vivekmsit@gmail.com"));
         }
         viewHolder.roomMateName.setText(current.name);
-        viewHolder.rentRange.setText("Rs. " + current.minRent + " to " + current.maxRent);
-        viewHolder.securityRange.setText("Rs. " + current.minSecurity + " to " + current.maxSecurity);
-        viewHolder.numberOfPersons.setText(current.numberOfPersons + " Person");
-        viewHolder.location.setText(current.location);
     }
 
     @Override
@@ -86,20 +84,12 @@ public class AvailableRoomMateListViewAdapter extends RecyclerView.Adapter<Avail
     class AvailableRoomMateViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         CircularImageView circularImageView;
         TextView roomMateName;
-        TextView rentRange;
-        TextView securityRange;
-        TextView numberOfPersons;
-        TextView location;
 
         public AvailableRoomMateViewHolder(View itemView) {
             super(itemView);
 
             circularImageView = (CircularImageView) itemView.findViewById(R.id.roomMateProfileImageView);
             roomMateName = (TextView) itemView.findViewById(R.id.seekerNameTextView);
-            rentRange = (TextView) itemView.findViewById(R.id.rentRangeTextView);
-            securityRange = (TextView) itemView.findViewById(R.id.securityRangeTextView);
-            numberOfPersons = (TextView) itemView.findViewById(R.id.numberOfPersonsTextView);
-            location = (TextView) itemView.findViewById(R.id.roomLocationTextView);
 
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
@@ -109,7 +99,9 @@ public class AvailableRoomMateListViewAdapter extends RecyclerView.Adapter<Avail
         public void onClick(View v) {
             Log.d(TAG, "inside onClick");
             RoomMateListItem currentItem = data.get(getAdapterPosition());
-            Toast.makeText(context, currentItem.name, Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(context, RoomMateInfoActivity.class);
+            intent.putExtra("FLAT_SEARCH_CRITERIA_ID", currentItem.roomMateId);
+            context.startActivity(intent);
         }
 
         @Override
@@ -122,22 +114,12 @@ public class AvailableRoomMateListViewAdapter extends RecyclerView.Adapter<Avail
     class RoomMateListItem {
         public final String name;
         public final String profilePictureLink;
-        public final String location;
-        public final int minRent;
-        public final int maxRent;
-        public final int minSecurity;
-        public final int maxSecurity;
-        public final int numberOfPersons;
+        public Long roomMateId;
 
-        public RoomMateListItem(FlatSearchCriteria flatSearchCriteria) {
-            this.name = flatSearchCriteria.getRequesterName();
-            this.profilePictureLink = flatSearchCriteria.getRequesterProfilePicture();
-            this.location = flatSearchCriteria.getSelectedLocation();
-            this.minRent = flatSearchCriteria.getMinRentAmountPerPerson();
-            this.maxRent = flatSearchCriteria.getMaxRentAmountPerPerson();
-            this.minSecurity = flatSearchCriteria.getMinSecurityAmountPerPerson();
-            this.maxSecurity = flatSearchCriteria.getMaxSecurityAmountPerPerson();
-            this.numberOfPersons = 1;
+        public RoomMateListItem(LocalFlatSearchCriteria localFlatSearchCriteria) {
+            this.name = localFlatSearchCriteria.getRequesterName();
+            this.profilePictureLink = localFlatSearchCriteria.getRequesterProfilePicture();
+            roomMateId = localFlatSearchCriteria.getId();
         }
     }
 }

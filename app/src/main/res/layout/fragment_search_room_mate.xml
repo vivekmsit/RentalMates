@@ -16,13 +16,14 @@
             android:layout_height="wrap_content"
             android:elevation="4dp">
 
-            <Button
+            <TextView
                 android:id="@+id/joinExistingFlatButton"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="6"
                 android:background="@color/orange"
                 android:gravity="center"
+                android:padding="10dp"
                 android:text="Search Roommates for flat "
                 android:textColor="@color/white" />
 
