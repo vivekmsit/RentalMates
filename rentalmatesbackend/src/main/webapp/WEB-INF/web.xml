@@ -13,7 +13,8 @@
         <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
         <init-param>
             <param-name>services</param-name>
-            <param-value>com.example.vivek.rentalmates.backend.endpoints.RegistrationEndpoint,
+            <param-value>
+                com.example.vivek.rentalmates.backend.endpoints.RegistrationEndpoint,
                 com.example.vivek.rentalmates.backend.endpoints.MainEndpoint,
                 com.example.vivek.rentalmates.backend.endpoints.MessagingEndpoint,
                 com.example.vivek.rentalmates.backend.endpoints.UserProfileEndpoint,

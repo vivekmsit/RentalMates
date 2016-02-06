@@ -1,6 +1,8 @@
 package com.example.vivek.rentalmates.backend.endpoints;
 
 import com.example.vivek.rentalmates.backend.entities.AggregateData;
+import com.example.vivek.rentalmates.backend.entities.Chat;
+import com.example.vivek.rentalmates.backend.entities.ChatMessage;
 import com.example.vivek.rentalmates.backend.entities.Contact;
 import com.example.vivek.rentalmates.backend.entities.ExpenseData;
 import com.example.vivek.rentalmates.backend.entities.ExpenseGroup;
@@ -78,6 +80,8 @@ public class MainEndpoint {
         ObjectifyService.register(RoomMateSearchCriteria.class);
         ObjectifyService.register(RegistrationRecord.class);
         ObjectifyService.register(LogStore.class);
+        ObjectifyService.register(Chat.class);
+        ObjectifyService.register(ChatMessage.class);
     }
 
     /**

@@ -4,8 +4,10 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.OnSave;
+import com.googlecode.objectify.annotation.Stringify;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Date;
 
@@ -48,6 +50,7 @@ public class UserProfile {
     private List<Long> flatIds = new ArrayList<>();
     private List<Long> expenseGroupIds = new ArrayList<>();
     private List<String> gcmIds = new ArrayList<>();
+    private HashMap<String, String> chats;
 
     public UserProfile() {
         payback = new Long(0);
@@ -255,5 +258,13 @@ public class UserProfile {
 
     public void resetUpdateCount() {
         updateCount = -1;
+    }
+
+    public HashMap<String, String> getChats() {
+        return chats;
+    }
+
+    public void setChats(HashMap<String, String> chats) {
+        this.chats = chats;
     }
 }
