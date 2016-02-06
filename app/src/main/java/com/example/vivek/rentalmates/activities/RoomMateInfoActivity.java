@@ -71,7 +71,12 @@ public class RoomMateInfoActivity extends AppCompatActivity {
         //Get selected flatId from Intent
         Intent intent = getIntent();
         Long flatSearchCriteriaId = intent.getLongExtra("FLAT_SEARCH_CRITERIA_ID", 0);
-        localFlatSearchCriteria = appData.getRoomMateList().get(flatSearchCriteriaId);
+        Long flatId = intent.getLongExtra("FLAT_ID", 0);
+        for (LocalFlatSearchCriteria criteria : appData.getRoomMateList(flatId)) {
+            if (criteria.getId().equals(flatSearchCriteriaId)) {
+                localFlatSearchCriteria = criteria;
+            }
+        }
 
         roomMateName = (TextView) findViewById(R.id.nameTextView);
         rentRange = (TextView) findViewById(R.id.rentRangeTextView);

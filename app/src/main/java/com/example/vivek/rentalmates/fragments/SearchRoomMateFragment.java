@@ -58,7 +58,7 @@ public class SearchRoomMateFragment extends android.support.v4.app.Fragment impl
 
         //Initialize RecyclerView
         recyclerView = (RecyclerView) layout.findViewById(R.id.listSeekers);
-        availableRoomMateListViewAdapter = new AvailableRoomMateListViewAdapter(getActivity());
+        availableRoomMateListViewAdapter = new AvailableRoomMateListViewAdapter(getActivity(), currentFlatId);
         recyclerView.setAdapter(availableRoomMateListViewAdapter);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         //recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -93,8 +93,8 @@ public class SearchRoomMateFragment extends android.support.v4.app.Fragment impl
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 LocalFlatInfo flatInfo = localFlats.get(position);
                 currentFlatId = flatInfo.getFlatId();
-                swipeRefreshLayout.setRefreshing(true);
-                onSwipeRefresh();
+                availableRoomMateListViewAdapter.updateAvailableFlatsData(currentFlatId);
+                availableRoomMateListViewAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -109,7 +109,7 @@ public class SearchRoomMateFragment extends android.support.v4.app.Fragment impl
     }
 
     public void updateView() {
-        if (appData.getRoomMateList().size() == 0) {
+        if (appData.getRoomMateList(currentFlatId).size() == 0) {
             seekersTextView.setVisibility(View.VISIBLE);
         } else {
             seekersTextView.setVisibility(View.INVISIBLE);
@@ -129,13 +129,13 @@ public class SearchRoomMateFragment extends android.support.v4.app.Fragment impl
                     swipeRefreshLayout.setRefreshing(false);
                 }
                 if (flatSearchCriteriaList == null) {
-                    appData.storeRoomMateList(getActivity(), new ArrayList<FlatSearchCriteria>());
+                    appData.storeRoomMateList(getActivity(), currentFlatId, new ArrayList<FlatSearchCriteria>());
                     Toast.makeText(context, "No Matching RoomMates Found", Toast.LENGTH_SHORT).show();
                 } else {
-                    appData.storeRoomMateList(getActivity(), flatSearchCriteriaList);
+                    appData.storeRoomMateList(getActivity(), currentFlatId, flatSearchCriteriaList);
                     Toast.makeText(context, flatSearchCriteriaList.size() + " RoomMates found", Toast.LENGTH_SHORT).show();
                 }
-                availableRoomMateListViewAdapter.updateAvailableFlatsData();
+                availableRoomMateListViewAdapter.updateAvailableFlatsData(currentFlatId);
                 availableRoomMateListViewAdapter.notifyDataSetChanged();
                 updateView();
             }

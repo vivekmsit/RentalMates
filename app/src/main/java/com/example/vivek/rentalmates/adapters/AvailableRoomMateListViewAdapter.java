@@ -27,19 +27,22 @@ public class AvailableRoomMateListViewAdapter extends RecyclerView.Adapter<Avail
     private LayoutInflater inflater;
     private Context context;
     private AppData appData;
+    private Long currentFlatId;
 
-    public AvailableRoomMateListViewAdapter(Context context) {
+    public AvailableRoomMateListViewAdapter(Context context, Long currentFlatId) {
         Log.d(TAG, "inside Constructor");
         inflater = LayoutInflater.from(context);
         this.context = context;
+        this.currentFlatId = currentFlatId;
         this.appData = AppData.getInstance();
         this.data = new ArrayList<>();
-        updateAvailableFlatsData();
+        updateAvailableFlatsData(currentFlatId);
     }
 
-    public void updateAvailableFlatsData() {
+    public void updateAvailableFlatsData(Long flatId) {
+        currentFlatId = flatId;
         this.data.clear();
-        for (LocalFlatSearchCriteria localFlatSearchCriteria : appData.getRoomMateList().values()) {
+        for (LocalFlatSearchCriteria localFlatSearchCriteria : appData.getRoomMateList(currentFlatId)) {
             this.data.add(new RoomMateListItem(localFlatSearchCriteria));
         }
     }
@@ -101,6 +104,7 @@ public class AvailableRoomMateListViewAdapter extends RecyclerView.Adapter<Avail
             RoomMateListItem currentItem = data.get(getAdapterPosition());
             Intent intent = new Intent(context, RoomMateInfoActivity.class);
             intent.putExtra("FLAT_SEARCH_CRITERIA_ID", currentItem.roomMateId);
+            intent.putExtra("FLAT_ID", currentFlatId);
             context.startActivity(intent);
         }
 

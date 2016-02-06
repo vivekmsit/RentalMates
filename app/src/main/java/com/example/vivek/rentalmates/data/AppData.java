@@ -38,7 +38,6 @@ public class AppData implements Serializable {
     private List<LocalRequest> requests;
     private List<String> gcmTypes;
 
-    private HashMap<Long, LocalFlatSearchCriteria> roomMateList;
     private HashMap<String, String> profilePicturesPath;
     private HashMap<Long, LocalFlatInfo> flats;
     private HashMap<Long, LocalFlatInfo> availableFlats;
@@ -47,6 +46,7 @@ public class AppData implements Serializable {
     private HashMap<String, String> gcmData;
     private HashMap<Long, List<LocalContact>> contacts;
     private HashMap<Long, List<LocalExpenseData>> expenses;
+    private HashMap<Long, List<LocalFlatSearchCriteria>> roomMateList;
 
     private LocalFlatSearchCriteria localFlatSearchCriteria;
 
@@ -210,16 +210,18 @@ public class AppData implements Serializable {
         return storeAppData(context);
     }
 
-    public HashMap<Long, LocalFlatSearchCriteria> getRoomMateList() {
-        return roomMateList;
+    public List<LocalFlatSearchCriteria> getRoomMateList(Long flatId) {
+        List<LocalFlatSearchCriteria> list = new ArrayList<>();
+        if (roomMateList.get(flatId) == null) {
+            return list;
+        } else {
+            return roomMateList.get(flatId);
+        }
     }
 
-    public boolean storeRoomMateList(Context context, List<FlatSearchCriteria> roomMateList) {
-        this.roomMateList = new HashMap<>();
-        List<LocalFlatSearchCriteria> localFlatSearchCriteriaList = LocalFlatSearchCriteria.convertFlatSearchCriteriaListToLocalFlatSearchCriteriaList(roomMateList);
-        for (LocalFlatSearchCriteria localFlatSearchCriteria : localFlatSearchCriteriaList) {
-            this.roomMateList.put(localFlatSearchCriteria.getId(), localFlatSearchCriteria);
-        }
+    public boolean storeRoomMateList(Context context, Long flatId, List<FlatSearchCriteria> roomMateList) {
+        this.roomMateList.remove(flatId);
+        this.roomMateList.put(flatId, LocalFlatSearchCriteria.convertFlatSearchCriteriaListToLocalFlatSearchCriteriaList(roomMateList));
         return storeAppData(context);
     }
 
