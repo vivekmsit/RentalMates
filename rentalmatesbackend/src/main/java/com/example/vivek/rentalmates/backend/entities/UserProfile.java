@@ -4,12 +4,11 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.OnSave;
-import com.googlecode.objectify.annotation.Stringify;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Date;
 
 /**
  * The Objectify object model for device registrations we are persisting
@@ -266,5 +265,9 @@ public class UserProfile {
 
     public void setChats(HashMap<String, String> chats) {
         this.chats = chats;
+    }
+
+    public void addChat(Long secondMemberId, Long chatId) {
+        this.chats.put(secondMemberId.toString(), chatId.toString());
     }
 }

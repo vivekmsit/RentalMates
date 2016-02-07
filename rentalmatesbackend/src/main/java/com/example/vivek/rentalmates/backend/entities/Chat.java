@@ -13,9 +13,10 @@ public class Chat implements Serializable {
     private Long firstMemberId;
     private Long secondMemberId;
     private List<Long> messages;
+    private int numberOfMessages;
 
     public Chat() {
-
+        numberOfMessages = 0;
     }
 
     public Long getId() {
@@ -44,5 +45,15 @@ public class Chat implements Serializable {
 
     public void setMessages(List<Long> messages) {
         this.messages = messages;
+    }
+
+    public void addMessage(Long messageId) {
+        this.messages.add(messageId);
+        numberOfMessages++;
+    }
+
+    public void deleteMessage(Long messageId) {
+        this.messages.remove(messageId);
+        numberOfMessages--;
     }
 }

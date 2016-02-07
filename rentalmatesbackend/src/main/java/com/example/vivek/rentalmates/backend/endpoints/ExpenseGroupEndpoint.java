@@ -227,7 +227,7 @@ public class ExpenseGroupEndpoint {
             UserProfile userProfile = ofy().load().type(UserProfile.class).id(expenseData.getSubmitterId()).now();
             String message = userProfile.getUserName() + " added a new expense of Rs. " +
                     expenseData.getAmount() + " for " + expenseData.getDescription();
-            sendMessage(gcmMemberIds, message);
+            sendMessage(gcmMemberIds, "message", message);
         }
         return ofy().load().entity(expenseData).now();
     }
@@ -339,7 +339,7 @@ public class ExpenseGroupEndpoint {
             name = "sendMessage",
             path = "sendMessage",
             httpMethod = ApiMethod.HttpMethod.GET)
-    public static void sendMessage(@Named("userIds") final List<Long> userIds, @Named("message") final String message) throws IOException {
+    public static void sendMessage(@Named("userIds") final List<Long> userIds, @Named("messageType") final String messageType, @Named("message") final String message) throws IOException {
         if (userIds.size() == 0) {
             logger.info("userIds list empty");
             return;
@@ -349,7 +349,7 @@ public class ExpenseGroupEndpoint {
             @Override
             public void run() {
                 try {
-                    sendMessageThread(userIds, message);
+                    sendMessageThread(userIds, messageType, message);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -358,10 +358,10 @@ public class ExpenseGroupEndpoint {
     }
 
     //Thread for sending message to multiple devices using GCM
-    public static void sendMessageThread(@Named("userIds") List<Long> userIds, @Named("message") String message) throws IOException {
+    public static void sendMessageThread(@Named("userIds") List<Long> userIds, @Named("messageType") String messageType, @Named("message") String message) throws IOException {
         String GCM_API_KEY = System.getProperty("gcm.api.key");
         Sender sender = new Sender(GCM_API_KEY);
-        Message msg = new Message.Builder().addData("message", message).build();
+        Message msg = new Message.Builder().addData(messageType, message).build();
         for (Long userId : userIds) {
             UserProfile userProfile = ofy().load().type(UserProfile.class).id(userId).now();
             List<String> gcmIds = userProfile.getGcmIds();

@@ -48,7 +48,8 @@ public class GcmIntentService extends IntentService {
                     }
                 }
                 String message = extras.getString("message");
-                showNotification(message);
+                String chatMessage = extras.getString("ChatMessage");
+                showNotification(message + chatMessage);
             }
         }
         GcmBroadcastReceiver.completeWakefulIntent(intent);

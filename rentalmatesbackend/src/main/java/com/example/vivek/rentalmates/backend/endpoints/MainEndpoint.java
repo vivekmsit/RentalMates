@@ -23,7 +23,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -35,7 +34,6 @@ import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -50,7 +48,6 @@ import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
-import jxl.write.biff.RowsExceededException;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
@@ -208,7 +205,7 @@ public class MainEndpoint {
         List<Long> userIds = new ArrayList<>();
         userIds.add(request.getRequestProviderId());
         String message = requesterUserProfile.getUserName() + " has requested to join " + entityType + ": " + entityName;
-        ExpenseGroupEndpoint.sendMessage(userIds, message);
+        ExpenseGroupEndpoint.sendMessage(userIds, "message", message);
         return ofy().load().entity(request).now();
     }
 
@@ -236,7 +233,7 @@ public class MainEndpoint {
         List<Long> userIds = new ArrayList<>();
         userIds.add(request.getRequesterId());
         String message = "Your request to join " + request.getEntityType() + " " + request.getRequestedEntityName() + " has been rejected";
-        ExpenseGroupEndpoint.sendMessage(userIds, message);
+        ExpenseGroupEndpoint.sendMessage(userIds, "message", message);
         return request;
     }
 
@@ -273,7 +270,7 @@ public class MainEndpoint {
         List<Long> userIds = new ArrayList<>();
         userIds.add(request.getRequesterId());
         String message = "Your request to join " + request.getEntityType() + " " + request.getRequestedEntityName() + " has been approved";
-        ExpenseGroupEndpoint.sendMessage(userIds, message);
+        ExpenseGroupEndpoint.sendMessage(userIds, "message", message);
         return request;
     }
 
@@ -308,7 +305,7 @@ public class MainEndpoint {
                 finalFlatInfo.addMemberId(requesterId);
                 ofy().save().entity(finalFlatInfo).now();
             }
-            Long l = new Long(0);//need to be changed later
+            Long l = (long) 0;//need to be changed later
             if (!flatExpenseGroup.getMembersData().keySet().contains(requesterId)) {
                 flatExpenseGroup.addMemberData(requesterId, l);
                 ofy().save().entity(flatExpenseGroup).now();
@@ -338,7 +335,7 @@ public class MainEndpoint {
             ofy().save().entity(userProfile).now();
 
             //Add userProfileId to ExpenseGroup userIds List
-            Long l = new Long(0);//need to be changed later
+            Long l = (long) 0;//need to be changed later
             if (!finalExpenseGroup.getMembersData().keySet().contains(requesterId)) {
                 finalExpenseGroup.addMemberData(requesterId, l);
                 ofy().save().entity(finalExpenseGroup).now();
@@ -459,17 +456,7 @@ public class MainEndpoint {
             message.setContent(mp);
             Transport.send(message);
 
-        } catch (AddressException e) {
-            e.printStackTrace();
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (RowsExceededException e) {
-            e.printStackTrace();
-        } catch (WriteException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (MessagingException | WriteException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -482,5 +469,64 @@ public class MainEndpoint {
         }
         logStore.writeLog(log);
         ofy().save().entity(logStore).now();
+    }
+
+    /**
+     * Sends message to a given receiver.
+     */
+    @ApiMethod(
+            name = "sendChatMessage",
+            path = "sendChatMessage",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public ChatMessage sendChatMessage(@Named("chatId") Long chatId, @Named("senderId") Long senderId, @Named("receiverId") Long receiverId, @Named("messageContent") String messageContent) throws NotFoundException {
+        UserProfile senderUserProfile = ofy().load().type(UserProfile.class).id(senderId).now();
+        UserProfile receiverUserProfile = ofy().load().type(UserProfile.class).id(receiverId).now();
+        Chat chat;
+        if (chatId == 0) {
+            //New Chat
+            chat = new Chat();
+            chat.setFirstMemberId(senderId);
+            chat.setSecondMemberId(receiverId);
+        } else {
+            //Old Chat
+            chat = ofy().load().type(Chat.class).id(chatId).now();
+        }
+
+        //Create ChatMessage entity
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setContent(messageContent);
+        chatMessage.setSenderId(senderId);
+        chatMessage.setReceiverId(receiverId);
+        chatMessage.setChatId(chatId);
+        chatMessage.setSent(true);
+        ofy().save().entity(chatMessage).now();
+        chatMessage = ofy().load().entity(chatMessage).now();
+
+        //Add message to Chat message list
+        chat.addMessage(chatMessage.getId());
+        ofy().save().entity(chat).now();
+        chat = ofy().load().entity(chat).now();
+
+        if (chatId == 0) {
+            senderUserProfile.addChat(receiverId, chat.getId());
+            receiverUserProfile.addChat(senderId, chat.getId());
+            ofy().save().entity(senderUserProfile).now();
+            ofy().save().entity(receiverUserProfile).now();
+            chatMessage.setChatId(chat.getId());
+            ofy().save().entity(chatMessage).now();
+            chatMessage = ofy().load().entity(chatMessage).now();
+        }
+
+        //send notification to receiver
+        List<Long> userIds = new ArrayList<>();
+        userIds.add(receiverId);
+        String message = "New message received from " + senderUserProfile.getUserName();
+        try {
+            ExpenseGroupEndpoint.sendMessage(userIds, "ChatMessage", message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return chatMessage;
     }
 }
