@@ -48,8 +48,7 @@ public class RoomMateInfoActivity extends AppCompatActivity {
         messageFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                startChat();
             }
         });
 
@@ -89,5 +88,10 @@ public class RoomMateInfoActivity extends AppCompatActivity {
         securityRange.setText("Rs. " + localFlatSearchCriteria.getMinSecurityAmountPerPerson() + " to " + localFlatSearchCriteria.getMaxSecurityAmountPerPerson());
         numberOfPersons.setText(" 1 Person");
         location.setText(localFlatSearchCriteria.getSelectedLocation());
+    }
+
+    private void startChat() {
+        Intent intent = new Intent(this, MessengerActivity.class);
+        startActivity(intent);
     }
 }

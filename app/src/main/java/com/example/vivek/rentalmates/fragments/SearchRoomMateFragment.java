@@ -95,6 +95,7 @@ public class SearchRoomMateFragment extends android.support.v4.app.Fragment impl
                 currentFlatId = flatInfo.getFlatId();
                 availableRoomMateListViewAdapter.updateAvailableFlatsData(currentFlatId);
                 availableRoomMateListViewAdapter.notifyDataSetChanged();
+                updateView();
             }
 
             @Override
@@ -102,7 +103,6 @@ public class SearchRoomMateFragment extends android.support.v4.app.Fragment impl
 
             }
         });
-
 
         updateView();
         return layout;
@@ -112,7 +112,7 @@ public class SearchRoomMateFragment extends android.support.v4.app.Fragment impl
         if (appData.getRoomMateList(currentFlatId).size() == 0) {
             seekersTextView.setVisibility(View.VISIBLE);
         } else {
-            seekersTextView.setVisibility(View.INVISIBLE);
+            seekersTextView.setVisibility(View.GONE);
         }
     }
 

@@ -8,8 +8,8 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.backend.mainApi.model.Contact;
-import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.ExpenseGroup;
+import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatSearchCriteria;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.Request;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.UserProfile;
@@ -47,6 +47,8 @@ public class AppData implements Serializable {
     private HashMap<Long, List<LocalContact>> contacts;
     private HashMap<Long, List<LocalExpenseData>> expenses;
     private HashMap<Long, List<LocalFlatSearchCriteria>> roomMateList;
+    private HashMap<Long, LocalChat> localChatHashMap;
+    private HashMap<Long, List<LocalChatMessage>> localChatMessages;
 
     private LocalFlatSearchCriteria localFlatSearchCriteria;
 
@@ -77,6 +79,8 @@ public class AppData implements Serializable {
         gcmData = new HashMap<>();
         contacts = new HashMap<>();
         expenses = new HashMap<>();
+        localChatHashMap = new HashMap<>();
+        localChatMessages = new HashMap<>();
         localFlatSearchCriteria = new LocalFlatSearchCriteria();
         lastLocationLatitude = 23.3192728;
         lastLocationLongitude = 81.9220346;
@@ -370,6 +374,8 @@ public class AppData implements Serializable {
         gcmData = new HashMap<>();
         contacts = new HashMap<>();
         expenses = new HashMap<>();
+        localChatHashMap = new HashMap<>();
+        localChatMessages = new HashMap<>();
         localFlatSearchCriteria = new LocalFlatSearchCriteria();
 
         Toast.makeText(context, "AppData cleared", Toast.LENGTH_LONG).show();
@@ -412,5 +418,21 @@ public class AppData implements Serializable {
             result = false;
         }
         return result;
+    }
+
+    public HashMap<Long, LocalChat> getLocalChatHashMap() {
+        return localChatHashMap;
+    }
+
+    public void setLocalChatHashMap(HashMap<Long, LocalChat> localChatHashMap) {
+        this.localChatHashMap = localChatHashMap;
+    }
+
+    public HashMap<Long, List<LocalChatMessage>> getLocalChatMessages() {
+        return localChatMessages;
+    }
+
+    public void setLocalChatMessages(HashMap<Long, List<LocalChatMessage>> localChatMessages) {
+        this.localChatMessages = localChatMessages;
     }
 }
