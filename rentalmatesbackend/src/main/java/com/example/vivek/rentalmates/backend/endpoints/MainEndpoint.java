@@ -529,4 +529,57 @@ public class MainEndpoint {
 
         return chatMessage;
     }
+
+
+    /**
+     * Returns List of {@code Chat} for a given {@code UserProfile}.
+     */
+    @ApiMethod(
+            name = "getChatList",
+            path = "getChatList",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public List<Chat> getChatList(@Named("id") Long userProfileId) throws NotFoundException {
+        checkUserProfileExists(userProfileId);
+        UserProfile userProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
+        List<Chat> chats = new ArrayList<>();
+        for (String chatId : userProfile.getChats().values()) {
+            Chat chat = ofy().load().type(Chat.class).id(Integer.getInteger(chatId)).now();
+            chats.add(chat);
+        }
+        return chats;
+    }
+
+    /**
+     * Returns List of {@code ChatMessage} for a given {@code Chat}.
+     */
+    @ApiMethod(
+            name = "getChatMessageList",
+            path = "getChatMessageList",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public List<ChatMessage> getChatMessageList(@Named("id") Long chatId) throws NotFoundException {
+        checkChatExists(chatId);
+        Chat chat = ofy().load().type(Chat.class).id(chatId).now();
+        List<ChatMessage> chatMessages = new ArrayList<>();
+        for (Long chatMessageId : chat.getMessages()) {
+            ChatMessage chatMessage = ofy().load().type(ChatMessage.class).id(chatMessageId).now();
+            chatMessages.add(chatMessage);
+        }
+        return chatMessages;
+    }
+
+    private void checkUserProfileExists(Long id) throws NotFoundException {
+        try {
+            ofy().load().type(UserProfile.class).id(id).safe();
+        } catch (com.googlecode.objectify.NotFoundException e) {
+            throw new NotFoundException("Could not find UserProfile with ID: " + id);
+        }
+    }
+
+    private void checkChatExists(Long id) throws NotFoundException {
+        try {
+            ofy().load().type(Chat.class).id(id).safe();
+        } catch (com.googlecode.objectify.NotFoundException e) {
+            throw new NotFoundException("Could not find Chat with ID: " + id);
+        }
+    }
 }
