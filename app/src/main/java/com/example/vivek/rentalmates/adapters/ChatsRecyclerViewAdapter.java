@@ -48,7 +48,7 @@ public class ChatsRecyclerViewAdapter extends RecyclerView.Adapter<ChatsRecycler
 
     public void updateChatData() {
         this.data.clear();
-        for (LocalChat localChat : appData.getLocalChatHashMap().values()) {
+        for (LocalChat localChat : appData.getChats().values()) {
             this.data.add(new ChatListItem(localChat));
         }
     }

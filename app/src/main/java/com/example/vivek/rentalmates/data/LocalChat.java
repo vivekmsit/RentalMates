@@ -1,6 +1,9 @@
 package com.example.vivek.rentalmates.data;
 
+import com.example.vivek.rentalmates.backend.mainApi.model.Chat;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class LocalChat implements Serializable {
@@ -16,6 +19,10 @@ public class LocalChat implements Serializable {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getFirstMemberId() {
@@ -50,5 +57,42 @@ public class LocalChat implements Serializable {
     public void deleteMessage(Long messageId) {
         this.messages.remove(messageId);
         numberOfMessages--;
+    }
+
+    public static List<Chat> convertLocalChatListToChatList(List<LocalChat> localChats) {
+        if (localChats == null) {
+            return null;
+        }
+        List<Chat> chats = new ArrayList<>();
+        for (LocalChat localChat : localChats) {
+            Chat chat = new Chat();
+
+            chat.setId(localChat.getId());
+            chat.setId(localChat.getId());
+            chat.setFirstMemberId(localChat.getFirstMemberId());
+            chat.setSecondMemberId(localChat.getSecondMemberId());
+            chat.setMessages(localChat.getMessages());
+
+            chats.add(chat);
+        }
+        return chats;
+    }
+
+    public static List<LocalChat> convertChatListToLocalChatList(List<Chat> chats) {
+        if (chats == null) {
+            return null;
+        }
+        List<LocalChat> localChats = new ArrayList<>();
+        for (Chat chat : chats) {
+            LocalChat localChat = new LocalChat();
+
+            localChat.setId(chat.getId());
+            localChat.setFirstMemberId(chat.getFirstMemberId());
+            localChat.setSecondMemberId(chat.getSecondMemberId());
+            localChat.setMessages(chat.getMessages());
+
+            localChats.add(localChat);
+        }
+        return localChats;
     }
 }

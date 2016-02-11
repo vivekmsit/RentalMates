@@ -49,7 +49,7 @@ public class UserProfile {
     private List<Long> flatIds = new ArrayList<>();
     private List<Long> expenseGroupIds = new ArrayList<>();
     private List<String> gcmIds = new ArrayList<>();
-    private HashMap<String, String> chats;
+    private HashMap<String, String> chats = new HashMap<>();
 
     public UserProfile() {
         payback = new Long(0);

@@ -7,15 +7,22 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.adapters.ChatsRecyclerViewAdapter;
+import com.example.vivek.rentalmates.backend.mainApi.model.Chat;
 import com.example.vivek.rentalmates.data.AppData;
+import com.example.vivek.rentalmates.tasks.GetChatListAsyncTask;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -24,13 +31,15 @@ import com.example.vivek.rentalmates.data.AppData;
  * interface.
  */
 public class ChatsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+    private static final String TAG = "ChatsFragment_Debug";
+
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private TextView noChatsTextView;
     private AppData appData;
     private Context context;
+    private ChatsRecyclerViewAdapter chatsRecyclerViewAdapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -52,13 +61,14 @@ public class ChatsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         View view = inflater.inflate(R.layout.fragment_chats, container, false);
 
         //Initialize RecyclerView
-        recyclerView = (RecyclerView) view.findViewById(R.id.chatListRecyclerView);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.chatListRecyclerView);
         if (mColumnCount <= 1) {
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
         } else {
             recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
-        recyclerView.setAdapter(new ChatsRecyclerViewAdapter(context, getFragmentManager()));
+        chatsRecyclerViewAdapter = new ChatsRecyclerViewAdapter(context, getFragmentManager());
+        recyclerView.setAdapter(chatsRecyclerViewAdapter);
 
         //Initialize SwipeRefreshLayout
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeListChats);
@@ -76,7 +86,7 @@ public class ChatsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     void updateView() {
-        if (appData.getLocalChatHashMap().values().size() == 0) {
+        if (appData.getChats().values().size() == 0) {
             noChatsTextView.setVisibility(View.VISIBLE);
         } else {
             noChatsTextView.setVisibility(View.GONE);
@@ -100,7 +110,34 @@ public class ChatsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onRefresh() {
+        Log.d(TAG, "inside onRefresh");
+        GetChatListAsyncTask task = new GetChatListAsyncTask(context);
+        task.setAsyncTaskReceiver(new GetChatListAsyncTask.AsyncTaskReceiver() {
+            @Override
+            public void onAsyncTaskComplete(List<Chat> chats) {
+                if (swipeRefreshLayout.isRefreshing()) {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+                if (chats == null) {
+                    Toast.makeText(context, "No chats found", Toast.LENGTH_SHORT).show();
+                    appData.storeChats(context, new ArrayList<Chat>());
+                } else {
+                    Toast.makeText(context, chats.size() + " chats found", Toast.LENGTH_SHORT).show();
+                    appData.storeChats(context, chats);
+                }
+                chatsRecyclerViewAdapter.updateChatData();
+                chatsRecyclerViewAdapter.notifyDataSetChanged();
+                updateView();
+            }
 
+            @Override
+            public void onAsyncTaskFailed() {
+                if (swipeRefreshLayout.isRefreshing()) {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
+        task.execute();
     }
 
     /**
