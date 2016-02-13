@@ -482,7 +482,7 @@ public class MainEndpoint {
         UserProfile senderUserProfile = ofy().load().type(UserProfile.class).id(senderId).now();
         UserProfile receiverUserProfile = ofy().load().type(UserProfile.class).id(receiverId).now();
         Chat chat;
-        if (chatId == 0) {
+        if (chatId == 1) {
             //New Chat
             chat = new Chat();
             chat.setFirstMemberId(senderId);
@@ -507,7 +507,7 @@ public class MainEndpoint {
         ofy().save().entity(chat).now();
         chat = ofy().load().entity(chat).now();
 
-        if (chatId == 0) {
+        if (chatId == 1) {
             senderUserProfile.addChat(receiverId, chat.getId());
             receiverUserProfile.addChat(senderId, chat.getId());
             ofy().save().entity(senderUserProfile).now();

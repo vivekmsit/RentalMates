@@ -4,6 +4,7 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,7 +13,7 @@ public class Chat implements Serializable {
     Long id;
     private Long firstMemberId;
     private Long secondMemberId;
-    private List<Long> messages;
+    private List<Long> messages = new ArrayList<>();
     private int numberOfMessages;
 
     public Chat() {

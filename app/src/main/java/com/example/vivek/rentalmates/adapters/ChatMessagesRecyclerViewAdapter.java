@@ -41,10 +41,11 @@ public class ChatMessagesRecyclerViewAdapter extends RecyclerView.Adapter<ChatMe
         this.manager = manager;
         this.chatId = chatId;
         data = new ArrayList<>();
-        updateData();
+        updateData(chatId);
     }
 
-    public void updateData() {
+    public void updateData(Long chatId) {
+        this.chatId = chatId;
         this.data.clear();
         if (appData.getLocalChatMessages(chatId) == null) {
             return;

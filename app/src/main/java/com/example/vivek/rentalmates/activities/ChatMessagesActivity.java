@@ -10,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +20,7 @@ import com.example.vivek.rentalmates.adapters.ChatMessagesRecyclerViewAdapter;
 import com.example.vivek.rentalmates.backend.mainApi.model.ChatMessage;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.tasks.GetChatMessageListAsyncTask;
+import com.example.vivek.rentalmates.tasks.SendChatMessageAsyncTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +31,13 @@ public class ChatMessagesActivity extends AppCompatActivity {
     private AppData appData;
     private Context context;
     private RecyclerView recyclerView;
+    private EditText chatMessageEditText;
     private TextView noChatMessagesTextView;
+    private LinearLayout sendChatMessageLayout;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ChatMessagesRecyclerViewAdapter chatMessagesRecyclerViewAdapter;
     private Long chatId;
+    private Long receiverId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +47,7 @@ public class ChatMessagesActivity extends AppCompatActivity {
         appData = AppData.getInstance();
         context = getApplicationContext();
 
-        chatId = Long.valueOf(5);
+        chatId = Long.valueOf(1);
 
         //Initialize Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -64,11 +70,20 @@ public class ChatMessagesActivity extends AppCompatActivity {
         swipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.white));
         swipeRefreshLayout.setColorSchemeColors(R.color.primaryColor, R.color.purple, R.color.green, R.color.orange);
 
+        sendChatMessageLayout = (LinearLayout) findViewById(R.id.sendChatMessageLayout);
+        sendChatMessageLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendChatMessage();
+            }
+        });
+
+        chatMessageEditText = (EditText) findViewById(R.id.chatMessageEditText);
         noChatMessagesTextView = (TextView) findViewById(R.id.noChatMessagesTextView);
 
         //TODO: Check if any existing chat is there with the given roommate here.
         Intent intent = getIntent();
-        Long roomMateId = intent.getLongExtra("ROOMMATE_ID", 0);
+        receiverId = intent.getLongExtra("ROOMMATE_ID", 0);
 
         updateView();
     }
@@ -81,6 +96,30 @@ public class ChatMessagesActivity extends AppCompatActivity {
         } else {
             noChatMessagesTextView.setVisibility(View.GONE);
         }
+    }
+
+    private void sendChatMessage() {
+        if (chatMessageEditText.getText().toString().trim().matches("")) {
+            Toast.makeText(context, "Please enter message", Toast.LENGTH_LONG).show();
+            return;
+        }
+        String message = chatMessageEditText.getText().toString();
+        chatMessageEditText.setText("");
+        SendChatMessageAsyncTask task = new SendChatMessageAsyncTask(this, chatId, receiverId, message);
+        task.setAsyncTaskReceiver(new SendChatMessageAsyncTask.AsyncTaskReceiver() {
+            @Override
+            public void onAsyncTaskComplete(ChatMessage chatMessage) {
+                Toast.makeText(context, "Message sent", Toast.LENGTH_SHORT).show();
+                chatId = chatMessage.getChatId();
+            }
+
+            @Override
+            public void onAsyncTaskFailed() {
+                Toast.makeText(context, "Failed to send Message", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+        task.execute();
     }
 
     private void onSwipeRefresh() {
@@ -100,7 +139,7 @@ public class ChatMessagesActivity extends AppCompatActivity {
                     appData.storeLocalChatMessages(context, chatId, chatMessages);
                     Toast.makeText(context, chatMessages.size() + " chat messages found", Toast.LENGTH_SHORT).show();
                 }
-                chatMessagesRecyclerViewAdapter.updateData();
+                chatMessagesRecyclerViewAdapter.updateData(chatId);
                 chatMessagesRecyclerViewAdapter.notifyDataSetChanged();
                 updateView();
             }
