@@ -1,7 +1,11 @@
 package com.example.vivek.rentalmates.data;
 
+import com.example.vivek.rentalmates.backend.mainApi.model.ChatMessage;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class LocalChatMessage implements Serializable {
     Long id;
@@ -20,6 +24,10 @@ public class LocalChatMessage implements Serializable {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getContent() {
@@ -84,5 +92,47 @@ public class LocalChatMessage implements Serializable {
 
     public void setChatId(Long chatId) {
         this.chatId = chatId;
+    }
+
+    public static List<ChatMessage> convertLocalChatMessageListToChatMessageList(List<LocalChatMessage> localChatMessages) {
+        if (localChatMessages == null) {
+            return null;
+        }
+        List<ChatMessage> chatMessages = new ArrayList<>();
+        for (LocalChatMessage localChatMessage : localChatMessages) {
+            ChatMessage chatMessage = new ChatMessage();
+
+            chatMessage.setId(localChatMessage.getId());
+            chatMessage.setContent(localChatMessage.getContent());
+            chatMessage.setReceived(localChatMessage.received);
+            chatMessage.setSent(localChatMessage.sent);
+            chatMessage.setSeen(localChatMessage.seen);
+            chatMessage.setSenderId(localChatMessage.getSenderId());
+            chatMessage.setReceiverId(localChatMessage.getReceiverId());
+
+            chatMessages.add(chatMessage);
+        }
+        return chatMessages;
+    }
+
+    public static List<LocalChatMessage> convertChatMessageListToLocalChatMessageList(List<ChatMessage> chatMessages) {
+        if (chatMessages == null) {
+            return null;
+        }
+        List<LocalChatMessage> localChatMessages = new ArrayList<>();
+        for (ChatMessage chatMessage : chatMessages) {
+            LocalChatMessage localChatMessage = new LocalChatMessage();
+
+            localChatMessage.setId(chatMessage.getId());
+            localChatMessage.setContent(chatMessage.getContent());
+            localChatMessage.setReceived(chatMessage.getReceived());
+            localChatMessage.setSent(chatMessage.getSent());
+            localChatMessage.setSeen(chatMessage.getSeen());
+            localChatMessage.setSenderId(chatMessage.getSenderId());
+            localChatMessage.setReceiverId(chatMessage.getReceiverId());
+
+            localChatMessages.add(localChatMessage);
+        }
+        return localChatMessages;
     }
 }

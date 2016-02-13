@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.backend.entities.expenseGroupApi.model.ExpenseData;
 import com.example.vivek.rentalmates.backend.mainApi.model.Chat;
+import com.example.vivek.rentalmates.backend.mainApi.model.ChatMessage;
 import com.example.vivek.rentalmates.backend.mainApi.model.Contact;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.ExpenseGroup;
 import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
@@ -433,11 +434,11 @@ public class AppData implements Serializable {
         return storeAppData(context);
     }
 
-    public HashMap<Long, List<LocalChatMessage>> getLocalChatMessages() {
-        return localChatMessages;
+    public List<LocalChatMessage> getLocalChatMessages(Long chatId) {
+        return localChatMessages.get(chatId);
     }
 
-    public void setLocalChatMessages(HashMap<Long, List<LocalChatMessage>> localChatMessages) {
-        this.localChatMessages = localChatMessages;
+    public void storeLocalChatMessages(Context context, Long chatId, List<ChatMessage> chatMessages) {
+        this.localChatMessages.put(chatId, LocalChatMessage.convertChatMessageListToLocalChatMessageList(chatMessages));
     }
 }

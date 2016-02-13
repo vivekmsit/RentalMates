@@ -146,4 +146,5 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_room_mate_info">RoomMateInfoActivity</string>
     <string name="title_activity_messenger">RentalMates Messenger</string>
+    <string name="title_activity_chat_messages">ChatMessagesActivity</string>
 </resources>

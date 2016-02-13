@@ -91,7 +91,8 @@ public class RoomMateInfoActivity extends AppCompatActivity {
     }
 
     private void startChat() {
-        Intent intent = new Intent(this, MessengerActivity.class);
+        Intent intent = new Intent(this, ChatMessagesActivity.class);
+        intent.putExtra("ROOMMATE_ID", localFlatSearchCriteria.getRequesterId());
         startActivity(intent);
     }
 }

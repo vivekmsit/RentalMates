@@ -120,6 +120,10 @@
         <activity
             android:name=".activities.MessengerActivity"
             android:label="@string/title_activity_messenger"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.ChatMessagesActivity"
+            android:label="@string/title_activity_chat_messages"
             android:theme="@style/AppTheme"></activity>
     </application>
 
