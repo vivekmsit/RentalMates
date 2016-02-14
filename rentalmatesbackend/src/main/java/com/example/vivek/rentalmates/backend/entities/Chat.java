@@ -17,6 +17,7 @@ public class Chat implements Serializable {
     private int numberOfMessages;
 
     public Chat() {
+        id = Long.valueOf(1);
         numberOfMessages = 0;
     }
 

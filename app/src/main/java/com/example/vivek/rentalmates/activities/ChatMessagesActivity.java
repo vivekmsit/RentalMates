@@ -1,5 +1,6 @@
 package com.example.vivek.rentalmates.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,9 +18,11 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.adapters.ChatMessagesRecyclerViewAdapter;
+import com.example.vivek.rentalmates.backend.mainApi.model.Chat;
 import com.example.vivek.rentalmates.backend.mainApi.model.ChatMessage;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.tasks.GetChatMessageListAsyncTask;
+import com.example.vivek.rentalmates.tasks.GetPreviousChatIdAsyncTask;
 import com.example.vivek.rentalmates.tasks.SendChatMessageAsyncTask;
 
 import java.util.ArrayList;
@@ -38,6 +41,7 @@ public class ChatMessagesActivity extends AppCompatActivity {
     private ChatMessagesRecyclerViewAdapter chatMessagesRecyclerViewAdapter;
     private Long chatId;
     private Long receiverId;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +89,8 @@ public class ChatMessagesActivity extends AppCompatActivity {
         Intent intent = getIntent();
         receiverId = intent.getLongExtra("ROOMMATE_ID", 0);
 
+        getPreviousChatId();
+
         updateView();
     }
 
@@ -96,6 +102,30 @@ public class ChatMessagesActivity extends AppCompatActivity {
         } else {
             noChatMessagesTextView.setVisibility(View.GONE);
         }
+    }
+
+    private void getPreviousChatId() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setIndeterminate(true);
+        GetPreviousChatIdAsyncTask task = new GetPreviousChatIdAsyncTask(this, receiverId);
+        task.setAsyncTaskReceiver(new GetPreviousChatIdAsyncTask.AsyncTaskReceiver() {
+            @Override
+            public void onAsyncTaskComplete(Chat chat) {
+                progressDialog.cancel();
+                chatId = chat.getId();
+                swipeRefreshLayout.setRefreshing(true);
+                onSwipeRefresh();
+            }
+
+            @Override
+            public void onAsyncTaskFailed() {
+                progressDialog.cancel();
+            }
+        });
+        task.execute();
+        progressDialog.setMessage("Getting previous Chats with the person");
+        progressDialog.show();
     }
 
     private void sendChatMessage() {

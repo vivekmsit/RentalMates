@@ -510,6 +510,8 @@ public class MainEndpoint {
         if (chatId == 1) {
             senderUserProfile.addChat(receiverId, chat.getId());
             receiverUserProfile.addChat(senderId, chat.getId());
+            senderUserProfile.addChatReceiverId(chat.getId());
+            receiverUserProfile.addChatReceiverId(chat.getId());
             ofy().save().entity(senderUserProfile).now();
             ofy().save().entity(receiverUserProfile).now();
             chatMessage.setChatId(chat.getId());
@@ -565,6 +567,25 @@ public class MainEndpoint {
             chatMessages.add(chatMessage);
         }
         return chatMessages;
+    }
+
+    /**
+     * Returns previous chatId for a given receiverId.
+     */
+    @ApiMethod(
+            name = "getPreviousChatId",
+            path = "getPreviousChatId",
+            httpMethod = ApiMethod.HttpMethod.POST)
+    public Chat getPreviousChatId(@Named("id") Long userProfileId, @Named("receiverId") Long receiverId) throws NotFoundException {
+        checkUserProfileExists(userProfileId);
+        UserProfile userProfile = ofy().load().type(UserProfile.class).id(userProfileId).now();
+        Chat chat = null;
+        if (userProfile.getChatReceiverIds().contains(receiverId)) {
+            chat = ofy().load().type(Chat.class).id(Long.valueOf(userProfile.getChats().get(receiverId))).now();
+        } else {
+            chat = new Chat();
+        }
+        return chat;
     }
 
     private void checkUserProfileExists(Long id) throws NotFoundException {

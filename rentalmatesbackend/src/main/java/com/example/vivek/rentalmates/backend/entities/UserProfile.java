@@ -49,6 +49,7 @@ public class UserProfile {
     private List<Long> flatIds = new ArrayList<>();
     private List<Long> expenseGroupIds = new ArrayList<>();
     private List<String> gcmIds = new ArrayList<>();
+    private List<Long> chatReceiverIds = new ArrayList<>();
     private HashMap<String, String> chats = new HashMap<>();
 
     public UserProfile() {
@@ -269,5 +270,17 @@ public class UserProfile {
 
     public void addChat(Long secondMemberId, Long chatId) {
         this.chats.put(secondMemberId.toString(), chatId.toString());
+    }
+
+    public List<Long> getChatReceiverIds() {
+        return chatReceiverIds;
+    }
+
+    public void addChatReceiverId(Long chatReceiverId) {
+        this.chatReceiverIds.add(chatReceiverId);
+    }
+
+    public void removeChatReceiverId(Long chatReceiverId) {
+        this.chatReceiverIds.remove(chatReceiverId);
     }
 }
