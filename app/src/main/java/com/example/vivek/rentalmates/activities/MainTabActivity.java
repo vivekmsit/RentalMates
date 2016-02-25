@@ -2,7 +2,6 @@ package com.example.vivek.rentalmates.activities;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -28,7 +27,6 @@ import android.view.animation.ScaleAnimation;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cocosw.bottomsheet.BottomSheet;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.AppData;
@@ -268,6 +266,8 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
     }
 
     public void displayBottomSheet() {
+        Toast.makeText(this, "To be implemented", Toast.LENGTH_SHORT).show();
+        /*
         new BottomSheet.Builder(this, R.style.BottomSheet_Dialog)
                 .title("New")
                 .grid()
@@ -286,7 +286,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
                                 break;
                         }
                     }
-                }).show();
+                }).show();*/
     }
 
     private void registerNewFlat() {

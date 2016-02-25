@@ -1,8 +1,10 @@
 package com.example.vivek.rentalmates.activities;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -42,6 +44,7 @@ public class ChatMessagesActivity extends AppCompatActivity {
     private Long chatId;
     private Long receiverId;
     private ProgressDialog progressDialog;
+    private BroadcastReceiver broadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +94,23 @@ public class ChatMessagesActivity extends AppCompatActivity {
 
         getPreviousChatId();
 
+        //Initialize BroadcastReceiver
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Bundle b = intent.getExtras();
+                String message = b.getString("message");
+                Toast.makeText(context, "message received: " + message, Toast.LENGTH_SHORT).show();
+            }
+        };
+        registerReceiver(broadcastReceiver, new IntentFilter("CHAT_MESSAGE_RECEIVED"));
+
         updateView();
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(broadcastReceiver);
     }
 
     void updateView() {
