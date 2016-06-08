@@ -98,7 +98,7 @@ public class PlaceAutoCompleteAdapter
         if (position != (mResultList.size() - 1)) {
             view = inflater.inflate(R.layout.autocomplete_list_item, null);
             TextView autocompleteTextView = (TextView) view.findViewById(R.id.autocompleteText);
-            autocompleteTextView.setText(mResultList.get(position).getDescription());
+            autocompleteTextView.setText(mResultList.get(position).getPlaceId());
         } else {
             view = inflater.inflate(R.layout.autocomplete_google_logo_item, null);
         }

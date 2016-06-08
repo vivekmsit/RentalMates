@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion "23.0.3"
 
     defaultConfig {
         applicationId "com.example.vivek.rentalmates"
@@ -12,6 +12,7 @@ android {
         versionName "1.0"
         multiDexEnabled = true
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -23,11 +24,11 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(path: ':rentalmatesbackend', configuration: 'android-endpoints')
-    compile 'com.android.support:design:23.2.1'
-    compile 'com.google.android.gms:play-services:8.4.0'
-    compile 'com.android.support:appcompat-v7:23.2.1'
-    compile 'com.android.support:cardview-v7:23.2.1'
-    compile 'com.android.support:recyclerview-v7:23.2.'
+    compile 'com.android.support:design:23.4.0'
+    compile 'com.google.android.gms:play-services:9.0.2'
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:cardview-v7:23.4.0'
+    compile 'com.android.support:recyclerview-v7:23.4.0'
     compile 'com.pkmmte.view:circularimageview:1.1'
-    compile 'com.android.support:support-v4:23.2.0'
+    compile 'com.android.support:support-v4:23.4.0'
 }
