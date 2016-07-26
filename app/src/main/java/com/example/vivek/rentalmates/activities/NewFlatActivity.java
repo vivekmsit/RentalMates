@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -26,6 +27,8 @@ import com.example.vivek.rentalmates.tasks.RegisterNewFlatAsyncTask;
 
 public class NewFlatActivity extends AppCompatActivity {
     private static final String TAG = "NewFlatActivity_Debug";
+    private static final int INITIAL_REQUEST = 1337;
+    private static final int LOCATION_REQUEST = INITIAL_REQUEST + 3;
 
     FragmentManager fragmentManager;
     NewFlatBasicInfoFragment newFlatBasicInfoFragment;
@@ -173,5 +176,14 @@ public class NewFlatActivity extends AppCompatActivity {
         task.execute();
         progressDialog.setMessage("Registering new flat");
         progressDialog.show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case LOCATION_REQUEST:
+                newFlatLocationFragment.locationPermissionGranted();
+        }
     }
 }

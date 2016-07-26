@@ -7,6 +7,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,6 +33,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
@@ -42,6 +44,11 @@ import static android.support.v4.content.ContextCompat.checkSelfPermission;
  */
 public class NewFlatLocationFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
     private static final String TAG = "NewFlatLocation_Debug";
+    private static final String[] LOCATION_PERMS = {
+            Manifest.permission.ACCESS_FINE_LOCATION
+    };
+    private static final int INITIAL_REQUEST = 1337;
+    private static final int LOCATION_REQUEST = INITIAL_REQUEST + 3;
     private Context context;
     private MapView mapView;
     private GoogleMap map;
@@ -50,6 +57,7 @@ public class NewFlatLocationFragment extends Fragment implements GoogleApiClient
     private float currentZoom;
     private boolean currentLocationUpdated;
     private AppData appData;
+    private LocationManager locationManager;
 
     /**
      * GoogleApiClient wraps our service connection to Google Play Services and provides access
@@ -90,64 +98,41 @@ public class NewFlatLocationFragment extends Fragment implements GoogleApiClient
         // Register a listener that receives callbacks when a suggestion has been selected
         autocompleteView.setOnItemClickListener(mAutocompleteClickListener);
 
-        mapView = (MapView) view.findViewById(R.id.mapview);
-        mapView.onCreate(savedInstanceState);
-
-        // Gets to GoogleMap from the MapView and does initialization stuff
-        map = mapView.getMap();
-        map.getUiSettings().setMyLocationButtonEnabled(false);
-        map.setMyLocationEnabled(true);
-
-        // Needs to call MapsInitializer before doing any CameraUpdateFactory calls
-        MapsInitializer.initialize(this.getActivity());
-
         currentLatitude = appData.getLastLocationLatitude();
         currentLongitude = appData.getLastLocationLongitude();
         currentZoom = appData.getLastLocationZoom();
         currentLocationUpdated = false;
 
-        // Updates the location and zoom of the MapView
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLatitude, currentLongitude), currentZoom));
+        // Acquire a reference to the system Location Manager
+        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        mapView = (MapView) view.findViewById(R.id.mapview);
+        mapView.onCreate(savedInstanceState);
+
+        // Gets to GoogleMap from the MapView and does initialization stuff
+        mapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                map = googleMap;
+                map.getUiSettings().setMyLocationButtonEnabled(false);
+                if (checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                        && checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    locationPermissionGranted();
+                } else {
+                    requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
+                }
+            }
+        });
+
+        // Needs to call MapsInitializer before doing any CameraUpdateFactory calls
+        MapsInitializer.initialize(this.getActivity());
 
         //map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
         //LatLng ll = map.getCameraPosition().target;
         //double zoom = map.getCameraPosition().zoom;
         //Marker marker = map.addMarker(new MarkerOptions().position(new LatLng(currentLatitude, currentLongitude)));
 
-        // Acquire a reference to the system Location Manager
-        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
-        if (checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            // Register the listener with the Location Manager to receive location updates
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new android.location.LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    currentLatitude = location.getLatitude();
-                    currentLongitude = location.getLongitude();
-                    appData.storeLastLocationData(context, currentLatitude, currentLongitude, (float) 12.5);
-                    if (!currentLocationUpdated) {
-                        makeUseOfNewLocation();
-                        currentLocationUpdated = true;
-                    }
-                }
-
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                }
-
-                @Override
-                public void onProviderEnabled(String provider) {
-
-                }
-
-                @Override
-                public void onProviderDisabled(String provider) {
-
-                }
-            });
-        }
         return view;
     }
 
@@ -197,6 +182,51 @@ public class NewFlatLocationFragment extends Fragment implements GoogleApiClient
     public void onStop() {
         super.onStop();
         mGoogleApiClient.disconnect();
+    }
+
+    public void locationPermissionGranted() {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        map.setMyLocationEnabled(true);
+        // Register the listener with the Location Manager to receive location updates
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new android.location.LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                currentLatitude = location.getLatitude();
+                currentLongitude = location.getLongitude();
+                appData.storeLastLocationData(context, currentLatitude, currentLongitude, (float) 12.5);
+                if (!currentLocationUpdated) {
+                    makeUseOfNewLocation();
+                    currentLocationUpdated = true;
+                }
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        });
+
+        // Updates the location and zoom of the MapView
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLatitude, currentLongitude), currentZoom));
     }
 
     /**

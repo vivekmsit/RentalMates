@@ -18,6 +18,7 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 
 public class FlatInfoActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks {
@@ -99,8 +100,13 @@ public class FlatInfoActivity extends AppCompatActivity implements GoogleApiClie
         //Initialize MapView
         mapView = (MapView) findViewById(R.id.mapview);
         mapView.onCreate(savedInstanceState);
-        map = mapView.getMap();
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(localFlatInfo.getLatitude(), localFlatInfo.getLongitude()), localFlatInfo.getZoom()));
+        mapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                map = googleMap;
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(localFlatInfo.getLatitude(), localFlatInfo.getLongitude()), localFlatInfo.getZoom()));
+            }
+        });
     }
 
     @Override

@@ -39,11 +39,13 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
 public class FlatSearchActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks {
 
+    private Context context;
     private AppData appData;
     private FlatSearchCriteria flatSearchCriteria;
     private Button flatSearchButton;
@@ -68,6 +70,8 @@ public class FlatSearchActivity extends AppCompatActivity implements GoogleApiCl
         setContentView(R.layout.activity_flat_search);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        context = getApplicationContext();
 
         appData = AppData.getInstance();
         prefs = getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
@@ -169,16 +173,22 @@ public class FlatSearchActivity extends AppCompatActivity implements GoogleApiCl
         mapView.onCreate(savedInstanceState);
 
         // Gets to GoogleMap from the MapView and does initialization stuff
-        map = mapView.getMap();
-        map.getUiSettings().setMyLocationButtonEnabled(false);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        map.setMyLocationEnabled(true);
+        mapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                map = googleMap;
+                map.getUiSettings().setMyLocationButtonEnabled(false);
+                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    //Toast.makeText(this, "Location Permissions Required", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                map.setMyLocationEnabled(true);
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(flatSearchCriteria.getLocationLatitude(), flatSearchCriteria.getLocationLongitude()), 17.23f));
+            }
+        });
 
         // Needs to call MapsInitializer before doing any CameraUpdateFactory calls
         MapsInitializer.initialize(this);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(flatSearchCriteria.getLocationLatitude(), flatSearchCriteria.getLocationLongitude()), 17.23f));
     }
 
 
