@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "53592800654",
+    "firebase_url": "https://rentalmates.firebaseio.com",
+    "project_id": "rentalmates",
+    "storage_bucket": "rentalmates.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:53592800654:android:4d6478ba5306af13",
+        "android_client_info": {
+          "package_name": "com.example.vivek.rentalmates"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "53592800654-q78lo45a1cbpc3fvn2h6ns8st08nvm2b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.vivek.rentalmates",
+            "certificate_hash": "0A312F61B5A799A1A63A4B3476E0FDBAE3E6581D"
+          }
+        },
+        {
+          "client_id": "53592800654-tp4butp9t9tu6v4t1av90h48qc7cb8t7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfPXKAsO7_Xbh0h7_gNN9ICuCZO2tqrtQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "53592800654-tp4butp9t9tu6v4t1av90h48qc7cb8t7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
