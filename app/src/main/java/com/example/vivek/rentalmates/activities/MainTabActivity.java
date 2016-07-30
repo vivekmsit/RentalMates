@@ -117,7 +117,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         }
 
         //Initialize FireBase
-        mRef = new Firebase("https://rentalmates.firebaseio.com/condition");
+        mRef = new Firebase("https://rentalmates-8c9ea.firebaseio.com/condition");
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

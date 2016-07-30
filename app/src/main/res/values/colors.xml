@@ -21,4 +21,13 @@
     <color name="fb_feed_item_border">#c2c3c8</color>
     <color name="fb_link">#0a80d1</color>
     <color name="fb_timestamp">#a0a3a7</color>
+
+    <color name="blue_grey_500">#607D8B</color>
+    <color name="blue_grey_600">#546E7A</color>
+    <color name="blue_grey_700">#455A64</color>
+    <color name="blue_grey_800">#37474F</color>
+    <color name="blue_grey_900">#263238</color>
+
+    <color name="grey_100">#F5F5F5</color>
+    <color name="grey_300">#E0E0E0</color>
 </resources>

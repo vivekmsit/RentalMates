@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.example.vivek.rentalmates.R;
+import com.example.vivek.rentalmates.auth.ChooserActivity;
 import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.AppData;
 
@@ -53,8 +54,10 @@ public class MainSplashActivity extends AppCompatActivity {
             if (prefs.contains(AppConstants.SIGN_IN_COMPLETED) && prefs.getBoolean(AppConstants.SIGN_IN_COMPLETED, true)) {
                 appData.restoreAppData(context);
                 activityClass = MainTabActivity.class;
-            } else
-                activityClass = MyLoginActivity.class;
+            } else {
+                //activityClass = MyLoginActivity.class;
+                activityClass = ChooserActivity.class;
+            }
 
             Intent newActivity = new Intent(context, activityClass);
             Intent pendingIntent = getIntent();

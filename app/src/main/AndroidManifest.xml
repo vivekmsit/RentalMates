@@ -126,6 +126,16 @@
             android:name=".activities.ChatMessagesActivity"
             android:label="@string/title_activity_chat_messages"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".auth.ChooserActivity"
+            android:label="@string/label_custom_auth" />
+        <activity
+            android:name=".auth.GoogleSignInActivity"
+            android:label="@string/label_google_sign_in" />
+        <activity
+            android:name=".auth.EmailPasswordActivity"
+            android:label="@string/label_emailpassword"
+            android:windowSoftInputMode="stateAlwaysHidden" />
     </application>
 
 </manifest>
