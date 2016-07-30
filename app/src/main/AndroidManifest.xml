@@ -38,6 +38,7 @@
     <uses-permission android:name="com.example.permission.MAPS_RECEIVE" />
 
     <application
+        android:name=".activities.RentalMates"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -124,7 +125,7 @@
         <activity
             android:name=".activities.ChatMessagesActivity"
             android:label="@string/title_activity_chat_messages"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

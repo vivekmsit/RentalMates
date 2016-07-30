@@ -40,6 +40,10 @@ import com.example.vivek.rentalmates.fragments.SearchRoomMateFragment;
 import com.example.vivek.rentalmates.fragments.SharedContactsListFragment;
 import com.example.vivek.rentalmates.interfaces.FragmentTransactionRequestReceiver;
 import com.example.vivek.rentalmates.library.CreateNewExpenseGroupTask;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -54,6 +58,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
     private static final String NAV_ITEM_ID = "navItemId";
     private static final int REGISTER_NEW_FLAT = 1;
 
+    private Context context;
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private Toolbar toolbar;
@@ -75,6 +80,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
     private int backStackCount;
     private boolean newExpenseAvailable;
     private int mNavItemId;
+    Firebase mRef;
 
     //Communicating Activity events to receiver fragments.
     private HashMap<String, ActivityEventReceiver> eventReceiverHashMap;
@@ -95,6 +101,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         eventReceiverHashMap = new HashMap<>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tab);
+        context = getApplicationContext();
 
         currentPosition = 0;
         backStackCount = 0;
@@ -108,6 +115,21 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         } else {
             mNavItemId = savedInstanceState.getInt(NAV_ITEM_ID);
         }
+
+        //Initialize FireBase
+        mRef = new Firebase("https://rentalmates.firebaseio.com/condition");
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String text = dataSnapshot.getValue(String.class);
+                Toast.makeText(context, "text is: " + text, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Toast.makeText(context, "FireBase Error", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         //Initialize Toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -199,9 +221,10 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         filterRoomMatesFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (eventReceiverHashMap.containsKey("searchRoomMatesFragment")) {
-                    eventReceiverHashMap.get("searchRoomMatesFragment").onEventReceived("filterRoomMatesFABPressed");
-                }
+                //if (eventReceiverHashMap.containsKey("searchRoomMatesFragment")) {
+                //eventReceiverHashMap.get("searchRoomMatesFragment").onEventReceived("filterRoomMatesFABPressed");
+                //}
+                mRef.setValue("Sunny");
             }
         });
         ScaleAnimation anim3 = new ScaleAnimation(0, 1, 0, 1);
@@ -266,7 +289,8 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
     }
 
     public void displayBottomSheet() {
-        Toast.makeText(this, "To be implemented", Toast.LENGTH_SHORT).show();
+        mRef.setValue("Foggy");
+        //Toast.makeText(this, "To be implemented", Toast.LENGTH_SHORT).show();
         /*
         new BottomSheet.Builder(this, R.style.BottomSheet_Dialog)
                 .title("New")
