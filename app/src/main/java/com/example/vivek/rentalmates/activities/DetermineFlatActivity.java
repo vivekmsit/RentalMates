@@ -331,7 +331,10 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REGISTER_NEW_FLAT) {
             if (resultCode == Activity.RESULT_OK) {
-                getCompleteUserInformation();
+                //getCompleteUserInformation();
+                Intent intent = new Intent(getApplicationContext(), MainTabActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                getApplicationContext().startActivity(intent);
             }
         }
     }

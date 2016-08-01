@@ -16,7 +16,9 @@
 
 package com.example.vivek.rentalmates.auth;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -25,6 +27,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
+import com.example.vivek.rentalmates.activities.DetermineFlatActivity;
+import com.example.vivek.rentalmates.data.AppConstants;
+import com.example.vivek.rentalmates.data.LocalUserProfile;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -51,6 +60,11 @@ public class GoogleSignInActivity extends BaseActivity implements
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
 
+    private Context context;
+    private Firebase mUsersRef;
+
+    private SharedPreferences prefs;
+
     // [START declare_auth]
     private FirebaseAuth mAuth;
     // [END declare_auth]
@@ -67,6 +81,9 @@ public class GoogleSignInActivity extends BaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google);
+
+        context = getApplicationContext();
+        prefs = this.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
 
         // Views
         mStatusTextView = (TextView) findViewById(R.id.status);
@@ -90,6 +107,8 @@ public class GoogleSignInActivity extends BaseActivity implements
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
+        mUsersRef = new Firebase(AppConstants.FIREBASE_ROOT_URL).child("users");
+
         // [START initialize_auth]
         mAuth = FirebaseAuth.getInstance();
         // [END initialize_auth]
@@ -108,6 +127,7 @@ public class GoogleSignInActivity extends BaseActivity implements
                 }
                 // [START_EXCLUDE]
                 updateUI(user);
+                storeUserProfile(user);
                 // [END_EXCLUDE]
             }
         };
@@ -235,6 +255,53 @@ public class GoogleSignInActivity extends BaseActivity implements
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
         }
+    }
+
+    private void storeUserProfile(FirebaseUser user) {
+        //Stored Sign In information inside SharedPreferences
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(AppConstants.SIGN_IN_COMPLETED, false);
+        editor.putString(AppConstants.EMAIL_ID, user.getEmail());
+        editor.putString(AppConstants.USER_NAME, user.getDisplayName());
+        editor.apply();
+
+        final LocalUserProfile localUserProfile = new LocalUserProfile();
+        localUserProfile.setEmailId(user.getEmail());
+        localUserProfile.setUserName(user.getDisplayName());
+        final Firebase mUserRef = mUsersRef.child(user.getUid()).getRef();
+        mUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                LocalUserProfile uploadedLocalUserProfile = dataSnapshot.getValue(LocalUserProfile.class);
+                if (uploadedLocalUserProfile == null) {
+                    mUserRef.setValue(localUserProfile);
+                }
+                mUserRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        LocalUserProfile uploadedLocalUserProfile = dataSnapshot.getValue(LocalUserProfile.class);
+                        if (uploadedLocalUserProfile.getNumberOfFlats() == 0) {
+                            Intent intent = new Intent(context, DetermineFlatActivity.class);
+                            intent.putExtra("FLAT_REGISTERED", false);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            context.startActivity(intent);
+                        } else {
+                            Toast.makeText(context, "some flats registered", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+                        Toast.makeText(context, "FireBase error: " + firebaseError.getDetails(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Toast.makeText(context, "FireBase error: " + firebaseError.getDetails(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override

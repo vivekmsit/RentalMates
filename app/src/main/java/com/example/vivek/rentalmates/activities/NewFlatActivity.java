@@ -18,12 +18,17 @@ import android.widget.Toast;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.backend.flatInfoApi.model.FlatInfo;
 import com.example.vivek.rentalmates.data.AppConstants;
+import com.example.vivek.rentalmates.data.LocalFlatInfo;
 import com.example.vivek.rentalmates.fragments.NewFlatAmenitiesFragment;
 import com.example.vivek.rentalmates.fragments.NewFlatBasicInfoFragment;
 import com.example.vivek.rentalmates.fragments.NewFlatLocationFragment;
 import com.example.vivek.rentalmates.fragments.NewFlatRentDetailsFragment;
 import com.example.vivek.rentalmates.interfaces.OnRegisterNewFlatReceiver;
 import com.example.vivek.rentalmates.tasks.RegisterNewFlatAsyncTask;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 public class NewFlatActivity extends AppCompatActivity {
     private static final String TAG = "NewFlatActivity_Debug";
@@ -38,14 +43,17 @@ public class NewFlatActivity extends AppCompatActivity {
     int currentFragment;
     Button nextButton;
     Button fragmentNameButton;
-    FlatInfo newFlatInfo;
+    LocalFlatInfo newFlatInfo;
     Context context;
     SharedPreferences prefs;
+    private Firebase mFlatsRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_flat);
+
+        mFlatsRef = new Firebase(AppConstants.FIREBASE_ROOT_URL).child("flats");
 
         //Initialize Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -58,7 +66,7 @@ public class NewFlatActivity extends AppCompatActivity {
 
         context = getApplicationContext();
         prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
-        newFlatInfo = new FlatInfo();
+        newFlatInfo = new LocalFlatInfo();
 
         fragmentManager = getSupportFragmentManager();
         fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
@@ -135,7 +143,7 @@ public class NewFlatActivity extends AppCompatActivity {
     private void registerNewFlat() {
         newFlatInfo.setOwnerEmailId(prefs.getString(AppConstants.EMAIL_ID, "no_email_id"));
         newFlatInfo.setOwnerId(prefs.getLong(AppConstants.USER_PROFILE_ID, 0));
-        newFlatInfo.setFlatAddress("Bangalore");
+        //newFlatInfo.setFlatAddress("Bangalore");
         newFlatInfo.setCity("Bangalore");
         newFlatInfo.setFlatName(newFlatBasicInfoFragment.getFlatName());
         newFlatInfo.setRentAmount(newFlatRentDetailsFragment.getRentAmount());
@@ -146,7 +154,27 @@ public class NewFlatActivity extends AppCompatActivity {
         registerFlat(newFlatInfo);
     }
 
-    private void registerFlat(FlatInfo flatInfo) {
+    private void registerFlat(LocalFlatInfo localFlatInfo) {
+        Firebase mFlatRef = mFlatsRef.child(localFlatInfo.getFlatName());
+        mFlatRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                LocalFlatInfo uploadedLocalFlatInfo = dataSnapshot.getValue(LocalFlatInfo.class);
+                Toast.makeText(context, "New Flat Registered: " + uploadedLocalFlatInfo.getFlatName(), Toast.LENGTH_SHORT).show();
+                Intent returnIntent = new Intent();
+                setResult(Activity.RESULT_OK, returnIntent);
+                finish();
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Toast.makeText(context, "FireBase error: " + firebaseError.getDetails(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        mFlatRef.setValue(localFlatInfo);
+    }
+
+    private void registerFlat_Old(FlatInfo flatInfo) {
         final ProgressDialog progressDialog;
         progressDialog = new ProgressDialog(this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
