@@ -34,6 +34,14 @@ public class LocalFlatInfo implements Serializable {
         this.zoom = zoom;
     }
 
+    public String getFlatKey() {
+        return flatKey;
+    }
+
+    public void setFlatKey(String flatKey) {
+        this.flatKey = flatKey;
+    }
+
     public enum FlatType {
         NOT_AVAILABLE,
         SINGLE_BHK,
@@ -44,6 +52,7 @@ public class LocalFlatInfo implements Serializable {
 
     Long flatId;
     Long ownerId;
+    private String flatKey;
     private String adminName;
     private String flatName; //Should be unique
     private boolean available;

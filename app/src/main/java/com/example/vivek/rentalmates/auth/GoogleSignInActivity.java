@@ -29,7 +29,7 @@ import android.widget.Toast;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.activities.DetermineFlatActivity;
 import com.example.vivek.rentalmates.data.AppConstants;
-import com.example.vivek.rentalmates.data.LocalUserProfile;
+import com.example.vivek.rentalmates.data.UserProfile;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -121,14 +121,12 @@ public class GoogleSignInActivity extends BaseActivity implements
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    storeUserProfile(user);
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                 }
-                // [START_EXCLUDE]
                 updateUI(user);
-                storeUserProfile(user);
-                // [END_EXCLUDE]
             }
         };
         // [END auth_state_listener]
@@ -265,21 +263,22 @@ public class GoogleSignInActivity extends BaseActivity implements
         editor.putString(AppConstants.USER_NAME, user.getDisplayName());
         editor.apply();
 
-        final LocalUserProfile localUserProfile = new LocalUserProfile();
-        localUserProfile.setEmailId(user.getEmail());
-        localUserProfile.setUserName(user.getDisplayName());
-        final Firebase mUserRef = mUsersRef.child(user.getUid()).getRef();
+        final UserProfile userProfile = new UserProfile();
+        userProfile.setEmailId(user.getEmail());
+        userProfile.setUserName(user.getDisplayName());
+        //final Firebase mUserRef = mUsersRef.child(user.getUid()).getRef();
+        final Firebase mUserRef = mUsersRef.child("vivekmsit@gmail,com").getRef();
         mUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                LocalUserProfile uploadedLocalUserProfile = dataSnapshot.getValue(LocalUserProfile.class);
-                if (uploadedLocalUserProfile == null) {
-                    mUserRef.setValue(localUserProfile);
+                UserProfile uploadedUserProfile = dataSnapshot.getValue(UserProfile.class);
+                if (uploadedUserProfile == null) {
+                    mUserRef.setValue(userProfile);
                 }
                 mUserRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        LocalUserProfile uploadedLocalUserProfile = dataSnapshot.getValue(LocalUserProfile.class);
+                        UserProfile uploadedLocalUserProfile = dataSnapshot.getValue(UserProfile.class);
                         if (uploadedLocalUserProfile.getNumberOfFlats() == 0) {
                             Intent intent = new Intent(context, DetermineFlatActivity.class);
                             intent.putExtra("FLAT_REGISTERED", false);

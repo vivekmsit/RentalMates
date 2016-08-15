@@ -44,7 +44,7 @@ import java.util.List;
 public class DetermineFlatActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "DetermineFlat_Debug";
-    private static final int REGISTER_NEW_FLAT = 1;
+    private static final int REGISTER_NEW_FLAT = 0;
 
     private TextView alreadyTextView;
     private Spinner chooseFlatSpinner;
@@ -198,7 +198,7 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
     }
 
     public void registerNewFlat() {
-        Intent intent = new Intent(context, NewFlatActivity.class);
+        Intent intent = new Intent(this, NewFlatActivity.class);
         startActivityForResult(intent, REGISTER_NEW_FLAT);
     }
 
@@ -327,7 +327,7 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REGISTER_NEW_FLAT) {
             if (resultCode == Activity.RESULT_OK) {
