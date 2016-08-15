@@ -51,6 +51,8 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
     private Button continueWithOldFlatButton;
     private Button requestRegisterWithOtherFlatButton;
     private Button registerNewFlatButton;
+    private Button skipButton;
+
     private Context context;
     private AppData appData;
     private boolean registerWithAlreadyRegisteredFlatButtonClicked;
@@ -81,10 +83,12 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
         continueWithOldFlatButton = (Button) findViewById(R.id.continueWithOldFlatButton);
         requestRegisterWithOtherFlatButton = (Button) findViewById(R.id.requestRegisterWithOtherFlatButton);
         registerNewFlatButton = (Button) findViewById(R.id.registerNewFlatButton);
+        skipButton = (Button) findViewById(R.id.skipButton);
 
         continueWithOldFlatButton.setOnClickListener(this);
         requestRegisterWithOtherFlatButton.setOnClickListener(this);
         registerNewFlatButton.setOnClickListener(this);
+        skipButton.setOnClickListener(this);
 
         Intent intent = getIntent();
         alreadyRegisteredFlat = intent.getBooleanExtra("FLAT_REGISTERED", false);
@@ -144,6 +148,13 @@ public class DetermineFlatActivity extends AppCompatActivity implements View.OnC
             case R.id.registerNewFlatButton:
                 registerNewFlat();
                 break;
+
+            case R.id.skipButton:
+                Intent intent = new Intent(getApplicationContext(), MainTabActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                getApplicationContext().startActivity(intent);
+                break;
+
             default:
                 break;
         }
