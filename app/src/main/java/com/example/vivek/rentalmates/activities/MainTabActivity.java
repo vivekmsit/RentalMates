@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -12,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -19,7 +21,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
@@ -32,7 +33,6 @@ import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.AppData;
 import com.example.vivek.rentalmates.fragments.DevelopersFragment;
 import com.example.vivek.rentalmates.fragments.ExpenseManagerFragment;
-import com.example.vivek.rentalmates.fragments.MainFragment;
 import com.example.vivek.rentalmates.fragments.ManageFlatsFragment;
 import com.example.vivek.rentalmates.fragments.RequestsFragment;
 import com.example.vivek.rentalmates.fragments.SearchFlatFragment;
@@ -40,10 +40,10 @@ import com.example.vivek.rentalmates.fragments.SearchRoomMateFragment;
 import com.example.vivek.rentalmates.fragments.SharedContactsListFragment;
 import com.example.vivek.rentalmates.interfaces.FragmentTransactionRequestReceiver;
 import com.example.vivek.rentalmates.library.CreateNewExpenseGroupTask;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.plus.Plus;
 import com.pkmmte.view.CircularImageView;
 
 import java.util.HashMap;
@@ -119,7 +119,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.setDrawerListener(mDrawerToggle);
+        drawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
 
         //Initialize FragmentManager
@@ -219,15 +219,14 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         //Initialize TabLayout
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         //To be moved to xml file later when issue will be fixed
-        tabLayout.setBackgroundColor(getResources().getColor(R.color.primaryColor));
-        tabLayout.setTabsFromPagerAdapter(pageAdapter);
+        tabLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.primaryColor));
         tabLayout.setupWithViewPager(viewPager);
 
         // Initialize NavigationView
         navigationView = (NavigationView) findViewById(R.id.navigation);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(final MenuItem menuItem) {
+            public boolean onNavigationItemSelected(@NonNull final MenuItem menuItem) {
                 return navigate(menuItem);
             }
         });
@@ -243,12 +242,18 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         emailTextView = (TextView) headerView.findViewById(R.id.emailTextView);
         emailTextView.setText(emailId);
 
+        // [START config_signin]
+        // Configure Google Sign In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        // [END config_signin]
+
         // Initializing google plus api client
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(Plus.API)
-                .addScope(Plus.SCOPE_PLUS_LOGIN)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
         if (prefs.contains(AppConstants.SIGN_IN_COMPLETED)) {
@@ -401,14 +406,11 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Toast.makeText(this, "Sign In Failed", Toast.LENGTH_SHORT).show();
-        Log.d(TAG, "inside onConnectionFailed");
-        Log.d(TAG, "Failure Reason: " + connectionResult.toString());
-        if (!connectionResult.hasResolution()) {
-            GooglePlayServicesUtil.getErrorDialog(connectionResult.getErrorCode(), this,
-                    0).show();
-        }
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        // An unresolvable error has occurred and Google APIs (including Sign-In) will not
+        // be available.
+        Log.d(TAG, "onConnectionFailed:" + connectionResult);
+        Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
     }
 
     public void updateFABs() {
@@ -467,13 +469,12 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REGISTER_NEW_FLAT) {
             if (resultCode == Activity.RESULT_OK) {
+                Toast.makeText(context, "new Flat Created", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
     public class MyAdapter extends FragmentPagerAdapter {
-
-        SparseArray<Fragment> registeredFragments = new SparseArray<>();
 
         public MyAdapter(FragmentManager fm) {
             super(fm);
@@ -483,13 +484,12 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         public Fragment getItem(int position) {
             Fragment fragment = null;
             if (position == 0) {
-                fragment = new MainFragment();
+                fragment = new ManageFlatsFragment();
             } else if (position == 1) {
                 fragment = new SearchFlatFragment();
             } else if (position == 2) {
                 fragment = new SearchRoomMateFragment();
             }
-            registeredFragments.put(position, fragment);
             return fragment;
         }
 
@@ -501,7 +501,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         @Override
         public CharSequence getPageTitle(int position) {
             if (position == 0) {
-                return "Home";
+                return "My Flats";
             } else if (position == 1) {
                 return "Search Flats";
             } else if (position == 2) {
@@ -509,10 +509,6 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
             } else {
                 return null;
             }
-        }
-
-        public Fragment getRegisteredFragment(int position) {
-            return registeredFragments.get(position);
         }
     }
 }
