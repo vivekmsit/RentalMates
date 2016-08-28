@@ -164,7 +164,6 @@ public class NewFlatActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 FlatInfo uploadedFlatInfo = dataSnapshot.getValue(FlatInfo.class);
-                Toast.makeText(context, "New Flat Registered: " + uploadedFlatInfo.getFlatName() + getCallingPackage(), Toast.LENGTH_SHORT).show();
                 Firebase mNewFlatKeyRef = mUserFlatsList.push();
 
                 mNewFlatKeyRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -181,7 +180,10 @@ public class NewFlatActivity extends AppCompatActivity {
                     }
                 });
 
-                mNewFlatKeyRef.setValue(uploadedFlatInfo.getFlatKey());
+                if (uploadedFlatInfo != null) {
+                    Toast.makeText(context, "New Flat Registered: " + uploadedFlatInfo.getFlatName() + getCallingPackage(), Toast.LENGTH_SHORT).show();
+                    mNewFlatKeyRef.setValue(uploadedFlatInfo.getFlatKey());
+                }
             }
 
             @Override

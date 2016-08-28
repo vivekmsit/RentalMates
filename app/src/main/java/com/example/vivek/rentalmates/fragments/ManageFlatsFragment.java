@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,19 +20,15 @@ import android.widget.Toast;
 
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.activities.NewFlatActivity;
-import com.example.vivek.rentalmates.adapters.FlatListViewAdapter;
 import com.example.vivek.rentalmates.backend.mainApi.model.Request;
-import com.example.vivek.rentalmates.backend.userProfileApi.model.FlatInfo;
 import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.AppData;
+import com.example.vivek.rentalmates.data.FlatInfo;
 import com.example.vivek.rentalmates.dialogs.GetExistingFlatInfoDialog;
-import com.example.vivek.rentalmates.interfaces.OnFlatInfoListReceiver;
 import com.example.vivek.rentalmates.interfaces.OnRequestJoinExistingEntityReceiver;
-import com.example.vivek.rentalmates.tasks.GetFlatInfoListAsyncTask;
 import com.example.vivek.rentalmates.tasks.RequestAsyncTask;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.firebase.client.Firebase;
+import com.firebase.ui.FirebaseRecyclerAdapter;
 
 public class ManageFlatsFragment extends android.support.v4.app.Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -46,7 +43,8 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
     private Button registerNewFlatButton;
     private SharedPreferences prefs;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private FlatListViewAdapter flatListViewAdapter;
+    FirebaseRecyclerAdapter<FlatInfo, FlatViewHolder> firebaseRecyclerAdapter;
+    private Firebase mFlatsRef;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,17 +56,22 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
 
         manageFlatsTextView = (TextView) layout.findViewById(R.id.manageFlatsText);
 
+        mFlatsRef = new Firebase(AppConstants.FIREBASE_ROOT_URL).child("flats");
+
         //Initialize RecyclerView
         recyclerView = (RecyclerView) layout.findViewById(R.id.listFlats);
-        flatListViewAdapter = new FlatListViewAdapter(context);
-        recyclerView.setAdapter(flatListViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
         //Initialize SwipeRefreshLayout
         swipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeListFlats);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.white));
-        swipeRefreshLayout.setColorSchemeColors(R.color.primaryColor, R.color.purple, R.color.green, R.color.orange);
+        swipeRefreshLayout.setColorSchemeColors(
+                ContextCompat.getColor(context, R.color.primaryColor),
+                ContextCompat.getColor(context, R.color.purple),
+                ContextCompat.getColor(context, R.color.green),
+                ContextCompat.getColor(context, R.color.orange));
+        swipeRefreshLayout.setEnabled(false);
 
         //Initialize Buttons
         joinExistingFlatButton = (Button) layout.findViewById(R.id.joinExistingFlatButton);
@@ -89,19 +92,21 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
 
         prefs = context.getSharedPreferences(AppConstants.APP_PREFERENCES, Context.MODE_PRIVATE);
 
-        updateView();
         return layout;
     }
 
     public void updateView() {
-        if (appData.getFlats().size() == 0) {
+        if (firebaseRecyclerAdapter.getItemCount() == 0) {
             manageFlatsTextView.setVisibility(View.VISIBLE);
         } else {
             manageFlatsTextView.setVisibility(View.GONE);
         }
     }
 
-    public void joinExistingFlat() {
+    private void joinExistingFlat() {
+    }
+
+    private void joinExistingFlat_Old() {
         final ProgressDialog progressDialog;
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -156,7 +161,12 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
 
     @Override
     public void onRefresh() {
-        Log.d(TAG, "inside onRefresh");
+
+    }
+
+    public void onRefresh_Old() {
+
+        /*Log.d(TAG, "inside onRefresh");
         GetFlatInfoListAsyncTask task = new GetFlatInfoListAsyncTask(context);
         task.setOnFlatInfoListReceiver(new OnFlatInfoListReceiver() {
             @Override
@@ -183,7 +193,7 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
                 }
             }
         });
-        task.execute();
+        task.execute();*/
     }
 
     @Override
@@ -191,9 +201,37 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REGISTER_NEW_FLAT) {
             if (resultCode == Activity.RESULT_OK) {
-                swipeRefreshLayout.setRefreshing(true);
-                onRefresh();
+                Log.d(TAG, "New Flat Added");
             }
         }
+    }
+
+    public static class FlatViewHolder extends RecyclerView.ViewHolder {
+        TextView flatNameTextView;
+
+        public FlatViewHolder(View view) {
+            super(view);
+            flatNameTextView = (TextView) view.findViewById(R.id.flatNameTextView);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<FlatInfo, FlatViewHolder>(
+                FlatInfo.class,
+                R.layout.flat_list_item,
+                FlatViewHolder.class,
+                mFlatsRef
+        ) {
+            @Override
+            protected void populateViewHolder(FlatViewHolder flatViewHolder, FlatInfo flatInfo, int i) {
+                flatViewHolder.flatNameTextView.setText(flatInfo.getFlatName());
+                updateView();
+            }
+        };
+        recyclerView.setAdapter(firebaseRecyclerAdapter);
+        updateView();
     }
 }

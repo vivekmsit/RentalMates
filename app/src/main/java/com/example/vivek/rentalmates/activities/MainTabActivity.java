@@ -174,7 +174,7 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         anim1.setInterpolator(new OvershootInterpolator());
         addFab.setAnimation(anim1);
         addFab.animate();
-        addFab.setVisibility(View.VISIBLE);
+        addFab.setVisibility(View.GONE);
 
         //Initialize Flats Filter FloatingActionButton
         filterFlatsFab = (FloatingActionButton) findViewById(R.id.filterFlatsFab);
@@ -415,7 +415,8 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
 
     public void updateFABs() {
         if (currentPosition == 0 && backStackCount == 0) {
-            addFab.setVisibility(View.VISIBLE);
+            addFab.setVisibility(View.GONE);
+            addFab.clearAnimation();
             filterFlatsFab.setVisibility(View.GONE);
             filterFlatsFab.clearAnimation();
             filterRoomMatesFab.setVisibility(View.GONE);
