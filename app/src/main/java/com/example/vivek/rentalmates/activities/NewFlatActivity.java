@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.data.AppConstants;
 import com.example.vivek.rentalmates.data.FlatInfo;
+import com.example.vivek.rentalmates.data.PerUserFlatInfo;
 import com.example.vivek.rentalmates.fragments.NewFlatAmenitiesFragment;
 import com.example.vivek.rentalmates.fragments.NewFlatBasicInfoFragment;
 import com.example.vivek.rentalmates.fragments.NewFlatLocationFragment;
@@ -44,9 +45,10 @@ public class NewFlatActivity extends AppCompatActivity {
     FlatInfo newFlatInfo;
     Context context;
     SharedPreferences prefs;
+
     private Firebase mFlatsRef;
     private Firebase mUserFlatsList;
-    private Activity newFlatActivity;
+    private Firebase mPerUserFlatsRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +57,7 @@ public class NewFlatActivity extends AppCompatActivity {
 
         mFlatsRef = new Firebase(AppConstants.FIREBASE_ROOT_URL).child("flats");
         mUserFlatsList = new Firebase(AppConstants.FIREBASE_ROOT_URL).child("users").child("vivekmsit@gmail,com").child("flats");
-
-        newFlatActivity = this;
+        mPerUserFlatsRef = new Firebase(AppConstants.FIREBASE_ROOT_URL).child("userFlats").child("vivekmsit@gmail,com");
 
         //Initialize Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -159,6 +160,8 @@ public class NewFlatActivity extends AppCompatActivity {
 
     private void registerFlat(FlatInfo localFlatInfo) {
         Firebase mFlatRef = mFlatsRef.push();
+        Firebase mUserFlatRef = mPerUserFlatsRef.push();
+
         mFlatRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -181,7 +184,7 @@ public class NewFlatActivity extends AppCompatActivity {
                 });
 
                 if (uploadedFlatInfo != null) {
-                    Toast.makeText(context, "New Flat Registered: " + uploadedFlatInfo.getFlatName() + getCallingPackage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "New Flat Registered: " + uploadedFlatInfo.getFlatName(), Toast.LENGTH_SHORT).show();
                     mNewFlatKeyRef.setValue(uploadedFlatInfo.getFlatKey());
                 }
             }
@@ -193,6 +196,21 @@ public class NewFlatActivity extends AppCompatActivity {
         });
         localFlatInfo.setFlatKey(mFlatRef.getKey());
         mFlatRef.setValue(localFlatInfo);
+
+        mUserFlatRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+        PerUserFlatInfo perUserFlatInfo = new PerUserFlatInfo(localFlatInfo);
+        mUserFlatRef.setValue(perUserFlatInfo);
     }
 
 

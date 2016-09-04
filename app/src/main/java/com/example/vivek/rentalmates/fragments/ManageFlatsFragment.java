@@ -15,9 +15,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.activities.NewFlatActivity;
 import com.example.vivek.rentalmates.backend.mainApi.model.Request;
@@ -33,6 +35,7 @@ import com.firebase.ui.FirebaseRecyclerAdapter;
 public class ManageFlatsFragment extends android.support.v4.app.Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "ManageFlats_Debug";
+    private static final String flatPictureUrl = "http://www.komnit.com/images/Catalogues/Exterior/Flat/FL-0412/flat%20komnit%20design%204.jpg";
     private static final int REGISTER_NEW_FLAT = 1;
 
     private AppData appData;
@@ -56,7 +59,7 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
 
         manageFlatsTextView = (TextView) layout.findViewById(R.id.manageFlatsText);
 
-        mFlatsRef = new Firebase(AppConstants.FIREBASE_ROOT_URL).child("flats");
+        mFlatsRef = new Firebase(AppConstants.FIREBASE_ROOT_URL).child("userFlats").child("vivekmsit@gmail,com");
 
         //Initialize RecyclerView
         recyclerView = (RecyclerView) layout.findViewById(R.id.listFlats);
@@ -208,10 +211,12 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
 
     public static class FlatViewHolder extends RecyclerView.ViewHolder {
         TextView flatNameTextView;
+        ImageView flatImageView;
 
         public FlatViewHolder(View view) {
             super(view);
             flatNameTextView = (TextView) view.findViewById(R.id.flatNameTextView);
+            flatImageView = (ImageView) view.findViewById(R.id.flatImageView);
         }
     }
 
@@ -228,6 +233,13 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
             @Override
             protected void populateViewHolder(FlatViewHolder flatViewHolder, FlatInfo flatInfo, int i) {
                 flatViewHolder.flatNameTextView.setText(flatInfo.getFlatName());
+                Glide
+                        .with(context)
+                        .load(flatPictureUrl)
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_home_40dp)
+                        .crossFade()
+                        .into(flatViewHolder.flatImageView);
                 updateView();
             }
         };
