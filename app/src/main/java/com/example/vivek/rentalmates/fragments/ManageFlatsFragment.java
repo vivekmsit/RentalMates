@@ -41,7 +41,6 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
     private static final String TAG = "ManageFlats_Debug";
     private static final String flatPictureUrl = "http://www.komnit.com/images/Catalogues/Exterior/Flat/FL-0412/flat%20komnit%20design%204.jpg";
     private static final int REGISTER_NEW_FLAT = 1;
-    private static final int REQUEST_CODE_PICKER = 2;
 
     private AppData appData;
     private Context context;
@@ -113,25 +112,6 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
     }
 
     private void joinExistingFlat() {
-        /*Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        intent.setType("image/*");
-        startActivityForResult(intent, REQUEST_CODE_PICKER);*/
-
-        /*Intent chooseIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        chooseIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        startActivityForResult(chooseIntent, REQUEST_CODE_PICKER);*/
-
-        Intent intent = new Intent(context, ImagePickerActivity.class);
-
-        intent.putExtra(ImagePickerActivity.INTENT_EXTRA_MODE, ImagePickerActivity.MODE_MULTIPLE);
-        intent.putExtra(ImagePickerActivity.INTENT_EXTRA_LIMIT, 10);
-        intent.putExtra(ImagePickerActivity.INTENT_EXTRA_SHOW_CAMERA, true);
-        intent.putExtra(ImagePickerActivity.INTENT_EXTRA_SELECTED_IMAGES, images);
-        //intent.putExtra(ImagePickerActivity.INTENT_EXTRA_TITLE, "Tap to select");
-
-        startActivityForResult(intent, REQUEST_CODE_PICKER);
     }
 
     private void joinExistingFlat_Old() {
@@ -231,9 +211,6 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
             if (resultCode == Activity.RESULT_OK) {
                 Log.d(TAG, "New Flat Added");
             }
-        } else if (requestCode == REQUEST_CODE_PICKER && resultCode == Activity.RESULT_OK && data != null) {
-            ArrayList<Image> images = data.getParcelableArrayListExtra(ImagePickerActivity.INTENT_EXTRA_SELECTED_IMAGES);
-            Toast.makeText(context, "images count: " + images.size(), Toast.LENGTH_SHORT).show();
         }
     }
 

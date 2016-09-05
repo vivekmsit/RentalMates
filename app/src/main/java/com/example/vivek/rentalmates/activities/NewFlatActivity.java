@@ -19,6 +19,7 @@ import com.example.vivek.rentalmates.data.PerUserFlatInfo;
 import com.example.vivek.rentalmates.fragments.NewFlatAmenitiesFragment;
 import com.example.vivek.rentalmates.fragments.NewFlatBasicInfoFragment;
 import com.example.vivek.rentalmates.fragments.NewFlatLocationFragment;
+import com.example.vivek.rentalmates.fragments.NewFlatPhotosFragment;
 import com.example.vivek.rentalmates.fragments.NewFlatRentDetailsFragment;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -39,6 +40,8 @@ public class NewFlatActivity extends AppCompatActivity {
     NewFlatAmenitiesFragment newFlatAmenitiesFragment;
     NewFlatLocationFragment newFlatLocationFragment;
     NewFlatRentDetailsFragment newFlatRentDetailsFragment;
+    NewFlatPhotosFragment newFlatPhotosFragment;
+
     int currentFragment;
     Button nextButton;
     Button fragmentNameButton;
@@ -86,6 +89,9 @@ public class NewFlatActivity extends AppCompatActivity {
                 } else if (currentFragment == 2) {
                     nextButton.setText("Next");
                     fragmentNameButton.setText("Amenities");
+                } else if (currentFragment == 3) {
+                    nextButton.setText("Next");
+                    fragmentNameButton.setText("Photos");
                 }
             }
         });
@@ -106,6 +112,7 @@ public class NewFlatActivity extends AppCompatActivity {
         newFlatAmenitiesFragment = new NewFlatAmenitiesFragment();
         newFlatLocationFragment = new NewFlatLocationFragment();
         newFlatRentDetailsFragment = new NewFlatRentDetailsFragment();
+        newFlatPhotosFragment = new NewFlatPhotosFragment();
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentParentViewGroup, newFlatBasicInfoFragment)
@@ -130,6 +137,14 @@ public class NewFlatActivity extends AppCompatActivity {
                     .commit();
             currentFragment++;
         } else if (currentFragment == 2) {
+            nextButton.setText("Next");
+            fragmentNameButton.setText("Photos");
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragmentParentViewGroup, newFlatPhotosFragment)
+                    .addToBackStack("newFlatPhotosFragment")
+                    .commit();
+            currentFragment++;
+        } else if (currentFragment == 3) {
             nextButton.setText("Finish");
             fragmentNameButton.setText("Flat Location");
             fragmentManager.beginTransaction()
@@ -137,7 +152,7 @@ public class NewFlatActivity extends AppCompatActivity {
                     .addToBackStack("newFlatLocationFragment")
                     .commit();
             currentFragment++;
-        } else if (currentFragment == 3) {
+        } else if (currentFragment == 4) {
             if (newFlatBasicInfoFragment.verifyInputData() && newFlatRentDetailsFragment.verifyInputData()) {
                 registerNewFlat();
             }
