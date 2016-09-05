@@ -34,6 +34,7 @@ public class NewFlatPhotosFragment extends Fragment {
     private RecyclerView recyclerView;
     private PhotoListViewAdapter photoListViewAdapter;
     private ArrayList<Image> images = new ArrayList<>();
+    private ArrayList<String> imagePaths = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,7 +68,7 @@ public class NewFlatPhotosFragment extends Fragment {
 
         Intent intent = new Intent(context, ImagePickerActivity.class);
         intent.putExtra(ImagePickerActivity.INTENT_EXTRA_MODE, ImagePickerActivity.MODE_MULTIPLE);
-        intent.putExtra(ImagePickerActivity.INTENT_EXTRA_LIMIT, 10);
+        intent.putExtra(ImagePickerActivity.INTENT_EXTRA_LIMIT, 5);
         intent.putExtra(ImagePickerActivity.INTENT_EXTRA_SHOW_CAMERA, true);
         intent.putExtra(ImagePickerActivity.INTENT_EXTRA_SELECTED_IMAGES, images);
         //intent.putExtra(ImagePickerActivity.INTENT_EXTRA_TITLE, "Tap to select");
@@ -81,7 +82,15 @@ public class NewFlatPhotosFragment extends Fragment {
             images = data.getParcelableArrayListExtra(ImagePickerActivity.INTENT_EXTRA_SELECTED_IMAGES);
             photoListViewAdapter.updatePhotoData();
             photoListViewAdapter.notifyDataSetChanged();
+            imagePaths.clear();
+            for (Image image : images) {
+                imagePaths.add(image.getPath());
+            }
         }
+    }
+
+    public ArrayList<String> getImagePaths() {
+        return imagePaths;
     }
 
     public class PhotoListViewAdapter extends RecyclerView.Adapter<PhotoListViewAdapter.PhotoViewHolder> {

@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -25,16 +27,21 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class NewFlatActivity extends AppCompatActivity {
-    private static final String TAG = "NewFlatActivity_Debug";
-    private static final int INITIAL_REQUEST = 1337;
-    private static final int LOCATION_REQUEST = INITIAL_REQUEST + 3;
-
     FragmentManager fragmentManager;
     NewFlatBasicInfoFragment newFlatBasicInfoFragment;
     NewFlatAmenitiesFragment newFlatAmenitiesFragment;
@@ -53,14 +60,24 @@ public class NewFlatActivity extends AppCompatActivity {
     private Firebase mUserFlatsList;
     private Firebase mPerUserFlatsRef;
 
+    private FirebaseStorage storage;
+    private StorageReference flatPhotosStorageRef;
+
+    private ArrayList<String> flatPhotoUrls = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_flat);
 
+        //Initialize Firebase References
         mFlatsRef = new Firebase(AppConstants.FIREBASE_ROOT_URL).child("flats");
         mUserFlatsList = new Firebase(AppConstants.FIREBASE_ROOT_URL).child("users").child("vivekmsit@gmail,com").child("flats");
         mPerUserFlatsRef = new Firebase(AppConstants.FIREBASE_ROOT_URL).child("userFlats").child("vivekmsit@gmail,com");
+
+        //Initialize FirebaseStorage references
+        storage = FirebaseStorage.getInstance();
+        flatPhotosStorageRef = storage.getReferenceFromUrl(AppConstants.FIREBASE_STORAGE_ROOT_URL).child("flatPhotos");
 
         //Initialize Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -171,6 +188,41 @@ public class NewFlatActivity extends AppCompatActivity {
         newFlatInfo.setLongitude(newFlatLocationFragment.getLongitude());
         //newFlatInfo.setZoom(newFlatLocationFragment.getZoom());
         registerFlat(newFlatInfo);
+        uploadPhotos(newFlatPhotosFragment.getImagePaths(), newFlatInfo);
+    }
+
+    private void uploadPhotos(ArrayList<String> imagePaths, FlatInfo flatInfo) {
+        int photoNumber = 1;
+        flatPhotoUrls.clear();
+        for (String imagePath : imagePaths) {
+            StorageReference storageReference = flatPhotosStorageRef.child("vivekmsit@gmail,com").child(flatInfo.getFlatName()).child("photo" + photoNumber);
+            photoNumber++;
+            InputStream stream;
+            try {
+                stream = new FileInputStream(new File(imagePath));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                Toast.makeText(context, "file not found: " + imagePath, Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            UploadTask uploadTask = storageReference.putStream(stream);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Toast.makeText(context, "Failed to upload Image", Toast.LENGTH_LONG).show();
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    if (downloadUrl != null) {
+                        flatPhotoUrls.add(downloadUrl.toString());
+                    }
+                    Toast.makeText(context, "Image upload successful", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     private void registerFlat(FlatInfo localFlatInfo) {

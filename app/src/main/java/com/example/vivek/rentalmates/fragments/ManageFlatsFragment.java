@@ -31,7 +31,6 @@ import com.example.vivek.rentalmates.interfaces.OnRequestJoinExistingEntityRecei
 import com.example.vivek.rentalmates.tasks.RequestAsyncTask;
 import com.firebase.client.Firebase;
 import com.firebase.ui.FirebaseRecyclerAdapter;
-import com.nguyenhoanglam.imagepicker.activity.ImagePickerActivity;
 import com.nguyenhoanglam.imagepicker.model.Image;
 
 import java.util.ArrayList;
@@ -51,7 +50,7 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
     private ArrayList<Image> images;
     private SharedPreferences prefs;
     private SwipeRefreshLayout swipeRefreshLayout;
-    FirebaseRecyclerAdapter<FlatInfo, FlatViewHolder> firebaseRecyclerAdapter;
+    private FirebaseRecyclerAdapter<FlatInfo, FlatViewHolder> firebaseRecyclerAdapter;
     private Firebase mFlatsRef;
 
     @Override
@@ -241,7 +240,8 @@ public class ManageFlatsFragment extends android.support.v4.app.Fragment impleme
                 Glide
                         .with(context)
                         .load(flatPictureUrl)
-                        .centerCrop()
+                        .fitCenter()
+                        .override(300, 500)
                         .placeholder(R.drawable.ic_home_40dp)
                         .crossFade()
                         .into(flatViewHolder.flatImageView);

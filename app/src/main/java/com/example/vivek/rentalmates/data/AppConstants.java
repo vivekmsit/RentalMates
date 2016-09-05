@@ -2,11 +2,12 @@ package com.example.vivek.rentalmates.data;
 
 public class AppConstants {
     public static final String FIREBASE_ROOT_URL = "https://rentalmates-8c9ea.firebaseio.com";
+    public static final String FIREBASE_STORAGE_ROOT_URL = "gs://rentalmates-8c9ea.appspot.com";
+    public static final String BACKEND_ROOT_URL = "https://kinetic-wind-814.appspot.com/_ah/api/";
 
     public static final String GCM_REG_ID = "registration_id";
     public static final String SENDER_ID = "56111997016";
     public static final int PROFILE_PIC_SIZE = 400;
-    public static final String BACKEND_ROOT_URL = "https://kinetic-wind-814.appspot.com/_ah/api/";
 
     //SharedPreferences string values
     public static final String PRIMARY_FLAT_ID = "primary_flat_id";
