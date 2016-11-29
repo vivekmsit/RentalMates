@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "347703547509-od5ele69pbmrffg1o7id314smes1a51c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.vivek.rentalmates",
+            "certificate_hash": "A687C5E9D853BEFDB0174FB7F6CE4BD0A66CA16F"
+          }
+        },
+        {
           "client_id": "347703547509-2jblsfqb11r600c4h5dm9ccrhod487gk.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
