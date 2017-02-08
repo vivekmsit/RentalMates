@@ -17,6 +17,9 @@ import android.view.MenuItem;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.fragments.ManageFlatsFragment;
 
+import static android.support.design.R.styleable.FloatingActionButton;
+import static android.support.design.R.styleable.NavigationView;
+
 public class ExpenseManagerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 

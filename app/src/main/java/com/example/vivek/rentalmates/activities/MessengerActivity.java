@@ -12,6 +12,8 @@ import android.support.v7.widget.Toolbar;
 import com.example.vivek.rentalmates.R;
 import com.example.vivek.rentalmates.fragments.ChatsFragment;
 
+import static android.support.design.R.styleable.TabLayout;
+
 public class MessengerActivity extends AppCompatActivity {
     TabLayout tabLayout;
 

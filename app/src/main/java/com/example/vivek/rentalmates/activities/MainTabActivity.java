@@ -40,6 +40,8 @@ import com.example.vivek.rentalmates.fragments.SearchRoomMateFragment;
 import com.example.vivek.rentalmates.fragments.SharedContactsListFragment;
 import com.example.vivek.rentalmates.interfaces.FragmentTransactionRequestReceiver;
 import com.example.vivek.rentalmates.library.CreateNewExpenseGroupTask;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
@@ -114,6 +116,10 @@ public class MainTabActivity extends AppCompatActivity implements FragmentTransa
         //Initialize Toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //Initialize Facebook SDK
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(getApplication());
 
         //Initialize DrawerLayout
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
