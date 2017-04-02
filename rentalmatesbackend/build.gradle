@@ -7,7 +7,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.google.appengine:gradle-appengine-plugin:1.9.42'
+        classpath 'com.google.appengine:gradle-appengine-plugin:1.9.49'
     }
 }
 
@@ -20,12 +20,12 @@ apply plugin: 'war'
 apply plugin: 'appengine'
 
 dependencies {
-    appengineSdk 'com.google.appengine:appengine-java-sdk:1.9.42'
-    compile 'com.google.appengine:appengine-endpoints:1.9.42'
-    compile 'com.google.appengine:appengine-endpoints-deps:1.9.42'
+    appengineSdk 'com.google.appengine:appengine-java-sdk:1.9.49'
+    compile 'com.google.appengine:appengine-endpoints:1.9.49'
+    compile 'com.google.appengine:appengine-endpoints-deps:1.9.49'
     compile 'javax.servlet:servlet-api:2.5'
-    compile 'com.googlecode.objectify:objectify:5.1.12'
-    compile 'com.ganyo:gcm-server:1.0.2'
+    compile 'com.googlecode.objectify:objectify:5.1.15'
+    compile 'com.ganyo:gcm-server:1.1.0'
     compile 'jexcelapi:jxl:2.6'
 }
 
