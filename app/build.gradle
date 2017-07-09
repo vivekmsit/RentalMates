@@ -7,7 +7,6 @@ android {
     defaultConfig {
         applicationId "com.example.vivek.rentalmates"
         minSdkVersion 21
-        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         multiDexEnabled = true
@@ -41,13 +40,13 @@ dependencies {
     compile 'com.android.support:support-v4:25.3.1'
 
     //Google play services
-    compile 'com.google.android.gms:play-services-places:10.2.1'
-    compile 'com.google.android.gms:play-services-location:10.2.1'
-    compile 'com.google.android.gms:play-services-maps:10.2.1'
-    compile 'com.google.android.gms:play-services-ads:10.2.1'
-    compile 'com.google.android.gms:play-services-auth:10.2.1'
-    compile 'com.google.android.gms:play-services-gcm:10.2.1'
-    compile 'com.google.android.gms:play-services-plus:10.2.1'
+    compile 'com.google.android.gms:play-services-places:11.0.2'
+    compile 'com.google.android.gms:play-services-location:11.0.2'
+    compile 'com.google.android.gms:play-services-maps:11.0.2'
+    compile 'com.google.android.gms:play-services-ads:11.0.2'
+    compile 'com.google.android.gms:play-services-auth:11.0.2'
+    compile 'com.google.android.gms:play-services-gcm:11.0.2'
+    compile 'com.google.android.gms:play-services-plus:11.0.2'
 
     //FireBase library
     compile 'com.google.firebase:firebase-core:10.2.0'

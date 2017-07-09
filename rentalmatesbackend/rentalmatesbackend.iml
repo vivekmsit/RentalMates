@@ -49,6 +49,5 @@
     <orderEntry type="library" exported="" name="guava-20.0" level="project" />
     <orderEntry type="library" exported="" name="json-simple-1.1" level="project" />
     <orderEntry type="library" exported="" name="jxl-2.6" level="project" />
-    <orderEntry type="library" exported="" name="rentalmatesbackend.rentalmatesbackend-android-endpoints" level="project" />
   </component>
 </module>
